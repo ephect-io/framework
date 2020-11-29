@@ -8,7 +8,7 @@ class Analyser
 
     public static function getFunctionDefinition(string $filename): array
     {
-        $classText = file_get_contents($filename);
+        $classText = file_get_contents(SRC_ROOT . $filename);
 
         if($classText === false) {
             return [null, null, false];
@@ -22,7 +22,7 @@ class Analyser
 
     public static function getClassDefinition(string $filename): array
     {
-        $classText = file_get_contents($filename);
+        $classText = file_get_contents(SRC_ROOT . $filename);
 
         $namespace = self::grabKeywordName('namespace', $classText, ';');
         $className = self::grabKeywordName('class', $classText, ' ');
