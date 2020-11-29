@@ -1,4 +1,4 @@
 <?php
 include 'bootstrap.php';
 
-FunCom\Web\Application::run();
+FunCom\Web\Application::create();

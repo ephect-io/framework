@@ -35,7 +35,7 @@ class View
 
         $this->filename = $filename;
 
-        list($this->namespace, $this->function, $this->code) = Analyser::getFunctionDefinition($this->filename);
+        list($this->namespace, $this->function, $this->code) = Parser::getFunctionDefinition(SRC_ROOT . $this->filename);
 
         $result = $this->code !== false;
 

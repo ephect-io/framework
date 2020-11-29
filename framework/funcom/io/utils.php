@@ -63,7 +63,7 @@ class Utils
 
     public static function safeRead(string $filename): ?string
     {
-        $result = (false === file_get_contents($filename)) ? null : $filename;
+        $result = (false === $contents = file_get_contents($filename)) ? null : $contents;
 
         return $result;
 

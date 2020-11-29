@@ -2,27 +2,42 @@
 
 namespace FunCom\Web;
 
-define('SITE_ROOT', dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR);
-define('SRC_ROOT', SITE_ROOT .  'src' . DIRECTORY_SEPARATOR);
-define('REL_CACHE_DIR', 'cache' . DIRECTORY_SEPARATOR);
-define('CACHE_DIR', SITE_ROOT . REL_CACHE_DIR);
-
 use FunCom\Components\Compiler;
+use FunCom\Components\Parser;
 use FunCom\Core\Application as CoreApplication;
+use FunCom\IO\Utils;
+use FunCom\Registry\ClassRegistry;
 
 class Application extends CoreApplication
 {
 
-    public function __construct()
+    public static function create(...$params): void
     {
+        session_start();
+        self::$instance = new Application();
+        self::$instance->run($params);
     }
 
-    public static function run()
+    public function run(?array ...$params): void
     {
+        ClassRegistry::uncache();
+        $classes =  ClassRegistry::items();
 
+        $appFunction = '';
+        $appFilename = '';
 
-        $compiler = new Compiler;
+        foreach($classes as $fqName => $filename) {
+            $appFunction = $fqName;
+            $appFilename = SITE_ROOT . $filename;
+        break;            
+        }
+       
+        include $appFilename;
 
-        $compiler->perform();
+        //list($ns, $fn, $code) = Parser::getFunctionDefinition($appFilename);
+
+        $html = call_user_func($appFunction);
+
+        echo $html;
     }
 }
