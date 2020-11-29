@@ -1,0 +1,22 @@
+{
+    "autoload": {
+        "classmap": [
+            "framework/funcom/"
+        ],
+        "exclude-from-classmap": [
+        ],
+        "psr-4": {
+            "Funcom\\": ""
+        },
+        "files": [
+            "framework/funcom/core/constants.php"
+        ]
+    },
+    "include-path": [
+        "framework"
+    ],
+    "require": {
+    }
+
+
+}
