@@ -4,15 +4,14 @@ namespace FunCom\Components;
 
 class View
 {
-    private $html;
     private $filename;
     private $namespace;
     private $function;
     private $code;
 
-    public function getHtml()
+    public function getCode()
     {
-        return $this->html;
+        return $this->code;
     }
 
     public function getFullCleasName(): string
@@ -43,19 +42,7 @@ class View
         return  $result;
     }
 
-    public function parse(): bool
-    {
-        $result = '';
 
-        $re = '/\{\{ ([a-z]*) \}\}/m';
-        $su = '$\1';
-
-        $this->html = preg_replace($re, $su, $this->code);
-
-        $result = $this->html !== null;
-
-        return $result;
-    }
 
     public function render(): void
     {

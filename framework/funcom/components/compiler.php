@@ -15,9 +15,12 @@ class Compiler
         foreach ($viewList as $viewFile) {
             $view = new View();
             $view->load($viewFile);
-            $view->parse();
 
-            $html = $view->getHtml();
+            $html = $view->getCode();
+
+            $parser = new Parser($html);
+            $parser->doVariables();
+            $html = $parser->getHtml();
 
             $cacheFilename = $this->cacheView($viewFile, $html);
         
@@ -38,7 +41,7 @@ class Compiler
     {
         $cache_file = REL_CACHE_DIR . str_replace('/', '_', $filename);
 
-        $result = (false === file_put_contents(SITE_ROOT . $cache_file, $contents)) ? null : $cache_file;
+        $result = IOUtils::safeWrite(SITE_ROOT . $cache_file, $contents);
 
         return $result;
     }
