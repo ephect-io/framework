@@ -7,11 +7,7 @@ class Application
 {
     public static function run() {
  
-        $compiler = new Compiler;
 
-        $compiler->perform();
-
-        
 
     }
 
