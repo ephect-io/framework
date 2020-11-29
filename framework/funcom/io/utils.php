@@ -46,4 +46,18 @@ class Utils
                 @unlink($path) :
                 array_map($class_func, glob($path.'/*')) == @rmdir($path);
     }
+
+    public static function safeWrite(string $filename, string $contents): ?string
+    {
+        $result = null;
+
+        $dir = pathinfo($filename, PATHINFO_DIRNAME);
+
+        if(!file_exists($dir)) {
+            $result = mkdir($dir, 0775, true);
+        }
+        $result = (false === file_put_contents($filename, $contents)) ? null : $filename;
+
+        return $result;
+    }
 }
