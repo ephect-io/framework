@@ -2,13 +2,16 @@
 
 namespace FunCom\Registry;
 
+use FunCom\IO\Utils;
+
 abstract class CustomRegistry
 {
     private $items = [];
 
     protected function getName(): string
     {
-        $className = array_pop(explode('\\', get_class($this)));
+        $parts = explode('\\', get_class($this));
+        $className = array_pop($parts);
 
         return $className;
     }
@@ -46,15 +49,14 @@ abstract class CustomRegistry
 
     public function save(): void
     {
-        $views = $this->getAll();
+        $items = $this->getAll();
 
-        $json = json_encode($views, JSON_PRETTY_PRINT);
+        $json = json_encode($items, JSON_PRETTY_PRINT);
 
         $className = $this->getName();
-        $className = str_replace('\\', '', $className);
 
         $registry = CACHE_DIR . strtolower($className) . '.json';
 
-        file_put_contents($registry, $json);
+        Utils::safeWrite($registry, $json);
     }
 }

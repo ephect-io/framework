@@ -2,7 +2,7 @@
 
 namespace FunCom\Registry;
 
-class BaseRegistry extends CustomRegistry
+class BaseRegistry extends CustomRegistry implements RegistryInterface
 {
     protected static $instance = null;
 
@@ -10,7 +10,7 @@ class BaseRegistry extends CustomRegistry
     {
     }
 
-    public static function getInstance(): BaseRegistry
+    public static function getInstance(): RegistryInterface
     {
         if (static::$instance === null) {
             static::$instance = new BaseRegistry();
