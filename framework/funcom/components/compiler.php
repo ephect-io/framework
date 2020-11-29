@@ -20,6 +20,7 @@ class Compiler
 
             $parser = new Parser($html);
             $parser->doVariables();
+            $parser->doComponents();
             $html = $parser->getHtml();
 
             $cacheFilename = $this->cacheView($viewFile, $html);
@@ -43,6 +44,6 @@ class Compiler
 
         $result = IOUtils::safeWrite(SITE_ROOT . $cache_file, $contents);
 
-        return $result;
+        return $result === null ? $result : $cache_file;
     }
 }

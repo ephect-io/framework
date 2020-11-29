@@ -44,12 +44,10 @@ class View
 
 
 
-    public function render(): void
+    public static function render(string $componentName, ?string $componentArgs): void
     {
 
-        include $this->filename;
-
-        $html = call_user_func($function);
+        $html = call_user_func($componentName);
 
         echo $html;
     }

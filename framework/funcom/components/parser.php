@@ -36,8 +36,19 @@ class Parser
 
         $re = '/\<([A-Za-z0-9]*)([ ])((\s|[^\/\>].)+)?\/\>/';
         
-        preg_match_all($re, $this->html, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
+        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
         
+
+        foreach($matches as $match) {
+            $component = $match[0];
+            $componentName = $match[1];
+            $componentArgs = isset($match[3]) ? $match[3] : '';
+
+            $componentRender = "<?php FunCom\Components\View::render('$componentName', '$componentArgs'); ?>";
+            
+            $this->html = str_replace($component, $componentRender, $this->html);
+
+        }
         // TO BE CONTINUED
 
         $result = $this->html !== null;
