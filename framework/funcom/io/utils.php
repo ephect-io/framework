@@ -60,4 +60,12 @@ class Utils
 
         return $result;
     }
+
+    public static function safeRead(string $filename): ?string
+    {
+        $result = (false === file_get_contents($filename)) ? null : $filename;
+
+        return $result;
+
+    }
 }

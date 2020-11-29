@@ -7,6 +7,7 @@ use FunCom\IO\Utils;
 abstract class CustomRegistry
 {
     private $items = [];
+    private $isLoaded = false;
 
     protected function getName(): string
     {
@@ -53,10 +54,32 @@ abstract class CustomRegistry
 
         $json = json_encode($items, JSON_PRETTY_PRINT);
 
+        $registryFilename = $this->getCacheFileName();
+
+        Utils::safeWrite($registryFilename, $json);
+    }
+
+    public function load(): void
+    {
+        if($this->isLoaded) {
+            return;
+        }
+
+        $registryFilename = $this->getCacheFileName();
+
+        $json = Utils::safeRead($registryFilename);
+
+        $this->items = json_decode($json, JSON_OBJECT_AS_ARRAY);
+
+        $this->isLoaded = true;
+    }
+
+    public function getCacheFileName() : string
+    {
         $className = $this->getName();
+        $result = CACHE_DIR . strtolower($className) . '.json';
 
-        $registry = CACHE_DIR . strtolower($className) . '.json';
+        return $result;
 
-        Utils::safeWrite($registry, $json);
     }
 }

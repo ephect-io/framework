@@ -39,4 +39,10 @@ class BaseRegistry extends CustomRegistry implements RegistryInterface
         static::getInstance()->save();
     }
 
+    public static function uncache()
+    {
+        static::getInstance()->load();
+    }
+
+
 }
