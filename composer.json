@@ -9,7 +9,8 @@
             "Funcom\\": ""
         },
         "files": [
-            "framework/funcom/core/constants.php"
+            "framework/funcom/core/constants.php",
+            "framework/funcom/core/autoloader.php"
         ]
     },
     "include-path": [
