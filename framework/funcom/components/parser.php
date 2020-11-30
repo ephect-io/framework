@@ -2,7 +2,7 @@
 
 namespace FunCom\Components;
 
-class Parser 
+class Parser
 {
     private $html;
 
@@ -35,33 +35,61 @@ class Parser
         $result = '';
 
         $re = '/\<([A-Za-z0-9]*)([ ])((\s|[^\/\>].)+)?\/\>/';
-        
-        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
-        
 
-        foreach($matches as $match) {
+        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
+
+
+        foreach ($matches as $match) {
             $component = $match[0];
             $componentName = $match[1];
             $componentArgs = isset($match[3]) ? $match[3] : '';
 
-            $componentRender = "<?php FunCom\Components\View::render('$componentName', '$componentArgs'); ?>";
-            
-            $this->html = str_replace($component, $componentRender, $this->html);
+            // TO BE CONTINUED
+            // $brackets  = ($componentArgs === '') ? '()' : '(' . $componentArgs . ')';
 
+            $componentRender = "<?php FunCom\Components\View::render('$componentName', '$componentArgs'); ?>";
+
+            $this->html = str_replace($component, $componentRender, $this->html);
         }
-        // TO BE CONTINUED
 
         $result = $this->html !== null;
 
         return $result;
     }
 
+    public function doUses(): bool
+    {
+        $result = false;
 
+        $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9 ][^ ]+[^a]+);/m';
+        
+        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
+        // TO BE CONTINUED
+        
+
+        return $result;
+    }
+
+
+    public function doUsesAs(): bool
+    {
+        $result = false;
+
+        $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9 ]*) as ([A-Za-z0-9 ]*)?;/m';
+
+        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
+        // TO BE CONTINUED
+        
+    
+        return $result;
+    }
+
+    
     public static function getFunctionDefinition(string $filename): array
     {
         $classText = file_get_contents($filename);
 
-        if($classText === false) {
+        if ($classText === false) {
             return [null, null, false];
         }
 

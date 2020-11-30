@@ -39,3 +39,6 @@ class Autoloader
         include SITE_ROOT . $className;
     }
 }
+
+
+new Autoloader(SITE_ROOT);
