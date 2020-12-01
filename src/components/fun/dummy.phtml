@@ -1,0 +1,16 @@
+<?php
+
+namespace Fun;
+
+function Dummy()
+{
+
+    $a = "With a " . __FUNCTION__ . " component inside !";
+
+    return (<<<HTML
+
+    <p>{{ a }}</p>
+
+    HTML);
+
+}

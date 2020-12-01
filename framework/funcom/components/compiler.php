@@ -29,6 +29,7 @@ class Compiler
             $cacheFilename = $this->cacheView($viewFile, $html);
         
             ClassRegistry::write($view->getFullCleasName(), $cacheFilename);
+            UseRegistry::safeWrite($view->getFunction(), $view->getFullCleasName());
         }
 
         ClassRegistry::cache();

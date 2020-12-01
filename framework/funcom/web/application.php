@@ -4,9 +4,11 @@ namespace FunCom\Web;
 
 use FunCom\Components\Compiler;
 use FunCom\Components\Parser;
+use FunCom\Components\View;
 use FunCom\Core\AbstractApplication;
 use FunCom\IO\Utils;
 use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\UseRegistry;
 
 class Application extends AbstractApplication
 {
@@ -20,24 +22,7 @@ class Application extends AbstractApplication
 
     public function run(?array ...$params): void
     {
-        ClassRegistry::uncache();
-        $classes =  ClassRegistry::items();
+        View::render('App');
 
-        $appFunction = '';
-        $appFilename = '';
-
-        foreach($classes as $fqName => $filename) {
-            $appFunction = $fqName;
-            $appFilename = SITE_ROOT . $filename;
-        break;            
-        }
-       
-        include $appFilename;
-
-        //list($ns, $fn, $code) = Parser::getFunctionDefinition($appFilename);
-
-        $html = call_user_func($appFunction);
-
-        echo $html;
     }
 }

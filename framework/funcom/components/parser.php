@@ -64,12 +64,12 @@ class Parser
         $result = false;
 
         $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9]*)([ ]*)?;/m';
-        
+
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
         // TO BE CONTINUED
-        
+
         foreach ($matches as $match) {
-            $componentNamespace = $match[1];
+            $componentNamespace = trim($match[1], '\\');
             $componentFunction = $match[2];
 
             UseRegistry::write($componentFunction, $componentNamespace . '\\' . $componentFunction);
@@ -86,9 +86,9 @@ class Parser
 
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
         // TO BE CONTINUED
-        
+
         foreach ($matches as $match) {
-            $componentNamespace = $match[1];
+            $componentNamespace = trim($match[1], '\\');
             $componentFunction = $match[2];
             $componentAlias = $match[3];
 
@@ -98,7 +98,7 @@ class Parser
         return $result;
     }
 
-    
+
     public static function getFunctionDefinition(string $filename): array
     {
         $classText = file_get_contents($filename);
