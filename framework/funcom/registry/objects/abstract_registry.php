@@ -17,7 +17,7 @@ abstract class AbstractRegistry
         return $className;
     }
 
-    public function getAll()
+    public function getAll(): array
     {
         return $this->entries;
     }
