@@ -3,8 +3,9 @@
 namespace FunCom\Core;
 
 use FunCom\Components\Compiler;
+use FunCom\Element;
 
-abstract class Application extends Element
+abstract class AbstractApplication extends Element
 {
     public function __construct()
     {

@@ -1,5 +1,5 @@
 <?php
-namespace FunCom\Core;
+namespace FunCom;
 
 use \ReflectionClass;
 
@@ -13,7 +13,7 @@ class Element extends StaticElement implements ElementInterface
     protected $isSerialized = '';
     protected $children = [];
     protected $fqClassName = '';
-    protected static $instance = null;
+    protected $type = '';
 
     public function __construct(ElementInterface $parent = null)
     {
@@ -113,13 +113,18 @@ class Element extends StaticElement implements ElementInterface
         if ($this->fqClassName == '') {
             $this->fqClassName = get_class($this);
         }
+
         return $this->fqClassName;
     }
 
     public function getType(): string
     {
-        $typeParts = explode('\\', $this->getFQClassName());
-        return array_pop($typeParts);
+        if($this->type === '') {
+            $typeParts = explode('\\', $this->getFQClassName());
+            $this->type = array_pop($typeParts);
+        }
+
+        return $this->type;
     }
 
     public function getBaseType(): string

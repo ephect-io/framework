@@ -2,9 +2,9 @@
 
 namespace FunCom\CLI;
 
-use FunCom\Core\Application as CoreApplication;
+use FunCom\Core\AbstractApplication;
 
-class Application extends CoreApplication
+class Application extends AbstractApplication
 {
     public static function create(...$params): void
     {

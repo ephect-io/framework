@@ -4,11 +4,11 @@ namespace FunCom\Web;
 
 use FunCom\Components\Compiler;
 use FunCom\Components\Parser;
-use FunCom\Core\Application as CoreApplication;
+use FunCom\Core\AbstractApplication;
 use FunCom\IO\Utils;
 use FunCom\Registry\ClassRegistry;
 
-class Application extends CoreApplication
+class Application extends AbstractApplication
 {
 
     public static function create(...$params): void

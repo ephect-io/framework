@@ -1,16 +1,16 @@
 <?php
 
-namespace FunCom\Core;
+namespace FunCom;
 
 use FunCom\Logger\Logger;
 
 class StaticElement
 {
+    protected static $instance = null;
     protected static $logger = null;
     
     private function __construct()
     {
-
     }
     
     public static function getLogger() : Logger
@@ -24,14 +24,14 @@ class StaticElement
     public static function create(...$params)
     {
         $class = __CLASS__;
-        $object = null;
+        self::$instance = null;
         
         if(count($params) > 0) {
-            $object = new $class();
+            self::$instance = new $class();
         } else {
-            $object = new $class($params);
+            self::$instance = new $class($params);
         }
         
-        return $object;
+        return self::$instance;
     }
 }
