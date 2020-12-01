@@ -11,7 +11,7 @@ class Logger
 
     }
 
-    public static function create()
+    public static function create(): Logger
     {
         if (self::$_logger === null) {
             self::$_logger = new Logger();
