@@ -4,6 +4,7 @@ namespace FunCom\Components;
 
 use FunCom\IO\Utils as IOUtils;
 use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\UseRegistry;
 
 class Compiler
 {
@@ -21,6 +22,8 @@ class Compiler
             $parser = new Parser($html);
             $parser->doVariables();
             $parser->doComponents();
+            $parser->doUses();
+            $parser->doUsesAs();
             $html = $parser->getHtml();
 
             $cacheFilename = $this->cacheView($viewFile, $html);
@@ -29,6 +32,7 @@ class Compiler
         }
 
         ClassRegistry::cache();
+        UseRegistry::cache();
     }
 
     private function searchForViews(): array

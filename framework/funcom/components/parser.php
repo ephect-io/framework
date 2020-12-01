@@ -2,6 +2,8 @@
 
 namespace FunCom\Components;
 
+use FunCom\Registry\UseRegistry;
+
 class Parser
 {
     private $html;
@@ -66,7 +68,12 @@ class Parser
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
         // TO BE CONTINUED
         
+        foreach ($matches as $match) {
+            $componentNamespace = $match[1];
+            $componentFunction = $match[2];
 
+            UseRegistry::write($componentFunction, $componentNamespace . '\\' . $componentFunction);
+        }
         return $result;
     }
 
@@ -80,7 +87,14 @@ class Parser
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
         // TO BE CONTINUED
         
-    
+        foreach ($matches as $match) {
+            $componentNamespace = $match[1];
+            $componentFunction = $match[2];
+            $componentAlias = $match[3];
+
+            UseRegistry::write($componentAlias, $componentNamespace . '\\' . $componentFunction);
+        }
+
         return $result;
     }
 
