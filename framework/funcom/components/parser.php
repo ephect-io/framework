@@ -63,7 +63,7 @@ class Parser
     {
         $result = false;
 
-        $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9 ][^ ]+[^a]+);/m';
+        $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9]*)([ ]*)?;/m';
         
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
         // TO BE CONTINUED
