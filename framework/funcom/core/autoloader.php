@@ -41,4 +41,4 @@ class Autoloader
 }
 
 
-new Autoloader(SITE_ROOT);
+// new Autoloader(SITE_ROOT);
