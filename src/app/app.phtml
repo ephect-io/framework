@@ -7,7 +7,22 @@ use \Fun\Com;
 function App()
 {
     return (<<<HTML
-        <Com />
-    HTML);
+    <html>
+    <head>
+        <title>FunCom in action !</title>
+        <link rel="stylesheet" href="css/index.css" >
+        <link rel="stylesheet" href="css/app.css" >
+    </head>
+    <body>
+        <div class="App" >
+            <AppHeader />
+            <div class="App-content" >
+                <Com />
+            </div>
+            <AppFooter />
+        </div>
+    </body>
+    </html>
 
+    HTML);
 }
