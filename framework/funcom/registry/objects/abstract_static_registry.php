@@ -34,14 +34,14 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
         return static::getInstance()->getAll();
     }
 
-    public static function cache(): void
+    public static function cache(): bool
     {
-        static::getInstance()->save();
+        return static::getInstance()->save();
     }
 
-    public static function uncache(): void
+    public static function uncache(): bool
     {
-        static::getInstance()->load();
+        return static::getInstance()->load();
     }
 
     public static function exists(string $key): bool

@@ -54,24 +54,31 @@ abstract class AbstractRegistry
         return $result;
     }
 
-    public function save(): void
+    public function save(): bool
     {
         $entries = $this->getAll();
         $json = json_encode($entries, JSON_PRETTY_PRINT);
         $registryFilename = $this->getCacheFileName();
-        Utils::safeWrite($registryFilename, $json);
+        $len = Utils::safeWrite($registryFilename, $json);
+
+        return $len !== null;
     }
 
-    public function load(): void
+    public function load(): bool
     {
         if ($this->isLoaded) {
-            return;
+            return false;
         }
 
         $registryFilename = $this->getCacheFileName();
         $json = Utils::safeRead($registryFilename);
-        $this->entries = json_decode($json, JSON_OBJECT_AS_ARRAY);
-        $this->isLoaded = true;
+        $this->isLoaded = $json !== null;
+
+        if($this->isLoaded) {
+            $this->entries = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        }
+
+        return $this->isLoaded;
     }
 
     public function getCacheFileName(): string

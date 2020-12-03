@@ -47,7 +47,7 @@ class Utils
                 array_map($class_func, glob($path.'/*')) == @rmdir($path);
     }
 
-    public static function safeWrite(string $filename, string $contents): ?string
+    public static function safeWrite(string $filename, string $contents): ?int
     {
         $result = null;
 
@@ -56,13 +56,16 @@ class Utils
         if(!file_exists($dir)) {
             $result = mkdir($dir, 0775, true);
         }
-        $result = (false === file_put_contents($filename, $contents)) ? null : $filename;
+        $result = (false === $len = file_put_contents($filename, $contents)) ? null : $len;
 
         return $result;
     }
 
     public static function safeRead(string $filename): ?string
     {
+        if(!file_exists($filename)) {
+            return null;
+        }
         $result = (false === $contents = file_get_contents($filename)) ? null : $contents;
 
         return $result;

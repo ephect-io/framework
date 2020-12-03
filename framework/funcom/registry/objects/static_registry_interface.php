@@ -8,7 +8,7 @@ interface StaticRegistryInterface
     static function write(string $key, $item): void;
     static function read($key, $item = null);
     static function items(): array;
-    static function cache(): void;
-    static function uncache(): void;
+    static function cache(): bool;
+    static function uncache(): bool;
     static function exists(string $key): bool;
 }
