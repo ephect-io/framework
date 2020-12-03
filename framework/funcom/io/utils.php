@@ -3,7 +3,7 @@ namespace FunCom\IO;
 
 class Utils
 {
-    public static function walkTree($path, $filter = [])
+    public static function walkTreeFiltered($path, $filter = [])
     {
         $result = [];
         
@@ -31,7 +31,7 @@ class Utils
         return $result;
     }
 
-    public static function walkTree2(string $path, ?array &$tree)
+    public static function walkTree(string $path, ?array &$tree)
     {
         $class_func = array(__CLASS__, __FUNCTION__);
         return is_file($path) ?

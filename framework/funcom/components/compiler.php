@@ -38,7 +38,7 @@ class Compiler
 
     private function searchForViews(): array
     {
-        $result = IOUtils::walkTree(SRC_ROOT, ['phtml']);
+        $result = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
 
         return $result;
     }

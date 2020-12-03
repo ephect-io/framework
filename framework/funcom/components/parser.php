@@ -36,7 +36,7 @@ class Parser
     {
         $result = '';
 
-        $re = '/\<([A-Za-z0-9]*)([ ])((\s|[^\/\>].)+)?\/\>/';
+        $re = '/\<([A-Za-z0-9]*)([A-Za-z0-9 \{\}\(\)\>\'"=]*)((\s|[^\/\>].))?\/\>/m';
 
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
 
@@ -49,7 +49,13 @@ class Parser
             // TO BE CONTINUED
             // $brackets  = ($componentArgs === '') ? '()' : '(' . $componentArgs . ')';
 
-            $componentRender = "<?php FunCom\Components\View::render('$componentName', '$componentArgs'); ?>";
+            if(trim($componentArgs) !== '') {
+                $args = $this->doArguments($componentArgs);
+
+                $args = ", '" . json_encode($args) . "'";
+            }
+
+            $componentRender = "<?php FunCom\Components\View::render('$componentName'$args); ?>";
 
             $this->html = str_replace($component, $componentRender, $this->html);
         }
@@ -58,6 +64,27 @@ class Parser
 
         return $result;
     }
+
+    public function doArguments(string $componentArgs): ?array
+    {
+        $result = [];
+
+        $re = '/([A-Za-z]*)=((")(.*)(")|(\')(.*)(\')|(\{)(.*)(\}))/m';
+
+        preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $key = $match[1];
+            $value = $match[2];
+
+            array_push($result, [$key = $value]);
+        }
+
+        $result = $matches;
+
+        return $result;
+    }
+
 
     public function doUses(): bool
     {

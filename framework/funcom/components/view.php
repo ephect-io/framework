@@ -65,8 +65,16 @@ class View
 
         include SITE_ROOT . $cacheFilename;
 
-        $html = call_user_func($functionName);
+        $html = '';
+        if($functionArgs === null) {
+            $html = call_user_func($functionName);
+        }
 
+        if($functionArgs !== null) {
+            $args = json_decode($functionArgs);
+            $html = call_user_func($functionName, $args);
+        }
+     
         eval('?>' . $html);
 
         //echo $html;
