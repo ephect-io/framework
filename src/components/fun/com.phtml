@@ -1,23 +1,15 @@
 <?php
 namespace Fun;
 
-function Com()
+function Com($props)
 {
-
-    $a = 'Hello World!';
     $b = 'This is a';
     $c = 'functional component';
 
-
     return (<<<HTML
-
-    <h1>{{ a }}</h1>
-
+    <h1>{{ props->message }}</h1>
     <h2>{{ b }}</h2>
-
     <h3>{{ c }}</h3>
-
     <Dummy />
-
     HTML);
 }

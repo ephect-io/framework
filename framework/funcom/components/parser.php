@@ -22,7 +22,7 @@ class Parser
     {
         $result = '';
 
-        $re = '/\{\{ ([a-z]*) \}\}/m';
+        $re = '/\{\{ ([a-z0-9_\-\>]*) \}\}/m';
         $su = '$\1';
 
         $this->html = preg_replace($re, $su, $this->html);
@@ -36,23 +36,21 @@ class Parser
     {
         $result = '';
 
-        $re = '/\<([A-Za-z0-9]*)([A-Za-z0-9 \{\}\(\)\>\'"=]*)((\s|[^\/\>].))?\/\>/m';
+        $re = '/\<([A-Z0-9][A-Za-z0-9]*)([\S\{\}\(\)\>\'"= ]*)((\s|[^\/\>].))?\/\>/m';
+        $str = $this->html;
 
-        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
 
         foreach ($matches as $match) {
             $component = $match[0];
             $componentName = $match[1];
-            $componentArgs = isset($match[3]) ? $match[3] : '';
+            $componentArgs = isset($match[2]) ? $match[2] : '';
 
-            // TO BE CONTINUED
-            // $brackets  = ($componentArgs === '') ? '()' : '(' . $componentArgs . ')';
-
+            $args = '';
             if(trim($componentArgs) !== '') {
                 $args = $this->doArguments($componentArgs);
-
-                $args = ", '" . json_encode($args) . "'";
+                $args = ", '" . json_encode($args, ) . "'";
             }
 
             $componentRender = "<?php FunCom\Components\View::render('$componentName'$args); ?>";
@@ -69,18 +67,16 @@ class Parser
     {
         $result = [];
 
-        $re = '/([A-Za-z]*)=((")(.*)(")|(\')(.*)(\')|(\{)(.*)(\}))/m';
+        $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
 
         preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
             $key = $match[1];
-            $value = $match[2];
+            $value = substr(substr($match[2], 1), 0, -1);
 
-            array_push($result, [$key = $value]);
+            array_push($result, [$key => urlencode($value)]);
         }
-
-        $result = $matches;
 
         return $result;
     }
@@ -93,7 +89,6 @@ class Parser
         $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9]*)([ ]*)?;/m';
 
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
-        // TO BE CONTINUED
 
         foreach ($matches as $match) {
             $componentNamespace = trim($match[1], '\\');
@@ -112,7 +107,6 @@ class Parser
         $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9 ]*) as ([A-Za-z0-9 ]*)?;/m';
 
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
-        // TO BE CONTINUED
 
         foreach ($matches as $match) {
             $componentNamespace = trim($match[1], '\\');

@@ -3,7 +3,6 @@
 namespace FunCom\Components;
 
 use BadFunctionCallException;
-use BadMethodCallException;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
 
@@ -37,11 +36,8 @@ class View
     public function load(string $filename): bool
     {
         $result = false;
-
         $this->filename = $filename;
-
         list($this->namespace, $this->function, $this->code) = Parser::getFunctionDefinition(SRC_ROOT . $this->filename);
-
         $result = $this->code !== false;
 
         return  $result;
@@ -49,7 +45,6 @@ class View
 
     public static function render(string $functionName, ?string $functionArgs = null): void
     {
-
         ClassRegistry::uncache();
         UseRegistry::uncache();
 
@@ -58,7 +53,7 @@ class View
 
         $functionName = isset($uses[$functionName]) ? $uses[$functionName] : null;
         if ($functionName === null) {
-            throw new BadFunctionCallException('The functiin ' . $functionName . ' does not exist.');
+            throw new BadFunctionCallException('The function ' . $functionName . ' does not exist.');
         }
 
         $cacheFilename = isset($classes[$functionName]) ? $classes[$functionName] : null;
@@ -71,8 +66,16 @@ class View
         }
 
         if($functionArgs !== null) {
-            $args = json_decode($functionArgs);
-            $html = call_user_func($functionName, $args);
+            $args = json_decode($functionArgs, JSON_OBJECT_AS_ARRAY)[0];
+
+            $props = [];
+            foreach($args as $key => $value) {
+                $props[$key] = urldecode($value);
+            }
+
+            $props = (object) $props;
+
+            $html = call_user_func($functionName, $props);
         }
      
         eval('?>' . $html);
