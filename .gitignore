@@ -5,5 +5,5 @@ cache/*
 *.log
 *_log
 docker/
-.devcontainer/devcontainer.json
+.devcontainer/
 docker-compose.yml
