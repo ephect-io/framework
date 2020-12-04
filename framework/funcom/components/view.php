@@ -5,6 +5,7 @@ namespace FunCom\Components;
 use BadFunctionCallException;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
+use tidy;
 
 class View
 {
@@ -61,15 +62,15 @@ class View
         include SITE_ROOT . $cacheFilename;
 
         $html = '';
-        if($functionArgs === null) {
+        if ($functionArgs === null) {
             $html = call_user_func($functionName);
         }
 
-        if($functionArgs !== null) {
+        if ($functionArgs !== null) {
             $args = json_decode($functionArgs, JSON_OBJECT_AS_ARRAY)[0];
 
             $props = [];
-            foreach($args as $key => $value) {
+            foreach ($args as $key => $value) {
                 $props[$key] = urldecode($value);
             }
 
@@ -77,9 +78,32 @@ class View
 
             $html = call_user_func($functionName, $props);
         }
-     
-        eval('?>' . $html);
 
-        //echo $html;
+        ob_start();
+        eval('?>' . $html);
+        $html = ob_get_clean();
+
+        $fqFunctionName = explode('\\', $functionName);
+        $function = array_pop($fqFunctionName);
+        if ($function === 'App') {
+            $html = self::format($html);
+        }
+
+        echo $html;
+    }
+
+    public static function format(string $html): string
+    {
+        $config = [
+            'indent'         => true,
+            'output-xhtml'   => true,
+            'wrap'           => 200
+        ];
+
+        $tidy = new tidy;
+        $tidy->parseString($html, $config, 'utf8');
+        $tidy->cleanRepair();
+
+        return $tidy->value;
     }
 }
