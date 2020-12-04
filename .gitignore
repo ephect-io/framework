@@ -4,3 +4,6 @@ cache/*
 *.code-workspace
 *.log
 *_log
+docker/
+.devcontainer/devcontainer.json
+docker-compose.yml
