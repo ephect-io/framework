@@ -75,7 +75,7 @@ class Parser
             $key = $match[1];
             $value = substr(substr($match[2], 1), 0, -1);
 
-            array_push($result, [$key => urlencode($value)]);
+            $result[$key] = urlencode($value);
         }
 
         return $result;

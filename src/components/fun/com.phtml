@@ -3,11 +3,13 @@ namespace Fun;
 
 function Com($props)
 {
-    $b = 'This is a';
+    $b = 'It is a';
     $c = 'functional component';
+    $d = $props->from;
 
     return (<<<HTML
     <h1>{{ props->message }}</h1>
+    <sub>from {{ d }}</sub>
     <h2>{{ b }}</h2>
     <h3>{{ c }}</h3>
     <Dummy />
