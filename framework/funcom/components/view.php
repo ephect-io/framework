@@ -67,7 +67,7 @@ class View
         }
 
         if ($functionArgs !== null) {
-            $args = json_decode($functionArgs, JSON_OBJECT_AS_ARRAY)[0];
+            $args = json_decode($functionArgs, JSON_OBJECT_AS_ARRAY);
 
             $props = [];
             foreach ($args as $key => $value) {
