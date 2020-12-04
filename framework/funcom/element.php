@@ -1,6 +1,7 @@
 <?php
 namespace FunCom;
 
+use DateTime;
 use \ReflectionClass;
 
 class Element extends StaticElement implements ElementInterface
@@ -15,10 +16,12 @@ class Element extends StaticElement implements ElementInterface
     protected $fqClassName = '';
     protected $type = '';
 
-    public function __construct(ElementInterface $parent = null)
+    public function __construct(?ElementInterface $parent = null, ?string $id = null)
     {
         $this->parent = $parent;
-        $this->uid = uniqid(rand(), true);
+        $time = time();
+        $this->uid = uniqid($time);
+        $this->id = ($id === null) ? '_' . $time : $id;
     }
 
     public function getUID(): string
@@ -31,20 +34,15 @@ class Element extends StaticElement implements ElementInterface
         return $this->id;
     }
 
-    public function setId($value): void
+    protected function setId($value): void
     {
         $this->id = $value;
-    }
-
-    public function isAwake(): bool
-    {
-        return $this->isSerialized;
     }
 
     public function getReflection(): ?ReflectionClass
     {
         if ($this->_reflection == NULL) {
-            $this->_reflection = new ReflectionClass(get_class($this));
+            $this->_reflection = new ReflectionClass($this->getFullType());
         }
         return $this->_reflection;
     }
@@ -93,14 +91,9 @@ class Element extends StaticElement implements ElementInterface
         return array_keys($this->children);
     }
 
-    public function getFullType(): string
-    {
-        return get_class($this);
-    }
-
     public function getNamespace(): string
     {
-        $typeParts = explode('\\', $this->getFQClassName());
+        $typeParts = explode('\\', $this->getFullType());
         array_pop($typeParts);
 
         $result = (count($typeParts) > 0) ? implode('\\', $typeParts) : '';
@@ -108,7 +101,7 @@ class Element extends StaticElement implements ElementInterface
         return $result;
     }
 
-    public function getFQClassName(): string
+    public function getFullType(): string
     {
         if ($this->fqClassName == '') {
             $this->fqClassName = get_class($this);
@@ -120,7 +113,7 @@ class Element extends StaticElement implements ElementInterface
     public function getType(): string
     {
         if($this->type === '') {
-            $typeParts = explode('\\', $this->getFQClassName());
+            $typeParts = explode('\\', $this->getFullType());
             $this->type = array_pop($typeParts);
         }
 
