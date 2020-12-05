@@ -65,6 +65,46 @@ class Parser
         return $result;
     }
 
+    /**
+     * UNDER CONSTRUCTION
+     */
+    public function doOpenComponents(): bool
+    {
+        $result = '';
+
+        $re = '/<([A-Z][\w]+)(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+
+        foreach ($matches as $match) {
+            $component = $match[0];
+            $componentName = $match[1];
+            $componentArgs = isset($match[2]) ? trim($match[2]) : '';
+            $componentBody = trim($match[3]);
+
+            $args = '';
+            if (trim($componentArgs) !== '') {
+                $args = $this->doArguments($componentArgs);
+                
+            }
+            $args = ', ' . (($args === null) ? "''" : $args);
+            $body = ", '" . base64_encode($componentBody) . "'";
+
+            $componentRender = "<?php FunCom\Components\View::make('$componentName'$args$body); ?>";
+            if ($componentName === 'Block') {
+                $componentRender = "<?php FunCom\Components\View::replace('$componentName'$args$body); ?>";
+            }
+
+            $this->html = str_replace($component, $componentRender, $this->html);
+        }
+
+        $result = $this->html !== null;
+
+        return $result;
+    }
+
     public function doArguments(string $componentArgs): ?string
     {
         $result = '';

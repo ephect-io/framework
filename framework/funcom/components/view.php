@@ -59,6 +59,7 @@ class View
         $parser->doUsesAs();
         $parser->doVariables();
         $parser->doComponents();
+        $parser->doOpenComponents();
         $html = $parser->getHtml();
 
         $this->html = $html;
@@ -123,6 +124,11 @@ class View
         }
 
         echo $html;
+    }
+
+    public static function make() : void
+    {
+        // TO BE DONE
     }
 
     public static function format(string $html): string

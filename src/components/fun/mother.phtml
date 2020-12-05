@@ -1,0 +1,56 @@
+<?php
+
+namespace Fun;
+
+function Main()
+{
+
+    return (<<<HTML
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            <Block name="title">Mother!</Block>
+        </title>
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <Block name="stylesheets"></Block>
+    </head>
+
+    <body>
+        <header>
+            <nav id="mainNav" class="navbar navbar-default no-margin no-border no-radius ">
+
+                <div class="container">
+                    <div id="cw_logo">
+                        <img src="assets/images/logo-CodePhoenixOrg.png">
+                    </div>
+                    <div>
+                        <h1 class="cw_logo_ex ">&nbsp;pond</h1>
+                    </div>
+
+                </div>
+            </nav>
+            <div class="container">
+                <div class="intro-text">
+                    <div class="intro-heading">
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main>
+            <Block name="main">
+            </Block>
+            <Block name="second">
+            </Block>
+
+        </main>
+        <Block name="javascripts"></Block>
+    </body>
+
+    </html>
+    HTML);
+}
