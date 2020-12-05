@@ -50,9 +50,9 @@ class Parser
             $componentArgs = isset($match[2]) ? $match[2] : '';
 
             $args = '';
-            if(trim($componentArgs) !== '') {
-                $args = $this->doArguments($componentArgs);
-                $args = ", '" . json_encode($args, ) . "'";
+            if (trim($componentArgs) !== '') {
+                $args = ', ' . $this->doArguments($componentArgs);
+                
             }
 
             $componentRender = "<?php FunCom\Components\View::render('$componentName'$args); ?>";
@@ -65,9 +65,9 @@ class Parser
         return $result;
     }
 
-    public function doArguments(string $componentArgs): ?array
+    public function doArguments(string $componentArgs): ?string
     {
-        $result = [];
+        $result = '';
 
         $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
 
@@ -77,8 +77,9 @@ class Parser
             $key = $match[1];
             $value = substr(substr($match[2], 1), 0, -1);
 
-            $result[$key] = urlencode($value);
+           $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
         }
+        $result = ($result === '') ? null : '[' . $result . ']';
 
         return $result;
     }

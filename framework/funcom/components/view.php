@@ -78,7 +78,7 @@ class View
         return $result === null ? $result : $cache_file;
     }
 
-    public static function render(string $functionName, ?string $functionArgs = null): void
+    public static function render(string $functionName, ?array $functionArgs = null): void
     {
         ClassRegistry::uncache();
         UseRegistry::uncache();
@@ -101,10 +101,9 @@ class View
         }
 
         if ($functionArgs !== null) {
-            $args = json_decode($functionArgs, JSON_OBJECT_AS_ARRAY);
-
+            
             $props = [];
-            foreach ($args as $key => $value) {
+            foreach ($functionArgs as $key => $value) {
                 $props[$key] = urldecode($value);
             }
 
