@@ -58,6 +58,7 @@ class View
         $parser->doUses();
         $parser->doUsesAs();
         $parser->doVariables();
+        $parser->useVariables();
         $parser->doComponents();
         $parser->doOpenComponents();
         $html = $parser->getHtml();
@@ -98,7 +99,10 @@ class View
 
         $html = '';
         if ($functionArgs === null) {
-            $html = call_user_func($functionName);
+            ob_start();
+            $fn = call_user_func($functionName);
+            $fn();
+            $html = ob_get_clean();
         }
 
         if ($functionArgs !== null) {
@@ -110,12 +114,11 @@ class View
 
             $props = (object) $props;
 
-            $html = call_user_func($functionName, $props);
+            ob_start();
+            $fn = call_user_func($functionName, $props);
+            $fn();
+            $html = ob_get_clean();
         }
-
-        ob_start();
-        eval('?>' . $html);
-        $html = ob_get_clean();
 
         $fqFunctionName = explode('\\', $functionName);
         $function = array_pop($fqFunctionName);

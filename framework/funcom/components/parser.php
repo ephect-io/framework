@@ -6,8 +6,9 @@ use FunCom\Registry\UseRegistry;
 
 class Parser
 {
-    private $html;
-    private $view;
+    private $html = '';
+    private $view = null;
+    private $useVariables = [];
 
     public function __construct(View $view)
     {
@@ -22,12 +23,42 @@ class Parser
 
     public function doVariables(): bool
     {
-        $result = '';
+        $result = null;
 
         $re = '/\{\{ ([a-z0-9_\-\>]*) \}\}/m';
-        $su = '$\1';
+        $su = '<?php echo $\1 ?>';
+        $str = $this->html;
 
-        $this->html = preg_replace($re, $su, $this->html);
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $variable = $match[1];
+
+            $useVar = $variable;
+            $arrowPos = strpos($variable, '->');
+            if ($arrowPos > -1) {
+                $useVar = substr($useVar, 0, $arrowPos);
+            }
+
+            $this->useVariables[$useVar] = '$' . $useVar;
+
+            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . ' ?>', $this->html);
+        }
+
+        $result = $this->html !== null;
+
+        return $result;
+    }
+
+    public function useVariables(): bool
+    {
+        $result = false;
+
+        $useVars = array_values($this->useVariables);
+        $use = count($useVars) > 0 ? 'use(' . implode(', ', $useVars) . ') ' : '';
+
+        $this->html = str_replace('(<<<HTML', 'function () ' . $use . '{?>', $this->html);
+        $this->html = str_replace('HTML);', "<?php\n\t};", $this->html);
 
         $result = $this->html !== null;
 
@@ -36,7 +67,7 @@ class Parser
 
     public function doComponents(): bool
     {
-        $result = '';
+        $result = false;
 
         $re = '/\<([A-Z0-9][A-Za-z0-9]*)([\S\{\}\(\)\>\'"= ]*)((\s|[^\/\>].))?\/\>/m';
         $str = $this->html;
@@ -52,10 +83,9 @@ class Parser
             $args = '';
             if (trim($componentArgs) !== '') {
                 $args = ', ' . $this->doArguments($componentArgs);
-                
             }
 
-            $componentRender = "<?php FunCom\Components\View::render('$componentName'$args); ?>";
+            $componentRender = "<?php \FunCom\Components\View::render('$componentName'$args); ?>";
 
             $this->html = str_replace($component, $componentRender, $this->html);
         }
@@ -87,14 +117,13 @@ class Parser
             $args = '';
             if (trim($componentArgs) !== '') {
                 $args = $this->doArguments($componentArgs);
-                
             }
             $args = ', ' . (($args === null) ? "''" : $args);
             $body = ", '" . base64_encode($componentBody) . "'";
 
-            $componentRender = "<?php FunCom\Components\View::make('$componentName'$args$body); ?>";
+            $componentRender = "<?php \FunCom\Components\View::make('$componentName'$args$body); ?>";
             if ($componentName === 'Block') {
-                $componentRender = "<?php FunCom\Components\View::replace('$componentName'$args$body); ?>";
+                $componentRender = "<?php \FunCom\Components\View::replace('$componentName'$args$body); ?>";
             }
 
             $this->html = str_replace($component, $componentRender, $this->html);
@@ -117,7 +146,7 @@ class Parser
             $key = $match[1];
             $value = substr(substr($match[2], 1), 0, -1);
 
-           $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
+            $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
         }
         $result = ($result === '') ? null : '[' . $result . ']';
 
