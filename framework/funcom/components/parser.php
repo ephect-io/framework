@@ -7,10 +7,12 @@ use FunCom\Registry\UseRegistry;
 class Parser
 {
     private $html;
+    private $view;
 
-    public function __construct(string $code)
+    public function __construct(View $view)
     {
-        $this->html = $code;
+        $this->view = $view;
+        $this->html = $view->getCode();
     }
 
     public function getHtml()
@@ -99,12 +101,12 @@ class Parser
         return $result;
     }
 
-
     public function doUsesAs(): bool
     {
         $result = false;
+        $viewNamespace = $this->view->getNamespace();
 
-        $re = '/use ([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9 ]*) as ([A-Za-z0-9 ]*)?;/m';
+        $re = '/use ([A-Za-z0-9\\\\ ]*\\\\)?([A-Za-z0-9 ]*) as ([A-Za-z0-9 ]*);/m';
 
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
 
@@ -113,7 +115,10 @@ class Parser
             $componentFunction = $match[2];
             $componentAlias = $match[3];
 
-            UseRegistry::write($componentAlias, $componentNamespace . '\\' . $componentFunction);
+            $componentNamespace = ($componentNamespace === '') ? $viewNamespace : $componentNamespace;
+            $fqFunctionName = $componentNamespace . '\\' . $componentFunction;
+
+            UseRegistry::write($componentAlias, $fqFunctionName);
         }
 
         return $result;

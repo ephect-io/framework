@@ -2,6 +2,8 @@
 
 namespace Fun;
 
+use Com as FunCom;
+
 function App()
 {
     return (<<<HTML
@@ -15,7 +17,7 @@ function App()
         <div class="App" >
             <Header />
             <div class="App-content" >
-                <Com message='Hello World!' from="the app" />
+                <FunCom message='Hello World!' from="the app" />
             </div>
             <Footer />
         </div>

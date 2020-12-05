@@ -8,7 +8,6 @@ use FunCom\Registry\UseRegistry;
 
 class Compiler
 {
-
     public function perform(): void
     {
         $viewList = $this->searchForViews();
@@ -16,20 +15,7 @@ class Compiler
         foreach ($viewList as $viewFile) {
             $view = new View();
             $view->load($viewFile);
-
-            $html = $view->getCode();
-
-            $parser = new Parser($html);
-            $parser->doVariables();
-            $parser->doComponents();
-            $parser->doUses();
-            $parser->doUsesAs();
-            $html = $parser->getHtml();
-
-            $cacheFilename = $this->cacheView($viewFile, $html);
-        
-            ClassRegistry::write($view->getFullCleasName(), $cacheFilename);
-            UseRegistry::safeWrite($view->getFunction(), $view->getFullCleasName());
+            $view->parse();
         }
 
         ClassRegistry::cache();
@@ -43,12 +29,5 @@ class Compiler
         return $result;
     }
 
-    private function cacheView($filename, $contents): ?string
-    {
-        $cache_file = REL_CACHE_DIR . str_replace('/', '_', $filename);
 
-        $result = IOUtils::safeWrite(SITE_ROOT . $cache_file, $contents);
-
-        return $result === null ? $result : $cache_file;
-    }
 }

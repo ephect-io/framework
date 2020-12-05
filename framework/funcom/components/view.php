@@ -3,6 +3,7 @@
 namespace FunCom\Components;
 
 use BadFunctionCallException;
+use FunCom\IO\Utils;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
 use tidy;
@@ -34,6 +35,13 @@ class View
         return $this->function;
     }
 
+    public function getCacheFilename(): string
+    {    
+        $cache_file = REL_CACHE_DIR . str_replace('/', '_', $this->filename);
+
+        return $cache_file;
+    }
+
     public function load(string $filename): bool
     {
         $result = false;
@@ -42,6 +50,32 @@ class View
         $result = $this->code !== false;
 
         return  $result;
+    }
+
+    public function parse(): void
+    {
+        $parser = new Parser($this);
+        $parser->doUses();
+        $parser->doUsesAs();
+        $parser->doVariables();
+        $parser->doComponents();
+        $html = $parser->getHtml();
+
+        $this->html = $html;
+       
+        $this->cacheHtml();
+
+        ClassRegistry::write($this->getFullCleasName(), $this->getCacheFilename());
+        UseRegistry::safeWrite($this->getFunction(), $this->getFullCleasName());
+    }
+
+    private function cacheHtml(): ?string
+    {
+        $cache_file = $this->getCacheFilename();
+
+        $result = Utils::safeWrite(SITE_ROOT . $cache_file, $this->html);
+
+        return $result === null ? $result : $cache_file;
     }
 
     public static function render(string $functionName, ?string $functionArgs = null): void
@@ -106,4 +140,6 @@ class View
 
         return $tidy->value;
     }
+
+
 }
