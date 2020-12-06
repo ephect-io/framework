@@ -118,6 +118,10 @@ class Parser
             if (trim($componentArgs) !== '') {
                 $args = $this->doArguments($componentArgs);
             }
+
+            if(empty($componentBody)) {
+                continue;
+            }
             $args = ', ' . (($args === null) ? "''" : $args);
             $body = ", '" . base64_encode($componentBody) . "'";
 
