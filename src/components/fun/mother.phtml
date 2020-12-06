@@ -2,13 +2,10 @@
 
 namespace Fun;
 
-function Main()
+function Mother()
 {
 
     return (<<<HTML
-    <!DOCTYPE html>
-    <html>
-
     <head>
         <meta charset="UTF-8">
         <title>
@@ -21,36 +18,11 @@ function Main()
     </head>
 
     <body>
-        <header>
-            <nav id="mainNav" class="navbar navbar-default no-margin no-border no-radius ">
-
-                <div class="container">
-                    <div id="cw_logo">
-                        <img src="assets/images/logo-CodePhoenixOrg.png">
-                    </div>
-                    <div>
-                        <h1 class="cw_logo_ex ">&nbsp;pond</h1>
-                    </div>
-
-                </div>
-            </nav>
-            <div class="container">
-                <div class="intro-text">
-                    <div class="intro-heading">
-                    </div>
-                </div>
-            </div>
-        </header>
-        <main>
-            <Block name="main">
-            </Block>
-            <Block name="second">
-            </Block>
-
-        </main>
+        <Block name="header"></Block>
+        <Block name="main">
+        </Block>
+        <Block name="footer"></Block>
         <Block name="javascripts"></Block>
     </body>
-
-    </html>
     HTML);
 }

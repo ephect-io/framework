@@ -2,27 +2,11 @@
 
 namespace Fun;
 
-use Com as FunCom;
+use Home as SweetHome;
 
 function App()
 {
     return (<<<HTML
-    <html>
-    <head>
-        <title>FunCom in action !</title>
-        <link rel="stylesheet" href="css/index.css" >
-        <link rel="stylesheet" href="css/app.css" >
-    </head>
-    <body>
-        <div class="App" >
-            <Header />
-            <div class="App-content" >
-                <FunCom message='Hello World!' from="the app" />
-            </div>
-            <Footer />
-        </div>
-    </body>
-    </html>
-
+    <SweetHome />
     HTML);
 }

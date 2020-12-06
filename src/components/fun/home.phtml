@@ -1,0 +1,32 @@
+<?php
+
+namespace Fun;
+
+function Home()
+{
+    $firstname = 'David';
+
+    $vars = ["firstname" => $firstname];
+
+    return (<<<HTML
+    <Mother props={{ vars }}>
+        <Block name="title">FunCom in action !</Block>
+        <Block name="stylesheets">
+            <link rel="stylesheet" href="css/pond-theme.css" />
+            <link rel="stylesheet" href="css/pond.css" />
+        </Block>
+        <div class="App" >
+        <Block name="header"><Header /></Block>
+        <Block name="main">
+            <div class="App-content" >
+                <FunCom message='Hello World!' from="the app" />
+            </div>
+        </Block>
+        <Block name="footer"><Footer /></Block>
+        </div>
+        <Block name="javascripts">
+            <script src="js/pond.js"></script>
+        </Block>
+    </Mother>
+    HTML);
+}
