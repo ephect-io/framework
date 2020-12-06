@@ -36,7 +36,7 @@ class Autoloader
     {
         $classFilename = ClassRegistry::read($className);
 
-        include SITE_ROOT . $className;
+        include SITE_ROOT . $classFilename;
     }
 }
 
