@@ -8,7 +8,10 @@ class Block extends AbstractComponent
 {
     public function __construct(string $uid)
     {
+        CodeRegistry::uncache();
+
         $this->code = CodeRegistry::read($uid);
+        $this->code = urldecode($this->code);
     }
 
     public function analyse(): void

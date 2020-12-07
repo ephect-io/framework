@@ -115,6 +115,52 @@ abstract class AbstractComponent implements ComponentInterface
         return $result;
     }
 
+    
+    public static function importComponent(string $componentName): string
+    {
+        list($functionName, $cacheFilename) = static::findComponent($componentName);
+
+        include SITE_ROOT . $cacheFilename;
+
+        return $functionName;
+    }
+
+    public static function renderHTML(string $functionName, ?array $functionArgs = null): string
+    {
+        $functionName = self::importComponent($functionName);
+
+        $html = '';
+        if ($functionArgs === null) {
+            ob_start();
+            $fn = call_user_func($functionName);
+            $fn();
+            $html = ob_get_clean();
+        }
+
+        if ($functionArgs !== null) {
+
+            $props = [];
+            foreach ($functionArgs as $key => $value) {
+                $props[$key] = urldecode($value);
+            }
+
+            $props = (object) $props;
+
+            ob_start();
+            $fn = call_user_func($functionName, $props);
+            $fn();
+            $html = ob_get_clean();
+        }
+
+        $fqFunctionName = explode('\\', $functionName);
+        $function = array_pop($fqFunctionName);
+        if ($function === 'App') {
+            $html = self::format($html);
+        }
+
+        return $html;
+    }
+
     public static function format(string $html): string
     {
         $config = [

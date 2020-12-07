@@ -129,9 +129,9 @@ class Parser
 
             $args = ', ' . (($args === null) ? "null" : $args);
             $body = urlencode($componentBody);
-            $uid = ", '" . $uid . "'";
 
             CodeRegistry::write($uid, $body);
+            $uid = ", '" . $uid . "'";
 
             $componentRender = "<?php \FunCom\Components\View::make('$componentName'$args$uid); ?>";
             if ($componentName === 'Block') {

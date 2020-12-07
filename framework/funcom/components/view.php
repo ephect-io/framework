@@ -62,42 +62,11 @@ class View extends AbstractComponent
     }
 
 
-    public static function importComponent(string $componentName): string
+
+    public static function renderHTML(string $functionName, ?array $functionArgs = null): string
     {
-        list($functionName, $cacheFilename) = static::findComponent($componentName);
 
-        include SITE_ROOT . $cacheFilename;
-
-        return $functionName;
-    }
-
-
-    public static function render(string $functionName, ?array $functionArgs = null): void
-    {
-        $functionName = self::importComponent($functionName);
-
-        $html = '';
-        if ($functionArgs === null) {
-            ob_start();
-            $fn = call_user_func($functionName);
-            $fn();
-            $html = ob_get_clean();
-        }
-
-        if ($functionArgs !== null) {
-
-            $props = [];
-            foreach ($functionArgs as $key => $value) {
-                $props[$key] = urldecode($value);
-            }
-
-            $props = (object) $props;
-
-            ob_start();
-            $fn = call_user_func($functionName, $props);
-            $fn();
-            $html = ob_get_clean();
-        }
+        $html = parent::renderHTML($functionName, $functionArgs);
 
         $fqFunctionName = explode('\\', $functionName);
         $function = array_pop($fqFunctionName);
@@ -105,24 +74,41 @@ class View extends AbstractComponent
             $html = self::format($html);
         }
 
+        return $html;
+    }
+
+    public static function render(string $functionName, ?array $functionArgs = null): void
+    {
+        $html =  self::renderHTML($functionName, $functionArgs);
+
         echo $html;
     }
 
 
     public static function make(string $functionName, ?array $functionArgs = null, string $uid): void
     {
-        list($functionName, $cacheFilename) = self::findComponent($functionName);
+        $html = parent::renderHTML($functionName, $functionArgs);
 
         $block = new Block($uid);
+
+        $original = $block->getCode();
         $block->parse();
 
-        $html = $block->getCode();
+        $actual = $block->getCode();
+
+        $html = str_replace($original, $actual, $html);
 
         echo $html;
     }
 
     public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void
     {
+        if($functionName === 'Block') 
+        {
+            echo '';
+            return;
+        }
+
         list($functionName, $cacheFilename) = self::findComponent($functionName);
 
 
