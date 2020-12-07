@@ -2,6 +2,7 @@
 
 namespace FunCom\Components;
 
+use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
 
 class Parser
@@ -10,7 +11,7 @@ class Parser
     private $view = null;
     private $useVariables = [];
 
-    public function __construct(View $view)
+    public function __construct(ComponentInterface $view)
     {
         $this->view = $view;
         $this->html = $view->getCode();
@@ -98,11 +99,12 @@ class Parser
     /**
      * UNDER CONSTRUCTION
      */
-    public function doOpenComponents(): bool
+    public function doOpenComponents(string $tag = '[A-Z]'): bool
     {
         $result = '';
+        CodeRegistry::uncache();
 
-        $re = '/<([A-Z][\w]+)(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
+        $re = '/<(' . $tag . '[\w]+)(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -122,16 +124,23 @@ class Parser
             if(empty($componentBody)) {
                 continue;
             }
-            $args = ', ' . (($args === null) ? "''" : $args);
-            $body = ", '" . base64_encode($componentBody) . "'";
 
-            $componentRender = "<?php \FunCom\Components\View::make('$componentName'$args$body); ?>";
+            $uid = uniqid(time(), true);
+
+            $args = ', ' . (($args === null) ? "null" : $args);
+            $body = urlencode($componentBody);
+            $uid = ", '" . $uid . "'";
+
+            CodeRegistry::write($uid, $body);
+
+            $componentRender = "<?php \FunCom\Components\View::make('$componentName'$args$uid); ?>";
             if ($componentName === 'Block') {
-                $componentRender = "<?php \FunCom\Components\View::replace('$componentName'$args$body); ?>";
+                $componentRender = "<?php \FunCom\Components\View::replace('$componentName'$args$uid); ?>";
             }
 
             $this->html = str_replace($component, $componentRender, $this->html);
         }
+        CodeRegistry::cache();
 
         $result = $this->html !== null;
 
@@ -198,42 +207,4 @@ class Parser
         return $result;
     }
 
-
-    public static function getFunctionDefinition(string $filename): array
-    {
-        $classText = file_get_contents($filename);
-
-        if ($classText === false) {
-            return [null, null, false];
-        }
-
-        $namespace = self::grabKeywordName('namespace', $classText, ';');
-        $functionName = self::grabKeywordName('function', $classText, '(');
-
-        return [$namespace, $functionName, $classText];
-    }
-
-    public static function getClassDefinition(string $filename): array
-    {
-        $classText = file_get_contents($filename);
-
-        $namespace = self::grabKeywordName('namespace', $classText, ';');
-        $className = self::grabKeywordName('class', $classText, ' ');
-
-        return [$namespace, $className, $classText];
-    }
-
-    public static function grabKeywordName(string $keyword, string $classText, $delimiter): string
-    {
-        $result = '';
-
-        $start = strpos($classText, $keyword);
-        if ($start > -1) {
-            $start += \strlen($keyword) + 1;
-            $end = strpos($classText, $delimiter, $start);
-            $result = substr($classText, $start, $end - $start);
-        }
-
-        return $result;
-    }
 }

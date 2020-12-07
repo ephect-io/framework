@@ -2,7 +2,7 @@
 
 namespace FunCom\Core;
 
-use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\CacheRegistry;
 
 class Autoloader
 {
@@ -19,7 +19,7 @@ class Autoloader
         $this->prefix = __NAMESPACE__ . '\\';
         $this->prefixLength = strlen($this->prefix);
 
-        ClassRegistry::uncache();
+        CacheRegistry::uncache();
     }
 
     /**
@@ -34,7 +34,7 @@ class Autoloader
 
     public static function load($className): void
     {
-        $classFilename = ClassRegistry::read($className);
+        $classFilename = CacheRegistry::read($className);
 
         include SITE_ROOT . $classFilename;
     }

@@ -2,41 +2,21 @@
 
 namespace FunCom\Components;
 
-use BadFunctionCallException;
 use FunCom\IO\Utils;
+use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
-use tidy;
 
-class View
+class View extends AbstractComponent
 {
-    private $filename;
-    private $namespace;
-    private $function;
-    private $code;
 
-    public function getCode()
+    public function getSourceFilename(): string
     {
-        return $this->code;
-    }
-
-    public function getFullCleasName(): string
-    {
-        return $this->namespace  . '\\' . $this->function;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getFunction(): string
-    {
-        return $this->function;
+        return $this->filename;
     }
 
     public function getCacheFilename(): string
-    {    
+    {
         $cache_file = REL_CACHE_DIR . str_replace('/', '_', $this->filename);
 
         return $cache_file;
@@ -46,56 +26,55 @@ class View
     {
         $result = false;
         $this->filename = $filename;
-        list($this->namespace, $this->function, $this->code) = Parser::getFunctionDefinition(SRC_ROOT . $this->filename);
+
+        $this->code = Utils::safeRead(SRC_ROOT . $this->filename);
+
+        list($this->namespace, $this->function) = $this->getFunctionDefinition();
         $result = $this->code !== false;
 
         return  $result;
     }
 
-    public function parse(): void
+    public function analyse(): void
     {
-        $parser = new Parser($this);
-        $parser->doUses();
-        $parser->doUsesAs();
-        $parser->doVariables();
-        $parser->useVariables();
-        $parser->doComponents();
-        $parser->doOpenComponents();
-        $html = $parser->getHtml();
+        parent::analyse();
 
-        $this->html = $html;
-       
         $this->cacheHtml();
 
-        ClassRegistry::write($this->getFullCleasName(), $this->getCacheFilename());
+        ClassRegistry::write($this->getFullCleasName(), $this->getSourceFilename());
+        CacheRegistry::write($this->getFullCleasName(), $this->getCacheFilename());
         UseRegistry::safeWrite($this->getFunction(), $this->getFullCleasName());
+    }
+
+    public function parse(): void
+    {
+        parent::parse();
+
+        $this->cacheHtml();
     }
 
     private function cacheHtml(): ?string
     {
         $cache_file = $this->getCacheFilename();
-
-        $result = Utils::safeWrite(SITE_ROOT . $cache_file, $this->html);
+        $result = Utils::safeWrite(SITE_ROOT . $cache_file, $this->code);
 
         return $result === null ? $result : $cache_file;
     }
 
-    public static function render(string $functionName, ?array $functionArgs = null): void
+
+    public static function importComponent(string $componentName): string
     {
-        ClassRegistry::uncache();
-        UseRegistry::uncache();
-
-        $classes =  ClassRegistry::items();
-        $uses =  UseRegistry::items();
-
-        $functionName = isset($uses[$functionName]) ? $uses[$functionName] : null;
-        if ($functionName === null) {
-            throw new BadFunctionCallException('The function ' . $functionName . ' does not exist.');
-        }
-
-        $cacheFilename = isset($classes[$functionName]) ? $classes[$functionName] : null;
+        list($functionName, $cacheFilename) = static::findComponent($componentName);
 
         include SITE_ROOT . $cacheFilename;
+
+        return $functionName;
+    }
+
+
+    public static function render(string $functionName, ?array $functionArgs = null): void
+    {
+        $functionName = self::importComponent($functionName);
 
         $html = '';
         if ($functionArgs === null) {
@@ -106,7 +85,7 @@ class View
         }
 
         if ($functionArgs !== null) {
-            
+
             $props = [];
             foreach ($functionArgs as $key => $value) {
                 $props[$key] = urldecode($value);
@@ -129,25 +108,27 @@ class View
         echo $html;
     }
 
-    public static function make() : void
+
+    public static function make(string $functionName, ?array $functionArgs = null, string $uid): void
     {
+        list($functionName, $cacheFilename) = self::findComponent($functionName);
+
+        $block = new Block($uid);
+        $block->parse();
+
+        $html = $block->getCode();
+
+        echo $html;
+    }
+
+    public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void
+    {
+        list($functionName, $cacheFilename) = self::findComponent($functionName);
+
+
         // TO BE DONE
+        $html = '';
+
+        echo $html;
     }
-
-    public static function format(string $html): string
-    {
-        $config = [
-            'indent'         => true,
-            'output-xhtml'   => true,
-            'wrap'           => 200
-        ];
-
-        $tidy = new tidy;
-        $tidy->parseString($html, $config, 'utf8');
-        $tidy->cleanRepair();
-
-        return $tidy->value;
-    }
-
-
 }

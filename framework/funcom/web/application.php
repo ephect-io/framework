@@ -5,7 +5,7 @@ namespace FunCom\Web;
 use FunCom\Components\Compiler;
 use FunCom\Components\View;
 use FunCom\Core\AbstractApplication;
-use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\CacheRegistry;
 
 class Application extends AbstractApplication
 {
@@ -19,7 +19,7 @@ class Application extends AbstractApplication
 
     public function run(?array ...$params): void
     {
-        if(!ClassRegistry::uncache()) {
+        if(!CacheRegistry::uncache()) {
             $compiler = new Compiler;
             $compiler->perform();
         }
