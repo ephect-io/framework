@@ -6,6 +6,7 @@ include  dirname(__DIR__) . '/vendor/autoload.php';
 
 use FunCom\CLI\Application;
 use FunCom\Components\Compiler;
+use FunCom\IO\Utils;
 
 class Program extends Application
 {
@@ -17,6 +18,9 @@ class Program extends Application
 
     public function run(?array ...$params): void
     {
+        if(file_exists(CACHE_DIR)) {
+            Utils::delTree(CACHE_DIR);
+        }
         $compiler = new Compiler;
         $compiler->perform();
     }
