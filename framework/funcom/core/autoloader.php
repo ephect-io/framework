@@ -3,24 +3,10 @@
 namespace FunCom\Core;
 
 use FunCom\Registry\CacheRegistry;
+use FunCom\Registry\FrameworkRegistry;
 
 class Autoloader
 {
-    private $directory;
-    private $prefix;
-    private $prefixLength;
-
-    /**
-     * @param string $baseDirectory Base directory where the source files are located.
-     */
-    public function __construct($baseDirectory = __DIR__)
-    {
-        $this->directory = $baseDirectory;
-        $this->prefix = __NAMESPACE__ . '\\';
-        $this->prefixLength = strlen($this->prefix);
-
-        CacheRegistry::uncache();
-    }
 
     /**
      * Registers the autoloader class with the PHP SPL autoloader.
@@ -34,11 +20,9 @@ class Autoloader
 
     public static function load($className): void
     {
-        $classFilename = CacheRegistry::read($className);
+        $classFilename =  FrameworkRegistry::read($className);
 
-        include SITE_ROOT . $classFilename;
+        include FRAMEWORK_ROOT . $classFilename;
     }
 }
 
-
-// new Autoloader(SITE_ROOT);

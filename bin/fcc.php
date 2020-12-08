@@ -2,7 +2,7 @@
 
 namespace FunCom\Core;
 
-include  dirname(__DIR__) . '/vendor/autoload.php';
+include  dirname(__DIR__) . '/framework/bootstrap.php';
 
 use FunCom\CLI\Application;
 use FunCom\Components\Compiler;
