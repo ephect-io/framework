@@ -14,7 +14,12 @@ abstract class AbstractComponent implements ComponentInterface
     protected $namespace;
     protected $function;
     protected $code;
+    protected $parentHTML;
 
+    public function getParentHTML(): ?string
+    {
+        return $this->parentHTML;
+    }
 
     public function getCode()
     {
@@ -64,11 +69,16 @@ abstract class AbstractComponent implements ComponentInterface
     public function parse(): void
     {
         $parser = new Parser($this);
-        $parser->doVariables();
+        
+        $parser->doUncache();
+        
+        $parser->doScalars();
         $parser->useVariables();
         $parser->doComponents();
         $parser->doOpenComponents();
         $html = $parser->getHtml();
+
+        $parser->doCache();
 
         $this->code = $html;
     }

@@ -8,6 +8,7 @@ abstract class AbstractRegistry
 {
     private $entries = [];
     private $isLoaded = false;
+    private $baseDirectory = CACHE_DIR;
 
     protected function getName(): string
     {
@@ -17,7 +18,7 @@ abstract class AbstractRegistry
         return $className;
     }
 
-    public function getAll(): array
+    public function getAll(): ?array
     {
         return $this->entries;
     }
@@ -84,8 +85,13 @@ abstract class AbstractRegistry
     public function getCacheFileName(): string
     {
         $fileName = $this->getName();
-        $result = CACHE_DIR . strtolower($fileName) . '.json';
+        $result = $this->baseDirectory . strtolower($fileName) . '.json';
 
         return $result;
+    }
+
+    public function setBaseDirectory(string $directory) : void
+    {
+        $this->baseDirectory = $directory;
     }
 }

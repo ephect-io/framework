@@ -11,4 +11,5 @@ interface StaticRegistryInterface
     static function cache(): bool;
     static function uncache(): bool;
     static function exists(string $key): bool;
+    static function setCacheDirectory(string $directory): void;
 }

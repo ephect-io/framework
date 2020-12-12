@@ -21,7 +21,7 @@ class Block extends AbstractComponent
     public function parse(): void 
     {
         $parser = new Parser($this);
-        $parser->doVariables();
+        $parser->doScalars();
         $parser->useVariables();
         $parser->doComponents();
         $parser->doOpenComponents('Block');

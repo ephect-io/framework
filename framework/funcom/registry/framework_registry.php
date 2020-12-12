@@ -10,6 +10,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     {
         if (self::$instance === null) {
             self::$instance = new FrameworkRegistry();
+            self::$instance->setBaseDirectory(RUNTIME_DIR);
         }
 
         return self::$instance;

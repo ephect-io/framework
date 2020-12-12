@@ -89,12 +89,12 @@ class View extends AbstractComponent
     {
         $html = parent::renderHTML($functionName, $functionArgs);
 
-        $block = new Block($uid);
+        $fragment = new Fragment($uid, $html);
 
-        $original = $block->getCode();
-        $block->parse();
+        $original = $fragment->getCode();
+        $fragment->parse();
 
-        $actual = $block->getCode();
+        $actual = $fragment->getCode();
 
         $html = str_replace($original, $actual, $html);
 

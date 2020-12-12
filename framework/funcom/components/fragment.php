@@ -6,9 +6,11 @@ use FunCom\Registry\CodeRegistry;
 
 class Fragment extends AbstractComponent
 {
-    public function __construct(string $uid)
+    public function __construct(string $uid, string $parentHTML)
     {
         CodeRegistry::uncache();
+
+        $this->parentHTML = $parentHTML;        
 
         $this->code = CodeRegistry::read($uid);
         $this->code = urldecode($this->code);
@@ -21,7 +23,7 @@ class Fragment extends AbstractComponent
     public function parse(): void 
     {
         $parser = new Parser($this);
-        $parser->doVariables();
+        $parser->doScalars();
         $parser->useVariables();
         $parser->doComponents();
         $parser->doOpenComponents();

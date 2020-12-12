@@ -10,11 +10,13 @@ class Parser
     private $html = '';
     private $view = null;
     private $useVariables = [];
+    private $parentHTML = '';
 
     public function __construct(ComponentInterface $view)
     {
         $this->view = $view;
         $this->html = $view->getCode();
+        $this->parentHTML = $view->getParentHTML();
     }
 
     public function getHtml()
@@ -22,11 +24,50 @@ class Parser
         return $this->html;
     }
 
-    public function doVariables(): bool
+    public function doCache(): bool
+    {
+        return CodeRegistry::cache();
+    }
+
+    public function doUncache(): bool
+    {
+        return CodeRegistry::uncache();
+    }
+
+    public function doScalars(): bool
     {
         $result = null;
 
         $re = '/\{\{ ([a-z0-9_\-\>]*) \}\}/m';
+        $su = '<?php echo $\1 ?>';
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $variable = $match[1];
+
+            $useVar = $variable;
+            $arrowPos = strpos($variable, '->');
+            if ($arrowPos > -1) {
+                $useVar = substr($useVar, 0, $arrowPos);
+            }
+
+            $this->useVariables[$useVar] = '$' . $useVar;
+
+            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . ' ?>', $this->html);
+        }
+
+        $result = $this->html !== null;
+
+        return $result;
+    }
+
+    public function doArrays(): bool
+    {
+        $result = null;
+
+        $re = '/\{\{ \.\.\.([a-z0-9_\-\>]*) \}\}/m';
         $su = '<?php echo $\1 ?>';
         $str = $this->html;
 
@@ -70,7 +111,7 @@ class Parser
     {
         $result = false;
 
-        $re = '/\<([A-Z0-9][A-Za-z0-9]*)([\S\{\}\(\)\>\'"= ]*)((\s|[^\/\>].))?\/\>/m';
+        $re = '/ <([A-Z][\w]*)([\S\{\}\(\)\'"= ][^\>]*)((\s|[^\/\>].))?\/\>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -99,13 +140,12 @@ class Parser
     /**
      * UNDER CONSTRUCTION
      */
-    public function doOpenComponents(string $tag = '[A-Z]'): bool
+    public function doOpenComponents(string $tag = '[A-Z][\w]+', ?string &$subject = null): bool
     {
         $result = '';
-        CodeRegistry::uncache();
 
-        $re = '/<(' . $tag . '[\w]+)(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
-        $str = $this->html;
+        $re = '/<(' . $tag . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
+        $str = $subject ?: $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
@@ -118,31 +158,62 @@ class Parser
 
             $args = '';
             if (trim($componentArgs) !== '') {
-                $args = $this->doArguments($componentArgs);
+                $componentArgs = $this->doArguments($componentArgs);
             }
 
-            if(empty($componentBody)) {
+            if (empty($componentBody)) {
                 continue;
             }
 
-            $uid = uniqid(time(), true);
-
-            $args = ', ' . (($args === null) ? "null" : $args);
-            $body = urlencode($componentBody);
-
-            CodeRegistry::write($uid, $body);
-            $uid = ", '" . $uid . "'";
-
-            $componentRender = "<?php \FunCom\Components\View::make('$componentName'$args$uid); ?>";
             if ($componentName === 'Block') {
-                $componentRender = "<?php \FunCom\Components\View::replace('$componentName'$args$uid); ?>";
+                $this->doOpenComponent($componentName, $componentArgs, $componentBody);
+                continue;
             }
 
-            $this->html = str_replace($component, $componentRender, $this->html);
-        }
-        CodeRegistry::cache();
+            $this->doFragment($component, $componentName, $componentArgs, $componentBody, $subject);
 
-        $result = $this->html !== null;
+        }
+
+        $result = $subject !== null;
+
+        return $result;
+    }
+
+    public function doFragment(string $component, string $componentName, string $componentArgs, string $componentBody, ?string &$subject): bool
+    {
+        $uid = uniqid(time(), true);
+
+        $componentArgs = ', ' . (($componentArgs === null) ? "null" : $componentArgs);
+        $body = urlencode($componentBody);
+
+        CodeRegistry::write($uid, $body);
+        $uid = ", '" . $uid . "'";
+
+        $componentRender = "<?php \FunCom\Components\View::make('$componentName'$componentArgs$uid); ?>";
+
+        $subject = str_replace($component, $componentRender, $subject);
+
+        $result = $subject !== null;
+
+        return $result;
+    }
+    
+    public function doOpenComponent(string $componentName, string $componentArgs, string $componentBody): bool
+    {
+
+        $result = false;
+        $re = '/<(' . $componentName . ')(' . $componentArgs . ')>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
+
+        $str = $this->parentHTML;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $parentComponent = $match[0];
+            $this->parentHTML = str_replace($parentComponent, $componentBody, $this->parentHTML);
+        }
+
+        $result = $this->parentHTML !== null;
 
         return $result;
     }
@@ -206,5 +277,4 @@ class Parser
 
         return $result;
     }
-
 }
