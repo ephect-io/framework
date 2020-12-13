@@ -25,11 +25,23 @@ class Fragment extends AbstractComponent
         $parser = new Parser($this);
         $parser->doScalars();
         $parser->useVariables();
-        $parser->doComponents();
-        $parser->doOpenComponents();
-        $html = $parser->getHtml();
 
-        $this->code = $html;
+        $html = $this->parentHTML;
+        
+        $parentBlocks = $parser->doChildren('Block', $this->parentHTML);
+        
+        $thisBlocks = $parser->doChildren('Block', $this->code);
+
+        $names = array_keys($thisBlocks);
+
+        foreach($names as $name) {
+            if(isset($parentBlocks[$name])) {
+                $html = str_replace($parentBlocks[$name]->component, $thisBlocks[$name]->body, $html);
+            }
+        }
+
+
+        $this->parentHTML = $html;
 
     }
 }

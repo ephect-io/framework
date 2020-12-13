@@ -7,42 +7,14 @@ use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
 
-class View extends AbstractComponent
+class View extends AbstractFileComponent
 {
-
-    public function getSourceFilename(): string
-    {
-        return $this->filename;
-    }
-
-    public function getCacheFilename(): string
-    {
-        $cache_file = REL_CACHE_DIR . str_replace('/', '_', $this->filename);
-
-        return $cache_file;
-    }
-
-    public function load(string $filename): bool
-    {
-        $result = false;
-        $this->filename = $filename;
-
-        $this->code = Utils::safeRead(SRC_ROOT . $this->filename);
-
-        list($this->namespace, $this->function) = $this->getFunctionDefinition();
-        $result = $this->code !== false;
-
-        return  $result;
-    }
 
     public function analyse(): void
     {
         parent::analyse();
 
-        $this->cacheHtml();
-
         ClassRegistry::write($this->getFullCleasName(), $this->getSourceFilename());
-        CacheRegistry::write($this->getFullCleasName(), $this->getCacheFilename());
         UseRegistry::safeWrite($this->getFunction(), $this->getFullCleasName());
     }
 
@@ -55,16 +27,27 @@ class View extends AbstractComponent
 
     private function cacheHtml(): ?string
     {
-        $cache_file = $this->getCacheFilename();
-        $result = Utils::safeWrite(SITE_ROOT . $cache_file, $this->code);
+        $cache_file = static::getCacheFilename($this->filename);
+        $result = Utils::safeWrite(CACHE_DIR . $cache_file, $this->code);
 
         return $result === null ? $result : $cache_file;
     }
 
-
-
     public static function renderHTML(string $functionName, ?array $functionArgs = null): string
     {
+
+        if(!static::checkCache($functionName)) {
+            ClassRegistry::uncache();
+
+            $fqName = UseRegistry::read($functionName);
+            $filename = ClassRegistry::read($fqName);
+            $view = new View();
+            $view->load($filename);
+            $view->parse();
+            
+            CacheRegistry::write($view->getFullCleasName(), static::getCacheFilename($view->getSourceFilename()));
+            CacheRegistry::cache();
+        }
 
         $html = parent::renderHTML($functionName, $functionArgs);
 
@@ -85,20 +68,26 @@ class View extends AbstractComponent
     }
 
 
-    public static function make(string $functionName, ?array $functionArgs = null, string $uid): void
+    public static function make(string $functionName, ?array $props, string $componentName, ?array $componentArgs = null, array $boundaries, string $uid): void
     {
-        $html = parent::renderHTML($functionName, $functionArgs);
+        $html = self::renderHTML($componentName, $componentArgs);
 
         $fragment = new Fragment($uid, $html);
 
-        $original = $fragment->getCode();
         $fragment->parse();
 
-        $actual = $fragment->getCode();
+        $html = $fragment->getParentHTML();
 
-        $html = str_replace($original, $actual, $html);
+        list($className, $cacheFilename) = static::findComponent($functionName);
 
-        echo $html;
+        $prehtml = new PreHtml($html);
+        $prehtml->load($cacheFilename);
+        $prehtml->parse();
+
+        $html = $prehtml->getCode();
+
+        Utils::safeWrite(CACHE_DIR . $cacheFilename, $html);
+
     }
 
     public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void

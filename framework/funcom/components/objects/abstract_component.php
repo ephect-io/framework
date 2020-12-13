@@ -4,13 +4,12 @@ namespace FunCom\Components;
 
 use BadFunctionCallException;
 use FunCom\Registry\CacheRegistry;
-use FunCom\Registry\CodeRegistry;
+use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
 use tidy;
 
 abstract class AbstractComponent implements ComponentInterface
 {
-    protected $filename;
     protected $namespace;
     protected $function;
     protected $code;
@@ -39,24 +38,6 @@ abstract class AbstractComponent implements ComponentInterface
     public function getFunction(): string
     {
         return $this->function;
-    }
-
-    public static function findComponent(string $componentName): array
-    {
-        CacheRegistry::uncache();
-        UseRegistry::uncache();
-
-        $classes =  CacheRegistry::items();
-        $uses =  UseRegistry::items();
-
-        $functionName = isset($uses[$componentName]) ? $uses[$componentName] : null;
-        if ($functionName === null) {
-            throw new BadFunctionCallException('The function ' . $functionName . ' does not exist.');
-        }
-
-        $cacheFilename = isset($classes[$functionName]) ? $classes[$functionName] : null;
-
-        return [$functionName, $cacheFilename];
     }
 
     public function analyse(): void
@@ -125,21 +106,55 @@ abstract class AbstractComponent implements ComponentInterface
         return $result;
     }
 
-    
-    public static function importComponent(string $componentName): string
-    {
-        list($functionName, $cacheFilename) = static::findComponent($componentName);
 
-        include SITE_ROOT . $cacheFilename;
+    
+    public static function checkCache(string $componentName): bool 
+    {   
+        list($functionName, $cacheFilename, $isCached) = static::findComponent($componentName);
+
+        return $isCached;
+    }
+
+    public static function findComponent(string $componentName): array
+    {
+        UseRegistry::uncache();
+        $uses = UseRegistry::items();
+
+        $functionName = isset($uses[$componentName]) ? $uses[$componentName] : null;
+        if ($functionName === null) {
+            throw new BadFunctionCallException('The component ' . $componentName . ' does not exist.');
+        }
+
+        CacheRegistry::uncache();
+        $cache = CacheRegistry::items();
+        $filename = isset($cache[$functionName]) ? $cache[$functionName] : null;
+        $isCached = $filename !== null;
+
+        if(!$isCached) {
+            ClassRegistry::uncache();
+            $classes = ClassRegistry::items();
+            $filename = isset($classes[$functionName]) ? $classes[$functionName] : null;
+        }
+
+        return [$functionName, $filename, $isCached];
+    }
+
+
+    public static function importComponent(string $componentName): ?string
+    {
+        list($functionName, $cacheFilename, $isCached) = static::findComponent($componentName);
+
+        include_once ($isCached ? CACHE_DIR : SRC_ROOT) . $cacheFilename;
 
         return $functionName;
     }
 
     public static function renderHTML(string $functionName, ?array $functionArgs = null): string
     {
+
         $functionName = self::importComponent($functionName);
 
-        $html = '';
+         $html = '';
         if ($functionArgs === null) {
             ob_start();
             $fn = call_user_func($functionName);

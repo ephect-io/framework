@@ -2,8 +2,10 @@
 
 namespace FunCom\Components;
 
+use FunCom\IO\Utils;
 use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
+use stdClass;
 
 class Parser
 {
@@ -84,7 +86,7 @@ class Parser
 
             $this->useVariables[$useVar] = '$' . $useVar;
 
-            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . ' ?>', $this->html);
+            $this->html = str_replace('{{ ...' . $variable . ' }}', '<?php echo $' . $variable . ' ?>', $this->html);
         }
 
         $result = $this->html !== null;
@@ -124,7 +126,8 @@ class Parser
 
             $args = '';
             if (trim($componentArgs) !== '') {
-                $args = ', ' . $this->doArguments($componentArgs);
+                $componentArgs = $this->doArguments($componentArgs);
+                $args = ', ' . $this->doArgumentsToString($componentArgs);
             }
 
             $componentRender = "<?php \FunCom\Components\View::render('$componentName'$args); ?>";
@@ -144,20 +147,22 @@ class Parser
     {
         $result = '';
 
-        $re = '/<(' . $tag . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
-        $str = $subject ?: $this->html;
+        $re = '/<(' . $tag . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)(<\/\1>)/m';
+        $subject = $subject ?: $this->html;
 
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+        preg_match_all($re, $subject, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
 
         foreach ($matches as $match) {
-            $component = $match[0];
-            $componentName = $match[1];
-            $componentArgs = isset($match[2]) ? trim($match[2]) : '';
-            $componentBody = trim($match[3]);
+            $component = $match[0][0];
+            $componentName = $match[1][0];
+            $componentArgs = isset($match[2][0]) ? trim($match[2][0]) : null;
+            $componentBody = trim($match[3][0]);
 
-            $args = '';
-            if (trim($componentArgs) !== '') {
+            $componentBoundaries = '["opener" => "' . urlencode(substr($component, 0, $match[3][1] - $match[0][1])) . '", ';
+            $componentBoundaries .= '"closer" => "' . urlencode($match[4][0]) . '", ]';
+
+            if (trim($componentArgs) !== null) {
                 $componentArgs = $this->doArguments($componentArgs);
             }
 
@@ -170,26 +175,90 @@ class Parser
                 continue;
             }
 
-            $this->doFragment($component, $componentName, $componentArgs, $componentBody, $subject);
-
+            $this->doFragment($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject);
         }
 
-        $result = $subject !== null;
+        $this->html = $subject;
+
+        $result = $this->html !== null;
 
         return $result;
     }
 
-    public function doFragment(string $component, string $componentName, string $componentArgs, string $componentBody, ?string &$subject): bool
+    public function doChildren(string $tag = '[A-Z][\w]+', ?string $subject = null): ?array
+    {
+        $result = [];
+
+        $re = '/<(' . $tag . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
+
+        preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+
+            $component = $match[0];
+            $componentName = $match[1];
+            $componentArgs = isset($match[2]) ? trim($match[2]) : null;
+            $componentBody = trim($match[3]);
+
+            if (trim($componentArgs) === null) {
+                return null;
+            }
+
+            $componentArgs = $this->doChildrenArguments($componentArgs);
+
+            $key = key_exists('name', $componentArgs) ? $componentArgs['name'] : null;
+
+            if ($key === null) {
+                return null;
+            }
+
+            $result[$key] = (object) [
+                "component" => $component,
+                "args" => $componentArgs,
+                "body" => $componentBody,
+            ];
+        }
+
+        return $result;
+    }
+
+
+    public function doChildrenArguments(string $componentArgs): ?array
+    {
+        $result = [];
+
+        $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
+
+        preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $key = $match[1];
+            $value = substr(substr($match[2], 1), 0, -1);
+
+            $result[$key] = $value;
+        }
+
+        $result = count($result) === 0 ? null : $result;
+
+        return $result;
+    }
+
+    public function doFragment(string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
         $uid = uniqid(time(), true);
 
-        $componentArgs = ', ' . (($componentArgs === null) ? "null" : $componentArgs);
+        $args = $this->doArgumentsToString($componentArgs);
+        $args = ', ' . (($args === null) ? "null" : $args);
         $body = urlencode($componentBody);
 
         CodeRegistry::write($uid, $body);
-        $uid = ", '" . $uid . "'";
 
-        $componentRender = "<?php \FunCom\Components\View::make('$componentName'$componentArgs$uid); ?>";
+        $className = $this->view->getFunction();
+        $classArgs = 'null';
+        
+        $componentRender = "<?php \FunCom\Components\View::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
+        
+        //$componentRender = $this->makeFragment($componentName, $componentArgs, $uid);
 
         $subject = str_replace($component, $componentRender, $subject);
 
@@ -197,9 +266,55 @@ class Parser
 
         return $result;
     }
-    
-    public function doOpenComponent(string $componentName, string $componentArgs, string $componentBody): bool
+
+
+    public function makeFragment(string $componentName, ?array $componentArgs, string $uid): string
     {
+        list($className, $filename, $isCached) = View::findComponent($componentName);
+
+        $html = Utils::safeRead(($isCached ? CACHE_DIR : SRC_ROOT) . $filename);
+        // $html = View::renderHTML($componentName, $componentArgs);
+
+        $fragment = new Fragment($uid, $html);
+
+        $fragment->parse();
+
+        $html = $fragment->getParentHTML();
+
+
+        $functionName = $this->view->getFunction();
+
+        list($className, $filename, $isCached) = View::findComponent($functionName);
+
+        $prehtml = new PreHtml($html);
+        $prehtml->load($filename);
+        $prehtml->parse();
+
+        $html = $prehtml->getCode();
+
+        Utils::safeWrite(CACHE_DIR . $filename, $html);
+
+        return $html;
+    }
+
+    public function doMake(): void
+    {
+        $re = '/<\?php \\\\FunCom\\\\Components\\\\View::make\(\'.*\'\); \?>/m';
+        $subject = $this->html;
+
+        preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $makeStatement = $match[0];
+            $subject = str_replace($makeStatement, $this->parentHTML, $subject);
+        }
+        $this->html = $subject;
+    }
+
+    public function doOpenComponent(string $componentName, array $componentArgs, string $componentBody): bool
+    {
+
+        $componentArgs = $this->doArgumentsToString($componentArgs);
 
         $result = false;
         $re = '/<(' . $componentName . ')(' . $componentArgs . ')>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
@@ -218,9 +333,9 @@ class Parser
         return $result;
     }
 
-    public function doArguments(string $componentArgs): ?string
+    public function doArguments(string $componentArgs): ?array
     {
-        $result = '';
+        $result = [];
 
         $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
 
@@ -229,6 +344,18 @@ class Parser
         foreach ($matches as $match) {
             $key = $match[1];
             $value = substr(substr($match[2], 1), 0, -1);
+
+            $result[$key] = $value;
+        }
+
+        return $result;
+    }
+
+    public function doArgumentsToString(array $componentArgs): ?string
+    {
+        $result = '';
+
+        foreach ($componentArgs as $key => $value) {
 
             $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
         }
