@@ -36,18 +36,7 @@ class View extends AbstractFileComponent
     public static function renderHTML(string $functionName, ?array $functionArgs = null): string
     {
 
-        if(!static::checkCache($functionName)) {
-            ClassRegistry::uncache();
-
-            $fqName = UseRegistry::read($functionName);
-            $filename = ClassRegistry::read($fqName);
-            $view = new View();
-            $view->load($filename);
-            $view->parse();
-            
-            CacheRegistry::write($view->getFullCleasName(), static::getCacheFilename($view->getSourceFilename()));
-            CacheRegistry::cache();
-        }
+        parent::renderComponent($functionName, $functionArgs);
 
         $html = parent::renderHTML($functionName, $functionArgs);
 
@@ -70,7 +59,7 @@ class View extends AbstractFileComponent
 
     public static function make(string $functionName, ?array $props, string $componentName, ?array $componentArgs = null, array $boundaries, string $uid): void
     {
-        $html = self::renderHTML($componentName, $componentArgs);
+        $html = parent::renderComponent($componentName, $componentArgs);
 
         $fragment = new Fragment($uid, $html);
 

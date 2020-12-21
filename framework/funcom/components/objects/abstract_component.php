@@ -5,6 +5,7 @@ namespace FunCom\Components;
 use BadFunctionCallException;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
 use tidy;
 
@@ -14,6 +15,8 @@ abstract class AbstractComponent implements ComponentInterface
     protected $function;
     protected $code;
     protected $parentHTML;
+    protected $componentList = [];
+    protected $children = null;
 
     public function getParentHTML(): ?string
     {
@@ -50,13 +53,15 @@ abstract class AbstractComponent implements ComponentInterface
     public function parse(): void
     {
         $parser = new Parser($this);
-        
+
         $parser->doUncache();
-        
+
+        $this->children = $parser->doChildrenDeclaration();
         $parser->doScalars();
         $parser->useVariables();
+        $parser->normalizeNamespace();
         $parser->doComponents();
-        $parser->doOpenComponents();
+        $this->componentList = $parser->doOpenComponents();
         $html = $parser->getHtml();
 
         $parser->doCache();
@@ -106,10 +111,8 @@ abstract class AbstractComponent implements ComponentInterface
         return $result;
     }
 
-
-    
-    public static function checkCache(string $componentName): bool 
-    {   
+    public static function checkCache(string $componentName): bool
+    {
         list($functionName, $cacheFilename, $isCached) = static::findComponent($componentName);
 
         return $isCached;
@@ -130,7 +133,7 @@ abstract class AbstractComponent implements ComponentInterface
         $filename = isset($cache[$functionName]) ? $cache[$functionName] : null;
         $isCached = $filename !== null;
 
-        if(!$isCached) {
+        if (!$isCached) {
             ClassRegistry::uncache();
             $classes = ClassRegistry::items();
             $filename = isset($classes[$functionName]) ? $classes[$functionName] : null;
@@ -154,7 +157,7 @@ abstract class AbstractComponent implements ComponentInterface
 
         $functionName = self::importComponent($functionName);
 
-         $html = '';
+        $html = '';
         if ($functionArgs === null) {
             ob_start();
             $fn = call_user_func($functionName);
@@ -184,6 +187,27 @@ abstract class AbstractComponent implements ComponentInterface
         }
 
         return $html;
+    }
+
+    public static function passChidren(array $children): array
+    {
+        $componentProps = $children["props"];
+        $childProps = $children["child"]["props"];
+        $props = is_array($componentProps) && is_array($childProps) ? array_merge($componentProps, $childProps) : $componentProps;
+        $props = !is_array($componentProps) && is_array($childProps) ? $childProps : $componentProps;
+
+        $uid = $children["child"]["uid"];
+        $children = CodeRegistry::read($uid);
+        $children = urldecode($children);
+
+        // $children = function() use($children) {
+        //     echo $children;
+        // };
+
+        $include_uid = CACHE_DIR . "render_$uid.php";
+        $statement_uid = "<?php render_$uid(); ?>";
+
+        return [$props, $children, $uid, $include_uid, $statement_uid];
     }
 
     public static function format(string $html): string

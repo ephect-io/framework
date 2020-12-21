@@ -57,7 +57,12 @@ class Parser
 
             $this->useVariables[$useVar] = '$' . $useVar;
 
-            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . ' ?>', $this->html);
+            if($variable === 'children') {
+                $this->html = str_replace('{{ ' . $variable . ' }}', '<?php $children(); ?>', $this->html); 
+                continue;
+            }
+
+            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . '; ?>', $this->html);
         }
 
         $result = $this->html !== null;
@@ -86,6 +91,10 @@ class Parser
 
             $this->useVariables[$useVar] = '$' . $useVar;
 
+            if($variable === 'children') {
+                continue;
+            }
+
             $this->html = str_replace('{{ ...' . $variable . ' }}', '<?php echo $' . $variable . ' ?>', $this->html);
         }
 
@@ -103,6 +112,20 @@ class Parser
 
         $this->html = str_replace('(<<<HTML', 'function () ' . $use . '{?>', $this->html);
         $this->html = str_replace('HTML);', "<?php\n\t};", $this->html);
+
+        $result = $this->html !== '';
+
+        return $result;
+    }
+
+    public function normalizeNamespace(): bool
+    {
+        $re = '/namespace([ ]+)(\w+)([ ]+)?;([ ]+)?/';
+        $subst = 'namespace \\2;';
+
+        $str = $this->html;
+
+        $this->html = preg_replace($re, $subst, $str);
 
         $result = $this->html !== null;
 
@@ -143,9 +166,9 @@ class Parser
     /**
      * UNDER CONSTRUCTION
      */
-    public function doOpenComponents(string $tag = '[A-Z][\w]+', ?string &$subject = null): bool
+    public function doOpenComponents(string $tag = '[A-Z][\w]+', ?string &$subject = null): array
     {
-        $result = '';
+        $result = [];
 
         $re = '/<(' . $tag . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)(<\/\1>)/m';
         $subject = $subject ?: $this->html;
@@ -175,12 +198,35 @@ class Parser
                 continue;
             }
 
-            $this->doFragment($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject);
+            if ($this->doFragment($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject)) {
+                array_push($result, $componentName);
+            }
         }
 
         $this->html = $subject;
 
-        $result = $this->html !== null;
+        return $result;
+    }
+
+
+    /** REGEX 101 https://regex101.com/r/BQRDmy/3 */
+    public function doChildrenDeclaration(?string $subject = null): ?object
+    {
+        $result = null;
+        $subject = $subject ?: $this->html;
+
+        
+        $re = '/(function([\w ]+)\(\$([\w]+)[^\)]*\)(\s|.)+?(\{))(\s|.)+?(\{\{ \3 \}\})/';
+        preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+
+            $functionDeclaration = $match[1];
+            $componentName = $match[2];
+            $variable = $match[7];
+
+            $result = (object) ['declaration' => $functionDeclaration, 'component' => $componentName, 'variable'=>$variable];
+        }
 
         return $result;
     }
@@ -222,7 +268,6 @@ class Parser
         return $result;
     }
 
-
     public function doChildrenArguments(string $componentArgs): ?array
     {
         $result = [];
@@ -243,21 +288,60 @@ class Parser
         return $result;
     }
 
+    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
+    public function doFunctionArguments(string $subject): ?array
+    {
+        $result = [];
+        $re = '/((function) ([\w]+)\()?([\,]?[\.]*\$[\w]*)/m';
+
+        preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
+
+
+
+
+        return $result;
+    }
+
+
     public function doFragment(string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
-        $uid = uniqid(time(), true);
+        $uid = str_replace('.', '_', uniqid(time(), true));
 
         $args = $this->doArgumentsToString($componentArgs);
-        $args = ', ' . (($args === null) ? "null" : $args);
+        $args = (($args === null) ? "null" : $args);
+
+        $children = <<<CHILDREN
+        <?php
+            function render_$uid() {
+                return function() {
+            ?>
+            $componentBody
+            <?php
+                };
+            };
+        
+            \$children = render_$uid();
+        CHILDREN;
+
+        Utils::safeWrite(CACHE_DIR . "render_$uid.php", $children);
         $body = urlencode($componentBody);
 
         CodeRegistry::write($uid, $body);
 
         $className = $this->view->getFunction();
         $classArgs = 'null';
-        
-        $componentRender = "<?php \FunCom\Components\View::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
-        
+
+        $fqComponentName = '\\' . UseRegistry::read($componentName);
+
+
+        /**
+         * $componentRender = "<?php \FunCom\Components\View::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
+         */
+
+        $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid']]";
+
+        $componentRender = "<?php \$fn = $fqComponentName($children); \$fn(); ?>";
+
         //$componentRender = $this->makeFragment($componentName, $componentArgs, $uid);
 
         $subject = str_replace($component, $componentRender, $subject);
