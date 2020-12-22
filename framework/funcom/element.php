@@ -6,37 +6,19 @@ use \ReflectionClass;
 
 class Element extends StaticElement implements ElementInterface
 {
+
+    use ElementTrait;
+
     private $_reflection = null;
-    protected $parent = null;
-    protected $uid = '';
-    protected $id = 'noname';
     protected $serialFilename = '';
     protected $isSerialized = '';
     protected $children = [];
     protected $fqClassName = '';
-    protected $type = '';
 
     public function __construct(?ElementInterface $parent = null, ?string $id = null)
     {
         $this->parent = $parent;
-        $time = time();
-        $this->uid = uniqid($time);
-        $this->id = ($id === null) ? '_' . $time : $id;
-    }
-
-    public function getUID(): string
-    {
-        return $this->uid;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    protected function setId($value): void
-    {
-        $this->id = $value;
+        $this->id = ($id === null) ? '_' . time() : $id;
     }
 
     public function getReflection(): ?ReflectionClass
@@ -58,11 +40,6 @@ class Element extends StaticElement implements ElementInterface
         }
 
         return $params;
-    }
-
-    public function getParent(): ?ElementInterface
-    {
-        return $this->parent;
     }
 
     public function addChild(ElementInterface $child)
@@ -110,15 +87,6 @@ class Element extends StaticElement implements ElementInterface
         return $this->fqClassName;
     }
 
-    public function getType(): string
-    {
-        if($this->type === '') {
-            $typeParts = explode('\\', $this->getFullType());
-            $this->type = array_pop($typeParts);
-        }
-
-        return $this->type;
-    }
 
     public function getBaseType(): string
     {

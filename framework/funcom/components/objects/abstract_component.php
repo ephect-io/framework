@@ -3,6 +3,7 @@
 namespace FunCom\Components;
 
 use BadFunctionCallException;
+use FunCom\ElementTrait;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\CodeRegistry;
@@ -11,12 +12,19 @@ use tidy;
 
 abstract class AbstractComponent implements ComponentInterface
 {
+    use ElementTrait;
+
     protected $namespace;
     protected $function;
     protected $code;
     protected $parentHTML;
     protected $componentList = [];
     protected $children = null;
+
+    public function __construct()
+    {
+        $this->getUID();
+    }
 
     public function getParentHTML(): ?string
     {
@@ -197,17 +205,10 @@ abstract class AbstractComponent implements ComponentInterface
         $props = !is_array($componentProps) && is_array($childProps) ? $childProps : $componentProps;
 
         $uid = $children["child"]["uid"];
-        $children = CodeRegistry::read($uid);
-        $children = urldecode($children);
+        // $children = CodeRegistry::read($uid);
+        // $children = urldecode($children);
 
-        // $children = function() use($children) {
-        //     echo $children;
-        // };
-
-        $include_uid = CACHE_DIR . "render_$uid.php";
-        $statement_uid = "<?php render_$uid(); ?>";
-
-        return [$props, $children, $uid, $include_uid, $statement_uid];
+        return [$props, $uid];
     }
 
     public static function format(string $html): string

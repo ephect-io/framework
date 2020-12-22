@@ -57,9 +57,11 @@ class Parser
 
             $this->useVariables[$useVar] = '$' . $useVar;
 
+            $uid = $this->view->getUID();
+
             if($variable === 'children') {
-                $this->html = str_replace('{{ ' . $variable . ' }}', '<?php $children(); ?>', $this->html); 
-                continue;
+                 $this->html = str_replace('{{ children }}', "<?php \FunCom\Components\View::bind('$uid'); ?>", $this->html);
+                 continue;
             }
 
             $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . '; ?>', $this->html);
@@ -136,7 +138,7 @@ class Parser
     {
         $result = false;
 
-        $re = '/ <([A-Z][\w]*)([\S\{\}\(\)\'"= ][^\>]*)((\s|[^\/\>].))?\/\>/m';
+        $re = '/<([A-Z][\w]*)([\w\{\}\(\)\'"= ][^\>]*)((\s|[^\/\>].))?\/\>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -305,26 +307,26 @@ class Parser
 
     public function doFragment(string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
-        $uid = str_replace('.', '_', uniqid(time(), true));
+        $uid = $this->view->getUID();
 
         $args = $this->doArgumentsToString($componentArgs);
         $args = (($args === null) ? "null" : $args);
 
         $children = <<<CHILDREN
         <?php
-            function render_$uid() {
-                return function() {
+            function render_$uid(\$children = '') {
+                return function() use(\$children) {
             ?>
             $componentBody
             <?php
                 };
             };
         
-            \$children = render_$uid();
+            //\$children = render_$uid();
         CHILDREN;
 
         Utils::safeWrite(CACHE_DIR . "render_$uid.php", $children);
-        $body = urlencode($componentBody);
+        $body = urlencode($children);
 
         CodeRegistry::write($uid, $body);
 

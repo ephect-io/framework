@@ -81,16 +81,13 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
 
 
             $statment = <<<PHP
-            \tlist(\$props, \$children, \$uid, \$include_uid, \$statement_uid) = \FunCom\Components\AbstractComponent::passChidren(\$children);
-            
-            include \$include_uid;
+            \tlist(\$props, \$children) = \FunCom\Components\AbstractComponent::passChidren(\$children);
 
             PHP;
 
             $declaration = $this->children->declaration . PHP_EOL;
             $this->code = str_replace($declaration, $declaration . $statment, $this->code);
-            /** $this->code = str_replace('{{ children }}', "<?php render_\$uid(); ?>", $this->code); */
-
+            
         }
 
         foreach($this->componentList as $component) {

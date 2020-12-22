@@ -79,6 +79,21 @@ class View extends AbstractFileComponent
 
     }
 
+    public static function bind(string $uid)
+    {
+        \FunCom\Registry\CodeRegistry::uncache();
+        
+        //$children = \FunCom\Registry\CodeRegistry::read($uid);
+
+        $function = 'render_' . $uid;
+        $filename = $function . '.php';
+
+        include_once CACHE_DIR . $filename;
+
+        $fn = call_user_func($function, $uid);
+        $fn();
+    }
+
     public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void
     {
         if($functionName === 'Block') 

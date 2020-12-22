@@ -21,6 +21,22 @@ final class ElementUtils
         return [$namespace, $functionName];
     }
 
+    public static function getTraitDefinition($filepath): ?array
+    {
+        $contents = Utils::safeRead($filepath);
+
+        if ($contents === null) {
+            return null;
+        }
+
+        $namespace = self::grabKeywordName('namespace', $contents, ';');
+        $traitName = self::grabKeywordName('trait', $contents, ' ');
+        $traitName = trim($traitName, '{');
+        $traitName = trim($traitName);
+        
+        return [$namespace, $traitName];
+    }
+
     public static function getInterfaceDefinition($filepath): ?array
     {
         $contents = Utils::safeRead($filepath);
