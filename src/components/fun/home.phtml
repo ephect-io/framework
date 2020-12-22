@@ -6,10 +6,6 @@ use Com as FunCom;
 
 function Home()
 {
-    $firstname = 'David';
-
-    $vars = ["firstname" => $firstname];
-
     return (<<<HTML
     <Mother>
         <Block name="title">FunCom in action !</Block>
@@ -17,13 +13,9 @@ function Home()
             <link rel="stylesheet" href="/css/index.css" />
             <link rel="stylesheet" href="/css/app.css" />
         </Block>
-        <Block name="header" ><Header /></Block>
-        <Block name="main">
-            <div class="App-content" >
-                <FunCom message='Hello World!' from="the app" />
-            </div>
-        </Block>
-        <Block name="footer" ><Footer /></Block>
+        <div class="App-content" >
+            <FunCom message='Hello World!' from="the app" />
+        </div>
         <Block name="javascripts">
             <script src="js/pond.js"></script>
         </Block>
