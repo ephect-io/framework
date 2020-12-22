@@ -6,6 +6,7 @@ use FunCom\IO\Utils as IOUtils;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\UseRegistry;
+use FunCom\Registry\ViewRegistry;
 
 class Compiler
 {
@@ -13,6 +14,8 @@ class Compiler
     public function perform(): void
     {
         $viewList = $this->searchForViews();
+
+        ViewRegistry::uncache();
 
         $views = [];
 
@@ -23,14 +26,12 @@ class Compiler
             $view->analyse();
 
             array_push($views, $view);
+
+            ViewRegistry::write($viewFile, $view->getUID());
         }
-        // CacheRegistry::cache();
+        ViewRegistry::cache();
         ClassRegistry::cache();
         UseRegistry::cache();
-
-        // foreach($views as $view) {
-        //     $view->parse();
-        // }
 
     }
 

@@ -7,6 +7,7 @@ use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
+use FunCom\Registry\ViewRegistry;
 
 define('INCLUDE_PLACEHOLDER', "include CACHE_DIR . '%s';" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
@@ -48,10 +49,12 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
     {
         if(!static::checkCache($functionName)) {
             ClassRegistry::uncache();
+            ViewRegistry::uncache();
 
             $fqName = UseRegistry::read($functionName);
             $filename = ClassRegistry::read($fqName);
-            $view = new View();
+            $uid = ViewRegistry::read($filename);
+            $view = new View($uid);
             $view->load($filename);
             $view->parse();
 
@@ -84,7 +87,7 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
             \tlist(\$props, \$children) = \FunCom\Components\AbstractComponent::passChidren(\$children);
 
             PHP;
-
+            
             $declaration = $this->children->declaration . PHP_EOL;
             $this->code = str_replace($declaration, $declaration . $statment, $this->code);
             

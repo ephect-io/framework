@@ -7,6 +7,10 @@ use Home as SweetHome;
 function App()
 {
     return (<<<HTML
-    <SweetHome />
+    <Router>
+        <Switcher>
+            <SweetHome />
+        </Switcher>
+    </Router>
     HTML);
 }

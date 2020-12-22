@@ -3,8 +3,10 @@
 namespace FunCom\Components;
 
 use FunCom\IO\Utils;
+use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
+use FunCom\Registry\ViewRegistry;
 use stdClass;
 
 class Parser
@@ -307,7 +309,13 @@ class Parser
 
     public function doFragment(string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
-        $uid = $this->view->getUID();
+        UseRegistry::uncache();
+        ClassRegistry::uncache();
+        ViewRegistry::uncache();
+
+        $fqClass = UseRegistry::read($componentName);
+        $filename = ClassRegistry::read($fqClass);
+        $uid = ViewRegistry::read($filename);
 
         $args = $this->doArgumentsToString($componentArgs);
         $args = (($args === null) ? "null" : $args);

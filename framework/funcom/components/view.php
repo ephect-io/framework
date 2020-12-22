@@ -10,6 +10,12 @@ use FunCom\Registry\UseRegistry;
 class View extends AbstractFileComponent
 {
 
+    public function __construct(string $uid = '')
+    {
+        $this->uid = $uid;
+        $this->getUID();
+    }
+
     public function analyse(): void
     {
         parent::analyse();
@@ -57,32 +63,31 @@ class View extends AbstractFileComponent
     }
 
 
-    public static function make(string $functionName, ?array $props, string $componentName, ?array $componentArgs = null, array $boundaries, string $uid): void
-    {
-        $html = parent::renderComponent($componentName, $componentArgs);
+    // public static function make(string $functionName, ?array $props, string $componentName, ?array $componentArgs = null, array $boundaries, string $uid): void
+    // {
+    //     $html = parent::renderComponent($componentName, $componentArgs);
 
-        $fragment = new Fragment($uid, $html);
+    //     $fragment = new Fragment($uid, $html);
 
-        $fragment->parse();
+    //     $fragment->parse();
 
-        $html = $fragment->getParentHTML();
+    //     $html = $fragment->getParentHTML();
 
-        list($className, $cacheFilename) = static::findComponent($functionName);
+    //     list($className, $cacheFilename) = static::findComponent($functionName);
 
-        $prehtml = new PreHtml($html);
-        $prehtml->load($cacheFilename);
-        $prehtml->parse();
+    //     $prehtml = new PreHtml($html);
+    //     $prehtml->load($cacheFilename);
+    //     $prehtml->parse();
 
-        $html = $prehtml->getCode();
+    //     $html = $prehtml->getCode();
 
-        Utils::safeWrite(CACHE_DIR . $cacheFilename, $html);
-
-    }
+    //     Utils::safeWrite(CACHE_DIR . $cacheFilename, $html);
+    // }
 
     public static function bind(string $uid)
     {
         \FunCom\Registry\CodeRegistry::uncache();
-        
+
         //$children = \FunCom\Registry\CodeRegistry::read($uid);
 
         $function = 'render_' . $uid;
@@ -96,8 +101,7 @@ class View extends AbstractFileComponent
 
     public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void
     {
-        if($functionName === 'Block') 
-        {
+        if ($functionName === 'Block') {
             echo '';
             return;
         }

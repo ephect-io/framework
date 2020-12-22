@@ -20,7 +20,7 @@ if (!FrameworkRegistry::uncache()) {
     $frameworkFiles = Utils::walkTreeFiltered(FRAMEWORK_ROOT, ['php']);
     array_shift($frameworkFiles);
     foreach ($frameworkFiles as $filename) {
-        if (strpos($filename, 'trait') > 0) {
+        if (false !== strpos($filename, 'trait')) {
             list($namespace, $trait) = ElementUtils::getTraitDefinition(FRAMEWORK_ROOT . $filename);
             $fqname = $namespace . '\\' . $trait;
             if ($fqname !=='\\') {
@@ -29,7 +29,7 @@ if (!FrameworkRegistry::uncache()) {
             continue;
         }
 
-        if (strpos($filename, 'interface') > 0) {
+        if (false !== strpos($filename, 'interface')) {
             list($namespace, $interface) = ElementUtils::getInterfaceDefinition(FRAMEWORK_ROOT . $filename);
             $fqname = $namespace . '\\' . $interface;
             if ($fqname !=='\\') {
