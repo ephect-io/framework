@@ -46,12 +46,6 @@ class View extends AbstractFileComponent
 
         $html = parent::renderHTML($functionName, $functionArgs);
 
-        $fqFunctionName = explode('\\', $functionName);
-        $function = array_pop($fqFunctionName);
-        if ($function === 'App') {
-            $html = self::format($html);
-        }
-
         return $html;
     }
 
