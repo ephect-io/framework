@@ -57,26 +57,26 @@ class View extends AbstractFileComponent
     }
 
 
-    // public static function make(string $functionName, ?array $props, string $componentName, ?array $componentArgs = null, array $boundaries, string $uid): void
-    // {
-    //     $html = parent::renderComponent($componentName, $componentArgs);
+    public static function make(string $parentComponent, string $functionName, ?array $props, string $componentName, ?array $componentArgs = null, array $boundaries, string $uid): void
+    {
+        $html = parent::renderComponent($parentComponent, $componentArgs);
 
-    //     $fragment = new Fragment($uid, $html);
+        $fragment = new Fragment($uid, $html);
 
-    //     $fragment->parse();
+        $fragment->parse();
 
-    //     $html = $fragment->getParentHTML();
+        $html = $fragment->getParentHTML();
 
-    //     list($className, $cacheFilename) = static::findComponent($functionName);
+        list($className, $cacheFilename) = static::findComponent($functionName);
 
-    //     $prehtml = new PreHtml($html);
-    //     $prehtml->load($cacheFilename);
-    //     $prehtml->parse();
+        $prehtml = new PreHtml($html);
+        $prehtml->load($cacheFilename);
+        $prehtml->parse();
 
-    //     $html = $prehtml->getCode();
+        $html = $prehtml->getCode();
 
-    //     Utils::safeWrite(CACHE_DIR . $cacheFilename, $html);
-    // }
+        Utils::safeWrite(CACHE_DIR . $cacheFilename, $html);
+    }
 
     public static function bind(string $uid)
     {

@@ -9,7 +9,9 @@ function Mother($children)
     <head>
         <meta charset="UTF-8">
         <title>
+        <Block name="title">
             Mother!
+        </Block>
         </title>
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
@@ -20,9 +22,9 @@ function Mother($children)
 
     <body>
         <div class="App" >
-        <HeaderAndFooter>
+        <Header />
             {{ children }}
-        </HeaderAndFooter>
+        <Footer />
         </div>
     </body>
     HTML);
