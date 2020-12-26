@@ -197,12 +197,12 @@ class Parser
                 continue;
             }
 
-            if ($componentName === 'Block') {
-                $this->doOpenComponent($componentName, $componentArgs, $componentBody);
-                continue;
-            }
+            // if ($componentName === 'Block') {
+            //     $this->doOpenComponent($componentName, $componentArgs, $componentBody);
+            //     continue;
+            // }
 
-            if ($this->doFragment($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject)) {
+            if ($this->makeChildren($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject)) {
                 array_push($result, $componentName);
             }
         }
@@ -307,7 +307,7 @@ class Parser
     }
 
 
-    public function doFragment(string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
+    public function makeChildren(string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
         UseRegistry::uncache();
         ClassRegistry::uncache();
@@ -391,19 +391,19 @@ class Parser
         return $html;
     }
 
-    public function doMake(): void
-    {
-        $re = '/<\?php \\\\FunCom\\\\Components\\\\View::make\(\'.*\'\); \?>/m';
-        $subject = $this->html;
+    // public function doMake(): void
+    // {
+    /**    $re = '/<\?php \\\\FunCom\\\\Components\\\\View::make\(\'.*\'\); \?>/m';  */
+    //     $subject = $this->html;
 
-        preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
+    //     preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
 
-        foreach ($matches as $match) {
-            $makeStatement = $match[0];
-            $subject = str_replace($makeStatement, $this->parentHTML, $subject);
-        }
-        $this->html = $subject;
-    }
+    //     foreach ($matches as $match) {
+    //         $makeStatement = $match[0];
+    //         $subject = str_replace($makeStatement, $this->parentHTML, $subject);
+    //     }
+    //     $this->html = $subject;
+    // }
 
     public function doOpenComponent(string $componentName, array $componentArgs, string $componentBody): bool
     {
