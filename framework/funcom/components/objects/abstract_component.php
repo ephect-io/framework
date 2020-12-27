@@ -3,6 +3,8 @@
 namespace FunCom\Components;
 
 use BadFunctionCallException;
+use FunCom\Components\Generators\ChildrenParser;
+use FunCom\Components\Generators\Parser;
 use FunCom\ElementTrait;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
@@ -50,7 +52,7 @@ abstract class AbstractComponent implements ComponentInterface
 
     public function parse(): void
     {
-        $parser = new Parser($this);
+        $parser = new ChildrenParser($this);
 
         $parser->doUncache();
 

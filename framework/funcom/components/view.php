@@ -60,7 +60,7 @@ class View extends AbstractFileComponent
 
     public static function make(string $parentComponent, string $functionName, ?array $props, string $componentName, ?array $componentArgs = null, array $boundaries, string $uid): void
     {
-        $html = parent::renderComponent($parentComponent, $componentArgs);
+        list($namespace, $className, $html) = parent::renderComponent($parentComponent, $componentArgs);
 
         $fragment = new Fragment($uid, $html);
 

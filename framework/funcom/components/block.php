@@ -2,6 +2,7 @@
 
 namespace FunCom\Components;
 
+use FunCom\Components\Generators\Parser;
 use FunCom\Registry\CodeRegistry;
 
 class Block extends AbstractComponent

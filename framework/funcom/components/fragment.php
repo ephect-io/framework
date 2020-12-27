@@ -2,6 +2,7 @@
 
 namespace FunCom\Components;
 
+use FunCom\Components\Generators\ChildrenParser;
 use FunCom\Registry\CodeRegistry;
 
 class Fragment extends AbstractComponent
@@ -22,7 +23,7 @@ class Fragment extends AbstractComponent
 
     public function parse(): void 
     {
-        $parser = new Parser($this);
+        $parser = new ChildrenParser($this);
         $parser->doScalars();
         $parser->useVariables();
 
@@ -39,7 +40,6 @@ class Fragment extends AbstractComponent
                 $html = str_replace($parentBlocks[$name]->component, $thisBlocks[$name]->body, $html);
             }
         }
-
 
         $this->parentHTML = $html;
 
