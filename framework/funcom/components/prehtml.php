@@ -4,11 +4,11 @@ namespace FunCom\Components;
 
 use FunCom\Registry\CodeRegistry;
 
-class PreHtml extends AbstractFileComponent implements FileComponentInterface
+class PreHtml extends AbstractFIleComponent implements FileComponentInterface
 {
-    public function __construct(string $parentHTML)
+    public function __construct(string $preHtml)
     {
-        $this->parentHTML = $parentHTML;        
+        $this->code = $preHtml;        
     }
     
     public function analyse(): void
@@ -17,12 +17,6 @@ class PreHtml extends AbstractFileComponent implements FileComponentInterface
 
     public function parse(): void 
     {
-        $parser = new Parser($this);
-        $parser->doMake();
-        $parser->doComponents();
-        $parser->doOpenComponents();
-
-        $this->code = $parser->getHtml();
-
+        parent::parse();
     }
 }

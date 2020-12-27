@@ -2,12 +2,12 @@
 
 namespace FunCom\Components;
 
+use FunCom\ElementUtils;
 use FunCom\IO\Utils;
 use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
-use stdClass;
 
 class Parser
 {
@@ -62,8 +62,8 @@ class Parser
             $uid = $this->view->getUID();
 
             if($variable === 'children') {
-                 $this->html = str_replace('{{ children }}', "<?php \FunCom\Components\View::bind('$uid'); ?>", $this->html);
-                 continue;
+                $this->html = str_replace('{{ children }}', "<?php \FunCom\Components\View::bind('$uid'); ?>", $this->html);
+                continue;
             }
 
             $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . '; ?>', $this->html);
@@ -197,10 +197,10 @@ class Parser
                 continue;
             }
 
-            // if ($componentName === 'Block') {
-            //     $this->doOpenComponent($componentName, $componentArgs, $componentBody);
-            //     continue;
-            // }
+            if ($componentName === 'Block') {
+                $this->doOpenComponent($componentName, $componentArgs, $componentBody);
+                continue;
+            }
 
             if ($this->makeChildren($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject)) {
                 array_push($result, $componentName);
@@ -316,26 +316,23 @@ class Parser
         $fqClass = UseRegistry::read($componentName);
         $filename = ClassRegistry::read($fqClass);
         $uid = ViewRegistry::read($filename);
+        $namespace = ElementUtils::getNamespaceFromFQClassName($fqClass);
 
         $args = $this->doArgumentsToString($componentArgs);
         $args = (($args === null) ? "null" : $args);
 
         $children = <<<CHILDREN
         <?php
-            function render_$uid(\$children = '') {
-                return function() use(\$children) {
-            ?>
-            $componentBody
-            <?php
-                };
-            };
         
-            //\$children = render_$uid();
+        namespace $namespace;
+
+        ?>
+        $componentBody
+        <?php
         CHILDREN;
 
         Utils::safeWrite(CACHE_DIR . "render_$uid.php", $children);
         $body = urlencode($children);
-
         CodeRegistry::write($uid, $body);
 
         $className = $this->view->getFunction();

@@ -15,8 +15,7 @@ abstract class AbstractComponent implements ComponentInterface
 {
     use ElementTrait;
 
-    protected $namespace;
-    protected $function;
+    protected $function = null;
     protected $code;
     protected $parentHTML;
     protected $componentList = [];
@@ -32,17 +31,12 @@ abstract class AbstractComponent implements ComponentInterface
         return $this->code;
     }
 
-    public function getFullCleasName(): string
+    public function getFullyQualifiedFunction(): string
     {
         return $this->namespace  . '\\' . $this->function;
     }
 
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getFunction(): string
+    public function getFunction(): ?string
     {
         return $this->function;
     }
@@ -73,47 +67,6 @@ abstract class AbstractComponent implements ComponentInterface
         $this->code = $html;
     }
 
-    public function getFunctionDefinition(): ?array
-    {
-        $contents = $this->code;
-
-        if ($contents === null) {
-            return null;
-        }
-
-        $namespace = $this->grabKeywordName('namespace', $contents, ';');
-        $functionName = $this->grabKeywordName('function', $contents, '(');
-
-        return [$namespace, $functionName];
-    }
-
-    public function getClassDefinition(): ?array
-    {
-        $contents = $this->code;
-
-        if ($contents === null) {
-            return null;
-        }
-
-        $namespace = $this->grabKeywordName('namespace', $contents, ';');
-        $className = $this->grabKeywordName('class', $contents, ' ');
-
-        return [$namespace, $className];
-    }
-
-    public function grabKeywordName(string $keyword, string $classText, string $delimiter): string
-    {
-        $result = '';
-
-        $start = strpos($classText, $keyword);
-        if ($start > -1) {
-            $start += \strlen($keyword) + 1;
-            $end = strpos($classText, $delimiter, $start);
-            $result = substr($classText, $start, $end - $start);
-        }
-
-        return $result;
-    }
 
     public static function checkCache(string $componentName): bool
     {

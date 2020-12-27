@@ -21,7 +21,7 @@ if (!FrameworkRegistry::uncache()) {
     array_shift($frameworkFiles);
     foreach ($frameworkFiles as $filename) {
         if (false !== strpos($filename, 'trait')) {
-            list($namespace, $trait) = ElementUtils::getTraitDefinition(FRAMEWORK_ROOT . $filename);
+            list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(FRAMEWORK_ROOT . $filename);
             $fqname = $namespace . '\\' . $trait;
             if ($fqname !=='\\') {
                 FrameworkRegistry::write($fqname, $filename);
@@ -30,7 +30,7 @@ if (!FrameworkRegistry::uncache()) {
         }
 
         if (false !== strpos($filename, 'interface')) {
-            list($namespace, $interface) = ElementUtils::getInterfaceDefinition(FRAMEWORK_ROOT . $filename);
+            list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(FRAMEWORK_ROOT . $filename);
             $fqname = $namespace . '\\' . $interface;
             if ($fqname !=='\\') {
                 FrameworkRegistry::write($fqname, $filename);
@@ -38,7 +38,7 @@ if (!FrameworkRegistry::uncache()) {
             continue;
         }
 
-        list($namespace, $class) = ElementUtils::getClassDefinition(FRAMEWORK_ROOT . $filename);
+        list($namespace, $class) = ElementUtils::getClassDefinitionFromFile(FRAMEWORK_ROOT . $filename);
         $fqname = $namespace . '\\' . $class;
         if ($fqname !=='\\') {
             FrameworkRegistry::write($fqname, $filename);

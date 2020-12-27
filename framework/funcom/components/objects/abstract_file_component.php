@@ -2,6 +2,7 @@
 
 namespace FunCom\Components;
 
+use FunCom\ElementUtils;
 use FunCom\IO\Utils;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
@@ -39,13 +40,13 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
             $this->code = Utils::safeRead(SRC_ROOT . $this->filename);
         }
 
-        list($this->namespace, $this->function) = $this->getFunctionDefinition();
+        list($this->namespace, $this->function) = ElementUtils::getFunctionDefinition($this->code);
         $result = $this->code !== null;
 
         return  $result;
     }
 
-    public static function renderComponent(string $functionName, ?array $functionArgs = null): string
+    public static function renderComponent(string $functionName, ?array $functionArgs = null): array
     {
         if(!static::checkCache($functionName)) {
             ClassRegistry::uncache();
@@ -59,19 +60,22 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
             $view->parse();
 
             $html = $view->getCode();
+            $namespace = $view->getNamespace();
+            $functionName = $view->getFunction();
             
-            CacheRegistry::write($view->getFullCleasName(), static::getCacheFilename($view->getSourceFilename()));
+            CacheRegistry::write($view->getFullyQualifiedFunction(), static::getCacheFilename($view->getSourceFilename()));
             CacheRegistry::cache();
 
-            return $html;
+            return [$namespace, $functionName, $html];
         }
 
         $fqName = UseRegistry::read($functionName);
         $filename = CacheRegistry::read($fqName);
+        $namespace = ElementUtils::getNamespaceFromFQClassName($fqName);
 
         $html = Utils::safeRead(CACHE_DIR . $filename);
 
-        return $html;
+        return [$namespace, $functionName, $html];
     }
 
     public function parse(): void
@@ -95,13 +99,14 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
 
         foreach($this->componentList as $component) {
 
-            self::renderComponent($component);
-
+            list($namespace, $function, $html) = self::renderComponent($component);
 
             $fqName = UseRegistry::read($component);
             $filename = CacheRegistry::read($fqName);
 
-            $ns = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
+            // $ns = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
+            // $html = $this->code;
+            $ns = "namespace " . $namespace . ';' . PHP_EOL;
 
             $include = str_replace('%s', $filename, INCLUDE_PLACEHOLDER);
 

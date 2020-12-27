@@ -68,31 +68,6 @@ class Element extends StaticElement implements ElementInterface
         return array_keys($this->children);
     }
 
-    public function getNamespace(): string
-    {
-        $typeParts = explode('\\', $this->getFullType());
-        array_pop($typeParts);
-
-        $result = (count($typeParts) > 0) ? implode('\\', $typeParts) : '';
-
-        return $result;
-    }
-
-    public function getFullType(): string
-    {
-        if ($this->fqClassName == '') {
-            $this->fqClassName = get_class($this);
-        }
-
-        return $this->fqClassName;
-    }
-
-
-    public function getBaseType(): string
-    {
-        return get_parent_class($this);
-    }
-
     public function getFileName(): string
     {
         $reflection = $this->getReflection();

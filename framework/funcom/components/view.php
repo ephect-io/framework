@@ -5,6 +5,7 @@ namespace FunCom\Components;
 use FunCom\IO\Utils;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
 
 class View extends AbstractFileComponent
@@ -20,8 +21,8 @@ class View extends AbstractFileComponent
     {
         parent::analyse();
 
-        ClassRegistry::write($this->getFullCleasName(), $this->getSourceFilename());
-        UseRegistry::safeWrite($this->getFunction(), $this->getFullCleasName());
+        ClassRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
+        UseRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
     public function parse(): void
@@ -80,17 +81,18 @@ class View extends AbstractFileComponent
 
     public static function bind(string $uid)
     {
-        \FunCom\Registry\CodeRegistry::uncache();
+        CodeRegistry::uncache();
+        
+        $body = CodeRegistry::read($uid);
+        $body = urldecode($body);
 
-        //$children = \FunCom\Registry\CodeRegistry::read($uid);
+        $prehtml = new PreHtml($body);
+        $prehtml->parse();
 
-        $function = 'render_' . $uid;
-        $filename = $function . '.php';
+        $html = $prehtml->getCode();
 
-        include_once CACHE_DIR . $filename;
+        eval('?>' . $html);
 
-        $fn = call_user_func($function, $uid);
-        $fn();
     }
 
     public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void

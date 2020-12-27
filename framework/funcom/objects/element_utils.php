@@ -7,28 +7,16 @@ use FunCom\IO\Utils;
 final class ElementUtils 
 {
     
-    public static function getFunctionDefinition($filepath): ?array
+    public static function getFunctionDefinition($contents): ?array
     {
-        $contents = Utils::safeRead($filepath);
-
-        if ($contents === null) {
-            return null;
-        }
-
         $namespace = self::grabKeywordName('namespace', $contents, ';');
         $functionName = self::grabKeywordName('function', $contents, '(');
 
         return [$namespace, $functionName];
     }
 
-    public static function getTraitDefinition($filepath): ?array
+    public static function getTraitDefinition($contents): ?array
     {
-        $contents = Utils::safeRead($filepath);
-
-        if ($contents === null) {
-            return null;
-        }
-
         $namespace = self::grabKeywordName('namespace', $contents, ';');
         $traitName = self::grabKeywordName('trait', $contents, ' ');
         $traitName = trim($traitName, '{');
@@ -37,14 +25,8 @@ final class ElementUtils
         return [$namespace, $traitName];
     }
 
-    public static function getInterfaceDefinition($filepath): ?array
+    public static function getInterfaceDefinition($contents): ?array
     {
-        $contents = Utils::safeRead($filepath);
-
-        if ($contents === null) {
-            return null;
-        }
-
         $namespace = self::grabKeywordName('namespace', $contents, ';');
         $interfaceName = self::grabKeywordName('interface', $contents, ' ');
         $interfaceName = trim($interfaceName, '{');
@@ -53,14 +35,8 @@ final class ElementUtils
         return [$namespace, $interfaceName];
     }
 
-    public static function getClassDefinition($filepath): ?array
+    public static function getClassDefinition($contents): ?array
     {
-        $contents = Utils::safeRead($filepath);
-
-        if ($contents === null) {
-            return null;
-        }
-
         $namespace = self::grabKeywordName('namespace', $contents, ';');
         $className = self::grabKeywordName('class', $contents, ' ');
         $className = trim($className, '{');
@@ -81,5 +57,58 @@ final class ElementUtils
         }
 
         return $result;
+    }
+
+    public static function getNamespaceFromFQClassName($fqClassName): string
+    {
+        $typeParts = explode('\\', $fqClassName);
+        $type = array_pop($typeParts);
+        $namespace = implode('\\', $typeParts);
+
+        return $namespace;
+    }
+
+    public static function getFunctionDefinitionFromFile($filepath): ?array
+    {
+        $contents = Utils::safeRead($filepath);
+
+        if ($contents === null) {
+            return null;
+        }
+
+        return self::getFunctionDefinition($contents);
+    }
+
+    public static function getTraitDefinitionFromFile($filepath): ?array
+    {
+        $contents = Utils::safeRead($filepath);
+
+        if ($contents === null) {
+            return null;
+        }
+
+        return self::getTraitDefinition($contents);
+    }
+
+    public static function getInterfaceDefinitionFromFile($filepath): ?array
+    {
+        $contents = Utils::safeRead($filepath);
+
+        if ($contents === null) {
+            return null;
+        }
+
+        return self::getInterfaceDefinition($contents);
+    }
+
+    public static function getClassDefinitionFromFile($filepath): ?array
+    {
+        $contents = Utils::safeRead($filepath);
+
+        if ($contents === null) {
+            return null;
+        }
+
+        return self::getClassDefinition($contents);
     }
 }

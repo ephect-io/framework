@@ -8,6 +8,8 @@ trait ElementTrait
     protected $uid = '';
     protected $id = 'noname';
     protected $type = '';
+    protected $namespace = '';
+    protected $fqClassName = '';
 
     public function getUID(): string
     {
@@ -37,8 +39,33 @@ trait ElementTrait
         if ($this->type === '') {
             $typeParts = explode('\\', $this->getFullType());
             $this->type = array_pop($typeParts);
+            $this->namespace = implode('\\', $typeParts);
         }
 
         return $this->type;
     }
+
+    public function getFullType(): string
+    {
+        if ($this->fqClassName == '') {
+            $this->fqClassName = get_class($this);
+        }
+
+        return $this->fqClassName;
+    }
+
+    public function getBaseType(): string
+    {
+        return get_parent_class($this);
+    }
+
+    public function getNamespace(): string
+    {
+        if($this->namespace === '') {
+            $this->getType();
+        }
+
+        return $this->namespace;
+    }
+
 }
