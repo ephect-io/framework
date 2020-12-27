@@ -197,6 +197,13 @@ class Parser
                 continue;
             }
 
+            // $previousBody = $componentBody;
+            // if($this->doBlocks($componentName, $componentBody)) 
+            // {
+            //     $subject = str_replace($previousBody, $componentBody, $subject);
+            //     $component = str_replace($previousBody, $componentBody, $component);
+            // }
+
             if ($componentName === 'Block') {
                 $this->doOpenComponent($componentName, $componentArgs, $componentBody);
                 continue;
@@ -208,6 +215,45 @@ class Parser
         }
 
         $this->html = $subject;
+
+        return $result;
+    }
+
+    public function doBlocks(string $parentComponent, ?string &$subject = null): bool
+    {
+        $result = false;
+
+        $re = '/<(' . 'Block' . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)(<\/\1>)/m';
+        $subject = $subject ?: $this->html;
+
+        preg_match_all($re, $subject, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
+
+
+        foreach ($matches as $match) {
+            $component = $match[0][0];
+            $componentName = $match[1][0];
+            $componentArgs = isset($match[2][0]) ? trim($match[2][0]) : null;
+            $componentBody = trim($match[3][0]);
+
+            $componentBoundaries = '["opener" => "' . urlencode(substr($component, 0, $match[3][1] - $match[0][1])) . '", ';
+            $componentBoundaries .= '"closer" => "' . urlencode($match[4][0]) . '", ]';
+
+            if (trim($componentArgs) !== null) {
+                $componentArgs = $this->doArguments($componentArgs);
+            }
+
+            if (empty($componentBody)) {
+                continue;
+            }
+
+            $this->doFragment($parentComponent, $component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject);
+
+                
+        }
+
+        $this->html = $subject;
+
+        $result = false !== $subject;
 
         return $result;
     }
@@ -331,7 +377,7 @@ class Parser
         <?php
         CHILDREN;
 
-        Utils::safeWrite(CACHE_DIR . "render_$uid.php", $children);
+        // Utils::safeWrite(CACHE_DIR . "render_$uid.php", $children);
         $body = urlencode($children);
         CodeRegistry::write($uid, $body);
 
@@ -349,6 +395,31 @@ class Parser
 
         $componentRender = "<?php \$fn = $fqComponentName($children); \$fn(); ?>";
 
+        //$componentRender = $this->makeFragment($componentName, $componentArgs, $uid);
+
+        $subject = str_replace($component, $componentRender, $subject);
+
+        $result = $subject !== null;
+
+        return $result;
+    }
+
+
+    public function doFragment(string $parentComponent, string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
+    {
+        $uid = $this->view->getUID();
+
+        $args = $this->doArgumentsToString($componentArgs);
+        $args = ', ' . (($args === null) ? "null" : $args);
+        $body = urlencode($componentBody);
+
+        CodeRegistry::write($uid, $body);
+
+        $className = $this->view->getFunction();
+        $classArgs = 'null';
+        
+        $componentRender = "<?php \FunCom\Components\View::make('$parentComponent', '$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
+        
         //$componentRender = $this->makeFragment($componentName, $componentArgs, $uid);
 
         $subject = str_replace($component, $componentRender, $subject);
