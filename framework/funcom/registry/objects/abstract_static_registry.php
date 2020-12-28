@@ -2,17 +2,17 @@
 
 namespace FunCom\Registry;
 
-abstract class AbstractStaticRegistry extends AbstractRegistry implements StaticRegistryInterface
-{
+abstract class AbstractStaticRegistry extends AbstractRegistry implements StaticRegistryInterface, AbstractRegistryInterface
+{    
     protected function __construct()
     {
     }
 
-    public abstract static function getInstance(): StaticRegistryInterface;
+    public abstract static function getInstance(): AbstractRegistryInterface;
 
     public static function write(string $key, $item): void
     {
-        static::getInstance()->setEntry($key, $item);
+        static::getInstance()->_write($key, $item);
     }
 
     public static function safeWrite(string $key, $item): bool
@@ -26,31 +26,36 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
 
     public static function read($key, $item = null)
     {
-        return static::getInstance()->getEntry($key, $item);
+        return static::getInstance()->_read($key, $item);
     }
 
     public static function items(): array
     {
-        return static::getInstance()->getAll();
+        return static::getInstance()->_items();
     }
 
     public static function cache(): bool
     {
-        return static::getInstance()->save();
+        return static::getInstance()->_cache();
     }
 
     public static function uncache(): bool
     {
-        return static::getInstance()->load();
+        return static::getInstance()->_uncache();
     }
 
+    public static function delete(string $key): void
+    {
+        static::getInstance()->_delete($key);
+    }
+    
     public static function exists(string $key): bool
     {
-        return static::getInstance()->entryExists($key);
+        return static::getInstance()->_exists($key);
     }
 
     public static function setCacheDirectory(string $directory): void
     {
-        static::getInstance()->setBaseDirectory($directory);
+        static::getInstance()->_setCacheDirectory($directory);
     }
 }

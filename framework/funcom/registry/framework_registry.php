@@ -4,13 +4,13 @@ namespace FunCom\Registry;
 
 class FrameworkRegistry extends AbstractStaticRegistry
 {
-    protected static $instance = null;
+    private static $instance = null;
 
-    public static function getInstance(): StaticRegistryInterface
+    public static function getInstance(): AbstractRegistryInterface
     {
         if (self::$instance === null) {
             self::$instance = new FrameworkRegistry();
-            self::$instance->setBaseDirectory(RUNTIME_DIR);
+            self::$instance->_setCacheDirectory(RUNTIME_DIR);
         }
 
         return self::$instance;

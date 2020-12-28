@@ -2,28 +2,23 @@
 
 namespace FunCom\Registry;
 
+use FunCom\ElementTrait;
 use FunCom\IO\Utils;
 
-abstract class AbstractRegistry
+abstract class AbstractRegistry implements AbstractRegistryInterface
 {
     private $entries = [];
     private $isLoaded = false;
     private $baseDirectory = CACHE_DIR;
 
-    protected function getName(): string
-    {
-        $parts = explode('\\', get_class($this));
-        $className = array_pop($parts);
+    use ElementTrait;
 
-        return $className;
-    }
-
-    public function getAll(): ?array
+    public function _items(): array
     {
         return $this->entries;
     }
 
-    public function setEntry(string $key, $value): void
+    public function _write(string $key, $value): void
     {
         if (!isset($this->entries[$key])) {
             $this->entries[$key] = null;
@@ -31,7 +26,7 @@ abstract class AbstractRegistry
         $this->entries[$key] = $value;
     }
 
-    public function getEntry($key, $value = null)
+    public function _read($key, $value = null)
     {
         if (!isset($this->entries[$key])) {
             return null;
@@ -48,16 +43,21 @@ abstract class AbstractRegistry
         return $this->entries[$key][$value];
     }
 
-    public function entryExists(string $key): bool
+    public function _delete(string $key): void
+    {
+        unset($this->entries[$key]);
+    }
+
+    public function _exists(string $key): bool
     {
         $result =  isset($this->entries[$key]);
 
         return $result;
     }
 
-    public function save(): bool
+    public function _cache(): bool
     {
-        $entries = $this->getAll();
+        $entries = $this->_items();
         $json = json_encode($entries, JSON_PRETTY_PRINT);
         $registryFilename = $this->getCacheFileName();
         $len = Utils::safeWrite($registryFilename, $json);
@@ -65,7 +65,7 @@ abstract class AbstractRegistry
         return $len !== null;
     }
 
-    public function load(): bool
+    public function _uncache(): bool
     {
         if ($this->isLoaded) {
             return false;
@@ -84,13 +84,13 @@ abstract class AbstractRegistry
 
     public function getCacheFileName(): string
     {
-        $fileName = $this->getName();
+        $fileName = $this->getType();
         $result = $this->baseDirectory . strtolower($fileName) . '.json';
 
         return $result;
     }
 
-    public function setBaseDirectory(string $directory) : void
+    public function _setCacheDirectory(string $directory): void
     {
         $this->baseDirectory = $directory;
     }
