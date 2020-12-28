@@ -70,7 +70,7 @@ class Maker
         $body = urlencode($children);
         CodeRegistry::write($uid, $body);
 
-        $className = $this->view->getFunction();
+        $className = $this->view->getFunction() ?: $componentName;
         $classArgs = 'null';
 
         $fqComponentName = '\\' . UseRegistry::read($componentName);
@@ -91,61 +91,6 @@ class Maker
         $result = $subject !== null;
 
         return $result;
-    }
-
-
-    public function doFragment(string $parentComponent, string $component, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
-    {
-        $uid = $this->view->getUID();
-
-        $args = $this->doArgumentsToString($componentArgs);
-        $args = ', ' . (($args === null) ? "null" : $args);
-        $body = urlencode($componentBody);
-
-        CodeRegistry::write($uid, $body);
-
-        $className = $this->view->getFunction();
-        $classArgs = 'null';
-        
-        $componentRender = "<?php \FunCom\Components\View::make('$parentComponent', '$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
-        
-        //$componentRender = $this->makeFragment($componentName, $componentArgs, $uid);
-
-        $subject = str_replace($component, $componentRender, $subject);
-
-        $result = $subject !== null;
-
-        return $result;
-    }
-
-
-    public function makeFragment(string $componentName, ?array $componentArgs, string $uid): string
-    {
-        list($className, $filename, $isCached) = AbstractComponent::findComponent($componentName);
-
-        $html = Utils::safeRead(($isCached ? CACHE_DIR : SRC_ROOT) . $filename);
-        // $html = View::renderHTML($componentName, $componentArgs);
-
-        $fragment = new Fragment($uid, $html);
-
-        $fragment->parse();
-
-        $html = $fragment->getParentHTML();
-
-
-        $functionName = $this->view->getFunction();
-
-        list($className, $filename, $isCached) = AbstractComponent::findComponent($functionName);
-
-        $prehtml = new PreHtml($html);
-        $prehtml->load($filename);
-        $prehtml->parse();
-
-        $html = $prehtml->getCode();
-
-        Utils::safeWrite(CACHE_DIR . $filename, $html);
-
-        return $html;
     }
 
     public static function doArgumentsToString(array $componentArgs): ?string

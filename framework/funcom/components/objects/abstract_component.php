@@ -8,9 +8,7 @@ use FunCom\Components\Generators\Parser;
 use FunCom\ElementTrait;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
-use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
-use FunCom\Registry\ViewRegistry;
 use tidy;
 
 abstract class AbstractComponent implements ComponentInterface
@@ -157,17 +155,6 @@ abstract class AbstractComponent implements ComponentInterface
 
         $child = $children["child"]["name"];
         $uid = $children["child"]["uid"];
-        // $children = CodeRegistry::read($uid);
-        // $children = urldecode($children);
-
-        // UseRegistry::uncache();
-        // ClassRegistry::uncache();
-        // ViewRegistry::uncache();
-
-        // $fqClass = UseRegistry::read($child);
-        // $filename = ClassRegistry::read($fqClass);
-        // $uid = ViewRegistry::read($filename);
-
 
         return [$props, $uid];
     }

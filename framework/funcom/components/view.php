@@ -81,18 +81,26 @@ class View extends AbstractFileComponent
 
     public static function bind(string $uid)
     {
-        CodeRegistry::uncache();
-        
-        $body = CodeRegistry::read($uid);
-        $body = urldecode($body);
+        $filename = CACHE_DIR . "render_$uid.php";
+        if (null === $html = Utils::safeRead($filename)) {
+            CodeRegistry::uncache();
 
-        $prehtml = new PreHtml($body);
-        $prehtml->parse();
+            $body = CodeRegistry::read($uid);
+            $body = urldecode($body);
 
-        $html = $prehtml->getCode();
+            $prehtml = new PreHtml($body);
+            $prehtml->parse();
+
+            $html = $prehtml->getCode();
+
+            Utils::safeWrite($filename, $html);
+            
+            CodeRegistry::delete($uid);
+            CodeRegistry::cache();
+
+        }
 
         eval('?>' . $html);
-
     }
 
     public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void

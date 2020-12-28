@@ -6,7 +6,6 @@ use FunCom\ElementUtils;
 use FunCom\IO\Utils;
 use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\ClassRegistry;
-use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
 
