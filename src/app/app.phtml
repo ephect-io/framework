@@ -8,11 +8,12 @@ function App()
 {
     return (<<<HTML
     <Router>
-        <Switcher>
-            <Handler>
-                <SweetHome />
-            </Handler>
-        </Switcher>
+        <Route rule='/' reditect={SweetHome}>
+            <SweetHome />
+        </Route>
+        <Route rule='/info' redirect={Info}>
+            <Info />
+        </Route>
     </Router>
     HTML);
 }
