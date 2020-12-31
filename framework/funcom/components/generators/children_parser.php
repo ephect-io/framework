@@ -16,7 +16,6 @@ class ChildrenParser extends Parser
 
         preg_match_all($re, $subject, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
-
         foreach ($matches as $match) {
             $component = $match[0][0];
             $componentName = $match[1][0];

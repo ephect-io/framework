@@ -1,7 +1,7 @@
 <?php
 
-include 'funcom/core/autoloader.php';
 include 'funcom/core/constants.php';
+include FUNCOM_ROOT . 'core' . DIRECTORY_SEPARATOR . 'autoloader.php';
 include FUNCOM_ROOT . 'io' . DIRECTORY_SEPARATOR . 'utils.php';
 include FUNCOM_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_trait.php';
 include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_registry_interface.php';
@@ -20,8 +20,11 @@ if (!FrameworkRegistry::uncache()) {
     include FUNCOM_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_utils.php';
 
     $frameworkFiles = Utils::walkTreeFiltered(FRAMEWORK_ROOT, ['php']);
-    array_shift($frameworkFiles);
+
     foreach ($frameworkFiles as $filename) {
+        if($filename === 'bootstrap.php') {
+            continue;
+        }
 
         if (false !== strpos($filename, 'interface')) {
             list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(FRAMEWORK_ROOT . $filename);

@@ -2,9 +2,10 @@
 
 namespace FunCom\Components;
 
+use FunCom\ElementUtils;
 use FunCom\IO\Utils as IOUtils;
 use FunCom\Registry\ClassRegistry;
-use FunCom\Registry\CacheRegistry;
+use FunCom\Registry\PluginRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
 
@@ -13,26 +14,36 @@ class Compiler
     /** @return void  */
     public function perform(): void
     {
-        $viewList = $this->searchForViews();
+        if (!ViewRegistry::uncache()) {
+            $viewList = $this->searchForViews();
+            foreach ($viewList as $key => $viewFile) {
 
-        ViewRegistry::uncache();
+                $view = new View();
+                $view->load($viewFile);
+                $view->analyse();
 
-        $views = [];
-
-        foreach ($viewList as $viewFile) {
-
-            $view = new View();
-            $view->load($viewFile);
-            $view->analyse();
-
-            array_push($views, $view);
-
-            ViewRegistry::write($viewFile, $view->getUID());
+                ViewRegistry::write($viewFile, $view->getUID());
+            }
+            ViewRegistry::cache();
+            ClassRegistry::cache();
+            UseRegistry::cache();
         }
-        ViewRegistry::cache();
-        ClassRegistry::cache();
-        UseRegistry::cache();
 
+        if (!PluginRegistry::uncache()) {
+            $pluginList = $this->searchForPlugins();
+            foreach ($pluginList as $key => $pluginFile) {
+                // list($ns, $class) = ElementUtils::getClassDefinitionFromFile(PLUGINS_ROOT . $pluginFile);
+                // $fqClass = $ns . '\\' . $class;
+                // $plugin = new $fqClass;
+                $plugin = new Plugin();
+                $plugin->load($pluginFile);
+                $plugin->analyse();
+
+                PluginRegistry::write($pluginFile, $plugin->getUID());
+            }
+            PluginRegistry::cache();
+            UseRegistry::cache();
+        }
     }
 
     /** @return array  */
@@ -44,4 +55,11 @@ class Compiler
     }
 
 
+    /** @return array  */
+    private function searchForPlugins(): array
+    {
+        $result = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['php']);
+
+        return $result;
+    }
 }

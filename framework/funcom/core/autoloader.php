@@ -2,7 +2,6 @@
 
 namespace FunCom\Core;
 
-use FunCom\Registry\CacheRegistry;
 use FunCom\Registry\FrameworkRegistry;
 
 class Autoloader

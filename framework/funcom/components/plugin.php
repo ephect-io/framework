@@ -2,12 +2,13 @@
 
 namespace FunCom\Components;
 
+use FunCom\ElementUtils;
 use FunCom\IO\Utils;
-use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\CodeRegistry;
+use FunCom\Registry\PluginRegistry;
 use FunCom\Registry\UseRegistry;
 
-class View extends AbstractFileComponent
+class Plugin extends AbstractPlugin
 {
 
     public function __construct(string $uid = '')
@@ -16,11 +17,27 @@ class View extends AbstractFileComponent
         $this->getUID();
     }
 
+    public function load(string $filename): bool
+    {
+        $result = false;
+        $this->filename = $filename;
+
+        $this->code = Utils::safeRead(PLUGINS_ROOT . $this->filename);
+
+        list($this->namespace, $this->function) = ElementUtils::getFunctionDefinition($this->code);
+        if($this->function === null) {
+            list($this->namespace, $this->function) = ElementUtils::getClassDefinition($this->code);
+        } 
+        $result = $this->code !== null;
+
+        return  $result;
+    }
+
     public function analyse(): void
     {
         parent::analyse();
 
-        ClassRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
+        PluginRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         UseRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
@@ -41,7 +58,6 @@ class View extends AbstractFileComponent
 
     public static function renderHTML(string $functionName, ?array $functionArgs = null): string
     {
-
         parent::renderComponent($functionName, $functionArgs);
 
         $html = parent::renderHTML($functionName, $functionArgs);
@@ -71,28 +87,11 @@ class View extends AbstractFileComponent
             $html = $prehtml->getCode();
 
             Utils::safeWrite($filename, $html);
-            
+
             CodeRegistry::delete($uid);
             CodeRegistry::cache();
-
         }
 
         eval('?>' . $html);
-    }
-
-    public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void
-    {
-        if ($functionName === 'Block') {
-            echo '';
-            return;
-        }
-
-        list($functionName, $cacheFilename) = self::findComponent($functionName);
-
-
-        // TO BE DONE
-        $html = '';
-
-        echo $html;
     }
 }

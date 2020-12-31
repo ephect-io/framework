@@ -56,6 +56,7 @@ abstract class AbstractComponent implements ComponentInterface
 
         $this->children = $parser->doChildrenDeclaration();
         $parser->doScalars();
+        $parser->doArrays();
         $parser->useVariables();
         $parser->normalizeNamespace();
         $parser->doComponents();

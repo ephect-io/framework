@@ -78,7 +78,7 @@ class Parser
         $result = null;
 
         $re = '/\{\{ \.\.\.([a-z0-9_\-\>]*) \}\}/m';
-        $su = '<?php echo $\1 ?>';
+        $su = '<?php echo print_r($\1, true) ?>';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -98,7 +98,7 @@ class Parser
                 continue;
             }
 
-            $this->html = str_replace('{{ ...' . $variable . ' }}', '<?php echo $' . $variable . ' ?>', $this->html);
+            $this->html = str_replace('{{ ...' . $variable . ' }}', '<?php echo print_r($' . $variable . ', true) ?>', $this->html);
         }
 
         $result = $this->html !== null;

@@ -2,7 +2,6 @@
 
 namespace FunCom\Core;
 
-use FunCom\Components\Compiler;
 use FunCom\Element;
 
 abstract class AbstractApplication extends Element

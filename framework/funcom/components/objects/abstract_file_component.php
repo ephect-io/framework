@@ -9,7 +9,7 @@ use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
 
-define('INCLUDE_PLACEHOLDER', "include CACHE_DIR . '%s';" . PHP_EOL);
+define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
 
 class AbstractFileComponent  extends AbstractComponent implements FileComponentInterface
@@ -52,17 +52,14 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
             ViewRegistry::uncache();
 
             $fqName = UseRegistry::read($functionName);
-            $filename = ClassRegistry::read($fqName);
-            $uid = ViewRegistry::read($filename);
-            $view = new View($uid);
-            $view->load($filename);
-            $view->parse();
+            $component = ComponentFactory::create($fqName);
+            $component->parse();
 
-            $html = $view->getCode();
-            $namespace = $view->getNamespace();
-            $functionName = $view->getFunction();
+            $html = $component->getCode();
+            $namespace = $component->getNamespace();
+            $functionName = $component->getFunction();
             
-            CacheRegistry::write($view->getFullyQualifiedFunction(), static::getCacheFilename($view->getSourceFilename()));
+            CacheRegistry::write($component->getFullyQualifiedFunction(), static::getCacheFilename($component->getSourceFilename()));
             CacheRegistry::cache();
 
             return [$namespace, $functionName, $html];
@@ -103,9 +100,12 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
             $fqName = UseRegistry::read($component);
             $filename = CacheRegistry::read($fqName);
 
-            // $ns = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
+
+            $ns = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
+            if(false === strpos($this->code, $ns)) {
+                $ns = "namespace " . $namespace . ';' . PHP_EOL;
+            }
             // $html = $this->code;
-            $ns = "namespace " . $namespace . ';' . PHP_EOL;
 
             $include = str_replace('%s', $filename, INCLUDE_PLACEHOLDER);
 
