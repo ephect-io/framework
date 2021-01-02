@@ -2,18 +2,12 @@
 
 namespace Fun;
 
-use Home as SweetHome;
-
 function App()
 {
     return (<<<HTML
     <Router>
-        <Route rule='/' reditect={SweetHome}>
-            <SweetHome />
-        </Route>
-        <Route rule='/info' redirect={Info}>
-            <Info />
-        </Route>
+        <Route method="GET" rule='/' redirect={Home} />
+        <Route method="GET" rule='/info' redirect={Info} />
     </Router>
     HTML);
 }

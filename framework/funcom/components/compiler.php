@@ -32,9 +32,6 @@ class Compiler
         if (!PluginRegistry::uncache()) {
             $pluginList = $this->searchForPlugins();
             foreach ($pluginList as $key => $pluginFile) {
-                // list($ns, $class) = ElementUtils::getClassDefinitionFromFile(PLUGINS_ROOT . $pluginFile);
-                // $fqClass = $ns . '\\' . $class;
-                // $plugin = new $fqClass;
                 $plugin = new Plugin();
                 $plugin->load($pluginFile);
                 $plugin->analyse();
@@ -58,7 +55,7 @@ class Compiler
     /** @return array  */
     private function searchForPlugins(): array
     {
-        $result = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['php']);
+        $result = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
 
         return $result;
     }

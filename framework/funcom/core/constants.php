@@ -16,3 +16,4 @@ define('LOG_PATH', SRC_ROOT . 'logs' . DIRECTORY_SEPARATOR);
 define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
+define('ROUTES_JSON', RUNTIME_DIR . 'routes.json');
