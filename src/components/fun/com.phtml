@@ -1,11 +1,15 @@
 <?php
 namespace Fun;
 
+use function FunCom\Hooks\useEffect;
+
 function Com($props)
 {
-    $b = 'It is a';
-    $c = 'functional component';
-    $d = $props->from;
+    useEffect(function() use ($props, &$b, &$c, &$d) {
+        $b = 'It is a';
+        $c = 'functional component';
+        $d = $props->from;
+    });
 
     return (<<<HTML
     <h1>{{ props->message }}</h1>
