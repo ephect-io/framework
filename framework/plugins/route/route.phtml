@@ -2,6 +2,7 @@
 
 namespace FunCom\Plugins\Route;
 
+use FunCom\Components\View;
 use FunCom\Plugins\Router\RouterService;
 
 use function FunCom\Hooks\useEffect;
@@ -13,11 +14,18 @@ function Route($props)
         $route = $routeBuilder->build();
 
         $router = new RouterService();
-        $router->addRoute($route->getRule(), $route->getRedirect());
+        $router->addRoute($route->getMethod(), $route->getRule(), $route->getRedirect());
         $router->saveRoutes();
+
+        $match = $router->matchRoute($route);
+
+        if($match !== null) {
+            list($path, $query) = $match;
+            View::render($path);
+        }
     });
 
     return (<<<HTML
-        {{ ...props }}
+        
     HTML);
 }
