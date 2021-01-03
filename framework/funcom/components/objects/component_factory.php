@@ -2,7 +2,6 @@
 
 namespace FunCom\Components;
 
-use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\PluginRegistry;
 use FunCom\Registry\ViewRegistry;
 
@@ -11,7 +10,7 @@ class ComponentFactory
     public static function create(string $fullyQualifiedName): AbstractFileComponent
     {
 
-        $filename = ClassRegistry::read($fullyQualifiedName);
+        $filename = ViewRegistry::read($fullyQualifiedName);
         $isPlugin = $filename === null ? ($filename = PluginRegistry::read($fullyQualifiedName)) !== null : false;
 
         if ($isPlugin) {

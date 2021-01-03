@@ -2,9 +2,7 @@
 
 namespace FunCom\Components;
 
-use FunCom\ElementUtils;
 use FunCom\IO\Utils as IOUtils;
-use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\PluginRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
@@ -25,7 +23,7 @@ class Compiler
                 ViewRegistry::write($viewFile, $view->getUID());
             }
             ViewRegistry::cache();
-            ClassRegistry::cache();
+            ViewRegistry::cache();
             UseRegistry::cache();
         }
 
@@ -50,7 +48,6 @@ class Compiler
 
         return $result;
     }
-
 
     /** @return array  */
     private function searchForPlugins(): array

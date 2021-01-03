@@ -5,7 +5,6 @@ namespace FunCom\Components;
 use FunCom\ElementUtils;
 use FunCom\IO\Utils;
 use FunCom\Registry\CacheRegistry;
-use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
 
@@ -48,7 +47,6 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
     public static function renderComponent(string $functionName, ?array $functionArgs = null): array
     {
         if(!static::checkCache($functionName)) {
-            ClassRegistry::uncache();
             ViewRegistry::uncache();
 
             $fqName = UseRegistry::read($functionName);
@@ -78,7 +76,7 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
     {
         parent::parse();
 
-        ClassRegistry::uncache();
+        ViewRegistry::uncache();
 
         if($this->children !== null) {
 

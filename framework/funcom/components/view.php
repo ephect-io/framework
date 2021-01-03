@@ -3,7 +3,7 @@
 namespace FunCom\Components;
 
 use FunCom\IO\Utils;
-use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\ViewRegistry;
 use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\UseRegistry;
 
@@ -20,7 +20,7 @@ class View extends AbstractFileComponent
     {
         parent::analyse();
 
-        ClassRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
+        ViewRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         UseRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
@@ -41,7 +41,6 @@ class View extends AbstractFileComponent
 
     public static function renderHTML(string $functionName, ?array $functionArgs = null): string
     {
-
         parent::renderComponent($functionName, $functionArgs);
 
         $html = parent::renderHTML($functionName, $functionArgs);
@@ -74,7 +73,6 @@ class View extends AbstractFileComponent
             
             CodeRegistry::delete($uid);
             CodeRegistry::cache();
-
         }
 
         eval('?>' . $html);
@@ -88,7 +86,6 @@ class View extends AbstractFileComponent
         }
 
         list($functionName, $cacheFilename) = self::findComponent($functionName);
-
 
         // TO BE DONE
         $html = '';

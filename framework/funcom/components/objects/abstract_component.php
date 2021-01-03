@@ -7,7 +7,7 @@ use FunCom\Components\Generators\ChildrenParser;
 use FunCom\Components\Generators\Parser;
 use FunCom\ElementTrait;
 use FunCom\Registry\CacheRegistry;
-use FunCom\Registry\ClassRegistry;
+use FunCom\Registry\ViewRegistry;
 use FunCom\Registry\UseRegistry;
 use tidy;
 
@@ -92,8 +92,8 @@ abstract class AbstractComponent implements ComponentInterface
         $isCached = $filename !== null;
 
         if (!$isCached) {
-            ClassRegistry::uncache();
-            $classes = ClassRegistry::items();
+            ViewRegistry::uncache();
+            $classes = ViewRegistry::items();
             $filename = isset($classes[$functionName]) ? $classes[$functionName] : null;
         }
 

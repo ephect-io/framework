@@ -2,16 +2,9 @@
 
 namespace FunCom\Components\Generators;
 
-use FunCom\Components\AbstractComponent;
 use FunCom\Components\ComponentFactory;
 use FunCom\Components\ComponentInterface;
-use FunCom\Components\Fragment;
-use FunCom\Components\PreHtml;
-use FunCom\ElementUtils;
-use FunCom\IO\Utils;
-use FunCom\Registry\ClassRegistry;
 use FunCom\Registry\CodeRegistry;
-use FunCom\Registry\PluginRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
 
@@ -47,7 +40,6 @@ class Maker
     public function makeChildren(string $componentText, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
         UseRegistry::uncache();
-        ClassRegistry::uncache();
         ViewRegistry::uncache();
 
         $fqClass = UseRegistry::read($componentName);
