@@ -10,6 +10,8 @@ include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_
 include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_static_registry.php';
 include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR . 'framework_registry.php';
 
+include HOOKS_ROOT . 'use_effect.php';
+
 use FunCom\ElementUtils;
 use FunCom\IO\Utils;
 use FunCom\Registry\FrameworkRegistry;

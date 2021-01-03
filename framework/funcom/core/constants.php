@@ -6,6 +6,7 @@ define('DOCUMENT_ROOT', $document_root);
 define('SITE_ROOT', dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR);
 define('FRAMEWORK_ROOT', SITE_ROOT .  'framework' . DIRECTORY_SEPARATOR);
 define('FUNCOM_ROOT', FRAMEWORK_ROOT .  'funcom' . DIRECTORY_SEPARATOR);
+define('HOOKS_ROOT', FUNCOM_ROOT .  'hooks' . DIRECTORY_SEPARATOR);
 define('PLUGINS_ROOT', FRAMEWORK_ROOT .  'plugins' . DIRECTORY_SEPARATOR);
 define('SRC_ROOT', SITE_ROOT .  'src' . DIRECTORY_SEPARATOR);
 define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);

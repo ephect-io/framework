@@ -10,7 +10,7 @@ final class ElementUtils
     public static function getFunctionDefinition($contents): ?array
     {
         $namespace = self::grabKeywordName('namespace', $contents, ';');
-        $functionName = self::grabKeywordName('function', $contents, '(');
+        $functionName = self::grabKeywordName("\nfunction", $contents, '(');
 
         return [$namespace, $functionName];
     }

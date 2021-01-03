@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Plugins\Router;
+namespace FunCom\Plugins\Route;
 
 use FunCom\ElementInterface;
 

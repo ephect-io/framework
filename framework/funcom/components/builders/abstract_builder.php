@@ -19,10 +19,10 @@ abstract class AbstractBuilder
     protected function buildEx(string $type): ElementInterface
     {
         $result = null;
-        $props  = (new PropsValidator())->validate($this->props, $this->fields);
-        
+
+        $props  = (new PropsValidator($this->props, $this->fields))->validate();
         $values = array_values($props);
-        $args = implode(', ', $values);
+        
         $result = new $type(...$values);
 
         return $result;

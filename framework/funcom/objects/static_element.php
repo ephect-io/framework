@@ -8,14 +8,14 @@ class StaticElement
 {
     protected static $instance = null;
     protected static $logger = null;
-    
+
     private function __construct()
     {
     }
-    
-    public static function getLogger() : Logger
+
+    public static function getLogger(): Logger
     {
-        if(self::$logger === null) {
+        if (self::$logger === null) {
             self::$logger = Logger::create();
         }
         return self::$logger;
@@ -25,13 +25,13 @@ class StaticElement
     {
         $class = __CLASS__;
         self::$instance = null;
-        
-        if(count($params) > 0) {
+
+        if (count($params) > 0) {
             self::$instance = new $class();
         } else {
             self::$instance = new $class($params);
         }
-        
+
         return self::$instance;
     }
 }

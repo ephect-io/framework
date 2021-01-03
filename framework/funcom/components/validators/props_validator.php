@@ -6,18 +6,27 @@ use InvalidArgumentException;
 
 class PropsValidator
 {
-    public function validate(object $props, array $proptNames): ?array
+    protected $props;
+    protected $fields;
+
+    public function __construct(object $props, array $fields)
+    {
+        $this->props = $props;
+        $this->fields = $fields;
+    }
+
+    public function validate(): ?array
     {
         $result = [];
 
-        foreach($proptNames as $argument) {
+        foreach($this->fields as $field) {
 
-            if(!isset($props->$argument)) {
+            if(!isset($this->props->$field)) {
                 $result = null;
-                throw new InvalidArgumentException("Argument $argument is missing.");
+                throw new InvalidArgumentException("Argument $field is missing.");
             }
     
-            $result[$argument] = $props->$argument;
+            $result[$field] = $this->props->$field;
         }
 
         return $result;

@@ -1,0 +1,23 @@
+<?php
+
+namespace FunCom\Plugins\Route;
+
+use FunCom\Plugins\Router\RouterService;
+
+use function FunCom\Hooks\useEffect;
+
+function Route($props)
+{
+    useEffect(function () use($props) {
+        $routeBuilder = new RouteBuilder($props);
+        $route = $routeBuilder->build();
+
+        $router = new RouterService();
+        $router->addRoute($route->getRule(), $route->getRedirect());
+        $router->saveRoutes();
+    });
+
+    return (<<<HTML
+        {{ ...props }}
+    HTML);
+}
