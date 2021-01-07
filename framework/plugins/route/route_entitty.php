@@ -3,13 +3,12 @@
 namespace FunCom\Plugins\Route;
 
 use FunCom\Element;
-use FunCom\ElementInterface;
 
-class RouteEntity extends Element implements RouteInterface, ElementInterface
+class RouteEntity extends Element implements RouteInterface
 {
-    private $method = '';
-    private $rule = '';
-    private $redirect = '';
+    private string $method = '';
+    private string $rule = '';
+    private string $redirect = '';
 
     public function __construct(string $method = '', string $rule = '', string $redirect = '')
     {
