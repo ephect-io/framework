@@ -48,7 +48,7 @@ class View extends AbstractFileComponent
         return $html;
     }
 
-    public static function render(string $functionName, ?array $functionArgs = null): void
+    public static function render(string $functionName, ?array $functionArgs = null, ?string $parent = null): void
     {
         $html =  self::renderHTML($functionName, $functionArgs);
 

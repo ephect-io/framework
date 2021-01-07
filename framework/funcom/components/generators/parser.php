@@ -150,13 +150,15 @@ class Parser
             $componentName = $match[1];
             $componentArgs = isset($match[2]) ? $match[2] : '';
 
-            $args = '';
+            $args = 'null';
             if (trim($componentArgs) !== '') {
                 $componentArgs = $this->doArguments($componentArgs);
-                $args = ', ' . Maker::doArgumentsToString($componentArgs);
+                $args = Maker::doArgumentsToString($componentArgs);
             }
 
-            $componentRender = "<?php \FunCom\Components\View::render('$componentName'$args); ?>";
+            $parent = $this->view->getFullyQualifiedFunction();
+
+            $componentRender = "<?php \FunCom\Components\View::render('$componentName', $args, '$parent'); ?>";
 
             $this->html = str_replace($component, $componentRender, $this->html);
         }
@@ -166,7 +168,7 @@ class Parser
         return $result;
     }
 
- 
+
     /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
     public function doFunctionArguments(string $subject): ?array
     {
