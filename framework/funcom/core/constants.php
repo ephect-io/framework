@@ -1,6 +1,6 @@
 <?php
 
-$document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
+$document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
 define('DOCUMENT_ROOT', $document_root);
 
 define('SITE_ROOT', dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR);
@@ -18,3 +18,35 @@ define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
 define('ROUTES_JSON', RUNTIME_DIR . 'routes.json');
+
+if(DOCUMENT_ROOT === '') {
+    return;
+}
+
+$scheme = 'http';
+if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
+    $scheme = ($_SERVER['HTTPS'] == 'off') ? 'http' : 'https';
+} elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
+    $scheme = $_SERVER['REQUEST_SCHEME'];
+} elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'lighttpd')) {
+    $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
+} elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
+    $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
+}
+
+define('HTTP_PROTOCOL', $scheme);
+define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
+define('HTTP_HOST', $_SERVER['HTTP_HOST']);
+define('HTTP_ORIGIN', (isset($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_ORIGIN'] : '');
+define('HTTP_ACCEPT', (isset($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '');
+define('HTTP_PORT', $_SERVER['SERVER_PORT']);
+define('COOKIE', $_COOKIE);
+define('REQUEST_URI', $_SERVER['REQUEST_URI']);
+define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
+define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
+define('SERVER_NAME', $_SERVER['SERVER_NAME']);
+define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
+define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80' && HTTP_PORT !== '443') ? ':' . HTTP_PORT : ''));
+define('BASE_URI', SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : '') . ((REQUEST_URI !== '') ? REQUEST_URI : ''));
+define('FULL_URI', HTTP_PROTOCOL . '://' . BASE_URI);
+define('FULL_SSL_URI', 'https://' . BASE_URI);
