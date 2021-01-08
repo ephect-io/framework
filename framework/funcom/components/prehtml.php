@@ -4,7 +4,7 @@ namespace FunCom\Components;
 
 use FunCom\Registry\CodeRegistry;
 
-class PreHtml extends AbstractFIleComponent implements FileComponentInterface
+class PreHtml extends AbstractFileComponent implements FileComponentInterface
 {
     public function __construct(string $preHtml)
     {
