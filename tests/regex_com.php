@@ -1,10 +1,24 @@
 <?php
 
-$tag = 'Block';
+namespace FunCom\Core;
 
-$re = '/<(' . $tag . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)(<\/\1>)/m';
+include  dirname(__DIR__) . '/framework/bootstrap.php';
 
-$str = <<<HTML
+use FunCom\CLI\Application;
+use FunCom\Components\Generators\ComponentParser;
+use FunCom\Components\PreHtml;
+use FunCom\IO\Utils;
+
+class Program extends Application
+{
+    public static function main($argv, $argc)
+    {
+        (new Program)->run($argv);
+    }
+
+    public function run(?array ...$params): void
+    {
+        $str = <<<HTML
 namespace Fun;
 
 function Home()
@@ -33,11 +47,14 @@ function Home()
 }
 HTML;
 
-preg_match_all($re, $str, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
+        $prehtml = new PreHtml($str);
+        $cp = new ComponentParser($prehtml);
+        $matches = $cp->doComponents();
 
-// Print the entire match result
-echo json_encode($matches, JSON_PRETTY_PRINT);
+        $json = json_encode($matches, JSON_PRETTY_PRINT);
 
-preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+        Utils::safeWrite('doc2.json', $json);
+    }
+}
 
-echo json_encode($matches, JSON_PRETTY_PRINT);
+Program::main($argv, $argc);
