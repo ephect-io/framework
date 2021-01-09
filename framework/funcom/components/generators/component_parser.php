@@ -39,7 +39,6 @@ class ComponentParser
 
         preg_match_all($re, $str, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
-
         $l = count($matches);
 
         // Re-structure the matches recursively
@@ -49,6 +48,7 @@ class ComponentParser
             $matches[$i]['component'] = $matches[$i][0][0];
             $matches[$i]['name'] = $matches[$i][2][0];
             $matches[$i]['startsAt'] = $matches[$i][0][1];
+            $matches[$i]['endsAt'] = $matches[$i][0][1] + strlen($matches[$i][0][0]);
             $matches[$i]['props'] = $this->doArguments($matches[$i][0][0]);
             $matches[$i]['hasCloser'] = false;
             $matches[$i]['isCloser'] = false;
@@ -62,6 +62,8 @@ class ComponentParser
                             'component' => $matches[$i][0][0],
                             'name' => $matches[$i][2][0],
                             'startsAt' => $matches[$i][0][1],
+                            'endsAt' => $matches[$i][0][1] + strlen($matches[$i][0][0]),
+                            'contents' => ['startsAt' => $matches[$j][0][1] + strlen($matches[$j][0][0]), 'endsAt' => $matches[$i][0][1] - 1],
                         ];
                         $matches[$i]['isCloser'] = true;
                         break;
@@ -97,41 +99,36 @@ class ComponentParser
 
             $isSibling = isset($list[$siblingId]) && $list[$siblingId]['hasCloser'];
 
-            $s = $list[$i]['component'];
+            $component = $list[$i]['component'];
             $firstName = $list[$i]['name'];
-
-            $hasCloser = $list[$i]['hasCloser'];
-
             $secondName = isset($list[$i + 1]) ? $list[$i + 1]['name'] : 'eof';
+
             if (!isset($parentIds[$depth])) {
                 $parentIds[$depth] = $i - 1;
             }
+
             $list[$i]['isSibling'] = $isSibling;
             $list[$i]['parentId'] = $parentIds[$depth];
-
             $list[$i]['depth'] = $depth;
 
             if (TERMINATOR . $firstName != $secondName) {
-                if ($s[1] == TERMINATOR) {
+                if ($list[$i]['isCloser']) {
                     $list[$i]['isSibling'] = $isSibling;
 
                     $pId = !$isSibling && isset($parentIds[$depth]) ? $parentIds[$depth] : $siblingId;
                     $depth--;
-                    $fatherId = $parentIds[$depth];
 
-                    $list[$i]['parentId'] = $fatherId;
+                    $list[$i]['parentId'] = $parentIds[$depth];
                     $list[$i]['depth'] = $depth;
-
-                    $list[$i]['depth'] = $list[$i]['depth'];
 
                     if ($list[$pId]['isSibling']) {
                         $list[$i]['depth'] = $list[$pId]['depth'];
                     }
-                } elseif ($s[1] == QUEST_MARK) {
-                } elseif ($s[strlen($s) - 2] == TERMINATOR) {
-                } elseif ($s[1] == SKIP_MARK) {
+                } elseif ($component[1] == QUEST_MARK) {
+                } elseif (false === $list[$i]['hasCloser']) {
+                } elseif ($component[1] == SKIP_MARK) {
                 } else {
-                    if ($hasCloser) {
+                    if ($list[$i]['hasCloser']) {
                         $depth++;
                     }
                     if (isset($parentIds[$depth])) {
@@ -149,6 +146,7 @@ class ComponentParser
 
         // Reindex the matches
         foreach ($list as $key => $value) {
+            unset($value['isCloser']);
             array_push($result, $value);
         }
         
