@@ -1,6 +1,10 @@
 <?php
 namespace FunCom\IO;
 
+use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
 class Utils
 {
     public static function walkTreeFiltered($path, $filter = [])
@@ -9,8 +13,8 @@ class Utils
         
         $l = strlen($path);
         
-        $dir_iterator = new \RecursiveDirectoryIterator($path);
-        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::CHILD_FIRST);
+        $dir_iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::FOLLOW_SYMLINKS);
+        $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
         foreach ($iterator as $file) {
             $fi = pathinfo($file->getPathName());

@@ -1,0 +1,27 @@
+<?php
+
+namespace Fun;
+
+use Ephel\Template\TemplateEngine;
+use Ephel\Template\TemplateLoader;
+
+use function FunCom\Hooks\useEffect;
+
+function Page()
+{
+
+    $code = '';
+    useEffect(function() use (&$code) {
+
+        $loader = new TemplateLoader(APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
+        $engine = new TemplateEngine($loader);
+
+        $dictionary = ["firstname" => "David"];
+
+        $code = $engine->render('page.phtml', $dictionary);
+    });
+
+    return (<<<HTML
+        {{ code }}
+    HTML);
+}

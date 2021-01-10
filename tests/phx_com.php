@@ -18,7 +18,7 @@ class Program extends Application
     public function run(?array ...$params): void
     {
 
-        $str = <<<STR
+        $str = <<<HTML
     <phx:Mother id="mother0" >
         <phx:Block id="title">FunCom in action !</phx:Block>
         <phx:Block id="stylesheets">
@@ -42,7 +42,7 @@ class Program extends Application
             <script src="js/pond.js"></script>
         </phx:Block>
     </phx:Mother>
-STR;
+HTML;
 
         $doc = new XmlDocument($str);
         $doc->matchAll();

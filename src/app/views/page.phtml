@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <phx:block name="title">Welcome!</phx:block>
+    </title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+    <phx:block name="stylesheets">
+        <link rel="stylesheet" href="css/pond-theme.css" />
+        <link rel="stylesheet" href="css/pond.css" />
+    </phx:block>
+</head>
+
+<body>
+    <header>
+        <nav id="mainNav" class="navbar navbar-default no-margin no-border no-radius ">
+            <div class="container">
+                <div id="cw_logo">
+                    <img src="assets/images/logo-CodePhoenixOrg.png">
+                </div>
+                <div>
+                    <h1 class="cw_logo_ex ">&nbsp;pond</h1>
+                </div>
+
+            </div>
+        </nav>
+        <div class="container">
+            <div class="intro-text">
+                <div class="intro-heading">
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <phx:block name="main">
+            <section>
+                <p>
+                    Hello&nbsp;
+                    <phx:echo var="firstname" />!
+                </p>
+                <phx:block name="submain">
+                    <p>This is reed</p>
+                    <p>again</p>
+                </phx:block>
+            </section>
+        </phx:block>
+        <phx:block name="second">
+            <section>
+                <phx:block name="person">
+                    <p>
+                        Me
+                    </p>
+                    <phx:block name="attributes">
+                        My computer
+                        <phx:block name="attributes">
+                            will be stunning
+                        </phx:block>
+                    </phx:block>
+                </phx:block>
+            </section>
+        </phx:block>
+    </main>
+    <phx:block name-"javascripts">
+        <script src="js/pond.js"></script>
+    </phx:block>
+</body>
+
+</html>

@@ -6,6 +6,8 @@ function App()
 {
     return (<<<HTML
     <Router>
+        <Route method="GET" rule='^/page(/)?$' redirect={Page} />
+        <Route method="GET" rule='^/second(/)?$' redirect={Second} />
         <Route method="GET" rule='^/$' redirect={Home} />
         <Route method="GET" rule='^/info(/)?$' redirect={Info} />
     </Router>

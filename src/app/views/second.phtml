@@ -1,0 +1,38 @@
+<phx:extends template="master.phtml" />
+<phx:block name="title">Welcome!</phx:block>
+<phx:block name="stylesheets">
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/app.css" />
+</phx:block>
+<phx:block name="main">
+    <section>
+        <p>
+            Hello&nbsp;
+            <phx:echo var="firstname" />!
+        </p>
+        <phx:block name="submain">
+            <p>This is reed</p>
+            <p>again</p>
+        </phx:block>
+    </section>
+</phx:block>
+<phx:block name="second">
+    <section>
+        <phx:block name="person">
+            <p>
+                Me
+            </p>
+            <phx:block name="attributes">
+                My computer
+                <phx:block name="attributes">
+                    will be stunning
+                </phx:block>
+            </phx:block>
+        </phx:block>
+    </section>
+</phx:block>
+
+
+<phx:block name-"javascripts">
+    <script src="/js/funcom.js"></script>
+</phx:block>
