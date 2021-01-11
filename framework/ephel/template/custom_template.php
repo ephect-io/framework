@@ -1,9 +1,9 @@
 <?php
 namespace Ephel\Template;
 
-use Ephel\Cache\Cache;
 use FunCom\Element;
-use Ephel\Registry\Registry;
+use FunCom\Cache\Cache;
+use FunCom\Registry\Registry;
 use Ephel\Web\UI\CodeGeneratorTrait;
 use Ephel\Web\UI\CustomControl;
 use Ephel\Web\WebObjectInterface;

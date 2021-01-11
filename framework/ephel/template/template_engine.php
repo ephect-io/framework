@@ -1,7 +1,7 @@
 <?php
 namespace Ephel\Template;
 
-use Ephel\Registry\Registry;
+use FunCom\Registry\Registry;
 use Ephel\Web\UI\CustomControl;
 use Ephel\Web\WebObjectTrait;
 

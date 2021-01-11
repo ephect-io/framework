@@ -3,8 +3,8 @@
 namespace Ephel\Web\UI;
 
 use Exception;
-use Ephel\Cache\Cache;
-use Ephel\Registry\Registry;
+use FunCom\Cache\Cache;
+use FunCom\Registry\Registry;
 use Ephel\Xml\XmlDocument;
 use Ephel\Template\CustomTemplate;
 use Ephel\Template\PartialTemplate;
@@ -197,7 +197,7 @@ trait CodeGeneratorTrait
                 array_push($additions[$j], '$this->addChild(' . $thisControl . ');');
                 if ($canRender && $className !== 'this') {
                     array_push($additions[$j], '$html = ' .  $thisControl . '->getHtml();');
-                    array_push($additions[$j], '\\Ephel\\Registry\\Registry::push("' . $uid . '", "' . $controlId . '", $html);');
+                    array_push($additions[$j], '\\FunCom\\Registry\\Registry::push("' . $uid . '", "' . $controlId . '", $html);');
                 }
 
                 $creations[$j] = implode(PHP_EOL, $creations[$j]);
@@ -292,7 +292,7 @@ trait CodeGeneratorTrait
             } elseif ($tag == 'echo' && $var) {
                 /** $declare = '<?php echo ' . $type . $var . '; ?>';  */
 
-                $declare = '<?php echo \\Ephel\\Registry\\Registry::read("template", "' . $uid . '")["' . $var . '"];?>';
+                $declare = '<?php echo \\FunCom\\Registry\\Registry::read("template", "' . $uid . '")["' . $var . '"];?>';
             } elseif ($tag == 'echo' && $prop) {
                 $declare = '<?php echo ' . $type . 'get' . ucfirst($prop) . '(); ?>';
             } elseif ($tag == 'exec') {
@@ -309,7 +309,7 @@ trait CodeGeneratorTrait
                     $declare = '<?php $this->renderHtml(); $this->renderedHtml(); ?>';
                 } else {
                     /** $declare = '<?php ' . $type . $id . '->render(); ?>'; */
-                    $declare = '<?php echo \\Ephel\\Registry\\Registry::read("' . $uid . '", "' . $id . '")[0];?>';
+                    $declare = '<?php echo \\FunCom\\Registry\\Registry::read("' . $uid . '", "' . $id . '")[0];?>';
                 }
             }
 

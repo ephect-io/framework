@@ -8,7 +8,7 @@
 
 namespace Ephel\Xml;
 
-use Ephel\Registry\Registry;
+use FunCom\Registry\Registry;
 use FunCom\Element;
 
 /**

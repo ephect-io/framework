@@ -7,7 +7,7 @@
 
 namespace Ephel\Template;
 
-use Ephel\Registry\Registry;
+use FunCom\Registry\Registry;
 use Ephel\Web\WebObjectInterface;
 
 /**
@@ -31,6 +31,5 @@ class Template extends CustomTemplate
         $this->viewIsFather = true;
         $this->fatherUID = $this->getUID();
 
-        Registry::importClasses($this->getDirName());
     }
 }

@@ -14,7 +14,7 @@ class Enumerator implements EnumeratorInterface
     public static function enum(?int $value = null): ?int
     {
         if ($value !== null) {
-            static::$instance = new TEnumerator($value);
+            static::$instance = new Enumerator($value);
             return null;
         }
         return static::$instance->getValue();

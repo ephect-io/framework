@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephel\Registry;
+namespace FunCom\Registry;
 
-use Ephel\Core\StaticElement;
+use FunCom\StaticElement;
 
 /**
  * Description of registry
@@ -12,8 +12,6 @@ use Ephel\Core\StaticElement;
 
 class Registry extends StaticElement
 {
-    private static $_classRegistry = null;
-    private static $_code = [];
     private static $_items = [];
     private static $_isInit = false;
 
@@ -26,14 +24,6 @@ class Registry extends StaticElement
         self::$_isInit = true;
 
         return self::$_isInit;
-    }
-
-    public static function importClasses(string $dirName): void
-    {
-    }
-
-    public static function registerClass(classInfo $info)
-    {
     }
 
     public static function classInfo(string &$className = '')
@@ -82,10 +72,6 @@ class Registry extends StaticElement
     public static function setCode($id, $value): void
     {
         self::write('code', $id, $value);
-        //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
-        //file_put_contents(RUNTIME_DIR . $id . PREHTML_EXTENSION, $value);
-        //$keys = array_keys(self::$_code);
-        //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
 
     public static function getHtml($id): string
@@ -221,7 +207,6 @@ class Registry extends StaticElement
         }
         if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
-            // self::$_items[$item][] = $value;
             return self::$_items[$item];
         }
     }

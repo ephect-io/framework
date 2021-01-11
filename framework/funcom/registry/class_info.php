@@ -1,9 +1,9 @@
 <?php
 
-namespace Ephel\Registry;
+namespace FunCom\Registry;
 
 use FunCom\StaticElement;
-use Ephel\Core\Registry;
+
 
 /**
  * Description of registry

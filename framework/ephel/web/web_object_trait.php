@@ -7,11 +7,11 @@ namespace Ephel\Web;
  * @author david
  */
 
-use Ephel\Cache\Cache;
 use FunCom\Element;
-use Ephel\Registry\Registry;
+use FunCom\Registry\Registry;
 use Ephel\Template\ETemplateType;
 use Ephel\Template\CustomTemplate;
+use FunCom\Cache\Cache;
 
 trait WebObjectTrait
 {
@@ -72,7 +72,7 @@ trait WebObjectTrait
             $scriptURI = Cache::absoluteURL($script);
             $jscall = <<<JSCRIPT
             <script type='text/javascript' src='{$scriptURI}'></script>
-JSCRIPT;
+            JSCRIPT;
 
             $html = Registry::getHtml($uid);
 
@@ -341,14 +341,12 @@ JSCRIPT;
         if ($typeName === null) {
             $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
         }
-        $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
         $this->cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
         $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
         if ($this->isInternalComponent()) {
             $dirName = $this->getDirName();
-            $this->modelFileName = $dirName . DIRECTORY_SEPARATOR . $this->modelFileName;
             $this->viewFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewFileName;
             $this->cssFileName = $dirName . DIRECTORY_SEPARATOR . $this->cssFileName;
             $this->controllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->controllerFileName;
@@ -394,14 +392,12 @@ JSCRIPT;
 
     public function getMvcFileNamesByViewName(string $viewName): ?array 
     {
-        $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         $viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $viewName . PREHTML_EXTENSION;
         $cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $viewName . CSS_EXTENSION;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         $jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
         if ($this->isInternalComponent()) {
             $dirName = $this->getDirName();
-            $modelFileName = $dirName . DIRECTORY_SEPARATOR . $modelFileName;
             $viewFileName = $dirName . DIRECTORY_SEPARATOR . $viewFileName;
             $cssFileName = $dirName . DIRECTORY_SEPARATOR . $cssFileName;
             $controllerFileName = $dirName . DIRECTORY_SEPARATOR . $controllerFileName;
@@ -411,76 +407,6 @@ JSCRIPT;
         $cacheFileName = SRC_ROOT . Cache::cacheFilenameFromView($viewName);
 
         return [
-            'modelFileName' => $modelFileName,
-            'viewFileName' => $viewFileName,
-            'controllerFileName' => $controllerFileName,
-            'jsControllerFileName' => $jsControllerFileName,
-            'cssFileName' => $cssFileName,
-            'cacheFileName' => $cacheFileName,
-        ];
-    }
-
-    public function getMvcFileNamesByTypeName(?string $typeName = null): ?array
-    {
-        $result = [];
-
-        $info = Registry::classInfo($typeName);
-        if ($info !== null) {
-            $viewName = CustomTemplate::innerClassNameToFilename($typeName);
-        }
-        if ($info === null) {
-            $viewName = CustomTemplate::userClassNameToFilename($typeName);
-        }
-
-        if ($typeName === null) {
-            $actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
-        }
-        $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-        $viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $viewName . PREHTML_EXTENSION;
-        $cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $viewName . CSS_EXTENSION;
-        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-        $jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
-        if ($this->isInternalComponent()) {
-            $dirName = $this->getDirName();
-            $modelFileName = $dirName . DIRECTORY_SEPARATOR . $modelFileName;
-            $viewFileName = $dirName . DIRECTORY_SEPARATOR . $viewFileName;
-            $cssFileName = $dirName . DIRECTORY_SEPARATOR . $cssFileName;
-            $controllerFileName = $dirName . DIRECTORY_SEPARATOR . $controllerFileName;
-            $jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $jsControllerFileName;
-        }
-
-        if (!file_exists(SITE_ROOT . $viewFileName) && !file_exists(SRC_ROOT . $viewFileName)) {
-            $info = Registry::classInfo($typeName);
-            if ($info !== null) {
-                $viewName = CustomTemplate::innerClassNameToFilename($typeName);
-
-                if ($info->path[0] == '@') {
-                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path) . 'app' . DIRECTORY_SEPARATOR;
-                    $controllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-                    $jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
-                    $cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $viewName . CSS_EXTENSION;
-                    $viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $viewName . PREHTML_EXTENSION;
-                } else {
-
-                    $path = PHINK_VENDOR_LIB . $info->path;
-                    $controllerFileName = $path . $viewName . CLASS_EXTENSION;
-                    $jsControllerFileName = $path . $viewName . JS_EXTENSION;
-                    $cssFileName = $path . $viewName . CSS_EXTENSION;
-                    $viewFileName = $path . $viewName . PREHTML_EXTENSION;
-                }
-                // $path = $info->path;
-                if (!$info->hasTemplate) {
-                    $viewFileName = '';
-                }
-
-                $typeName = $info->namespace . '\\' . $typeName;
-            }
-        }
-
-        $cacheFileName = SRC_ROOT . Cache::cacheFilenameFromView($viewName);
-
-        return [
-            'modelFileName' => $modelFileName,
             'viewFileName' => $viewFileName,
             'controllerFileName' => $controllerFileName,
             'jsControllerFileName' => $jsControllerFileName,
