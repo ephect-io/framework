@@ -10,12 +10,12 @@ define('QUEST_MARK', '?');
 
 class ComponentParser
 {
-
     protected $html = '';
     protected $view = null;
     protected $useVariables = [];
     protected $parentHTML = '';
     protected $maker = null;
+    protected $depths = [];
 
     public function __construct(ComponentInterface $view)
     {
@@ -25,76 +25,80 @@ class ComponentParser
         $this->maker = new Maker($view);
     }
 
-    public function getHtml()
+    public function getHtml(): string
     {
         return $this->html;
+    }
+
+    public function getDepths(): array
+    {
+        return $this->depths;
     }
 
     public function doComponents(): array
     {
         $result = [];
 
+        $list = [];
+
         $re = '/<(\/)?([A-Z]\w+).*?>/m';
         $str = $this->html;
 
-        preg_match_all($re, $str, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
+        preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
-        $l = count($matches);
+        $l = count($list);
 
-        // Re-structure the matches recursively
+        // Re-structure the list recursively
         for ($i = $l - 1; $i > -1; $i--) {
 
-            $matches[$i]['id'] = $i;
-            $matches[$i]['component'] = $matches[$i][0][0];
-            $matches[$i]['name'] = $matches[$i][2][0];
-            $matches[$i]['startsAt'] = $matches[$i][0][1];
-            $matches[$i]['endsAt'] = $matches[$i][0][1] + strlen($matches[$i][0][0]);
-            $matches[$i]['props'] = $this->doArguments($matches[$i][0][0]);
-            $matches[$i]['hasCloser'] = false;
-            $matches[$i]['isCloser'] = false;
+            $list[$i]['id'] = $i;
+            $list[$i]['component'] = $list[$i][0][0];
+            $list[$i]['name'] = $list[$i][2][0];
+            $list[$i]['method'] = $list[$i][2][0];
+            $list[$i]['startsAt'] = $list[$i][0][1];
+            $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
+            $list[$i]['props'] = $this->doArguments($list[$i][0][0]);
+            $list[$i]['hasCloser'] = false;
+            $list[$i]['isCloser'] = false;
 
-            if ($matches[$i][1][0] === '/') {
+            if ($list[$i][1][0] === '/') {
                 for ($j = $i - 1; $j > -1; $j--) {
-                    if ($matches[$i][2][0] === $matches[$j][2][0] && $matches[$j][1][0] === '') {
-                        $matches[$j]['closer'] = [
+                    if ($list[$i][2][0] === $list[$j][2][0] && $list[$j][1][0] === '') {
+                        $list[$j]['closer'] = [
                             'id' => $i,
                             'parentId' => $j,
-                            'component' => $matches[$i][0][0],
-                            'name' => $matches[$i][2][0],
-                            'startsAt' => $matches[$i][0][1],
-                            'endsAt' => $matches[$i][0][1] + strlen($matches[$i][0][0]),
-                            'contents' => ['startsAt' => $matches[$j][0][1] + strlen($matches[$j][0][0]), 'endsAt' => $matches[$i][0][1] - 1],
+                            'component' => $list[$i][0][0],
+                            'name' => $list[$i][2][0],
+                            'startsAt' => $list[$i][0][1],
+                            'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
+                            'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
                         ];
-                        $matches[$i]['isCloser'] = true;
+                        $list[$i]['isCloser'] = true;
                         break;
                     }
                 }
             }
 
-            if (isset($matches[$i])) {
-                unset($matches[$i][0]);
-                unset($matches[$i][1]);
-                unset($matches[$i][2]);
+            if (isset($list[$i])) {
+                unset($list[$i][0]);
+                unset($list[$i][1]);
+                unset($list[$i][2]);
             }
-            if (isset($matches[$i]['closer'])) {
-                $matches[$i]['isCloser'] = false;
-                $matches[$i]['hasCloser'] = true;
+            if (isset($list[$i]['closer'])) {
+                $list[$i]['isCloser'] = false;
+                $list[$i]['hasCloser'] = true;
             }
-        }
-
-        // Reindex the matches
-        $list = [];
-        foreach ($matches as $key => $value) {
-            array_push($list, $value);
         }
 
         $depth = 0;
         $parentIds = [];
         $parentIds[$depth] = -1;
+        
         $l = count($list);
 
-        // Add useful information in matches like depth and parentId
+        // Add useful information in list like depth and parentId
         for ($i = 0; $i < $l; $i++) {
+
             $siblingId = $i - 1;
 
             $isSibling = isset($list[$siblingId]) && $list[$siblingId]['hasCloser'];
@@ -131,9 +135,13 @@ class ComponentParser
                     if ($list[$i]['hasCloser']) {
                         $depth++;
                     }
+
+                    $this->depths[$depth] = 1;
+
                     if (isset($parentIds[$depth])) {
                         unset($parentIds[$depth]);
                     }
+
                 }
             }
         }
@@ -144,13 +152,12 @@ class ComponentParser
             }
         }
 
-        // Reindex the matches
+        // Remove useless data
         foreach ($list as $key => $value) {
             unset($value['isCloser']);
-            array_push($result, $value);
         }
-        
-        return $result;
+
+        return $list;
     }
 
     public function doArguments(string $componentArgs): ?array

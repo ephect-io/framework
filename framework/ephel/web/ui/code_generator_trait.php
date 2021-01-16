@@ -5,9 +5,9 @@ namespace Ephel\Web\UI;
 use Exception;
 use FunCom\Cache\Cache;
 use FunCom\Registry\Registry;
-use Ephel\Xml\XmlDocument;
 use Ephel\Template\CustomTemplate;
 use Ephel\Template\PartialTemplate;
+use FunCom\Components\Generators\ComponentDocument;
 
 /**
  * Description of code_generator
@@ -16,10 +16,10 @@ use Ephel\Template\PartialTemplate;
  */
 trait CodeGeneratorTrait
 {
-    private $_reservedDeclarationsKeywords = ['page', 'echo', 'exec', 'type', 'block', 'extends'];
-    private $_reservedHtmlKeywords = ['echo', 'exec', 'render', 'block'];
+    private $_reservedDeclarationsKeywords = ['Page', 'Echo', 'Exec', 'Type', 'Block', 'Extends'];
+    private $_reservedHtmlKeywords = ['Echo', 'Exec', 'Render', 'Block'];
 
-    public function writeDeclarations(XmlDocument $doc, CustomTemplate $parentTemplate)
+    public function writeDeclarations(ComponentDocument $doc, CustomTemplate $parentTemplate)
     {
 
         $result = '';
@@ -103,11 +103,7 @@ trait CodeGeneratorTrait
                     $fullJsCachePath = Cache::cacheJsFilenameFromView($viewName, $parentTemplate->isInternalComponent());
                     array_push($requires, '\\Ephel\\CustomTemplate::import($this, "' . $className . '");');
 
-                    self::getLogger()->dump('FULL_CLASS_PATH', $fullClassPath);
-
                     list($file, $fqcn, $code) = CustomTemplate::includeClass($fullClassPath, RETURN_CODE);
-
-                    self::getLogger()->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
 
                     if (file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
                         $parentTemplate->getResponse()->addScriptFirst($fullJsCachePath);
@@ -134,54 +130,21 @@ trait CodeGeneratorTrait
 
                 $thisControl = '$this' . (($notThis) ? '->' . $controlId . $index : '');
 
-                $creations[$j] = [];
-                $additions[$j] = [];
-                $afterBinding[$j] = [];
                 if ($isFirst) {
-                    array_push($creations[$j], '$this->setId("' . $this->getViewName() . '"); ');
                     $isFirst = false;
                 }
 
                 foreach ($properties as $key => $value) {
                     if ($key == 'id') {
-                        if ($serialize) {
-                            array_push($creations[$j], 'if(!' . $thisControl . ' = \FunCom\Element::wakeUp("' . $value . '")) {');
-                        }
-                        if ($notThis) {
-                            array_push($creations[$j], $thisControl . ' = new \\' . $fqcn . '($this); ');
-                        }
-
-                        array_push($creations[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
-
-                        if ($serialize) {
-                            array_push($creations[$j], '}');
-                            array_push($additions[$j], 'if(' . $thisControl . ' && !' . $thisControl . '->isAwake()) {');
-                        }
                         continue;
                     }
                     if (is_numeric($value)) {
-                        array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '(' . $value . '); ');
                         continue;
                     }
                     if (strpos($value, ':') > -1) {
-                        $sa = explode(':', $value);
-                        $member = $sa[1];
-                        if ($sa[0] == 'var') {
-                            // if ($key == 'for') {
-                            //     array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
-                            // } else {
-                            array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
-                            // }
-                        } elseif ($sa[0] == 'prop') {
-                            array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->get' . ucfirst($member) . '()); ');
-                        }
                         continue;
                     }
                     if (!empty(strstr($value, '!#base64#'))) {
-                        $plaintext = substr($value, 9);
-                        $plaintext = \base64_decode($plaintext);
-                        array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '(<<<PLAIN_TEXT' . PHP_EOL . $plaintext . PHP_EOL . 'PLAIN_TEXT' . PHP_EOL . '); ');
-                        unset($value);
                         continue;
                     }
                     // if ($key == 'command') {
@@ -190,63 +153,20 @@ trait CodeGeneratorTrait
                     array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
                     // }
                 }
-                if ($serialize) {
-                    array_push($additions[$j], $thisControl . '->sleep(); ');
-                    array_push($additions[$j], '} ');
-                }
-                array_push($additions[$j], '$this->addChild(' . $thisControl . ');');
-                if ($canRender && $className !== 'this') {
-                    array_push($additions[$j], '$html = ' .  $thisControl . '->getHtml();');
-                    array_push($additions[$j], '\\FunCom\\Registry\\Registry::push("' . $uid . '", "' . $controlId . '", $html);');
-                }
 
-                $creations[$j] = implode(PHP_EOL, $creations[$j]);
-                $additions[$j] = implode(PHP_EOL, $additions[$j]);
-                $afterBinding[$j] = implode(PHP_EOL, $afterBinding[$j]);
             }
 
 
             $method = $docList[$j]['method'];
-            if ((Registry::classInfo($method) && Registry::classCanRender($method)) || !Registry::classInfo($method)) {
-                $doc->fieldValue($j, 'method', 'render');
-            }
+            // if ((Registry::classInfo($method) && Registry::classCanRender($method)) || !Registry::classInfo($method)) {
+            //     $doc->fieldValue($j, 'method', 'render');
+            // }
         }
 
-        $requires = array_unique($requires);
-        $requires = implode(PHP_EOL, $requires);
-        $uses = array_unique($uses);
-        $uses = implode(PHP_EOL, $uses);
-
-        $objectCreation = PHP_EOL;
-        $objectCreation .= $requires . PHP_EOL;
-        $objectCreation .= $uses . PHP_EOL;
-        foreach ($matches as $matchIndex) {
-            if (!isset($creations[$matchIndex])) {
-                continue;
-            }
-            $objectCreation .= $creations[$matchIndex] . PHP_EOL;
-        }
-
-        $objectAdditions = PHP_EOL;
-        foreach ($matches as $matchIndex) {
-            if (!isset($additions[$matchIndex])) {
-                continue;
-            }
-            $objectAdditions .= $additions[$matchIndex] . PHP_EOL;
-        }
-
-        $objectAfterBiding = PHP_EOL;
-        foreach ($matches as $matchIndex) {
-            if (!isset($afterBinding[$matchIndex])) {
-                continue;
-            }
-            $objectAfterBiding .= $afterBinding[$matchIndex] . PHP_EOL;
-        }
-
-        return (object) ['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
+        return (object) ['creations' => '', 'additions' => '', 'afterBinding' => ''];
     }
 
-    public function writeHTML(XmlDocument $doc, CustomTemplate $parentTemplate)
+    public function writeHTML(ComponentDocument $doc, CustomTemplate $parentTemplate)
     {
         $dictionary = $parentTemplate->getDictionary();
         $viewHtml = $parentTemplate->getViewHtml();
@@ -277,7 +197,7 @@ trait CodeGeneratorTrait
             $prop = $match->properties('prop');
             $stmt = $match->properties('stmt');
             $params = $match->properties('params');
-            $content = $match->properties('content');
+            $content = $match->getContents();
 
             if (!$type || $type == 'this') {
                 $type = '$this->';
@@ -287,24 +207,25 @@ trait CodeGeneratorTrait
                 $type = $type . '::' . (($tag == 'exec') ? '' : '$');
             }
 
-            if ($tag == 'echo' && $const) {
+            if ($tag == 'Echo' && $const) {
                 $declare = '<?php echo ' . $const . '; ?>';
-            } elseif ($tag == 'echo' && $var) {
+            } elseif ($tag == 'Echo' && $var) {
                 /** $declare = '<?php echo ' . $type . $var . '; ?>';  */
 
                 $declare = '<?php echo \\FunCom\\Registry\\Registry::read("template", "' . $uid . '")["' . $var . '"];?>';
-            } elseif ($tag == 'echo' && $prop) {
+            } elseif ($tag == 'Echo' && $prop) {
                 $declare = '<?php echo ' . $type . 'get' . ucfirst($prop) . '(); ?>';
-            } elseif ($tag == 'exec') {
+            } elseif ($tag == 'Exec') {
                 $declare = '<?php echo ' . $type . $stmt . '(); ?>';
                 if ($params != null) {
                     $declare = '<?php echo ' . $type . $stmt . '(' . $params . '); ?>';
                 }
-            } elseif ($tag == 'block' && false !== $content) {
-                $plaintext = substr($content, 9);
-                $plaintext = \base64_decode($plaintext);
-                $declare = $plaintext;
-            } elseif ($tag == 'render') {
+            } elseif ($tag == 'Block' && null !== $content) {
+                // $plaintext = substr($content, 9);
+                // $plaintext = \base64_decode($plaintext);
+                // $declare = $plaintext;
+                $declare = $content;
+            } elseif ($tag == 'Render') {
                 if ($name == 'this') {
                     $declare = '<?php $this->renderHtml(); $this->renderedHtml(); ?>';
                 } else {

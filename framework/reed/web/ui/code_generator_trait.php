@@ -5,7 +5,7 @@ namespace Reed\Web\UI;
 use Exception;
 use FunCom\Cache\Cache;
 use FunCom\Registry\Registry;
-use Reed\Xml\XmlDocument;
+use FunCom\Xml\XmlDocument;
 use Reed\Template\CustomTemplate;
 use Reed\Template\PartialTemplate;
 

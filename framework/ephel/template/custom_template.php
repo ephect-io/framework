@@ -4,7 +4,7 @@ namespace Ephel\Template;
 use FunCom\Element;
 use FunCom\Cache\Cache;
 use FunCom\Registry\Registry;
-use FunCom\Xml\XmlDocument;
+use FunCom\Components\Generators\ComponentDocument;
 use Ephel\Web\UI\CodeGeneratorTrait;
 use Ephel\Web\UI\CustomControl;
 use Ephel\Web\WebObjectInterface;
@@ -146,17 +146,18 @@ abstract class CustomTemplate extends CustomControl
             }
         }
 
-        $doc = new XmlDocument($this->viewHtml);
+        $doc = new ComponentDocument($this->viewHtml);
         $doc->matchAll();
 
         $firstMatch = $doc->getNextMatch();
-        if ($firstMatch !== null && $firstMatch->getMethod() === 'extends') {
+        if ($firstMatch !== null && $firstMatch->hasCloser()) {
 
             $masterFilename = $firstMatch->properties('template');
+            $masterFilename = strtolower($firstMatch->getName()) . PREHTML_EXTENSION;
             $masterViewName = pathinfo($masterFilename, PATHINFO_FILENAME);
             $masterHtml = file_get_contents($fullViewDir . $masterFilename);
 
-            $masterDoc = new XmlDocument($masterHtml);
+            $masterDoc = new ComponentDocument($masterHtml);
             $masterDoc->matchAll();
 
             $this->viewHtml = $masterDoc->replaceMatches($doc, $this->viewHtml);
@@ -171,16 +172,12 @@ abstract class CustomTemplate extends CustomControl
                 $this->appendToBody($masterScript, $this->viewHtml);
             }
 
-            $doc = new XmlDocument($this->viewHtml);
+            $doc = new ComponentDocument($this->viewHtml);
             $doc->matchAll();
 
         }
 
         if ($doc->getCount() > 0) {
-            $declarations = $this->writeDeclarations($doc, $this);
-            $this->creations = $declarations->creations;
-            $this->additions = $declarations->additions;
-            $this->afterBinding = $declarations->afterBinding;
             $this->viewHtml = $this->writeHTML($doc, $this);
         }
 
@@ -193,15 +190,11 @@ abstract class CustomTemplate extends CustomControl
 
         $code = Registry::getCode($this->getUID());
         // We store the parsed code in a file so that we know it's already parsed on next request.
-        $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
-        $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
         if (!$this->isFatherTemplate() || $this->isClientTemplate()) {
-            $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
+            
+            // $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
+
         }
-        $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
-        $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_PARTIAL_CONTROL, $code);
-        $code = str_replace(CONTROLLER, CONTROL, $code);
-        $code = str_replace(PARTIAL_CONTROLLER, PARTIAL_CONTROL, $code);
         if (!empty(trim($code))) {
             self::getLogger()->debug('SOMETHING TO CACHE : ' . $this->getCacheFileName(), __FILE__, __LINE__);
             if (!$this->isFatherTemplate()) {
@@ -332,7 +325,7 @@ abstract class CustomTemplate extends CustomControl
         $file = str_replace('\\', '_', $fqClassName) . '.php';
 
         if (isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
-            $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
+            $code = substr(trim($code), 0, -2) . PHP_EOL . 'CONTROL_ADDITIONS';
             Registry::setCode($template->getUID(), $code);
         }
 
@@ -409,13 +402,9 @@ abstract class CustomTemplate extends CustomControl
         }
 
         $include = null;
-        //            $modelClass = ($include = Autoloader::includeModelByName($viewName)) ? $include['type'] : DEFALT_MODEL;
-        //            include SRC_ROOT . $include['file'];
-        //            $model = new $modelClass();
-
 
         self::getLogger()->debug('PARSING ' . $viewName . '!!!');
-        $view = new PartialTemplate($ctrl, $className);
+        $view = new PartialTemplate($ctrl, [], $className);
 
         if ($info !== null) {
             list($file, $type, $code) = CustomTemplate::includeInnerClass($view, $info);
@@ -424,12 +413,8 @@ abstract class CustomTemplate extends CustomControl
             list($file, $type, $code) = CustomTemplate::includeTemplateClass($view, RETURN_CODE);
         }
         Registry::setCode($view->getUID(), $code);
-        self::getLogger()->debug($view->getControllerFileName() . ' IS REGISTERED : ' . (Registry::exists('code', $view->getControllerFileName()) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
-        self::getLogger()->debug('CONTROLLER FILE NAME OF THE PARSED VIEW: ' . $view->getControllerFileName());
         $view->parse();
 
-        self::getLogger()->debug('CACHE FILE NAME OF THE PARSED VIEW: ' . $view->getCacheFileName());
-        self::getLogger()->debug('ROOT CACHE FILE NAME OF THE PARSED VIEW: ' . SRC_ROOT . $cacheFilename);
 
         include SRC_ROOT . $cacheFilename;
 
@@ -442,22 +427,13 @@ abstract class CustomTemplate extends CustomControl
         $className = $view->getClassName();
         $viewName = $view->getViewName();
 
-        // $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . \Ephel\Autoloader::innerClassNameToFilename($className) . CLASS_EXTENSION;
-        // $filename = $view->getControllerFileName();
         $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . $viewName . CLASS_EXTENSION;
 
-        if ($filename[0] == '@') {
-            $filename = \str_replace('@/', PHINK_APPS_ROOT, $filename);
-        }
-        if ($filename[0] == '~') {
-            $filename = \str_replace('~/', PHINK_WIDGETS_ROOT, $filename);
-        }
-        //self::getLogger()->debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
 
         if ($withCode) {
-            $code = substr(rim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
+            $code = substr(trim($code), 0, -2) . PHP_EOL . 'CONTROL_ADDITIONS';
             Registry::setCode($view->getUID(), $code);
         }
 
