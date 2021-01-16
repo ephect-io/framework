@@ -1,24 +1,30 @@
-<?php
+<Parent>
+    <Block name="title">Ephect!</Block>
+    <Block name="stylesheets">
+        <link rel="stylesheet" href="/css/index.css" />
+        <link rel="stylesheet" href="/css/app.css" />
+    </Block>
+    <Block name="main">
+        <section>
+            <p>
+                Hello&nbsp;
+                <Echo var="firstname" />!
+            </p>
+            <p>This is reed</p>
+            <p>again</p>
+        </section>
+    </Block>
+    <Block name="second">
+        <section>
+            <p>
+                Me
+            </p>
+            My computer
+            will be stunning
+        </section>
+    </Block>
+    <Block name="javascripts">
+        <script src="/js/funcom.js"></script>
+    </Block>
 
-namespace Fun;
-
-use Com as FunCom;
-
-function Home()
-{
-    return (<<<HTML
-    <Mother>
-        <Block name="title">Ephect in action !</Block>
-        <Block name="stylesheets">
-            <link rel="stylesheet" href="/css/index.css" />
-            <link rel="stylesheet" href="/css/app.css" />
-        </Block>
-        <div class="App-content" >
-            <FunCom message='Hello World!' from="the app" />
-        </div>
-        <Block name="javascripts">
-            <script src="js/funcom.js"></script>
-        </Block>
-    </Mother>
-    HTML);
-}
+</Parent>

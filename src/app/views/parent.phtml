@@ -1,31 +1,41 @@
-<?php
+<!DOCTYPE html>
+<html>
 
-namespace Fun;
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <Block name="title">Welcome!</Block>
+    </title>
 
-function Mother($children)
-{
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+    <Block name="stylesheets"></Block>
+</head>
 
-    return (<<<HTML
-    <head>
-        <meta charset="UTF-8">
-        <title>
-        <Block name="title">
-            Mother!
-        </Block>
-        </title>
+<body>
 
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <Block name="stylesheets">
-        </Block>
-    </head>
 
-    <body>
-        <div class="App" >
-        <Header />
-            {{ children }}
-        <Footer />
+    <div class="App">
+        <header>
+            <img src='/img/salamandra.svg' class='App-logo' alt='logo' />
+        </header>
+        <div class="App-content">
+        <main>
+            <Block name="main">
+            </Block>
+            <Block name="second">
+            </Block>
+
+        </main>
         </div>
-    </body>
-    HTML);
-}
+        <footer>
+            <div>
+                C'est le pied
+            </div>
+        </footer>
+    </div>
+
+    <Block name="javascripts"></Block>
+</body>
+
+</html>
