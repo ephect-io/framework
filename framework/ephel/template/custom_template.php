@@ -4,10 +4,10 @@ namespace Ephel\Template;
 use FunCom\Element;
 use FunCom\Cache\Cache;
 use FunCom\Registry\Registry;
+use FunCom\Xml\XmlDocument;
 use Ephel\Web\UI\CodeGeneratorTrait;
 use Ephel\Web\UI\CustomControl;
 use Ephel\Web\WebObjectInterface;
-use Ephel\Xml\XmlDocument;
 
 abstract class CustomTemplate extends CustomControl
 {

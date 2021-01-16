@@ -1,7 +1,7 @@
 <?php
 namespace Ephel\Template;
 
-use Ephel\Core\Enumerator;
+use FunCom\Core\Enumerator;
 
 class ETemplateType extends Enumerator
 {

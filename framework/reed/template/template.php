@@ -7,7 +7,6 @@
 
 namespace Reed\Template;
 
-use FunCom\Registry\Registry;
 use Reed\Web\WebObjectInterface;
 
 /**

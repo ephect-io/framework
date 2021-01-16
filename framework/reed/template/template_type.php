@@ -1,7 +1,7 @@
 <?php
 namespace Reed\Template;
 
-use Reed\Core\Enumerator;
+use FunCom\Core\Enumerator;
 
 class ETemplateType extends Enumerator
 {

@@ -4,10 +4,10 @@ namespace Reed\Template;
 use FunCom\Element;
 use FunCom\Cache\Cache;
 use FunCom\Registry\Registry;
+use FunCom\Xml\XmlDocument;
 use Reed\Web\UI\CodeGeneratorTrait;
 use Reed\Web\UI\CustomControl;
 use Reed\Web\WebObjectInterface;
-use Reed\Xml\XmlDocument;
 
 abstract class CustomTemplate extends CustomControl
 {

@@ -1,5 +1,6 @@
 <?php
-namespace Reed\Core;
+
+namespace FunCom\Core;
 
 class Enumerator implements EnumeratorInterface
 {
