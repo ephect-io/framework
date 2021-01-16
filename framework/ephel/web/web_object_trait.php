@@ -261,29 +261,6 @@ trait WebObjectTrait
         return $this->viewName;
     }
 
-    public function setViewName(string $className = ''): void
-    {
-        $dummy = 0;
-        if (!empty($className)) {
-
-            $info = Registry::classInfo($className);
-            if ($info !== null) {
-                $this->viewName = CustomTemplate::innerClassNameToFilename($className);
-            }
-            if ($info === null) {
-                $this->viewName = CustomTemplate::userClassNameToFilename($className);
-            }
-            return;
-        }
-
-        if (empty($className)) {
-            $requestUriParts = explode('/', REQUEST_URI);
-            $this->viewName = array_pop($requestUriParts);
-            $viewNameParts = explode('.', $this->viewName);
-            $this->viewName = array_shift($viewNameParts);
-        }
-    }
-
     public function getEphelEnginge()
     {
         return $this->reedEngine;
@@ -330,60 +307,12 @@ trait WebObjectTrait
         return $this->componentIsInternal;
     }
 
-    public function setNames(?string $typeName = null): void
+    public function setNames(): void
     {
-        if ($typeName !== null) {
-            $this->setViewName($typeName);
-        }
-
-        if ($typeName === null) {
-            $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
-        }
         $this->viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
         $this->cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
         $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
-        if ($this->isInternalComponent()) {
-            $dirName = $this->getDirName();
-            $this->viewFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewFileName;
-            $this->cssFileName = $dirName . DIRECTORY_SEPARATOR . $this->cssFileName;
-            $this->controllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->controllerFileName;
-            $this->jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->jsControllerFileName;
-        }
-
-        if (!file_exists(SITE_ROOT . $this->viewFileName) && !file_exists(SRC_ROOT . $this->viewFileName)) {
-            $info = Registry::classInfo($this->className);
-            if ($info !== null) {
-                // $this->viewName = \Ephel\CustomTemplate::classNameToFilename($this->className);
-                if ($info->path[0] == '@') {
-                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path) . 'app' . DIRECTORY_SEPARATOR;
-                    $this->controllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
-                    $this->jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
-                    $this->cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
-                    $this->viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
-                } else if ($info->path[0] == '~') {
-                    $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path) . DIRECTORY_SEPARATOR;
-                    $this->controllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
-                    $this->jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
-                    $this->cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
-                    $this->viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
-                } else {
-                    $this->viewName = CustomTemplate::innerClassNameToFilename($this->className);
-
-                    $path = PHINK_VENDOR_LIB . $info->path;
-                    $this->controllerFileName = $path . $this->viewName . CLASS_EXTENSION;
-                    $this->jsControllerFileName = $path . $this->viewName . JS_EXTENSION;
-                    $this->cssFileName = $path . $this->viewName . CSS_EXTENSION;
-                    $this->viewFileName = $path . $this->viewName . PREHTML_EXTENSION;
-                }
-                // $path = $info->path;
-                if (!$info->hasTemplate) {
-                    $this->viewFileName = '';
-                }
-
-                $this->className = $info->namespace . '\\' . $this->className;
-            }
-        }
 
         $this->getCacheFileName();
     }
@@ -394,13 +323,6 @@ trait WebObjectTrait
         $cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $viewName . CSS_EXTENSION;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         $jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
-        if ($this->isInternalComponent()) {
-            $dirName = $this->getDirName();
-            $viewFileName = $dirName . DIRECTORY_SEPARATOR . $viewFileName;
-            $cssFileName = $dirName . DIRECTORY_SEPARATOR . $cssFileName;
-            $controllerFileName = $dirName . DIRECTORY_SEPARATOR . $controllerFileName;
-            $jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $jsControllerFileName;
-        }
 
         $cacheFileName = SRC_ROOT . Cache::cacheFilenameFromView($viewName);
 

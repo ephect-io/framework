@@ -20,9 +20,6 @@ class TemplateEngine extends CustomControl
     public function __construct(TemplateLoader $loader)
     {
         $this->path = $loader->getTemplatePath();
-        $this->componentIsInternal = $loader->isInnerTemplate();
-        $this->isAJAX = $loader->isClientTemplate();
-        $this->isPartial = $loader->isPartialTemplate();
 
     }
 
@@ -30,22 +27,13 @@ class TemplateEngine extends CustomControl
     {
         $info = (object) \pathinfo($this->path . $templateName);
         $this->viewName = $info->filename;
-        $this->dirName = $info->dirname;
-        $this->bootDirName = $info->dirname;
-
-        if ($this->componentIsInternal) {
-            $this->dirName = dirname($this->dirName, 2);
-        }
 
         $this->className = ucfirst($this->viewName);
 
-        $this->setNamespace();
         $this->setNames();
 
         $template = new Template($this, $dictionary);
         $template->parse();
-        $creations = $template->getCreations();
-        $declarations = $template->getAdditions();
         $php = $template->getViewHtml();
 
         Registry::write('php', $template->getUID(), $php);

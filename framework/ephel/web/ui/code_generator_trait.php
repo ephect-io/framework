@@ -2,11 +2,7 @@
 
 namespace Ephel\Web\UI;
 
-use Exception;
-use FunCom\Cache\Cache;
-use FunCom\Registry\Registry;
 use Ephel\Template\CustomTemplate;
-use Ephel\Template\PartialTemplate;
 use FunCom\Components\Generators\ComponentDocument;
 
 /**
