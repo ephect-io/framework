@@ -15,8 +15,6 @@ use FunCom\Cache\Cache;
 
 trait WebObjectTrait
 {
-    use HttpTransportTrait;
-
     private static $_pageNumber;
     private static $_pageCount;
     protected $redis = null;

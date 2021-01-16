@@ -14,7 +14,7 @@ use Ephel\Template\TemplateInterface;
  *
  * @author david
  */
- interface WebObjectInterface extends HttpTransportInterface, TemplateInterface, ElementInterface {
+ interface WebObjectInterface extends TemplateInterface, ElementInterface {
  
     public function getCacheFileName();
     public function getJsCacheFileName();

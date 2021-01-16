@@ -23,49 +23,6 @@ abstract class CustomControl extends Element implements WebObjectInterface
         $this->fatherUID = $parent->getFatherUID();
     }
 
-    protected $isRendered = false;
-
-    public function init(): void
-    {
-    }
-
-    public function load(): void
-    {
-    }
-
-    public function view($html)
-    {
-    }
-
-    public function partialLoad(): void
-    {
-    }
-
-    public function beforeBinding(): void
-    {
-    }
-
-    public function afterBinding(): void
-    {
-    }
-
-    public function parse(): bool
-    {
-        return false;
-    }
-
-    public function renderHtml(): void
-    {
-    }
-
-    public function displayHtml(): void
-    {
-    }
-
-    public function renderPhp(): void
-    {
-    }
-
     public function getHtml(): string
     {
         ob_start();
@@ -74,12 +31,6 @@ abstract class CustomControl extends Element implements WebObjectInterface
         
         return $html;
     }
-
-    public function unload(): void
-    {
-    }
-    
-    
 
 
 }

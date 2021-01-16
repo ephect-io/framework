@@ -12,7 +12,6 @@ use Ephel\Web\WebObjectInterface;
 abstract class CustomTemplate extends CustomControl
 {
     use CodeGeneratorTrait {
-        writeDeclarations as private;
         writeHTML as private;
     }
 
@@ -152,24 +151,25 @@ abstract class CustomTemplate extends CustomControl
         $firstMatch = $doc->getNextMatch();
         if ($firstMatch !== null && $firstMatch->hasCloser()) {
 
-            $masterFilename = $firstMatch->properties('template');
-            $masterFilename = strtolower($firstMatch->getName()) . PREHTML_EXTENSION;
-            $masterViewName = pathinfo($masterFilename, PATHINFO_FILENAME);
-            $masterHtml = file_get_contents($fullViewDir . $masterFilename);
+            // TODO: use ViewRegistry instead ...
+            $parentFilename = strtolower($firstMatch->getName()) . PREHTML_EXTENSION;
 
-            $masterDoc = new ComponentDocument($masterHtml);
-            $masterDoc->matchAll();
+            $parentViewName = pathinfo($parentFilename, PATHINFO_FILENAME);
+            $parentHtml = file_get_contents($fullViewDir . $parentFilename);
 
-            $this->viewHtml = $masterDoc->replaceMatches($doc, $this->viewHtml);
+            $parentDoc = new ComponentDocument($parentHtml);
+            $parentDoc->matchAll();
 
-            $masterHead = $this->getStyleSheetTag($masterViewName, false);
-            $masterScript = $this->getScriptTag($masterViewName, false);
+            $this->viewHtml = $parentDoc->replaceMatches($doc, $this->viewHtml);
 
-            if ($masterHead !== null) {
-                $this->appendToHead($masterHead, $this->viewHtml);
+            $parentHead = $this->getStyleSheetTag($parentViewName, false);
+            $parentScript = $this->getScriptTag($parentViewName, false);
+
+            if ($parentHead !== null) {
+                $this->appendToHead($parentHead, $this->viewHtml);
             }
-            if ($masterScript !== null) {
-                $this->appendToBody($masterScript, $this->viewHtml);
+            if ($parentScript !== null) {
+                $this->appendToBody($parentScript, $this->viewHtml);
             }
 
             $doc = new ComponentDocument($this->viewHtml);
@@ -297,146 +297,4 @@ abstract class CustomTemplate extends CustomControl
         }
     }
 
-    /**
-     * Load the controller file, parse it in search of namespace and classname.
-     * Alternatively execute the code if the class is not already declared
-     *
-     * @param string $filename The controller filename
-     * @param int $params The bitwise constants values that determine the behavior
-     *                    INCLUDE_FILE : execute the code
-     *                    RETURN_CODE : ...
-     * @return boolean
-     */
-    public static function includeTemplateClass(CustomTemplate $template, $params = 0): ?array
-    {
-        $filename = $template->getControllerFileName();
-        $classFilename = SRC_ROOT . $filename;
-        if (!file_exists($classFilename)) {
-            $classFilename = SITE_ROOT . $filename;
-        }
-        if (!file_exists($classFilename)) {
-            return null;
-        }
-
-        list($namespace, $className, $code) = Element::getClassDefinition($classFilename);
-
-        $fqClassName = trim($namespace) . "\\" . trim($className);
-
-        $file = str_replace('\\', '_', $fqClassName) . '.php';
-
-        if (isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
-            $code = substr(trim($code), 0, -2) . PHP_EOL . 'CONTROL_ADDITIONS';
-            Registry::setCode($template->getUID(), $code);
-        }
-
-        self::getLogger()->debug(__METHOD__ . '::' . $filename, __FILE__, __LINE__);
-
-        if ((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqClassName)) {
-            if (\Phar::running() != '') {
-                include pathinfo($filename, PATHINFO_BASENAME);
-            } else {
-                //include $classFilename;
-            }
-        }
-
-        return [$classFilename, $fqClassName, $code];
-    }
-
-
-
-    public static function import(CustomControl $ctrl, string $className): bool
-    {
-        if (!isset($className)) {
-            $className = $ctrl->getClassName();
-        }
-        $result = false;
-        $file = '';
-        $type = '';
-        $code = '';
-
-        $cacheFilename = '';
-        //$classFilename = '';
-        $cacheJsFilename = '';
-        $viewName = '';
-
-        $info = Registry::classInfo($className);
-        self::getLogger()->dump('CLASS INFO::' . $className, $info, __FILE__, __LINE__);
-
-        if ($info !== null) {
-            $viewName = Element::innerClassNameToFilename($className);
-            $path = PHINK_VENDOR_LIB . $info->path;
-
-            if ($info->path[0] == '@') {
-                $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
-            }
-            if ($info->path[0] == '~') {
-                $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path);
-            }
-
-            $cacheFilename = Cache::cacheFilenameFromView($viewName, $ctrl->isInternalComponent());
-        }
-        if ($info === null) {
-            $viewName = self::userClassNameToFilename($className);
-
-            //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
-            $cacheFilename = Cache::cacheFilenameFromView($viewName, $ctrl->isInternalComponent());
-            self::getLogger()->debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
-        }
-        $cacheJsFilename = Cache::cacheJsFilenameFromView($viewName, $ctrl->isInternalComponent());
-        $cacheCssFilename = Cache::cacheCssFilenameFromView($viewName, $ctrl->isInternalComponent());
-
-        if (file_exists(SRC_ROOT . $cacheFilename)) {
-
-            if (file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
-                $ctrl->appendJsToBody($viewName);
-
-                self::getLogger()->debug('INCLUDE CACHED JS CONTROL: ' . DOCUMENT_ROOT . $cacheJsFilename, __FILE__, __LINE__);
-                $ctrl->getResponse()->addScript($cacheJsFilename);
-            }
-            self::getLogger()->debug('INCLUDE CACHED CONTROL: ' . SRC_ROOT . $cacheFilename, __FILE__, __LINE__);
-            // self::includeClass($cacheFilename, RETURN_CODE);
-
-            include SRC_ROOT . $cacheFilename;
-
-            return true;
-        }
-
-        $include = null;
-
-        self::getLogger()->debug('PARSING ' . $viewName . '!!!');
-        $view = new PartialTemplate($ctrl, [], $className);
-
-        if ($info !== null) {
-            list($file, $type, $code) = CustomTemplate::includeInnerClass($view, $info);
-            $view->getCacheFilename();
-        } else {
-            list($file, $type, $code) = CustomTemplate::includeTemplateClass($view, RETURN_CODE);
-        }
-        Registry::setCode($view->getUID(), $code);
-        $view->parse();
-
-
-        include SRC_ROOT . $cacheFilename;
-
-        return true;
-    }
-
-
-    private static function includeInnerClass(CustomTemplate $view, object $info, bool $withCode = true): array
-    {
-        $className = $view->getClassName();
-        $viewName = $view->getViewName();
-
-        $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . $viewName . CLASS_EXTENSION;
-
-
-        $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
-
-        if ($withCode) {
-            $code = substr(trim($code), 0, -2) . PHP_EOL . 'CONTROL_ADDITIONS';
-            Registry::setCode($view->getUID(), $code);
-        }
-
-        return [$filename, $info->namespace . '\\' . $className, $code];
-    }
 }
