@@ -63,6 +63,7 @@ class ChildrenParser extends Parser
 
         
         $re = '/(function([\w ]+)\(\$([\w]+)[^\)]*\)(\s|.)+?(\{))(\s|.)+?(\{\{ \3 \}\})/';
+        //$re = '/(function([\w ]+)\(\$([\w]+)[^\)]*\))(\s|.)+?(\{\$\3\})/';
         preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {

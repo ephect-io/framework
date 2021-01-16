@@ -8,3 +8,6 @@ cache/*
 docker/
 .devcontainer/
 docker-compose.yml
+/nbproject/private/
+nbproject/project.xml
+nbproject/project.properties
