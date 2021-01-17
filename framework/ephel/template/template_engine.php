@@ -2,13 +2,10 @@
 namespace Ephel\Template;
 
 use FunCom\Registry\Registry;
-use Ephel\Web\UI\CustomControl;
-use Ephel\Web\WebObjectTrait;
+use Ephel\Web\WebObject;
 
-class TemplateEngine extends CustomControl
+class TemplateEngine extends WebObject
 {
-
-    use WebObjectTrait;
 
     protected $templateContents = '';
 

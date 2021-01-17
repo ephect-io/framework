@@ -1,11 +1,13 @@
 <?php
- 
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 namespace Ephel\Web;
 
+use Ephel\Template\Template;
 use FunCom\ElementInterface;
 use Ephel\Template\TemplateInterface;
 
@@ -14,19 +16,12 @@ use Ephel\Template\TemplateInterface;
  *
  * @author david
  */
- interface WebObjectInterface extends TemplateInterface, ElementInterface {
- 
-    public function getCacheFileName();
-    public function getJsCacheFileName();
-    public function getCssCacheFileName();
-    public function getClassName();
-    public function getActionName();
-    public function getViewFileName();
-    public function getControllerFileName();
-    public function getJsControllerFileName();
-    public function getCssFileName();
+interface WebObjectInterface extends TemplateInterface, ElementInterface
+{
     public function getViewName();
-    public function getParameters();
-    
-    
+    public function getCacheFileName();
+    public function getFatherTemplate(): ?Template;
+    public function getFatherUID(): string;
+    public function getTemplatePath();
+    public function getTemplateType();
 }

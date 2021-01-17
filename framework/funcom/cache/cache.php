@@ -8,22 +8,22 @@ use FunCom\StaticElement;
 class Cache extends StaticElement
 {
 
-    public static function cacheFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
+    public static function cacheFilenameFromView(string $viewName): string
     {
 
         // $uri = bin2hex(REQUEST_URI);
         $uri = '';
-        return REL_RUNTIME_DIR . ($isFrameworkComponent ? 'inner_' : '') . strtolower($viewName) . $uri . CLASS_EXTENSION;
+        return REL_RUNTIME_DIR . strtolower($viewName) . $uri . CLASS_EXTENSION;
     }
 
-    public static function cacheJsFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
+    public static function cacheJsFilenameFromView(string $viewName): string
     {
-        return REL_RUNTIME_JS_DIR . ($isFrameworkComponent ? 'inner_' : '') . strtolower('javascript_' . $viewName . JS_EXTENSION);
+        return REL_RUNTIME_JS_DIR . strtolower('javascript_' . $viewName . JS_EXTENSION);
     }
 
-    public static function cacheCssFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
+    public static function cacheCssFilenameFromView(string $viewName): string
     {
-        return  REL_RUNTIME_CSS_DIR . ($isFrameworkComponent ? 'inner_' : '') . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
+        return  REL_RUNTIME_CSS_DIR . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
     }
 
     public static function absoluteURL(string $relativeURL = ''): string
