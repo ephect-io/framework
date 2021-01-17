@@ -3,6 +3,7 @@
 namespace FunCom\Components;
 
 use FunCom\IO\Utils as IOUtils;
+use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\PluginRegistry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
@@ -22,7 +23,7 @@ class Compiler
 
                 ViewRegistry::write($viewFile, $view->getUID());
             }
-            ViewRegistry::cache();
+            CodeRegistry::cache();
             ViewRegistry::cache();
             UseRegistry::cache();
         }
