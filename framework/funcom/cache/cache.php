@@ -8,22 +8,19 @@ use FunCom\StaticElement;
 class Cache extends StaticElement
 {
 
+    public static function getCacheFilename(string $basename): string
+    {
+        $cache_file = CACHE_DIR . str_replace('/', '_', $basename);
+
+        return $cache_file;
+    }
+    
     public static function cacheFilenameFromView(string $viewName): string
     {
 
         // $uri = bin2hex(REQUEST_URI);
         $uri = '';
         return REL_RUNTIME_DIR . strtolower($viewName) . $uri . CLASS_EXTENSION;
-    }
-
-    public static function cacheJsFilenameFromView(string $viewName): string
-    {
-        return REL_RUNTIME_JS_DIR . strtolower('javascript_' . $viewName . JS_EXTENSION);
-    }
-
-    public static function cacheCssFilenameFromView(string $viewName): string
-    {
-        return  REL_RUNTIME_CSS_DIR . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
     }
 
     public static function absoluteURL(string $relativeURL = ''): string
@@ -57,24 +54,6 @@ class Cache extends StaticElement
                 $error_dir[] = RUNTIME_DIR;
             }
 
-            $runtime_js_dir = dirname(RUNTIME_JS_DIR . '_');
-            if (!file_exists($runtime_js_dir)) {
-                $ok = mkdir($runtime_js_dir, 0755, true);
-                $result = $result || $ok;
-            }
-            if (!file_exists($runtime_js_dir)) {
-                $error_dir[] = RUNTIME_JS_DIR;
-            }
-
-            $runtime_css_dir = dirname(RUNTIME_CSS_DIR . '_');
-            if (!file_exists($runtime_css_dir)) {
-                $ok = mkdir($runtime_css_dir, 0755, true);
-                $result = $result || $ok;
-            }
-            if (!file_exists($runtime_css_dir)) {
-                $error_dir[] = RUNTIME_CSS_DIR;
-            }
-
             if (count($error_dir) > 0) {
                 $result = false;
 
@@ -100,20 +79,6 @@ class Cache extends StaticElement
                 $result = $result || $ok;
             } else {
                 $error_dir[] = RUNTIME_DIR;
-            }
-
-            if (file_exists(RUNTIME_JS_DIR)) {
-                $ok = Utils::delTree(RUNTIME_JS_DIR);
-                $result = $result || $ok;
-            } else {
-                $error_dir[] = RUNTIME_JS_DIR;
-            }
-
-            if (file_exists(RUNTIME_CSS_DIR)) {
-                $ok = Utils::delTree(RUNTIME_CSS_DIR);
-                $result = $result || $ok;
-            } else {
-                $error_dir[] = RUNTIME_CSS_DIR;
             }
 
             if (count($error_dir) > 0) {
