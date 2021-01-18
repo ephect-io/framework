@@ -2,19 +2,17 @@
 
 namespace FunCom\Template;
 
-use FunCom\Cache\Cache;
 use FunCom\Registry\Registry;
 use FunCom\Components\Generators\ComponentDocument;
 use FunCom\Element;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
-use FunCom\Web\WebObjectInterface;
-use FunCom\Web\WebObjectTrait;
+use FunCom\Web\TemplateInterface;
+use FunCom\Web\TemplateTrait;
 
-class Template extends Element implements WebObjectInterface
+class Template extends Element implements TemplateInterface
 {
-
-    use WebObjectTrait;
+    use TemplateTrait;
 
     protected $viewHtml = '';
     protected $preHtml = '';
@@ -24,7 +22,7 @@ class Template extends Element implements WebObjectInterface
 
     private $_reservedHtmlKeywords = ['Echo', 'Exec', 'Render', 'Block'];
 
-    function __construct(WebObjectInterface $parent, array $dictionary)
+    function __construct(TemplateInterface $parent, array $dictionary)
     {
         parent::__construct($parent);
 
@@ -37,11 +35,6 @@ class Template extends Element implements WebObjectInterface
 
         $this->viewName = $parent->getViewName();
         $this->className = $parent->getClassName();
-    }
-
-    function isFatherTemplate(): bool
-    {
-        return $this->viewIsFather;
     }
 
     function getDictionary(): ?array
@@ -77,8 +70,6 @@ class Template extends Element implements WebObjectInterface
 
     function parse(): bool
     {
-
-
         $this->viewFileName = ViewRegistry::read($this->className);
         $this->viewHtml = file_get_contents(SRC_ROOT . $this->viewFileName);
 

@@ -14,7 +14,7 @@ class Compiler
     public function perform(): void
     {
         if (!ViewRegistry::uncache()) {
-            $viewList = $this->searchForViews();
+            $viewList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($viewList as $key => $viewFile) {
 
                 $view = new View();
@@ -29,7 +29,7 @@ class Compiler
         }
 
         if (!PluginRegistry::uncache()) {
-            $pluginList = $this->searchForPlugins();
+            $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
             foreach ($pluginList as $key => $pluginFile) {
                 $plugin = new Plugin();
                 $plugin->load($pluginFile);
@@ -42,19 +42,4 @@ class Compiler
         }
     }
 
-    /** @return array  */
-    private function searchForViews(): array
-    {
-        $result = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
-
-        return $result;
-    }
-
-    /** @return array  */
-    private function searchForPlugins(): array
-    {
-        $result = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
-
-        return $result;
-    }
 }

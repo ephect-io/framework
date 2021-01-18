@@ -1,19 +1,18 @@
 <?php
 namespace FunCom\Template;
 
+use FunCom\Cache\Cache;
 use FunCom\Element;
+use FunCom\IO\Utils;
 use FunCom\Registry\Registry;
 use FunCom\Registry\UseRegistry;
 use FunCom\Registry\ViewRegistry;
-use FunCom\Web\WebObject;
-use FunCom\Web\WebObjectInterface;
-use FunCom\Web\WebObjectTrait;
+use FunCom\Web\TemplateInterface;
+use FunCom\Web\TemplateTrait;
 
-class TemplateEngine extends Element implements WebObjectInterface
+class TemplateEngine extends Element implements TemplateInterface
 {
-
-    use WebObjectTrait;
-
+    use TemplateTrait;
 
     public function __construct(string $templateName)
     {
@@ -24,8 +23,6 @@ class TemplateEngine extends Element implements WebObjectInterface
 
     public function render(array $dictionary): string
     {
-
-
         $this->className = UseRegistry::read($this->viewName);
         $this->viewName = strtolower($this->viewName);
         $this->viewFileName = ViewRegistry::read($this->className);
@@ -36,6 +33,10 @@ class TemplateEngine extends Element implements WebObjectInterface
 
         Registry::write('php', $template->getUID(), $php);
 
+        $cacheFile = Cache::getCacheFilename($this->viewFileName);
+
+        Utils::safeWrite($cacheFile, $php);
+        
         ob_start();
         eval('?>' . $php);
         $html = ob_get_clean();
