@@ -2,23 +2,17 @@
 
 namespace Fun;
 
-use Ephel\Template\TemplateEngine;
-use Ephel\Template\TemplateLoader;
+use FunCom\Template\TemplateEngine;
 
 use function FunCom\Hooks\useEffect;
 
 function Third()
 {
-
     $code = '';
     useEffect(function() use (&$code) {
-
-        $loader = new TemplateLoader(APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
-        $engine = new TemplateEngine($loader);
-
+        $engine = new TemplateEngine('Child');
         $dictionary = ["firstname" => "David"];
-
-        $code = $engine->render('child.phtml', $dictionary);
+        $code = $engine->render($dictionary);
     });
 
     return (<<<HTML
