@@ -100,8 +100,8 @@ class Registry extends StaticElement
             $value = $params[1];
             self::$_items[$item][$key] = $value;
         }
-        if (count($params) === 1 && is_array($params)) {
-            if (count($params[0]) > 0 && is_array($params[0])) {
+        if (is_array($params) && count($params) === 1 ) {
+            if (is_array($params[0]) && count($params[0]) > 0) {
                 foreach ($params[0] as $key => $value) {
                     self::$_items[$item][$key] = $value;
                 }
