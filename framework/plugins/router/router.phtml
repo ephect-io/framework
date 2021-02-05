@@ -2,8 +2,41 @@
 
 namespace FunCom\Plugins\Router;
 
+use FunCom\Registry\CodeRegistry;
+use FunCom\Registry\Registry;
+
+use function FunCom\Hooks\useEffect;
+
 function Router($children)
 {
+
+    useEffect(function () {
+
+        CodeRegistry::uncache();
+        $items = CodeRegistry::items();
+
+        foreach ($items as $component => $composition) {
+            $router = null;
+            $c = count($composition);
+            for ($i = 0; $i < $c; $i++) {
+                $child = $composition[$i];
+                if ($child['name'] == 'Router') {
+                    // $hasRouter = true;
+                    $router = $child;
+                    $router['routes'] = [];
+                }
+
+                if ($child['name'] == 'Route' && $router !== null) {
+                    array_push($router['routes'], $child);
+                }
+            }
+            if ($router !== null) {
+                Registry::write('router', $router);
+                break;
+            }
+        }
+    });
+
     return (<<<HTML
         {{ children }}
     HTML);
