@@ -119,9 +119,7 @@ class Template extends Element implements TemplateInterface
         $uid = $parentTemplate->getUID();
 
         $count = $doc->getCount();
-        $matchesByDepth = $doc->getDepthsOfMatches();
         $matchesById = $doc->getIDsOfMatches();
-        $matchesByKey = $doc->getKeysOfMatches();
 
         for ($i = $count - 1; $i > -1; $i--) {
             $j = $matchesById[$i];
@@ -135,14 +133,10 @@ class Template extends Element implements TemplateInterface
             }
 
             $type = $match->properties('type');
-            $class = $match->properties('class');
             $id = $match->properties('id');
 
-            $const = $match->properties('const');
             $var = $match->properties('var');
             $prop = $match->properties('prop');
-            $stmt = $match->properties('stmt');
-            $params = $match->properties('params');
             $content = $match->getContents();
 
             if (!$type || $type == 'this') {
@@ -153,28 +147,16 @@ class Template extends Element implements TemplateInterface
                 $type = $type . '::' . (($tag == 'exec') ? '' : '$');
             }
 
-            if ($tag == 'Echo' && $const) {
-                $declare = '<?php echo ' . $const . '; ?>';
-            } elseif ($tag == 'Echo' && $var) {
+            if ($tag == 'Echo' && $var) {
                 /** $declare = '<?php echo ' . $type . $var . '; ?>';  */
 
                 $declare = '<?php echo \\FunCom\\Registry\\Registry::read("template", "' . $uid . '")["' . $var . '"];?>';
             } elseif ($tag == 'Echo' && $prop) {
                 $declare = '<?php echo ' . $type . 'get' . ucfirst($prop) . '(); ?>';
-            } elseif ($tag == 'Exec') {
-                $declare = '<?php echo ' . $type . $stmt . '(); ?>';
-                if ($params != null) {
-                    $declare = '<?php echo ' . $type . $stmt . '(' . $params . '); ?>';
-                }
             } elseif ($tag == 'Block' && null !== $content) {
                 $declare = $content;
             } elseif ($tag == 'Render') {
-                if ($name == 'this') {
-                    $declare = '<?php $this->renderHtml(); $this->renderedHtml(); ?>';
-                } else {
-                    /** $declare = '<?php ' . $type . $id . '->render(); ?>'; */
                     $declare = '<?php echo \\FunCom\\Registry\\Registry::read("' . $uid . '", "' . $id . '")[0];?>';
-                }
             }
 
             $viewHtml = $doc->replaceThisMatch($match, $viewHtml, $declare);
