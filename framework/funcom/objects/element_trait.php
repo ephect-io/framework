@@ -34,25 +34,25 @@ trait ElementTrait
         return $this->parent;
     }
 
-    public function getType(): string
-    {
-        if ($this->type === '') {
-            $typeParts = explode('\\', $this->getFullType());
-            $this->type = array_pop($typeParts);
-            $this->namespace = implode('\\', $typeParts);
-        }
+    // public function getType(): string
+    // {
+    //     if ($this->type === '') {
+    //         $typeParts = explode('\\', $this->getFullType());
+    //         $this->type = array_pop($typeParts);
+    //         $this->namespace = implode('\\', $typeParts);
+    //     }
 
-        return $this->type;
-    }
+    //     return $this->type;
+    // }
 
-    public function getFullType(): string
-    {
-        if ($this->fqClassName == '') {
-            $this->fqClassName = get_class($this);
-        }
+    // public function getFullType(): string
+    // {
+    //     if ($this->fqClassName == '') {
+    //         $this->fqClassName = get_class($this);
+    //     }
 
-        return $this->fqClassName;
-    }
+    //     return $this->fqClassName;
+    // }
 
     public function getBaseType(): string
     {
@@ -61,11 +61,13 @@ trait ElementTrait
 
     public function getNamespace(): string
     {
-        if($this->namespace === '') {
-            $this->getType();
+
+        if ($this->namespace === '') {
+            $typeParts = explode('\\', $this::class);
+            $this->type = array_pop($typeParts);
+            $this->namespace = implode('\\', $typeParts);
         }
 
         return $this->namespace;
     }
-
 }
