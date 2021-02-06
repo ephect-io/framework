@@ -5,6 +5,7 @@ namespace FunCom\Plugins\Route;
 use FunCom\Components\View;
 use FunCom\Plugins\Router\RouterService;
 use FunCom\Registry\Registry;
+use FunCom\Registry\RouteRegistry;
 
 use function FunCom\Hooks\useEffect;
 
@@ -23,7 +24,7 @@ function Route($props)
         Registry::write('router', 'routes', $routes);
         
         if(count($routes) === 0) {
-            rename(CACHE_DIR . 'routeregistry.json', CACHE_DIR . 'routes.json');
+            rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
         }
 
         $match = $router->matchRoute($route);

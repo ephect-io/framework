@@ -12,4 +12,5 @@ interface AbstractRegistryInterface
     function _exists(string $key): bool;
     function _delete(string $key): void;
     function _setCacheDirectory(string $directory): void;
+    function _getCacheFilename(): string;
 }

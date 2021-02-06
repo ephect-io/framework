@@ -58,4 +58,9 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
     {
         static::getInstance()->_setCacheDirectory($directory);
     }
+
+    public static function getCacheFilename(): string
+    {
+        return static::getInstance()->_getCacheFilename();
+    }
 }

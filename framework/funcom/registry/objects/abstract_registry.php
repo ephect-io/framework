@@ -10,6 +10,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
     private $entries = [];
     private $isLoaded = false;
     private $baseDirectory = CACHE_DIR;
+    private $cacheFilename = '';
 
     use ElementTrait;
 
@@ -59,7 +60,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
     {
         $entries = $this->_items();
         $json = json_encode($entries, JSON_PRETTY_PRINT);
-        $registryFilename = $this->getCacheFileName();
+        $registryFilename = $this->_getCacheFileName();
         $len = Utils::safeWrite($registryFilename, $json);
 
         return $len !== null;
@@ -71,7 +72,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
             return false;
         }
 
-        $registryFilename = $this->getCacheFileName();
+        $registryFilename = $this->_getCacheFileName();
         $json = Utils::safeRead($registryFilename);
         $this->isLoaded = $json !== null;
 
@@ -82,12 +83,16 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         return $this->isLoaded;
     }
 
-    public function getCacheFileName(): string
+    public function _getCacheFileName(): string
     {
-        $fileName = $this->getType();
-        $result = $this->baseDirectory . strtolower($fileName) . '.json';
+        if($this->cacheFilename === '')
+        {
+            $fileName = str_replace('\\', '_', $this::class);
+            $this->cacheFilename =$this->baseDirectory . strtolower($fileName) . '.json';
+             
+        }
 
-        return $result;
+        return $this->cacheFilename;
     }
 
     public function _setCacheDirectory(string $directory): void
