@@ -6,9 +6,9 @@ use FunCom\Element;
 
 class RouteEntity extends Element implements RouteInterface
 {
-    private string $method = '';
-    private string $rule = '';
-    private string $redirect = '';
+    private $method = '';
+    private $rule = '';
+    private $redirect = '';
 
     public function __construct(string $method = '', string $rule = '', string $redirect = '')
     {
