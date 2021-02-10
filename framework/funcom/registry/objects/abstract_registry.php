@@ -87,7 +87,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
     {
         if($this->cacheFilename === '')
         {
-            $fileName = str_replace('\\', '_', $this::class);
+            $fileName = str_replace('\\', '_',  get_class($this));
             $this->cacheFilename =$this->baseDirectory . strtolower($fileName) . '.json';
              
         }

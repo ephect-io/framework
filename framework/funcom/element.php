@@ -24,7 +24,7 @@ class Element extends StaticElement implements ElementInterface
     public function getReflection(): ?ReflectionClass
     {
         if ($this->_reflection == NULL) {
-            $this->_reflection = new ReflectionClass($this::class);
+            $this->_reflection = new ReflectionClass(get_class($this));
         }
         return $this->_reflection;
     }
