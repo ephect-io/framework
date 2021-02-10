@@ -1,16 +1,20 @@
 <?php
 
-namespace FunCom\Components\Generators;
+namespace FunCom\Components;
 
+use FunCom\Components\ComponentStructure;
+use FunCom\Components\Generators\ComponentDocument;
 use FunCom\ElementInterface;
 use FunCom\ElementTrait;
+use FunCom\IO\Utils;
+use FunCom\Registry\ViewRegistry;
 
 /**
  * Description of match
  *
  * @author david
  */
-class ComponentMatch implements ElementInterface
+class ComponentEntity implements ElementInterface
 {
     use ElementTrait;
 
@@ -21,36 +25,30 @@ class ComponentMatch implements ElementInterface
     private $_end = 0;
     private $_depth = 0;
     private $_isSibling = false;
-    private $_childName = '';
-    private $_hasChildren = false;
     private $_closer = '';
     private $_contents = null;
     private $_hasCloser = '';
     private $_properties = array();
     private $_method = '';
-    private $_isRegistered = false;
     private $_doc = null;
+    private $_viewName = '';
 
-    //$text, $groups, $position, $start, $end, $childName, $closer
-    public function __construct(array $attributes, ComponentDocument $doc)
+    public function __construct(ComponentStructure $attributes, ?ComponentDocument $doc)
     {
         $this->_doc = $doc;
-        $this->id = $attributes['id'];
-        $this->_parentId = $attributes['parentId'];
-        $this->_text = $attributes['component'];
-        $this->_tmpText = $this->_text;
-        $this->_name = $attributes['name'];
-        $this->_start = $attributes['startsAt'];
-        $this->_end = $attributes['endsAt'];
-        $this->_depth = $attributes['depth'];
-        $this->_closer = (isset($attributes['closer'])) ? $attributes['closer'] : null;
-        $this->_contents = ($this->_closer !== null) ? $this->_closer['contents'] : null;
-        // $this->_childName = $attributes['childName'];
-        $this->_properties = $attributes['props'];
+        $this->id = $attributes->id;
+        $this->_viewName = $attributes->view;
+        $this->_parentId = $attributes->parentId;
+        $this->_text = $attributes->text;
+        $this->_name = $attributes->name;
+        $this->_start = $attributes->startsAt;
+        $this->_end = $attributes->endsAt;
+        $this->_depth = $attributes->depth;
+        $this->_closer = $attributes->closer;
+        $this->_contents = is_array($this->_closer) ? $this->_closer['contents'] : null;
+        $this->_properties = $attributes->props;
         $this->_hasCloser = isset($this->_closer);
-        $this->_method = $attributes['name'];
-
-        // $this->_hasChildren = !empty($this->_childName);
+        $this->_method = $attributes->method;
     }
 
     public function getParentId(): int
@@ -98,6 +96,12 @@ class ComponentMatch implements ElementInterface
             return null;
         }
 
+        // ViewRegistry::uncache();
+        // $viewFile = ViewRegistry::read($this->_viewName);
+        // if($viewFile === null) {
+        //     return null;
+        // }
+        // $t = Utils::safeRead(SRC_ROOT . $viewFile);
         $s = $this->_contents['startsAt'];
         $e = $this->_contents['endsAt'];
 

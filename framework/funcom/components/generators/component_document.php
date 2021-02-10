@@ -2,6 +2,8 @@
 
 namespace FunCom\Components\Generators;
 
+use FunCom\Components\ComponentEntity;
+use FunCom\Components\ComponentStructure;
 use FunCom\Components\PreHtml;
 
 class ComponentDocument
@@ -37,7 +39,7 @@ class ComponentDocument
         return $this->_matches;
     }
 
-    public function getMatchById(int $id): ?ComponentMatch
+    public function getMatchById(int $id): ?ComponentEntity
     {
         $match = null;
 
@@ -45,7 +47,9 @@ class ComponentDocument
             return $match;
         }
 
-        $match = new ComponentMatch($this->_list[$id], $this);
+        $struct = new ComponentStructure($this->_list[$id]);
+
+        $match = new ComponentEntity($struct, $this);
 
         return $match;
     }
@@ -83,11 +87,10 @@ class ComponentDocument
     public function matchAll(): bool
     {
         $prehtml = new PreHtml($this->_text);
-        $cp = new ComponentParser($prehtml);
-        $matches = $cp->doComponents();
+        $parser = new ComponentParser($prehtml);
 
-        $this->_list = $matches;
-        $this->_depths = $cp->getDepths();
+        $this->_list = $parser->doComponents();
+        $this->_depths = $parser->getDepths();
 
         $this->_matchesByDepth = $this->sortMatchesByDepth();
         $this->_matchesById = $this->sortMatchesById();
@@ -140,17 +143,18 @@ class ComponentDocument
         $this->_currentMatchKey = -1;
     }
 
-    public function getCurrentMatch(): ?ComponentMatch
+    public function getCurrentMatch(): ?ComponentEntity
     {
         $currentId = $this->_matchesById[$this->_currentMatchKey];
         if ($this->_match === null || $this->_match->getId() !== $currentId) {
-            $this->_match = new ComponentMatch($this->_list[$currentId], $this);
+            $struct =  new ComponentStructure($this->_list[$currentId]);
+            $this->_match = new ComponentEntity($struct, $this);
         }
 
         return $this->_match;
     }
 
-    public function getNextMatch(): ?ComponentMatch
+    public function getNextMatch(): ?ComponentEntity
     {
         $this->_currentMatchKey++;
 
@@ -224,7 +228,7 @@ class ComponentDocument
         return $parentText;
     }
 
-    public function replaceThisMatch(ComponentMatch $match, string $text, string $replacing): string
+    public function replaceThisMatch(ComponentEntity $match, string $text, string $replacing): string
     {
         if ($match->hasCloser()) {
             $start = $match->getStart();

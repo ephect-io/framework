@@ -52,7 +52,8 @@ class ComponentParser
         for ($i = $l - 1; $i > -1; $i--) {
 
             $list[$i]['id'] = $i;
-            $list[$i]['component'] = $list[$i][0][0];
+            $list[$i]['view'] = $this->view->getFullyQualifiedFunction();
+            $list[$i]['text'] = $list[$i][0][0];
             $list[$i]['name'] = $list[$i][2][0];
             $list[$i]['method'] = $list[$i][2][0];
             $list[$i]['startsAt'] = $list[$i][0][1];
@@ -67,7 +68,7 @@ class ComponentParser
                         $list[$j]['closer'] = [
                             'id' => $i,
                             'parentId' => $j,
-                            'component' => $list[$i][0][0],
+                            'text' => $list[$i][0][0],
                             'name' => $list[$i][2][0],
                             'startsAt' => $list[$i][0][1],
                             'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
@@ -103,7 +104,7 @@ class ComponentParser
 
             $isSibling = isset($list[$siblingId]) && $list[$siblingId]['hasCloser'];
 
-            $component = $list[$i]['component'];
+            $component = $list[$i]['text'];
             $firstName = $list[$i]['name'];
             $secondName = isset($list[$i + 1]) ? $list[$i + 1]['name'] : 'eof';
 
@@ -147,14 +148,12 @@ class ComponentParser
         }
 
         for ($i = $l - 1; $i > -1; $i--) {
+            // Remove useless data
             if ($list[$i]['isCloser']) {
                 unset($list[$i]);
+            } else {
+                unset($list[$i]['isCloser']);
             }
-        }
-
-        // Remove useless data
-        foreach ($list as $key => $value) {
-            unset($value['isCloser']);
         }
 
         return $list;
