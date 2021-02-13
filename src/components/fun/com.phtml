@@ -2,13 +2,16 @@
 namespace Fun;
 
 use function FunCom\Hooks\useEffect;
+use function FunCom\Hooks\useState;
 
 function Com($props)
 {
-    useEffect(function() use ($props, &$b, &$c, &$d) {
+    useEffect(function() use ($props, &$b, &$c, &$d, &$m) {
         $b = 'It is a';
         $c = 'functional component';
         $d = $props->from;
+        $m = useState('m', 'n');
+        
     });
 
     return (<<<HTML
@@ -16,6 +19,7 @@ function Com($props)
     <sub>from {{ d }}</sub>
     <h2>{{ b }}</h2>
     <h3>{{ c }}</h3>
+    <h3>{{ m }}</h3>
     <Dummy />
     HTML);
 }

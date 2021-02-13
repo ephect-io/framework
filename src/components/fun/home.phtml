@@ -4,8 +4,12 @@ namespace Fun;
 
 use Com as FunCom;
 
+use function FunCom\Hooks\setState;
+
 function Home()
 {
+    setState('m', ['n' => 'o']);
+
     return (<<<HTML
     <Mother>
         <Block name="title">Ephect in action !</Block>
