@@ -4,7 +4,7 @@ namespace FunCom\Core;
 
 use Error;
 
-class Structure
+class Structure implements StructureInterface
 {
 
     public function __construct(array $properties)
@@ -16,5 +16,12 @@ class Structure
 
             $this->{$key} = $value;
         }
+    }
+
+    public function toArray() : array
+    {
+        $result = get_object_vars($this);
+
+        return $result;
     }
 }

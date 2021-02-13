@@ -6,6 +6,7 @@ use FunCom\Core\Structure;
 
 class ComponentStructure extends Structure
 {
+    public $uid;
     public $id;
     public $view;
     public $name;

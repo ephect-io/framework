@@ -4,6 +4,7 @@ namespace FunCom\Components;
 
 use FunCom\Components\ComponentStructure;
 use FunCom\Components\Generators\ComponentDocument;
+use FunCom\Core\StructureInterface;
 use FunCom\ElementInterface;
 use FunCom\ElementTrait;
 use FunCom\IO\Utils;
@@ -14,7 +15,7 @@ use FunCom\Registry\ViewRegistry;
  *
  * @author david
  */
-class ComponentEntity implements ElementInterface
+class ComponentEntity implements ElementInterface, StructureInterface
 {
     use ElementTrait;
 
@@ -32,9 +33,12 @@ class ComponentEntity implements ElementInterface
     private $_method = '';
     private $_doc = null;
     private $_viewName = '';
+    private $_attributes = null;
 
-    public function __construct(ComponentStructure $attributes, ?ComponentDocument $doc)
+    public function __construct(ComponentStructure $attributes, ?ComponentDocument $doc = null)
     {
+        $attributes->uid = $this->getUID();
+
         $this->_doc = $doc;
         $this->id = $attributes->id;
         $this->_viewName = $attributes->view;
@@ -49,6 +53,13 @@ class ComponentEntity implements ElementInterface
         $this->_properties = $attributes->props;
         $this->_hasCloser = isset($this->_closer);
         $this->_method = $attributes->method;
+
+        $this->_attributes = $attributes;
+    }
+
+    public function toArray(): array
+    {
+        return $this->_attributes->toArray();
     }
 
     public function getParentId(): int
@@ -92,7 +103,7 @@ class ComponentEntity implements ElementInterface
 
     public function getContents(): ?string
     {
-        if($this->_contents === null) {
+        if ($this->_contents === null) {
             return null;
         }
 
@@ -105,7 +116,7 @@ class ComponentEntity implements ElementInterface
         $s = $this->_contents['startsAt'];
         $e = $this->_contents['endsAt'];
 
-        if($e - $s < 1) {
+        if ($e - $s < 1) {
             return '';
         }
 
@@ -129,20 +140,19 @@ class ComponentEntity implements ElementInterface
     {
         return $this->_hasCloser;
     }
-   
+
     public function isSibling(): bool
     {
         return $this->_isSibling;
     }
-    
+
     public function getCloser(): array
     {
         return $this->_closer;
     }
- 
+
     public function getMethod(): string
     {
         return $this->_method;
     }
-
 }

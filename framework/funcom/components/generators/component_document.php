@@ -92,7 +92,7 @@ class ComponentDocument
         $this->_list = $parser->doComponents();
         $this->_depths = $parser->getDepths();
 
-        $this->_matchesByDepth = $this->sortMatchesByDepth();
+        $this->_matchesByDepth = $parser->getIdListByDepth(); //$this->sortMatchesByDepth();
         $this->_matchesById = $this->sortMatchesById();
         $this->_matchesByKey = $this->sortMatchesByKey();
 

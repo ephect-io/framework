@@ -16,6 +16,7 @@ class ComponentParser
     protected $parentHTML = '';
     protected $maker = null;
     protected $depths = [];
+    protected $idListByDepth = [];
 
     public function __construct(ComponentInterface $view)
     {
@@ -33,6 +34,11 @@ class ComponentParser
     public function getDepths(): array
     {
         return $this->depths;
+    }
+
+    public function getIdListByDepth(): array
+    {
+        return $this->idListByDepth;
     }
 
     public function doComponents(): array
@@ -94,7 +100,7 @@ class ComponentParser
         $depth = 0;
         $parentIds = [];
         $parentIds[$depth] = -1;
-        
+
         $l = count($list);
 
         // Add useful information in list like depth and parentId
@@ -142,10 +148,10 @@ class ComponentParser
                     if (isset($parentIds[$depth])) {
                         unset($parentIds[$depth]);
                     }
-
                 }
             }
         }
+
 
         for ($i = $l - 1; $i > -1; $i--) {
             // Remove useless data
@@ -153,6 +159,15 @@ class ComponentParser
                 unset($list[$i]);
             } else {
                 unset($list[$i]['isCloser']);
+            }
+        }
+
+        $maxDepth = count($this->depths);
+        for ($i = $maxDepth; $i > -1; $i--) {
+            foreach ($list as $match) {
+                if ($match["depth"] == $i) {
+                    array_push($this->idListByDepth, $match['id']);
+                }
             }
         }
 
