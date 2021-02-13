@@ -11,6 +11,7 @@ include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_
 include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR . 'framework_registry.php';
 
 include HOOKS_ROOT . 'use_effect.php';
+include HOOKS_ROOT . 'use_state.php';
 
 use FunCom\ElementUtils;
 use FunCom\IO\Utils;
