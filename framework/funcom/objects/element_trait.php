@@ -2,6 +2,8 @@
 
 namespace FunCom;
 
+use FunCom\Crypto\Crypto;
+
 trait ElementTrait
 {
     protected $parent = null;
@@ -14,7 +16,8 @@ trait ElementTrait
     public function getUID(): string
     {
         if ($this->uid === '') {
-            $this->uid = str_replace('.', '_', uniqid(time(), true));
+            // $this->uid = str_replace('.', '_', uniqid(time(), true));
+            $this->uid = Crypto::createUID();
         }
         return $this->uid;
     }
