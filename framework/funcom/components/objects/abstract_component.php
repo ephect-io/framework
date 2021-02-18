@@ -48,21 +48,6 @@ abstract class AbstractComponent implements ComponentInterface
         $parser = new Parser($this);
         $parser->doUses();
         $parser->doUsesAs();
-
-        $parser = new ComponentParser($this);
-        $list = $parser->doComponents();
-
-        $components = [];
-        foreach($list as $item) {
-            $entity = new ComponentEntity(new ComponentStructure($item));
-            array_push($components, $entity);
-        }
-        $compose = new Composition($this->getFullyQualifiedFunction(), $components);
-        
-        $composition = $compose->toArray();
-
-        CodeRegistry::write($this->getFullyQualifiedFunction(), $composition);
-
     }
 
     public function parse(): void

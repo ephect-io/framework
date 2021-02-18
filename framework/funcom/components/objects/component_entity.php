@@ -3,124 +3,146 @@
 namespace FunCom\Components;
 
 use FunCom\Components\ComponentStructure;
-use FunCom\Components\Generators\ComponentDocument;
 use FunCom\Core\StructureInterface;
 use FunCom\ElementInterface;
 use FunCom\ElementTrait;
 use FunCom\IO\Utils;
 use FunCom\Registry\ViewRegistry;
+use FunCom\Tree\Tree;
+use FunCom\Tree\TreeInterface;
+use FunCom\Tree\TreeTrait;
 
 /**
  * Description of match
  *
  * @author david
  */
-class ComponentEntity implements ElementInterface, StructureInterface
+class ComponentEntity implements ElementInterface, StructureInterface, TreeInterface
 {
     use ElementTrait;
+    use TreeTrait;
 
-    private $_parentId = 0;
-    private $_name = '';
-    private $_text = '';
-    private $_start = 0;
-    private $_end = 0;
-    private $_depth = 0;
-    private $_isSibling = false;
-    private $_closer = '';
-    private $_contents = null;
-    private $_hasCloser = '';
-    private $_properties = array();
-    private $_method = '';
-    private $_doc = null;
-    private $_viewName = '';
-    private $_attributes = null;
+    protected $parentId = 0;
+    protected $name = '';
+    protected $text = '';
+    protected $start = 0;
+    protected $end = 0;
+    protected $depth = 0;
+    protected $isSibling = false;
+    protected $closer = '';
+    protected $contents = null;
+    protected $hasCloser = '';
+    protected $properties = array();
+    protected $method = '';
+    protected $doc = null;
+    protected $viewName = '';
+    protected $className = '';
+    protected $attributes = null;
+    protected $children = null;
 
-    public function __construct(ComponentStructure $attributes, ?ComponentDocument $doc = null)
+    public function __construct(ComponentStructure $attributes)
     {
-        $attributes->uid = $this->getUID();
-
-        $this->_doc = $doc;
         $this->id = $attributes->id;
-        $this->_viewName = $attributes->view;
-        $this->_parentId = $attributes->parentId;
-        $this->_text = $attributes->text;
-        $this->_name = $attributes->name;
-        $this->_start = $attributes->startsAt;
-        $this->_end = $attributes->endsAt;
-        $this->_depth = $attributes->depth;
-        $this->_closer = $attributes->closer;
-        $this->_contents = is_array($this->_closer) ? $this->_closer['contents'] : null;
-        $this->_properties = $attributes->props;
-        $this->_hasCloser = isset($this->_closer);
-        $this->_method = $attributes->method;
+        $this->className = $attributes->class;
+        $this->viewName = $attributes->view;
+        $this->parentId = $attributes->parentId;
+        $this->text = $attributes->text;
+        $this->name = $attributes->name;
+        $this->start = $attributes->startsAt;
+        $this->end = $attributes->endsAt;
+        $this->depth = $attributes->depth;
+        $this->closer = $attributes->closer;
+        $this->contents = is_array($this->closer) ? $this->closer['contents'] : null;
+        $this->properties = $attributes->props;
+        $this->hasCloser = isset($this->closer);
+        $this->method = $attributes->method;
+        $this->attributes = $attributes;
 
-        $this->_attributes = $attributes;
+        $this->children = $attributes->node;
+
+        $this->innerNode = new Tree();
+        // $this->bindNode();
+
+    }
+
+    
+
+    public function bindNode(): void
+    {
+
+        if ($this->children === null || $this->children === false) {
+            return;
+        }
+
+        foreach($this->children as $child) {
+            $childEntity = new ComponentEntity(new ComponentStructure($child));
+            $this->node()->add($childEntity);
+        }
     }
 
     public function toArray(): array
     {
-        return $this->_attributes->toArray();
+        return $this->attributes->toArray();
     }
 
     public function getParentId(): int
     {
-        return $this->_parentId;
+        return $this->parentId;
     }
 
     public function getName(): string
     {
-        return $this->_name;
+        return $this->name;
     }
 
     public function getText(): string
     {
-        return $this->_text;
+        return $this->text;
     }
 
     public function getDepth(): int
     {
-        return $this->_depth;
+        return $this->depth;
     }
 
     public function properties($key)
     {
         $result = false;
-        if (isset($this->_properties[$key])) {
-            $result = $this->_properties[$key];
+        if (isset($this->properties[$key])) {
+            $result = $this->properties[$key];
         }
         return $result;
     }
 
     public function getStart(): int
     {
-        return $this->_start;
+        return $this->start;
     }
 
     public function getEnd(): int
     {
-        return $this->_end;
+        return $this->end;
     }
 
     public function getContents(): ?string
     {
-        if ($this->_contents === null) {
+        if ($this->contents === null) {
             return null;
         }
 
-        // ViewRegistry::uncache();
-        // $viewFile = ViewRegistry::read($this->_viewName);
-        // if($viewFile === null) {
-        //     return null;
-        // }
-        // $t = Utils::safeRead(SRC_ROOT . $viewFile);
-        $s = $this->_contents['startsAt'];
-        $e = $this->_contents['endsAt'];
+        $s = $this->contents['startsAt'];
+        $e = $this->contents['endsAt'];
 
         if ($e - $s < 1) {
             return '';
         }
 
-        $t = $this->_doc->getText();
+        ViewRegistry::uncache();
+        $viewFile = ViewRegistry::read($this->viewName);
+        if ($viewFile === null) {
+            return null;
+        }
+        $t = Utils::safeRead(SRC_ROOT . $viewFile);
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;
@@ -128,31 +150,31 @@ class ComponentEntity implements ElementInterface, StructureInterface
 
     public function getChildName(): string
     {
-        return $this->_childName;
+        return $this->childName;
     }
 
     public function hasChildren(): bool
     {
-        return $this->_hasChildren;
+        return $this->hasChildren;
     }
 
     public function hasCloser(): bool
     {
-        return $this->_hasCloser;
+        return $this->hasCloser;
     }
 
     public function isSibling(): bool
     {
-        return $this->_isSibling;
+        return $this->isSibling;
     }
 
     public function getCloser(): array
     {
-        return $this->_closer;
+        return $this->closer;
     }
 
     public function getMethod(): string
     {
-        return $this->_method;
+        return $this->method;
     }
 }

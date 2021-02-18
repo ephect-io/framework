@@ -3,6 +3,8 @@
 namespace FunCom\Components\Generators;
 
 use FunCom\Components\ComponentInterface;
+use FunCom\Crypto\Crypto;
+use FunCom\Registry\UseRegistry;
 
 define('TERMINATOR', '/');
 define('SKIP_MARK', '!');
@@ -24,6 +26,8 @@ class ComponentParser
         $this->html = $view->getCode();
         $this->parentHTML = $view->getParentHTML();
         $this->maker = new Maker($view);
+        UseRegistry::uncache();
+
     }
 
     public function getHtml(): string
@@ -57,7 +61,10 @@ class ComponentParser
         // Re-structure the list recursively
         for ($i = $l - 1; $i > -1; $i--) {
 
+            $list[$i]['uid'] = Crypto::createUID();
+
             $list[$i]['id'] = $i;
+            $list[$i]['class'] = UseRegistry::read($list[$i][2][0]);
             $list[$i]['view'] = $this->view->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
             $list[$i]['name'] = $list[$i][2][0];
@@ -65,6 +72,7 @@ class ComponentParser
             $list[$i]['startsAt'] = $list[$i][0][1];
             $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
             $list[$i]['props'] = $this->doArguments($list[$i][0][0]);
+            $list[$i]['node'] = false;
             $list[$i]['hasCloser'] = false;
             $list[$i]['isCloser'] = false;
 
@@ -131,6 +139,7 @@ class ComponentParser
 
                     $list[$i]['parentId'] = $parentIds[$depth];
                     $list[$i]['depth'] = $depth;
+                    // array_push($this->idListByDepth, $i);
 
                     if ($list[$pId]['isSibling']) {
                         $list[$i]['depth'] = $list[$pId]['depth'];
@@ -151,7 +160,6 @@ class ComponentParser
                 }
             }
         }
-
 
         for ($i = $l - 1; $i > -1; $i--) {
             // Remove useless data

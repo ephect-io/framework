@@ -2,6 +2,7 @@
 
 namespace FunCom\Components;
 
+use FunCom\Components\Generators\ComponentParser;
 use FunCom\IO\Utils as IOUtils;
 use FunCom\Registry\CodeRegistry;
 use FunCom\Registry\PluginRegistry;
@@ -21,7 +22,23 @@ class Compiler
                 $view->load($viewFile);
                 $view->analyse();
 
+                $parser = new ComponentParser($view);
+                $list = $parser->doComponents();
+        
+                $compose = new Composition($view->getFullyQualifiedFunction());
+        
+                foreach ($list as $item) {
+                    $entity = new ComponentEntity(new ComponentStructure($item));
+                    $compose->items()->add($entity);
+                }
+        
+                $compose->bindNodes();
+        
+                $composition = $compose->toArray();
+        
+                CodeRegistry::write($view->getFullyQualifiedFunction(), $composition);
                 ViewRegistry::write($viewFile, $view->getUID());
+
             }
             CodeRegistry::cache();
             ViewRegistry::cache();

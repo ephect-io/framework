@@ -8,6 +8,7 @@ class ComponentStructure extends Structure
 {
     public $uid;
     public $id;
+    public $class;
     public $view;
     public $name;
     public $method;
@@ -16,9 +17,9 @@ class ComponentStructure extends Structure
     public $depth;
     public $startsAt;
     public $endsAt;
-    public $props;
-    public $closer;
-    // public $isCloser;
     public $isSibling;
     public $hasCloser;
+    public $closer;
+    public $props;
+    public $node;
 }
