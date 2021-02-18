@@ -2,8 +2,11 @@
 
 namespace Fun;
 
-use Reed\Template\TemplateEngine;
-use Reed\Template\TemplateLoader;
+use FunCom\Components\ComponentEntity;
+use FunCom\Components\ComponentStructure;
+use FunCom\Components\Composition;
+use FunCom\Components\Generators\ComponentParser;
+use FunCom\Components\View;
 
 use function FunCom\Hooks\useEffect;
 
@@ -13,15 +16,33 @@ function Second()
     $code = '';
     useEffect(function() use (&$code) {
 
-        $loader = new TemplateLoader(APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
-        $engine = new TemplateEngine($loader);
+        $view = new View();
+        $view->load('components/fun/home.phtml');
+        $view->analyse();
 
-        $dictionary = ["firstname" => "David"];
+        $parser = new ComponentParser($view);
+        $list = $parser->doComponents();
 
-        $code = $engine->render('second.phtml', $dictionary);
+        $depths = $parser->getIdListByDepth();
+
+     
+        $compose = new Composition($view->getFullyQualifiedFunction());
+        
+        foreach ($list as $item) {
+            $entity = new ComponentEntity(new ComponentStructure($item));
+            $compose->items()->add($entity);
+        }
+
+        $compose->bindNodes();
+
+        $composition = $compose->toArray();
+
+        $code = json_encode(['Fun\\App' => ['depths' => $depths, 'composition' => $composition]], JSON_PRETTY_PRINT);
     });
 
     return (<<<HTML
+        <pre>
         {{ code }}
+        </pre>
     HTML);
 }
