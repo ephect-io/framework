@@ -1,9 +1,9 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\ElementInterface;
-use FunCom\Tree\TreeInterface;
+use Ephect\ElementInterface;
+use Ephect\Tree\TreeInterface;
 
 interface CompositionInterface extends ElementInterface
 {

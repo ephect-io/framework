@@ -1,5 +1,5 @@
 <?php
-namespace FunCom\IO;
+namespace Ephect\IO;
 
 use FilesystemIterator;
 use RecursiveDirectoryIterator;

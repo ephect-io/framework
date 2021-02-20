@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Core;
+namespace Ephect\Core;
 
-use FunCom\Registry\FrameworkRegistry;
+use Ephect\Registry\FrameworkRegistry;
 
 class Autoloader
 {

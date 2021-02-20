@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom;
+namespace Ephect;
 
-use FunCom\Logger\Logger;
+use Ephect\Logger\Logger;
 
 class StaticElement
 {

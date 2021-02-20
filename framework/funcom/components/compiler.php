@@ -1,13 +1,13 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\Components\Generators\ComponentParser;
-use FunCom\IO\Utils as IOUtils;
-use FunCom\Registry\CodeRegistry;
-use FunCom\Registry\PluginRegistry;
-use FunCom\Registry\UseRegistry;
-use FunCom\Registry\ViewRegistry;
+use Ephect\Components\Generators\ComponentParser;
+use Ephect\IO\Utils as IOUtils;
+use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\PluginRegistry;
+use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ViewRegistry;
 
 class Compiler
 {

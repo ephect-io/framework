@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\Core\Structure;
+use Ephect\Core\Structure;
 
 class ComponentStructure extends Structure
 {

@@ -1,5 +1,5 @@
 <?php
-namespace FunCom\Web;
+namespace Ephect\Web;
 
 trait TemplateTrait
 {

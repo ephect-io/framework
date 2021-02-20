@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Tree;
+namespace Ephect\Tree;
 
 use Iterator;
 //

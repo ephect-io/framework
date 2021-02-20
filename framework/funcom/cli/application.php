@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\CLI;
+namespace Ephect\CLI;
 
-use FunCom\Core\AbstractApplication;
+use Ephect\Core\AbstractApplication;
 
 class Application extends AbstractApplication
 {

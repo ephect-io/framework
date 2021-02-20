@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom;
+namespace Ephect;
 
 interface ElementInterface
 {

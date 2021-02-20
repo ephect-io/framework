@@ -1,12 +1,12 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\ElementUtils;
-use FunCom\IO\Utils;
-use FunCom\Registry\CacheRegistry;
-use FunCom\Registry\UseRegistry;
-use FunCom\Registry\ViewRegistry;
+use Ephect\ElementUtils;
+use Ephect\IO\Utils;
+use Ephect\Registry\CacheRegistry;
+use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ViewRegistry;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
@@ -82,7 +82,7 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
 
 
             $statment = <<<PHP
-            \tlist(\$props, \$children) = \FunCom\Components\AbstractComponent::passChidren(\$children);
+            \tlist(\$props, \$children) = \Ephect\Components\AbstractComponent::passChidren(\$children);
 
             PHP;
             

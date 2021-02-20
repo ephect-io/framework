@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Xml;
+namespace Ephect\Xml;
 
 /**
  * Description of xml

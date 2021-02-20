@@ -1,5 +1,5 @@
 <?php
-namespace FunCom;
+namespace Ephect;
 
 use DateTime;
 use \ReflectionClass;

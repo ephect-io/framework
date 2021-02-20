@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Core;
+namespace Ephect\Core;
 
 use Error;
 

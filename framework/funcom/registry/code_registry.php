@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Registry;
+namespace Ephect\Registry;
 
 class CodeRegistry extends AbstractStaticRegistry
 {

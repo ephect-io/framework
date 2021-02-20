@@ -1,10 +1,10 @@
 <?php
 
-namespace FunCom\Components\Generators;
+namespace Ephect\Components\Generators;
 
-use FunCom\Components\ComponentInterface;
-use FunCom\Crypto\Crypto;
-use FunCom\Registry\UseRegistry;
+use Ephect\Components\ComponentInterface;
+use Ephect\Crypto\Crypto;
+use Ephect\Registry\UseRegistry;
 
 define('TERMINATOR', '/');
 define('SKIP_MARK', '!');

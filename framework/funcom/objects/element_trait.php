@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom;
+namespace Ephect;
 
-use FunCom\Crypto\Crypto;
+use Ephect\Crypto\Crypto;
 
 trait ElementTrait
 {

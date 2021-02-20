@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Components\Generators;
+namespace Ephect\Components\Generators;
 
 class ChildrenParser extends Parser
 {

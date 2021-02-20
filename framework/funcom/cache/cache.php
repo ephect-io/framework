@@ -1,9 +1,9 @@
 <?php
 
-namespace FunCom\Cache;
+namespace Ephect\Cache;
 
-use FunCom\IO\Utils;
-use FunCom\StaticElement;
+use Ephect\IO\Utils;
+use Ephect\StaticElement;
 
 class Cache extends StaticElement
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\IO\Utils;
-use FunCom\Registry\ViewRegistry;
-use FunCom\Registry\CodeRegistry;
-use FunCom\Registry\UseRegistry;
+use Ephect\IO\Utils;
+use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\UseRegistry;
 
 class View extends AbstractFileComponent
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace FunCom\Components\Generators;
+namespace Ephect\Components\Generators;
 
-use FunCom\Components\ComponentEntity;
-use FunCom\Components\ComponentStructure;
-use FunCom\Components\PreHtml;
+use Ephect\Components\ComponentEntity;
+use Ephect\Components\ComponentStructure;
+use Ephect\Components\PreHtml;
 
 class ComponentDocument
 {

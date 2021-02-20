@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
 interface FileComponentInterface extends ComponentInterface
 {

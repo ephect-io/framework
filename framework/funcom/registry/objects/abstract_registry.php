@@ -1,9 +1,9 @@
 <?php
 
-namespace FunCom\Registry;
+namespace Ephect\Registry;
 
-use FunCom\ElementTrait;
-use FunCom\IO\Utils;
+use Ephect\ElementTrait;
+use Ephect\IO\Utils;
 
 abstract class AbstractRegistry implements AbstractRegistryInterface
 {

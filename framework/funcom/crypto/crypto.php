@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Crypto;
+namespace Ephect\Crypto;
 
 class Crypto
 {

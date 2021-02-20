@@ -1,16 +1,16 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
 use BadFunctionCallException;
-use FunCom\Components\Generators\ChildrenParser;
-use FunCom\Components\Generators\ComponentParser;
-use FunCom\Components\Generators\Parser;
-use FunCom\ElementTrait;
-use FunCom\Registry\CacheRegistry;
-use FunCom\Registry\CodeRegistry;
-use FunCom\Registry\ViewRegistry;
-use FunCom\Registry\UseRegistry;
+use Ephect\Components\Generators\ChildrenParser;
+use Ephect\Components\Generators\ComponentParser;
+use Ephect\Components\Generators\Parser;
+use Ephect\ElementTrait;
+use Ephect\Registry\CacheRegistry;
+use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\UseRegistry;
 use tidy;
 
 abstract class AbstractComponent implements ComponentInterface

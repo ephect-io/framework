@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Registry;
+namespace Ephect\Registry;
 
 interface StaticRegistryInterface
 {

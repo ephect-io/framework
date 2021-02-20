@@ -1,9 +1,9 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\Registry\PluginRegistry;
-use FunCom\Registry\ViewRegistry;
+use Ephect\Registry\PluginRegistry;
+use Ephect\Registry\ViewRegistry;
 
 class ComponentFactory
 {

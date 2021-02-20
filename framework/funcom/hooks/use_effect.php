@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Hooks;
+namespace Ephect\Hooks;
 
 function useEffect($callback, ...$params)
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\ElementInterface;
+use Ephect\ElementInterface;
 
 interface ComponentInterface extends ElementInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Components\Validators;
+namespace Ephect\Components\Validators;
 
 use InvalidArgumentException;
 

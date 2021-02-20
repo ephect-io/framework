@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Hooks;
+namespace Ephect\Hooks;
 
-use FunCom\Registry\Registry;
+use Ephect\Registry\Registry;
 
 function useState($item, $key)
 {

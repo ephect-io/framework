@@ -5,9 +5,9 @@
  * and open the template in the editor.
  */
 
-namespace FunCom\Web;
+namespace Ephect\Web;
 
-use FunCom\ElementInterface;
+use Ephect\ElementInterface;
 
 /**
  * Description of TObject

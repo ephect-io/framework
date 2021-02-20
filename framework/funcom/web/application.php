@@ -1,11 +1,11 @@
 <?php
 
-namespace FunCom\Web;
+namespace Ephect\Web;
 
-use FunCom\Components\Compiler;
-use FunCom\Components\View;
-use FunCom\Core\AbstractApplication;
-use FunCom\Registry\CacheRegistry;
+use Ephect\Components\Compiler;
+use Ephect\Components\View;
+use Ephect\Core\AbstractApplication;
+use Ephect\Registry\CacheRegistry;
 
 class Application extends AbstractApplication
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace FunCom\Components\Generators;
+namespace Ephect\Components\Generators;
 
-use FunCom\Components\ComponentInterface;
-use FunCom\Registry\CodeRegistry;
-use FunCom\Registry\UseRegistry;
+use Ephect\Components\ComponentInterface;
+use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\UseRegistry;
 
 class Parser
 {
@@ -61,7 +61,7 @@ class Parser
             $uid = $this->view->getUID();
 
             if ($variable === 'children') {
-                $this->html = str_replace('{{ children }}', "<?php \FunCom\Components\View::bind('$uid'); ?>", $this->html);
+                $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\View::bind('$uid'); ?>", $this->html);
                 continue;
             }
 
@@ -158,7 +158,7 @@ class Parser
 
             $parent = $this->view->getFullyQualifiedFunction();
 
-            $componentRender = "<?php \FunCom\Components\View::render('$componentName', $args, '$parent'); ?>";
+            $componentRender = "<?php \Ephect\Components\View::render('$componentName', $args, '$parent'); ?>";
 
             $this->html = str_replace($component, $componentRender, $this->html);
         }
@@ -186,7 +186,7 @@ class Parser
 
     // public function doMake(): void
     // {
-    /**    $re = '/<\?php \\\\FunCom\\\\Components\\\\View::make\(\'.*\'\); \?>/m';  */
+    /**    $re = '/<\?php \\\\Ephect\\\\Components\\\\View::make\(\'.*\'\); \?>/m';  */
     //     $subject = $this->html;
 
     //     preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);

@@ -1,12 +1,12 @@
 <?php
 
-namespace FunCom\Components\Generators;
+namespace Ephect\Components\Generators;
 
-use FunCom\Components\ComponentFactory;
-use FunCom\Components\ComponentInterface;
-use FunCom\Registry\CodeRegistry;
-use FunCom\Registry\UseRegistry;
-use FunCom\Registry\ViewRegistry;
+use Ephect\Components\ComponentFactory;
+use Ephect\Components\ComponentInterface;
+use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ViewRegistry;
 
 class Maker
 {
@@ -72,7 +72,7 @@ class Maker
 
 
         /**
-         * $componentRender = "<?php \FunCom\Components\View::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
+         * $componentRender = "<?php \Ephect\Components\View::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
          */
 
         $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid']]";

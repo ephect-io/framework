@@ -1,9 +1,9 @@
 <?php
 
-namespace FunCom\Components\Builders;
+namespace Ephect\Components\Builders;
 
-use FunCom\Components\Validators\PropsValidator;
-use FunCom\ElementInterface;
+use Ephect\Components\Validators\PropsValidator;
+use Ephect\ElementInterface;
 
 abstract class AbstractBuilder
 {

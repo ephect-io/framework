@@ -1,6 +1,6 @@
 <?php
 
-namespace FunCom\Logger;
+namespace Ephect\Logger;
 
 class Logger
 {

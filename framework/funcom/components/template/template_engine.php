@@ -1,14 +1,14 @@
 <?php
-namespace FunCom\Template;
+namespace Ephect\Template;
 
-use FunCom\Cache\Cache;
-use FunCom\Element;
-use FunCom\IO\Utils;
-use FunCom\Registry\Registry;
-use FunCom\Registry\UseRegistry;
-use FunCom\Registry\ViewRegistry;
-use FunCom\Web\TemplateInterface;
-use FunCom\Web\TemplateTrait;
+use Ephect\Cache\Cache;
+use Ephect\Element;
+use Ephect\IO\Utils;
+use Ephect\Registry\Registry;
+use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ViewRegistry;
+use Ephect\Web\TemplateInterface;
+use Ephect\Web\TemplateTrait;
 
 class TemplateEngine extends Element implements TemplateInterface
 {

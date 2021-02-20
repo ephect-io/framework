@@ -1,14 +1,14 @@
 <?php
 
-namespace FunCom\Template;
+namespace Ephect\Template;
 
-use FunCom\Registry\Registry;
-use FunCom\Components\Generators\ComponentDocument;
-use FunCom\Element;
-use FunCom\Registry\UseRegistry;
-use FunCom\Registry\ViewRegistry;
-use FunCom\Web\TemplateInterface;
-use FunCom\Web\TemplateTrait;
+use Ephect\Registry\Registry;
+use Ephect\Components\Generators\ComponentDocument;
+use Ephect\Element;
+use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ViewRegistry;
+use Ephect\Web\TemplateInterface;
+use Ephect\Web\TemplateTrait;
 
 class Template extends Element implements TemplateInterface
 {
@@ -150,13 +150,13 @@ class Template extends Element implements TemplateInterface
             if ($tag == 'Echo' && $var) {
                 /** $declare = '<?php echo ' . $type . $var . '; ?>';  */
 
-                $declare = '<?php echo \\FunCom\\Registry\\Registry::read("template", "' . $uid . '")["' . $var . '"];?>';
+                $declare = '<?php echo \\Ephect\\Registry\\Registry::read("template", "' . $uid . '")["' . $var . '"];?>';
             } elseif ($tag == 'Echo' && $prop) {
                 $declare = '<?php echo ' . $type . 'get' . ucfirst($prop) . '(); ?>';
             } elseif ($tag == 'Block' && null !== $content) {
                 $declare = $content;
             } elseif ($tag == 'Render') {
-                    $declare = '<?php echo \\FunCom\\Registry\\Registry::read("' . $uid . '", "' . $id . '")[0];?>';
+                    $declare = '<?php echo \\Ephect\\Registry\\Registry::read("' . $uid . '", "' . $id . '")[0];?>';
             }
 
             $viewHtml = $doc->replaceThisMatch($match, $viewHtml, $declare);

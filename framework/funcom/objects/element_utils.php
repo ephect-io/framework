@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom;
+namespace Ephect;
 
-use FunCom\IO\Utils;
+use Ephect\IO\Utils;
 
 final class ElementUtils 
 {

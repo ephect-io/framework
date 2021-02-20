@@ -1,9 +1,9 @@
 <?php
 
-namespace FunCom\Tree;
+namespace Ephect\Tree;
 
-use FunCom\ElementTrait;
-use FunCom\Tree\TreeInterface;
+use Ephect\ElementTrait;
+use Ephect\Tree\TreeInterface;
 
 trait TreeTrait
 {

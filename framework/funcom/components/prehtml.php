@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\Registry\CodeRegistry;
+use Ephect\Registry\CodeRegistry;
 
 class PreHtml extends AbstractFileComponent implements FileComponentInterface
 {

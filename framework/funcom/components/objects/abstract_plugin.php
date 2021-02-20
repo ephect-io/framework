@@ -1,14 +1,14 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\Components\Generators\ChildrenParser;
-use FunCom\ElementUtils;
-use FunCom\IO\Utils;
-use FunCom\Registry\CacheRegistry;
-use FunCom\Registry\PluginRegistry;
-use FunCom\Registry\UseRegistry;
-use FunCom\Registry\ViewRegistry;
+use Ephect\Components\Generators\ChildrenParser;
+use Ephect\ElementUtils;
+use Ephect\IO\Utils;
+use Ephect\Registry\CacheRegistry;
+use Ephect\Registry\PluginRegistry;
+use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ViewRegistry;
 
 abstract class AbstractPlugin extends AbstractFileComponent
 {

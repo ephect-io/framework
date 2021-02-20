@@ -1,10 +1,10 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\ElementTrait;
-use FunCom\Tree\Tree;
-use FunCom\Tree\TreeInterface;
+use Ephect\ElementTrait;
+use Ephect\Tree\Tree;
+use Ephect\Tree\TreeInterface;
 
 class Composition implements CompositionInterface
 {

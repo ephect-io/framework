@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Core;
+namespace Ephect\Core;
 
-use FunCom\Element;
+use Ephect\Element;
 
 abstract class AbstractApplication extends Element
 {

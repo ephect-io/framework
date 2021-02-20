@@ -1,16 +1,16 @@
 <?php
 
-namespace FunCom\Components;
+namespace Ephect\Components;
 
-use FunCom\Components\ComponentStructure;
-use FunCom\Core\StructureInterface;
-use FunCom\ElementInterface;
-use FunCom\ElementTrait;
-use FunCom\IO\Utils;
-use FunCom\Registry\ViewRegistry;
-use FunCom\Tree\Tree;
-use FunCom\Tree\TreeInterface;
-use FunCom\Tree\TreeTrait;
+use Ephect\Components\ComponentStructure;
+use Ephect\Core\StructureInterface;
+use Ephect\ElementInterface;
+use Ephect\ElementTrait;
+use Ephect\IO\Utils;
+use Ephect\Registry\ViewRegistry;
+use Ephect\Tree\Tree;
+use Ephect\Tree\TreeInterface;
+use Ephect\Tree\TreeTrait;
 
 /**
  * Description of match

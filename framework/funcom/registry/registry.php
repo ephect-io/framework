@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Registry;
+namespace Ephect\Registry;
 
-use FunCom\StaticElement;
+use Ephect\StaticElement;
 
 /**
  * Description of registry
