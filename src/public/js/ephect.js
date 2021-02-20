@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-class Funcom {
+class Ephect {
   static DOM () {}
   /**
      * Performs a AJAX request and return the result to a callback function
@@ -13,17 +13,17 @@ class Funcom {
      * @returns JSON stream on callback
      */
   static ajax (url, data, callback) {
-    Funcom.Rest.post(url, data, callback)
+    Ephect.Rest.post(url, data, callback)
   }
 }
 
-Funcom.DOM.ready = function (f) {
+Ephect.DOM.ready = function (f) {
   /in/.test(document.readyState)
-    ? setTimeout('Funcom.DOM.ready(' + f + ')', 9)
+    ? setTimeout('Ephect.DOM.ready(' + f + ')', 9)
     : f()
 }
 
-Funcom.Rest = (function () {
+Ephect.Rest = (function () {
   class F {
     /**
        * Performs a HEAD request and return the result to a callback function

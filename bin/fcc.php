@@ -1,12 +1,12 @@
 <?php
 
-namespace FunCom\Core;
+namespace Ephect\Core;
 
 include  dirname(__DIR__) . '/framework/bootstrap.php';
 
-use FunCom\CLI\Application;
-use FunCom\Components\Compiler;
-use FunCom\IO\Utils;
+use Ephect\CLI\Application;
+use Ephect\Components\Compiler;
+use Ephect\IO\Utils;
 
 class Program extends Application
 {

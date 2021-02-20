@@ -1,13 +1,13 @@
 <?php
 
-namespace FunCom\Core;
+namespace Ephect\Core;
 
 include  dirname(__DIR__) . '/framework/bootstrap.php';
 
-use FunCom\CLI\Application;
-use FunCom\Components\Generators\ComponentParser;
-use FunCom\Components\PreHtml;
-use FunCom\IO\Utils;
+use Ephect\CLI\Application;
+use Ephect\Components\Generators\ComponentParser;
+use Ephect\Components\PreHtml;
+use Ephect\IO\Utils;
 
 class Program extends Application
 {
@@ -25,7 +25,7 @@ function Home()
 {
     return (
     <Mother>
-        <Block name="title">FunCom in action !</Block>
+        <Block name="title">Ephect in action !</Block>
         <Block name="stylesheets">
             <link rel="stylesheet" href="css/pond-theme.css" />
             <link rel="stylesheet" href="css/pond.css" />
@@ -34,7 +34,7 @@ function Home()
         <Block name="header" ><Header /></Block>
         <Block name="main">
             <div class="App-content" >
-                <FunCom message='Hello World!' from="the app" />
+                <Ephect message='Hello World!' from="the app" />
             </div>
         </Block>
         <Block name="footer" ><Footer /></Block>

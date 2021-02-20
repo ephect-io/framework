@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Plugins\Route;
+namespace Ephect\Plugins\Route;
 
-use FunCom\Element;
+use Ephect\Element;
 
 class RouteEntity extends Element implements RouteInterface
 {

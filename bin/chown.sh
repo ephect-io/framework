@@ -1,11 +1,11 @@
 #!/bin/sh
-if [ -d /Sites/funcom ];
+if [ -d /Sites/ephect ];
 then
-    cd /Sites/funcom;
+    cd /Sites/ephect;
 fi
-if [ -d /Users/david/Sites/CodePhoenixOrg/SDK/php/funcom ];
+if [ -d /Users/david/Sites/CodePhoenixOrg/SDK/php/ephect ];
 then
-    cd /Users/david/Sites/CodePhoenixOrg/SDK/php/funcom;
+    cd /Users/david/Sites/CodePhoenixOrg/SDK/php/ephect;
 fi
 sudo find ./cache -type d -exec chmod 775 {} \;
 sudo find ./cache -type f -exec chmod 664 {} \;

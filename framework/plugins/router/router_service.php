@@ -1,9 +1,9 @@
 <?php
 
-namespace FunCom\Plugins\Router;
+namespace Ephect\Plugins\Router;
 
-use FunCom\Plugins\Route\RouteEntity;
-use FunCom\Registry\RouteRegistry;
+use Ephect\Plugins\Route\RouteEntity;
+use Ephect\Registry\RouteRegistry;
 
 class RouterService
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace FunCom\Core;
+namespace Ephect\Core;
 
 include  dirname(__DIR__) . '/framework/bootstrap.php';
 
-use FunCom\CLI\Application;
-use FunCom\IO\Utils;
-use FunCom\Xml\XmlDocument;
+use Ephect\CLI\Application;
+use Ephect\IO\Utils;
+use Ephect\Xml\XmlDocument;
 
 class Program extends Application
 {
@@ -20,7 +20,7 @@ class Program extends Application
 
         $str = <<<HTML
     <phx:Mother id="mother0" >
-        <phx:Block id="title">FunCom in action !</phx:Block>
+        <phx:Block id="title">Ephect in action !</phx:Block>
         <phx:Block id="stylesheets">
             <link rel="stylesheet" href="css/pond-theme.css" />
             <link rel="stylesheet" href="css/pond.css" />
@@ -31,7 +31,7 @@ class Program extends Application
         </phx:Block>
         <phx:Block id="main" >
             <div class="App-content" >
-                <phx:FunCom message='Hello World!' from="the app" />
+                <phx:Ephect message='Hello World!' from="the app" />
             </div>
         </phx:Block>
         <phx:Block id="footer" >

@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Plugins\Route;
+namespace Ephect\Plugins\Route;
 
-use FunCom\ElementInterface;
+use Ephect\ElementInterface;
 
 interface RouteInterface extends ElementInterface
 {

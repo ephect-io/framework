@@ -1,8 +1,8 @@
 <?php
 
-namespace FunCom\Plugins\Route;
+namespace Ephect\Plugins\Route;
 
-use FunCom\Components\Builders\AbstractBuilder;
+use Ephect\Components\Builders\AbstractBuilder;
 
 class RouteBuilder extends AbstractBuilder
 {

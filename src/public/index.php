@@ -1,4 +1,4 @@
 <?php
 include '../../framework/bootstrap.php';
 
-FunCom\Web\Application::create();
+Ephect\Web\Application::create();

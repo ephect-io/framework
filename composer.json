@@ -1,16 +1,16 @@
 {
     "autoload": {
         "classmap": [
-            "framework/funcom/"
+            "framework/ephect/"
         ],
         "exclude-from-classmap": [
         ],
         "psr-4": {
-            "Funcom\\": ""
+            "Ephect\\": ""
         },
         "files": [
-            "framework/funcom/core/constants.php",
-            "framework/funcom/core/autoloader.php"
+            "framework/ephect/core/constants.php",
+            "framework/ephect/core/autoloader.php"
         ]
     },
     "include-path": [

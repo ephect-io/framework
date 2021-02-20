@@ -2,9 +2,9 @@
 
 namespace Fun;
 
-use Com as FunCom;
+use Com as Ephect;
 
-use function FunCom\Hooks\setState;
+use function Ephect\Hooks\setState;
 
 function Home()
 {
@@ -18,10 +18,10 @@ function Home()
             <link rel="stylesheet" href="/css/app.css" />
         </Block>
         <div class="App-content" >
-            <FunCom message='Hello World!' from="the app" />
+            <Ephect message='Hello World!' from="the app" />
         </div>
         <Block name="javascripts">
-            <script src="js/funcom.js"></script>
+            <script src="js/ephect.js"></script>
         </Block>
     </Mother>
     HTML);

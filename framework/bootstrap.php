@@ -1,6 +1,6 @@
 <?php
 
-include 'funcom/core/constants.php';
+include 'ephect/core/constants.php';
 include FUNCOM_ROOT . 'core' . DIRECTORY_SEPARATOR . 'autoloader.php';
 include FUNCOM_ROOT . 'io' . DIRECTORY_SEPARATOR . 'utils.php';
 include FUNCOM_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_trait.php';
@@ -13,10 +13,10 @@ include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR . 'framework_registry.php
 include HOOKS_ROOT . 'use_effect.php';
 include HOOKS_ROOT . 'use_state.php';
 
-use FunCom\ElementUtils;
-use FunCom\IO\Utils;
-use FunCom\Registry\FrameworkRegistry;
-use FunCom\Core\Autoloader;
+use Ephect\ElementUtils;
+use Ephect\IO\Utils;
+use Ephect\Registry\FrameworkRegistry;
+use Ephect\Core\Autoloader;
 
 if (!FrameworkRegistry::uncache()) {
 
