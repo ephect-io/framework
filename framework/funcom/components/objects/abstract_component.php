@@ -52,6 +52,12 @@ abstract class AbstractComponent implements ComponentInterface
 
     public function parse(): void
     {
+        /* TO BEGIN WITH */
+        CodeRegistry::uncache();
+        $class = $this->getFullyQualifiedFunction();
+        $item = CodeRegistry::read($class);
+        /* TO BEGIN WITH */
+
         $parser = new ChildrenParser($this);
 
         $parser->doUncache();
