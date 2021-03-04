@@ -255,4 +255,19 @@ class Parser
 
         return $result;
     }
+
+    public function doHtml(?string $html = null): ?string
+    {
+
+        $result = '';
+
+        $subject = $html === null ? $this->html : $html;
+
+        $re = '/return \(<<<HTML((.|\s)+)HTML\);/m';
+        preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
+
+        $result = !isset($matches[0]) ? '' : $matches[0][1];
+
+        return $result;
+    }
 }
