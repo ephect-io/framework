@@ -21,13 +21,19 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
         return $this->filename;
     }
 
+    public function getCachedSourceFilename(): string
+    {
+        $cache_file = 'source_' . static::getCacheFilename($this->filename);
+
+        return $cache_file;
+    }
+    
     public static function getCacheFilename(string $basename): string
     {
         $cache_file = str_replace('/', '_', $basename);
 
         return $cache_file;
     }
-    
     public function load(string $filename): bool
     {
         $result = false;
