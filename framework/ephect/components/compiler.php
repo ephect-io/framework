@@ -2,6 +2,7 @@
 
 namespace Ephect\Components;
 
+use Ephect\Components\Generators\BlocksParser;
 use Ephect\Components\Generators\ComponentParser;
 use Ephect\IO\Utils as IOUtils;
 use Ephect\Registry\CodeRegistry;
@@ -15,8 +16,9 @@ class Compiler
     public function perform(): void
     {
         if (!ViewRegistry::uncache()) {
-            $viewList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
-            foreach ($viewList as $key => $viewFile) {
+            $viewList = [];
+            $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
+            foreach ($templateList as $key => $viewFile) {
 
                 $view = new View();
                 $view->load($viewFile);
@@ -39,10 +41,16 @@ class Compiler
                 CodeRegistry::write($view->getFullyQualifiedFunction(), $composition);
                 ViewRegistry::write($viewFile, $view->getUID());
 
+                array_push($viewList, $view);
             }
             CodeRegistry::cache();
             ViewRegistry::cache();
             UseRegistry::cache();
+        }
+
+        foreach($viewList as $view) {
+            $parser = new BlocksParser($view);
+            $parser->doBlocks();
         }
 
         if (!PluginRegistry::uncache()) {
