@@ -5,8 +5,7 @@ namespace Ephect\Template;
 use Ephect\Registry\Registry;
 use Ephect\Components\Generators\ComponentDocument;
 use Ephect\Element;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Web\TemplateInterface;
 use Ephect\Web\TemplateTrait;
 
@@ -26,8 +25,7 @@ class Template extends Element implements TemplateInterface
     {
         parent::__construct($parent);
 
-        UseRegistry::uncache();
-        ViewRegistry::uncache();
+        ComponentRegistry::uncache();
 
         $this->dictionary = $dictionary;
         $uid = $this->getUID();
@@ -70,7 +68,7 @@ class Template extends Element implements TemplateInterface
 
     function parse(): bool
     {
-        $this->viewFileName = ViewRegistry::read($this->className);
+        $this->viewFileName = ComponentRegistry::read($this->className);
         $this->viewHtml = file_get_contents(SRC_ROOT . $this->viewFileName);
 
         $doc = new ComponentDocument($this->viewHtml);
@@ -79,8 +77,8 @@ class Template extends Element implements TemplateInterface
         $firstMatch = $doc->getNextMatch();
         if ($firstMatch !== null && $firstMatch->hasCloser()) {
 
-            $parentClassName = UseRegistry::read($firstMatch->getName());
-            $parentFilename = ViewRegistry::read($parentClassName);
+            $parentClassName = ComponentRegistry::read($firstMatch->getName());
+            $parentFilename = ComponentRegistry::read($parentClassName);
             $parentHtml = file_get_contents(SRC_ROOT . $parentFilename);
 
             $parentDoc = new ComponentDocument($parentHtml);

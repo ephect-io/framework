@@ -3,9 +3,8 @@
 namespace Ephect\Components;
 
 use Ephect\IO\Utils;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\CodeRegistry;
-use Ephect\Registry\UseRegistry;
 
 class View extends AbstractFileComponent
 {
@@ -20,8 +19,8 @@ class View extends AbstractFileComponent
     {
         parent::analyse();
 
-        ViewRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
-        UseRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
+        ComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
+        ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
     public function parse(): void

@@ -5,8 +5,7 @@ use Ephect\Cache\Cache;
 use Ephect\Element;
 use Ephect\IO\Utils;
 use Ephect\Registry\Registry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Web\TemplateInterface;
 use Ephect\Web\TemplateTrait;
 
@@ -17,15 +16,14 @@ class TemplateEngine extends Element implements TemplateInterface
     public function __construct(string $templateName)
     {
         $this->viewName = $templateName;
-        UseRegistry::uncache();
-        ViewRegistry::uncache();
+        ComponentRegistry::uncache();
     }
 
     public function render(array $dictionary): string
     {
-        $this->className = UseRegistry::read($this->viewName);
+        $this->className = ComponentRegistry::read($this->viewName);
         $this->viewName = strtolower($this->viewName);
-        $this->viewFileName = ViewRegistry::read($this->className);
+        $this->viewFileName = ComponentRegistry::read($this->className);
 
         $template = new Template($this, $dictionary);
         $template->parse();

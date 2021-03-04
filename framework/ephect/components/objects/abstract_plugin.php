@@ -3,12 +3,6 @@
 namespace Ephect\Components;
 
 use Ephect\Components\Generators\ChildrenParser;
-use Ephect\ElementUtils;
-use Ephect\IO\Utils;
-use Ephect\Registry\CacheRegistry;
-use Ephect\Registry\PluginRegistry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
 
 abstract class AbstractPlugin extends AbstractFileComponent
 {

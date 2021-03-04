@@ -6,16 +6,15 @@ use Ephect\Components\Generators\BlocksParser;
 use Ephect\Components\Generators\ComponentParser;
 use Ephect\IO\Utils as IOUtils;
 use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
 
 class Compiler
 {
     /** @return void  */
     public function perform(): void
     {
-        if (!ViewRegistry::uncache()) {
+        if (!ComponentRegistry::uncache()) {
             $viewList = [];
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($templateList as $key => $viewFile) {
@@ -39,13 +38,12 @@ class Compiler
                 $composition = $compose->toArray();
         
                 CodeRegistry::write($view->getFullyQualifiedFunction(), $composition);
-                ViewRegistry::write($viewFile, $view->getUID());
+                ComponentRegistry::write($viewFile, $view->getUID());
 
                 array_push($viewList, $view);
             }
             CodeRegistry::cache();
-            ViewRegistry::cache();
-            UseRegistry::cache();
+            ComponentRegistry::cache();
         }
 
         foreach($viewList as $view) {
@@ -63,7 +61,7 @@ class Compiler
                 PluginRegistry::write($pluginFile, $plugin->getUID());
             }
             PluginRegistry::cache();
-            UseRegistry::cache();
+            ComponentRegistry::cache();
         }
     }
 

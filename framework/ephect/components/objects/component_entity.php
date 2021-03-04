@@ -7,7 +7,7 @@ use Ephect\Core\StructureInterface;
 use Ephect\ElementInterface;
 use Ephect\ElementTrait;
 use Ephect\IO\Utils;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
 use Ephect\Tree\TreeInterface;
 use Ephect\Tree\TreeTrait;
@@ -137,8 +137,8 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
             return '';
         }
 
-        ViewRegistry::uncache();
-        $viewFile = ViewRegistry::read($this->viewName);
+        ComponentRegistry::uncache();
+        $viewFile = ComponentRegistry::read($this->viewName);
         if ($viewFile === null) {
             return null;
         }

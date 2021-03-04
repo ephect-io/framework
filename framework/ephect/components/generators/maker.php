@@ -5,8 +5,7 @@ namespace Ephect\Components\Generators;
 use Ephect\Components\ComponentFactory;
 use Ephect\Components\ComponentInterface;
 use Ephect\Registry\CodeRegistry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 class Maker
 {
@@ -39,10 +38,9 @@ class Maker
 
     public function makeChildren(string $componentText, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
-        UseRegistry::uncache();
-        ViewRegistry::uncache();
+        ComponentRegistry::uncache();
 
-        $fqClass = UseRegistry::read($componentName);
+        $fqClass = ComponentRegistry::read($componentName);
         $component = ComponentFactory::create($fqClass);
 
         $uid = $component->getUID();
@@ -68,7 +66,7 @@ class Maker
         $className = $this->view->getFunction() ?: $componentName;
         $classArgs = 'null';
 
-        $fqComponentName = '\\' . UseRegistry::read($componentName);
+        $fqComponentName = '\\' . ComponentRegistry::read($componentName);
 
 
         /**

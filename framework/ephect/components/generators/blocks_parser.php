@@ -3,11 +3,8 @@
 namespace Ephect\Components\Generators;
 
 use Ephect\Cache\Cache;
-use Ephect\Crypto\Crypto;
 use Ephect\IO\Utils;
-use Ephect\Registry\CacheRegistry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 class BlocksParser extends Parser
 {
@@ -23,8 +20,8 @@ class BlocksParser extends Parser
         if ($firstMatch !== null && $firstMatch->hasCloser()) {
 
             $functionName = $firstMatch->getName();
-            $parentClassName = UseRegistry::read($functionName);
-            $parentFilename = ViewRegistry::read($parentClassName);
+            $parentClassName = ComponentRegistry::read($functionName);
+            $parentFilename = ComponentRegistry::read($parentClassName);
             $parentHtml = file_get_contents(SRC_ROOT . $parentFilename);
 
             // $parentHtml = $this->doHtml($parentHtml);
@@ -51,7 +48,7 @@ class BlocksParser extends Parser
                 $cacheFilename = CACHE_DIR . $this->view->getCachedSourceFilename();
                 Utils::safeWrite($cacheFilename, $childHtml);
 
-                // ViewRegistry::write($className, $cacheFilename);
+                // ComponentRegistry::write($className, $cacheFilename);
             }
         }
 

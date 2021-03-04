@@ -4,7 +4,7 @@ namespace Ephect\Components\Generators;
 
 use Ephect\Components\ComponentInterface;
 use Ephect\Crypto\Crypto;
-use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 define('TERMINATOR', '/');
 define('SKIP_MARK', '!');
@@ -26,7 +26,7 @@ class ComponentParser
         $this->html = $view->getCode();
         $this->parentHTML = $view->getParentHTML();
         $this->maker = new Maker($view);
-        UseRegistry::uncache();
+        ComponentRegistry::uncache();
 
     }
 
@@ -64,7 +64,7 @@ class ComponentParser
             $list[$i]['uid'] = Crypto::createUID();
 
             $list[$i]['id'] = $i;
-            $list[$i]['class'] = UseRegistry::read($list[$i][2][0]);
+            $list[$i]['class'] = ComponentRegistry::read($list[$i][2][0]);
             $list[$i]['view'] = $this->view->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
             $list[$i]['name'] = $list[$i][2][0];

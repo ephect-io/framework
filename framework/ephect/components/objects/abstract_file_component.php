@@ -5,8 +5,7 @@ namespace Ephect\Components;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
@@ -53,9 +52,9 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
     public static function renderComponent(string $functionName, ?array $functionArgs = null): array
     {
         if(!static::checkCache($functionName)) {
-            ViewRegistry::uncache();
+            ComponentRegistry::uncache();
 
-            $fqName = UseRegistry::read($functionName);
+            $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName);
             $component->parse();
 
@@ -69,7 +68,7 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
             return [$namespace, $functionName, $html];
         }
 
-        $fqName = UseRegistry::read($functionName);
+        $fqName = ComponentRegistry::read($functionName);
         $filename = CacheRegistry::read($fqName);
         $namespace = ElementUtils::getNamespaceFromFQClassName($fqName);
 
@@ -82,7 +81,7 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
     {
         parent::parse();
 
-        ViewRegistry::uncache();
+        ComponentRegistry::uncache();
 
         if($this->children !== null) {
 
@@ -101,7 +100,7 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
 
             list($namespace, $function, $html) = self::renderComponent($component);
 
-            $fqName = UseRegistry::read($component);
+            $fqName = ComponentRegistry::read($component);
             $filename = CacheRegistry::read($fqName);
 
 

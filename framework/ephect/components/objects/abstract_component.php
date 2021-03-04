@@ -4,13 +4,11 @@ namespace Ephect\Components;
 
 use BadFunctionCallException;
 use Ephect\Components\Generators\ChildrenParser;
-use Ephect\Components\Generators\ComponentParser;
 use Ephect\Components\Generators\Parser;
 use Ephect\ElementTrait;
 use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\CodeRegistry;
-use Ephect\Registry\ViewRegistry;
-use Ephect\Registry\UseRegistry;
+use Ephect\Registry\ComponentRegistry;
 use tidy;
 
 abstract class AbstractComponent implements ComponentInterface
@@ -86,8 +84,8 @@ abstract class AbstractComponent implements ComponentInterface
 
     public static function findComponent(string $componentName): array
     {
-        UseRegistry::uncache();
-        $uses = UseRegistry::items();
+        ComponentRegistry::uncache();
+        $uses = ComponentRegistry::items();
 
         $functionName = isset($uses[$componentName]) ? $uses[$componentName] : null;
         if ($functionName === null) {
@@ -100,8 +98,8 @@ abstract class AbstractComponent implements ComponentInterface
         $isCached = $filename !== null;
 
         if (!$isCached) {
-            ViewRegistry::uncache();
-            $classes = ViewRegistry::items();
+            ComponentRegistry::uncache();
+            $classes = ComponentRegistry::items();
             $filename = isset($classes[$functionName]) ? $classes[$functionName] : null;
         }
 
