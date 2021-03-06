@@ -2,8 +2,15 @@
 
 namespace Fun;
 
+use function Ephect\Hooks\useEffect;
+
 function Child()
 {
+
+    useEffect(function() use (&$firstname) {
+        $firstname = "David";
+    });
+
     return (<<<HTML
     <Parent>
         <Block name="title">Ephect!</Block>
@@ -15,7 +22,7 @@ function Child()
             <section>
                 <p>
                     Hello&nbsp;
-                    <Echo var="firstname" />!
+                    {{ firstname }}!
                 </p>
                 <p>This is reed</p>
                 <p>again</p>
