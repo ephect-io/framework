@@ -22,9 +22,9 @@ class ComponentFactory
         }
 
         $uid = ComponentRegistry::read($filename);
-        $view = new View($uid);
-        $view->load($filename);
+        $comp = new Component($uid);
+        $comp->load($filename);
 
-        return $view;
+        return $comp;
     }
 }

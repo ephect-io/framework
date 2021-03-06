@@ -10,17 +10,17 @@ use Ephect\Registry\FrameworkRegistry;
 class Parser
 {
     protected $html = '';
-    protected $view = null;
+    protected $comp = null;
     protected $useVariables = [];
     protected $parentHTML = '';
     protected $maker = null;
 
-    public function __construct(ComponentInterface $view)
+    public function __construct(ComponentInterface $comp)
     {
-        $this->view = $view;
-        $this->html = $view->getCode();
-        $this->parentHTML = $view->getParentHTML();
-        $this->maker = new Maker($view);
+        $this->component = $comp;
+        $this->html = $comp->getCode();
+        $this->parentHTML = $comp->getParentHTML();
+        $this->maker = new Maker($comp);
     }
 
     public function getHtml()
@@ -59,10 +59,10 @@ class Parser
 
             $this->useVariables[$useVar] = '$' . $useVar;
 
-            $uid = $this->view->getUID();
+            $uid = $this->component->getUID();
 
             if ($variable === 'children') {
-                $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\View::bind('$uid'); ?>", $this->html);
+                $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
                 continue;
             }
 
@@ -157,9 +157,9 @@ class Parser
                 $args = Maker::doArgumentsToString($componentArgs);
             }
 
-            $parent = $this->view->getFullyQualifiedFunction();
+            $parent = $this->component->getFullyQualifiedFunction();
 
-            $componentRender = "<?php \Ephect\Components\View::render('$componentName', $args, '$parent'); ?>";
+            $componentRender = "<?php \Ephect\Components\Component::render('$componentName', $args, '$parent'); ?>";
 
             $this->html = str_replace($component, $componentRender, $this->html);
         }
@@ -187,7 +187,7 @@ class Parser
 
     // public function doMake(): void
     // {
-    /**    $re = '/<\?php \\\\Ephect\\\\Components\\\\View::make\(\'.*\'\); \?>/m';  */
+    /**    $re = '/<\?php \\\\Ephect\\\\Components\\\\Component::make\(\'.*\'\); \?>/m';  */
     //     $subject = $this->html;
 
     //     preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
@@ -243,7 +243,7 @@ class Parser
     public function doUsesAs(): bool
     {
         $result = false;
-        $viewNamespace = $this->view->getNamespace();
+        $compNamespace = $this->component->getNamespace();
 
         $re = '/use ([A-Za-z0-9\\\\ ]*\\\\)?([A-Za-z0-9 ]*) as ([A-Za-z0-9 ]*);/m';
 
@@ -254,7 +254,7 @@ class Parser
             $componentFunction = $match[2];
             $componentAlias = $match[3];
 
-            $componentNamespace = ($componentNamespace === '') ? $viewNamespace : $componentNamespace;
+            $componentNamespace = ($componentNamespace === '') ? $compNamespace : $componentNamespace;
             $fqFunctionName = $componentNamespace . '\\' . $componentFunction;
 
             ComponentRegistry::write($componentAlias, $fqFunctionName);

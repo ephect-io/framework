@@ -10,14 +10,14 @@ use Ephect\Registry\ComponentRegistry;
 class Maker
 {
     private $html = '';
-    private $view = null;
+    private $comp = null;
     private $parentHTML = '';
 
-    public function __construct(ComponentInterface $view)
+    public function __construct(ComponentInterface $comp)
     {
-        $this->view = $view;
-        $this->html = $view->getCode();
-        $this->parentHTML = $view->getParentHTML();
+        $this->component = $comp;
+        $this->html = $comp->getCode();
+        $this->parentHTML = $comp->getParentHTML();
     }
 
     public function getHtml()
@@ -63,14 +63,14 @@ class Maker
         $body = urlencode($children);
         CodeRegistry::write($uid, $body);
 
-        $className = $this->view->getFunction() ?: $componentName;
+        $className = $this->component->getFunction() ?: $componentName;
         $classArgs = 'null';
 
         $fqComponentName = '\\' . ComponentRegistry::read($componentName);
 
 
         /**
-         * $componentRender = "<?php \Ephect\Components\View::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
+         * $componentRender = "<?php \Ephect\Components\Component::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
          */
 
         $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid']]";

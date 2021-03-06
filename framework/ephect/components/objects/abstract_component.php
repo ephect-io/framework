@@ -97,12 +97,6 @@ abstract class AbstractComponent implements ComponentInterface
         $filename = isset($cache[$functionName]) ? $cache[$functionName] : null;
         $isCached = $filename !== null;
 
-        if (!$isCached) {
-            ComponentRegistry::uncache();
-            $classes = ComponentRegistry::items();
-            $filename = isset($classes[$functionName]) ? $classes[$functionName] : null;
-        }
-
         return [$functionName, $filename, $isCached];
     }
 
@@ -111,7 +105,7 @@ abstract class AbstractComponent implements ComponentInterface
     {
         list($functionName, $cacheFilename, $isCached) = static::findComponent($componentName);
 
-        include_once ($isCached ? CACHE_DIR : SRC_COPY_DIR) . $cacheFilename;
+        include_once CACHE_DIR . $cacheFilename;
 
         return $functionName;
     }
@@ -147,7 +141,7 @@ abstract class AbstractComponent implements ComponentInterface
         $fqFunctionName = explode('\\', $functionName);
         $function = array_pop($fqFunctionName);
         if ($function === 'App') {
-            // $html = self::format($html);
+            $html = self::format($html);
         }
 
         return $html;

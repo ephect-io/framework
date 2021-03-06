@@ -13,19 +13,19 @@ define('QUEST_MARK', '?');
 class ComponentParser
 {
     protected $html = '';
-    protected $view = null;
+    protected $comp = null;
     protected $useVariables = [];
     protected $parentHTML = '';
     protected $maker = null;
     protected $depths = [];
     protected $idListByDepth = [];
 
-    public function __construct(ComponentInterface $view)
+    public function __construct(ComponentInterface $comp)
     {
-        $this->view = $view;
-        $this->html = $view->getCode();
-        $this->parentHTML = $view->getParentHTML();
-        $this->maker = new Maker($view);
+        $this->component = $comp;
+        $this->html = $comp->getCode();
+        $this->parentHTML = $comp->getParentHTML();
+        $this->maker = new Maker($comp);
         ComponentRegistry::uncache();
 
     }
@@ -65,7 +65,7 @@ class ComponentParser
 
             $list[$i]['id'] = $i;
             $list[$i]['class'] = ComponentRegistry::read($list[$i][2][0]);
-            $list[$i]['view'] = $this->view->getFullyQualifiedFunction();
+            $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
             $list[$i]['name'] = $list[$i][2][0];
             $list[$i]['method'] = $list[$i][2][0];

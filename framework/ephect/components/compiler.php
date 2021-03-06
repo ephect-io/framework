@@ -18,21 +18,21 @@ class Compiler
         if (!ComponentRegistry::uncache()) {
             Cache::createCacheDir();
 
-            $viewList = [];
+            $compList = [];
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
-            foreach ($templateList as $key => $viewFile) {
+            foreach ($templateList as $key => $compFile) {
 
-                $cachedSourceViewFile = View::getCacheFilename('source_' . $viewFile);
-                copy(SRC_ROOT . $viewFile, CACHE_DIR . $cachedSourceViewFile);
+                $cachedSourceViewFile = Component::getCacheFilename('source_' . $compFile);
+                copy(SRC_ROOT . $compFile, CACHE_DIR . $cachedSourceViewFile);
 
-                $view = new View();
-                $view->load($cachedSourceViewFile);
-                $view->analyse();
+                $comp = new Component();
+                $comp->load($cachedSourceViewFile);
+                $comp->analyse();
 
-                $parser = new ComponentParser($view);
+                $parser = new ComponentParser($comp);
                 $list = $parser->doComponents();
 
-                $compose = new Composition($view->getFullyQualifiedFunction());
+                $compose = new Composition($comp->getFullyQualifiedFunction());
 
                 foreach ($list as $item) {
                     $entity = new ComponentEntity(new ComponentStructure($item));
@@ -43,35 +43,35 @@ class Compiler
 
                 $composition = $compose->toArray();
 
-                CodeRegistry::write($view->getFullyQualifiedFunction(), $composition);
-                ComponentRegistry::write($cachedSourceViewFile, $view->getUID());
+                CodeRegistry::write($comp->getFullyQualifiedFunction(), $composition);
+                ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
 
-                array_push($viewList, $view);
+                array_push($compList, $comp);
             }
             CodeRegistry::cache();
             ComponentRegistry::cache();
 
-            // $blocksViews = [];
-            // foreach ($viewList as $view) {
-            //     $parser = new BlocksParser($view);
-            //     $filename = $parser->doBlocks();
+            $blocksViews = [];
+            foreach ($compList as $comp) {
+                $parser = new BlocksParser($comp);
+                $filename = $parser->doBlocks();
 
-            //     if($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
-            //         array_push($blocksViews, $filename);
-            //     }
-            // }
+                if($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
+                    array_push($blocksViews, $filename);
+                }
+            }
 
-            // if(count($blocksViews) > 0) {
-            //     foreach ($blocksViews as $viewFile) {
-            //         $view = new View();
-            //         $view->load($viewFile);
-            //         $view->analyse();
+            if(count($blocksViews) > 0) {
+                foreach ($blocksViews as $compFile) {
+                    $comp = new Component();
+                    $comp->load($compFile);
+                    $comp->analyse();
 
-            //         ComponentRegistry::write($viewFile, $view->getUID());
+                    ComponentRegistry::write($compFile, $comp->getUID());
 
-            //     }
+                }
 
-            // }
+            }
         }
 
         if (!PluginRegistry::uncache()) {

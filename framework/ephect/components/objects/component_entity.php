@@ -35,7 +35,7 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     protected $properties = array();
     protected $method = '';
     protected $doc = null;
-    protected $viewName = '';
+    protected $compName = '';
     protected $className = '';
     protected $attributes = null;
     protected $children = null;
@@ -44,7 +44,7 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     {
         $this->id = $attributes->id;
         $this->className = $attributes->class;
-        $this->viewName = $attributes->view;
+        $this->componentName = $attributes->component;
         $this->parentId = $attributes->parentId;
         $this->text = $attributes->text;
         $this->name = $attributes->name;
@@ -138,11 +138,11 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
         }
 
         ComponentRegistry::uncache();
-        $viewFile = ComponentRegistry::read($this->viewName);
-        if ($viewFile === null) {
+        $compFile = ComponentRegistry::read($this->componentName);
+        if ($compFile === null) {
             return null;
         }
-        $t = Utils::safeRead(SRC_COPY_DIR . $viewFile);
+        $t = Utils::safeRead(SRC_COPY_DIR . $compFile);
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;
