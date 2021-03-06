@@ -4,7 +4,7 @@ namespace Ephect\Components;
 
 use Ephect\Registry\CodeRegistry;
 
-class PreHtml extends AbstractFileComponent implements FileComponentInterface
+class PreHtml extends AbstractComponent implements ComponentInterface
 {
     public function __construct(string $preHtml)
     {
@@ -13,6 +13,7 @@ class PreHtml extends AbstractFileComponent implements FileComponentInterface
     
     public function analyse(): void
     {
+        parent::analyse();
     }
 
     public function parse(): void 
