@@ -10,6 +10,4 @@ interface ComponentInterface extends ElementInterface
     public function getCode();
     public function getFullyQualifiedFunction(): string;
     public function getFunction(): ?string;
-    public function getSourceFilename(): string;
-    public function getCachedSourceFilename(): string;
 }

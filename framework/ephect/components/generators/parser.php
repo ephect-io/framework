@@ -5,6 +5,7 @@ namespace Ephect\Components\Generators;
 use Ephect\Components\ComponentInterface;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
+use Ephect\Registry\FrameworkRegistry;
 
 class Parser
 {
@@ -228,7 +229,13 @@ class Parser
             $componentNamespace = trim($match[1], '\\');
             $componentFunction = $match[2];
 
-            ComponentRegistry::write($componentFunction, $componentNamespace . '\\' . $componentFunction);
+            $fqFunction = $componentNamespace . '\\' . $componentFunction;
+            $frameworkUse = FrameworkRegistry::read($fqFunction);
+            if ($frameworkUse !== null) {
+                continue;
+            }
+
+            ComponentRegistry::write($componentFunction, $fqFunction);
         }
         return $result;
     }

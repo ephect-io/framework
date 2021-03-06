@@ -142,7 +142,7 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
         if ($viewFile === null) {
             return null;
         }
-        $t = Utils::safeRead(SRC_ROOT . $viewFile);
+        $t = Utils::safeRead(SRC_COPY_DIR . $viewFile);
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;

@@ -166,7 +166,7 @@ class ComponentDocument
         return $this->getCurrentMatch();
     }
 
-    public function replaceMatches(ComponentDocument $doc, string $text): string
+    public function replaceMatches(ComponentDocument $doc, string &$childText): string
     {
         $parentMatchesById = $this->getIDsOfMatches();
         $parentCount = $this->getCount();
@@ -175,7 +175,7 @@ class ComponentDocument
 
         $childMatchesById = $doc->getIDsOfMatches();
         $childCount = $doc->getCount();
-        $childText = $text;
+        $childText = $childText;
 
         for ($i = $parentCount - 1; $i > -1; $i--) {
             $parentId = $parentMatchesById[$i];
@@ -221,10 +221,18 @@ class ComponentDocument
                     $length = $closer['contents']['endsAt'] - $start + 1;
 
                     $childReplacing = substr($childText, $start, $length);
+
+                    $start = $childMatch->getStart();
+                    $closer = $childMatch->getCloser();
+                    $length = $closer['endsAt'] - $childMatch->getStart() + 1;
+    
+                    $childReplaced = substr($childText, $start, $length);
+
                 } else {
                     $childReplacing = $childMatch->getText();
                 }
 
+                $childText = str_replace($childReplaced, '', $childText);
                 $parentText = str_replace($parentReplaced, $childReplacing, $parentText);
 
                 break;

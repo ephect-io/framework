@@ -27,12 +27,20 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
         return $cache_file;
     }
     
+    public function getCachedFilename(): string
+    {
+        $cache_file = static::getCacheFilename($this->filename);
+
+        return $cache_file;
+    }
+
     public static function getCacheFilename(string $basename): string
     {
         $cache_file = str_replace('/', '_', $basename);
 
         return $cache_file;
     }
+
     public function load(string $filename): bool
     {
         $result = false;
@@ -40,7 +48,7 @@ class AbstractFileComponent  extends AbstractComponent implements FileComponentI
 
         $this->code = Utils::safeRead(CACHE_DIR . $this->filename);
         if($this->code === null) {
-            $this->code = Utils::safeRead(SRC_ROOT . $this->filename);
+            $this->code = Utils::safeRead(SRC_COPY_DIR . $this->filename);
         }
 
         list($this->namespace, $this->function) = ElementUtils::getFunctionDefinition($this->code);
