@@ -21,13 +21,7 @@ function Router($children)
             for ($i = 0; $i < $c; $i++) {
                 $child = $composition[$i];
                 if ($child['name'] == 'Router') {
-                    // $hasRouter = true;
                     $router = $child;
-                    $router['routes'] = [];
-                }
-
-                if ($child['name'] == 'Route' && $router !== null) {
-                    array_push($router['routes'], $child);
                 }
             }
             if ($router !== null) {

@@ -2,47 +2,76 @@
 
 namespace Ephect\Components;
 
+use Ephect\Cache\Cache;
+use Ephect\Components\Generators\BlocksParser;
 use Ephect\Components\Generators\ComponentParser;
 use Ephect\IO\Utils as IOUtils;
 use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
 
 class Compiler
 {
     /** @return void  */
     public function perform(): void
     {
-        if (!ViewRegistry::uncache()) {
-            $viewList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
-            foreach ($viewList as $key => $viewFile) {
+        if (!ComponentRegistry::uncache()) {
+            Cache::createCacheDir();
 
-                $view = new View();
-                $view->load($viewFile);
-                $view->analyse();
+            $compList = [];
+            $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
+            foreach ($templateList as $key => $compFile) {
 
-                $parser = new ComponentParser($view);
+                $cachedSourceViewFile = Component::getCacheFilename('source_' . $compFile);
+                copy(SRC_ROOT . $compFile, CACHE_DIR . $cachedSourceViewFile);
+
+                $comp = new Component();
+                $comp->load($cachedSourceViewFile);
+                $comp->analyse();
+
+                $parser = new ComponentParser($comp);
                 $list = $parser->doComponents();
-        
-                $compose = new Composition($view->getFullyQualifiedFunction());
-        
+
+                $compose = new Composition($comp->getFullyQualifiedFunction());
+
                 foreach ($list as $item) {
                     $entity = new ComponentEntity(new ComponentStructure($item));
                     $compose->items()->add($entity);
                 }
-        
-                $compose->bindNodes();
-        
-                $composition = $compose->toArray();
-        
-                CodeRegistry::write($view->getFullyQualifiedFunction(), $composition);
-                ViewRegistry::write($viewFile, $view->getUID());
 
+                $compose->bindNodes();
+
+                $composition = $compose->toArray();
+
+                CodeRegistry::write($comp->getFullyQualifiedFunction(), $composition);
+                ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+
+                array_push($compList, $comp);
             }
             CodeRegistry::cache();
-            ViewRegistry::cache();
-            UseRegistry::cache();
+            ComponentRegistry::cache();
+
+            $blocksViews = [];
+            foreach ($compList as $comp) {
+                $parser = new BlocksParser($comp);
+                $filename = $parser->doBlocks();
+
+                if($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
+                    array_push($blocksViews, $filename);
+                }
+            }
+
+            if(count($blocksViews) > 0) {
+                foreach ($blocksViews as $compFile) {
+                    $comp = new Component();
+                    $comp->load($compFile);
+                    $comp->analyse();
+
+                    ComponentRegistry::write($compFile, $comp->getUID());
+
+                }
+
+            }
         }
 
         if (!PluginRegistry::uncache()) {
@@ -55,8 +84,7 @@ class Compiler
                 PluginRegistry::write($pluginFile, $plugin->getUID());
             }
             PluginRegistry::cache();
-            UseRegistry::cache();
+            ComponentRegistry::cache();
         }
     }
-
 }

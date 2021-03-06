@@ -3,14 +3,14 @@
 namespace Ephect\Components;
 
 use Ephect\Registry\PluginRegistry;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 class ComponentFactory
 {
     public static function create(string $fullyQualifiedName): AbstractFileComponent
     {
 
-        $filename = ViewRegistry::read($fullyQualifiedName);
+        $filename = ComponentRegistry::read($fullyQualifiedName);
         $isPlugin = $filename === null ? ($filename = PluginRegistry::read($fullyQualifiedName)) !== null : false;
 
         if ($isPlugin) {
@@ -21,10 +21,10 @@ class ComponentFactory
             return $plugin;
         }
 
-        $uid = ViewRegistry::read($filename);
-        $view = new View($uid);
-        $view->load($filename);
+        $uid = ComponentRegistry::read($filename);
+        $comp = new Component($uid);
+        $comp->load($filename);
 
-        return $view;
+        return $comp;
     }
 }

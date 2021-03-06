@@ -3,7 +3,7 @@
 namespace Ephect\Web;
 
 use Ephect\Components\Compiler;
-use Ephect\Components\View;
+use Ephect\Components\Component;
 use Ephect\Core\AbstractApplication;
 use Ephect\Registry\CacheRegistry;
 
@@ -24,6 +24,6 @@ class Application extends AbstractApplication
             $compiler->perform();
         }
 
-        View::render('App');
+        Component::render('App');
     }
 }

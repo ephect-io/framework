@@ -9,7 +9,7 @@ class ComponentStructure extends Structure
     public $uid;
     public $id;
     public $class;
-    public $view;
+    public $component;
     public $name;
     public $method;
     public $text;

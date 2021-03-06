@@ -15,12 +15,12 @@ class Cache extends StaticElement
         return $cache_file;
     }
     
-    public static function cacheFilenameFromView(string $viewName): string
+    public static function cacheFilenameFromView(string $compName): string
     {
 
         // $uri = bin2hex(REQUEST_URI);
         $uri = '';
-        return REL_RUNTIME_DIR . strtolower($viewName) . $uri . CLASS_EXTENSION;
+        return REL_RUNTIME_DIR . strtolower($compName) . $uri . CLASS_EXTENSION;
     }
 
     public static function absoluteURL(string $relativeURL = ''): string

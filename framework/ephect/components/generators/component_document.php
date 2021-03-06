@@ -166,20 +166,21 @@ class ComponentDocument
         return $this->getCurrentMatch();
     }
 
-    public function replaceMatches(ComponentDocument $doc, string $text): string
+    public function replaceMatches(ComponentDocument $doc, string &$childText): string
     {
         $parentMatchesById = $this->getIDsOfMatches();
         $parentCount = $this->getCount();
         $parentText = $this->_text;
+        $parentReplacing = '';
 
         $childMatchesById = $doc->getIDsOfMatches();
         $childCount = $doc->getCount();
-        $childText = $text;
+        $childText = $childText;
 
         for ($i = $parentCount - 1; $i > -1; $i--) {
             $parentId = $parentMatchesById[$i];
             $parentMatch = $this->getMatchById($parentId);
-            $replaced = '';
+            $parentReplaced = '';
 
             if ($parentMatch->getMethod() !== 'Block') {
                 continue;
@@ -190,15 +191,21 @@ class ComponentDocument
                 $closer = $parentMatch->getCloser();
                 $length = $closer['endsAt'] - $parentMatch->getStart() + 1;
 
-                $replaced = substr($parentText, $start, $length);
+                $parentReplaced = substr($parentText, $start, $length);
+
+                $start = $closer['contents']['startsAt'];
+                $length = $closer['contents']['endsAt'] - $start + 1;
+
+                $parentReplacing = substr($parentText, $start, $length);
             } else {
-                $replaced = $parentMatch->getText();
+                $parentReplaced = $parentMatch->getText();
             }
+            $matchesChildBlock = false;
 
             for ($j = $childCount - 1; $j > -1; $j--) {
                 $childId = $childMatchesById[$j];
                 $childMatch = $doc->getMatchById($childId);
-                $replacing = '';
+                $childReplacing = '';
 
                 if (
                     $childMatch->getMethod() !== 'Block'
@@ -207,22 +214,36 @@ class ComponentDocument
                     continue;
                 }
 
+                $matchesChildBlock = true;
                 if ($childMatch->hasCloser()) {
+                    $closer = $childMatch->getCloser();
+                    $start = $closer['contents']['startsAt'];
+                    $length = $closer['contents']['endsAt'] - $start + 1;
+
+                    $childReplacing = substr($childText, $start, $length);
+
                     $start = $childMatch->getStart();
                     $closer = $childMatch->getCloser();
                     $length = $closer['endsAt'] - $childMatch->getStart() + 1;
+    
+                    $childReplaced = substr($childText, $start, $length);
 
-                    $replacing = substr($childText, $start, $length);
                 } else {
-                    $replacing = $childMatch->getText();
+                    $childReplacing = $childMatch->getText();
                 }
 
-                $parentText = str_replace($replaced, $replacing, $parentText);
+                $childText = str_replace($childReplaced, '', $childText);
+                $parentText = str_replace($parentReplaced, $childReplacing, $parentText);
 
                 break;
             }
+
+            if(!$matchesChildBlock) {
+                $parentText = str_replace($parentReplaced, $parentReplacing, $parentText);
+            }
         }
 
+    
         // $parentText = str_replace($this->_endOfFile, '', $parentText);
 
         return $parentText;
@@ -271,9 +292,9 @@ class ComponentDocument
                 }
             }
 
-            $replaced = substr($text, $start, $length);
+            $parentReplaced = substr($text, $start, $length);
 
-            $text = str_replace($replaced, $replacing, $text);
+            $text = str_replace($parentReplaced, $replacing, $text);
         } else {
             $offset = strlen($replacing) - strlen($match->getText());
             $this->_offsetsById[$match->getId()] = $offset;

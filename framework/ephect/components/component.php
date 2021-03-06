@@ -3,11 +3,10 @@
 namespace Ephect\Components;
 
 use Ephect\IO\Utils;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\CodeRegistry;
-use Ephect\Registry\UseRegistry;
 
-class View extends AbstractFileComponent
+class Component extends AbstractFileComponent
 {
 
     public function __construct(string $uid = '')
@@ -20,8 +19,8 @@ class View extends AbstractFileComponent
     {
         parent::analyse();
 
-        ViewRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
-        UseRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
+        ComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
+        ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
     public function parse(): void
@@ -39,19 +38,11 @@ class View extends AbstractFileComponent
         return $result === null ? $result : $cache_file;
     }
 
-    public static function renderHTML(string $functionName, ?array $functionArgs = null): string
-    {
-        parent::renderComponent($functionName, $functionArgs);
-
-        $html = parent::renderHTML($functionName, $functionArgs);
-
-        return $html;
-    }
-
     public static function render(string $functionName, ?array $functionArgs = null, ?string $parent = null): void
     {
-        $html =  self::renderHTML($functionName, $functionArgs);
+        [$namespace, $functionName, $html] = parent::renderComponent($functionName, $functionArgs);
 
+        $html = parent::renderHTML($functionName, $functionArgs);
         echo $html;
     }
 

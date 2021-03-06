@@ -7,7 +7,7 @@ use Ephect\Core\StructureInterface;
 use Ephect\ElementInterface;
 use Ephect\ElementTrait;
 use Ephect\IO\Utils;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
 use Ephect\Tree\TreeInterface;
 use Ephect\Tree\TreeTrait;
@@ -35,7 +35,7 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     protected $properties = array();
     protected $method = '';
     protected $doc = null;
-    protected $viewName = '';
+    protected $compName = '';
     protected $className = '';
     protected $attributes = null;
     protected $children = null;
@@ -44,7 +44,7 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     {
         $this->id = $attributes->id;
         $this->className = $attributes->class;
-        $this->viewName = $attributes->view;
+        $this->componentName = $attributes->component;
         $this->parentId = $attributes->parentId;
         $this->text = $attributes->text;
         $this->name = $attributes->name;
@@ -137,12 +137,12 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
             return '';
         }
 
-        ViewRegistry::uncache();
-        $viewFile = ViewRegistry::read($this->viewName);
-        if ($viewFile === null) {
+        ComponentRegistry::uncache();
+        $compFile = ComponentRegistry::read($this->componentName);
+        if ($compFile === null) {
             return null;
         }
-        $t = Utils::safeRead(SRC_ROOT . $viewFile);
+        $t = Utils::safeRead(SRC_COPY_DIR . $compFile);
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;

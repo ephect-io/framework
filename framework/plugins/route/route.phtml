@@ -2,7 +2,7 @@
 
 namespace Ephect\Plugins\Route;
 
-use Ephect\Components\View;
+use Ephect\Components\Component;
 use Ephect\Plugins\Router\RouterService;
 use Ephect\Registry\Registry;
 use Ephect\Registry\RouteRegistry;
@@ -19,9 +19,9 @@ function Route($props)
         $router->addRoute($route->getMethod(), $route->getRule(), $route->getRedirect());
         $router->saveRoutes();
 
-        $routes = Registry::item('router')['routes'];
+        $routes = Registry::item('router')['node'];
         array_shift($routes);
-        Registry::write('router', 'routes', $routes);
+        Registry::write('router', 'node', $routes);
         
         if(count($routes) === 0) {
             rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
@@ -31,7 +31,7 @@ function Route($props)
 
         if($match !== null) {
             list($path, $query) = $match;
-            View::render($path);
+            Component::render($path);
         }
 
     });

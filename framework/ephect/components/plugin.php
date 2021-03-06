@@ -5,8 +5,8 @@ namespace Ephect\Components;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
 use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
-use Ephect\Registry\UseRegistry;
 
 class Plugin extends AbstractPlugin
 {
@@ -38,7 +38,7 @@ class Plugin extends AbstractPlugin
         parent::analyse();
 
         PluginRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
-        UseRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
+        ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
     public function parse(): void

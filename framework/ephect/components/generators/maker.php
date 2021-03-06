@@ -5,20 +5,19 @@ namespace Ephect\Components\Generators;
 use Ephect\Components\ComponentFactory;
 use Ephect\Components\ComponentInterface;
 use Ephect\Registry\CodeRegistry;
-use Ephect\Registry\UseRegistry;
-use Ephect\Registry\ViewRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 class Maker
 {
     private $html = '';
-    private $view = null;
+    private $comp = null;
     private $parentHTML = '';
 
-    public function __construct(ComponentInterface $view)
+    public function __construct(ComponentInterface $comp)
     {
-        $this->view = $view;
-        $this->html = $view->getCode();
-        $this->parentHTML = $view->getParentHTML();
+        $this->component = $comp;
+        $this->html = $comp->getCode();
+        $this->parentHTML = $comp->getParentHTML();
     }
 
     public function getHtml()
@@ -39,10 +38,9 @@ class Maker
 
     public function makeChildren(string $componentText, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
-        UseRegistry::uncache();
-        ViewRegistry::uncache();
+        ComponentRegistry::uncache();
 
-        $fqClass = UseRegistry::read($componentName);
+        $fqClass = ComponentRegistry::read($componentName);
         $component = ComponentFactory::create($fqClass);
 
         $uid = $component->getUID();
@@ -65,14 +63,14 @@ class Maker
         $body = urlencode($children);
         CodeRegistry::write($uid, $body);
 
-        $className = $this->view->getFunction() ?: $componentName;
+        $className = $this->component->getFunction() ?: $componentName;
         $classArgs = 'null';
 
-        $fqComponentName = '\\' . UseRegistry::read($componentName);
+        $fqComponentName = '\\' . ComponentRegistry::read($componentName);
 
 
         /**
-         * $componentRender = "<?php \Ephect\Components\View::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
+         * $componentRender = "<?php \Ephect\Components\Component::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
          */
 
         $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid']]";
