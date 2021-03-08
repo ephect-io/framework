@@ -184,21 +184,6 @@ class Parser
         return $result;
     }
 
-
-    // public function doMake(): void
-    // {
-    /**    $re = '/<\?php \\\\Ephect\\\\Components\\\\Component::make\(\'.*\'\); \?>/m';  */
-    //     $subject = $this->html;
-
-    //     preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
-
-    //     foreach ($matches as $match) {
-    //         $makeStatement = $match[0];
-    //         $subject = str_replace($makeStatement, $this->parentHTML, $subject);
-    //     }
-    //     $this->html = $subject;
-    // }
-
     public function doArguments(string $componentArgs): ?array
     {
         $result = [];
