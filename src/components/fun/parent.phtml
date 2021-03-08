@@ -21,9 +21,15 @@ function Parent($children)
 
     <body>
         <div class="App">
+        <HeaderAndFooter>
+
         <div class="App-content">
+            <Block name="main"></Block>
             {{ children }}
+            <Block name="second"></Block>
         </div>
+
+        </HeaderAndFooter>
         </div>
         <Block name="javascripts"></Block>
     </body>
