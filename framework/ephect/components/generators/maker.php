@@ -46,7 +46,7 @@ class Maker
         $uid = $component->getUID();
         $namespace = $component->getNamespace();
 
-        $args = $this->doArgumentsToString($componentArgs);
+        $args = $componentArgs === null ? null : $this->doArgumentsToString($componentArgs);
         $args = (($args === null) ? "null" : $args);
 
         $children = <<<CHILDREN
@@ -56,7 +56,7 @@ class Maker
 
         ?>
         $componentBody
-        <?php
+        
         CHILDREN;
 
         // Utils::safeWrite(CACHE_DIR . "render_$uid.php", $children);
@@ -68,16 +68,9 @@ class Maker
 
         $fqComponentName = '\\' . ComponentRegistry::read($componentName);
 
-
-        /**
-         * $componentRender = "<?php \Ephect\Components\Component::make('$className', $classArgs, '$componentName'$args, $componentBoundaries, '$uid'); ?>";
-         */
-
         $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid']]";
 
         $componentRender = "<?php \$fn = $fqComponentName($children); \$fn(); ?>";
-
-        //$componentRender = $this->makeFragment($componentName, $componentArgs, $uid);
 
         $subject = str_replace($componentText, $componentRender, $subject);
 

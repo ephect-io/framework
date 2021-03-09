@@ -52,14 +52,9 @@ class Component extends AbstractFileComponent
         if (null === $html = Utils::safeRead($filename)) {
             CodeRegistry::uncache();
 
-            $body = CodeRegistry::read($uid);
-            $body = urldecode($body);
-
-            $prehtml = new PreHtml($body);
-            $prehtml->parse();
-
-            $html = $prehtml->getCode();
-
+            $html = CodeRegistry::read($uid);
+            $html = urldecode($html);
+         
             Utils::safeWrite($filename, $html);
             
             CodeRegistry::delete($uid);
@@ -69,18 +64,4 @@ class Component extends AbstractFileComponent
         eval('?>' . $html);
     }
 
-    public static function replace(string $functionName, ?array $functionArgs = null, string $uid): void
-    {
-        if ($functionName === 'Block') {
-            echo '';
-            return;
-        }
-
-        list($functionName, $cacheFilename) = self::findComponent($functionName);
-
-        // TO BE DONE
-        $html = '';
-
-        echo $html;
-    }
 }

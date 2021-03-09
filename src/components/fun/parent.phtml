@@ -2,7 +2,7 @@
 
 namespace Fun;
 
-function Parent()
+function Parent($children)
 {
     return (<<<HTML
     <!DOCTYPE html>
@@ -20,28 +20,17 @@ function Parent()
     </head>
 
     <body>
-
-
         <div class="App">
-            <header>
-                <img src='/img/salamandra.svg' class='App-logo' alt='logo' />
-            </header>
-            <div class="App-content">
-            <main>
-                <Block name="main">
-                </Block>
-                <Block name="second">
-                </Block>
+        <HeaderAndFooter>
 
-            </main>
-            </div>
-            <footer>
-                <div>
-                    C'est le pied
-                </div>
-            </footer>
+        <div class="App-content">
+            <Block name="main"></Block>
+            {{ children }}
+            <Block name="second"></Block>
         </div>
 
+        </HeaderAndFooter>
+        </div>
         <Block name="javascripts"></Block>
     </body>
 

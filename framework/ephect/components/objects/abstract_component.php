@@ -51,9 +51,9 @@ abstract class AbstractComponent implements ComponentInterface
     public function parse(): void
     {
         /* TO BEGIN WITH */
-        CodeRegistry::uncache();
-        $class = $this->getFullyQualifiedFunction();
-        $item = CodeRegistry::read($class);
+        // CodeRegistry::uncache();
+        // $class = $this->getFullyQualifiedFunction();
+        // $item = CodeRegistry::read($class);
         /* TO BEGIN WITH */
 
         $parser = new ChildrenParser($this);
@@ -112,7 +112,6 @@ abstract class AbstractComponent implements ComponentInterface
 
     public static function renderHTML(string $functionName, ?array $functionArgs = null): string
     {
-
         $functionName = self::importComponent($functionName);
 
         $html = '';

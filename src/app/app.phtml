@@ -6,10 +6,9 @@ function App()
 {
     return (<<<HTML
     <Router>
-        <Route method="GET" rule='^/second(/)?$' redirect={Second} />
-        <Route method="GET" rule='^/third(/)?$' redirect={Third} />
         <Route method="GET" rule='^/$' redirect={Home} />
         <Route method="GET" rule='^/info(/)?$' redirect={Info} />
+        <Route method="GET" rule='^/child(/)?$' redirect={Child} />
     </Router>
     HTML);
 }
