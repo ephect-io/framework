@@ -2,6 +2,7 @@
 
 namespace Ephect\Plugins\Router;
 
+use Ephect\Components\Component;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\Registry;
 
@@ -10,10 +11,24 @@ use function Ephect\Hooks\useEffect;
 function Router($children)
 {
 
-    useEffect(function () {
+    $hasRouted = false;
+    useEffect(function () use (&$hasRouted) {
 
         CodeRegistry::uncache();
         $items = CodeRegistry::items();
+
+        $service = new RouterService;
+
+        if($service->tryRouting()) {
+
+            $route = $service->doRouting();
+            if($route !== null) {
+                list($path, $query) = $route;
+                Component::render($path);
+            }
+            $hasRouted = true;
+            return;
+        }
 
         foreach ($items as $component => $composition) {
             $router = null;
@@ -32,6 +47,7 @@ function Router($children)
     });
 
     return (<<<HTML
+        <?php if($hasRouted) { return ''; } ?>
         {{ children }}
     HTML);
 }
