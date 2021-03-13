@@ -4,11 +4,11 @@ namespace Fun;
 
 use Com as FunCom;
 
-use function Ephect\Hooks\setState;
+use function Ephect\Hooks\useState;
 
 function Home()
 {
-    setState('m', ['n' => 'o']);
+    useState(['m' => ['n' => 'o']]);
 
     return (<<<HTML
     <Mother>

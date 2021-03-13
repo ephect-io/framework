@@ -1,4 +1,5 @@
 <?php
+
 namespace Fun;
 
 use function Ephect\Hooks\useEffect;
@@ -6,12 +7,15 @@ use function Ephect\Hooks\useState;
 
 function Com($props)
 {
-    useEffect(function() use ($props, &$b, &$c, &$d, &$m) {
+    useEffect(function () use ($props, &$b, &$c, &$d, &$m) {
         $b = 'It is a';
         $c = 'functional component';
         $d = $props->from;
-        $m = useState('m', 'n');
-        
+        [$state, $setState] = useState();
+
+        $m = $state->m->n;
+
+        $setState(['p' => ['n' => 'q']]);
     });
 
     return (<<<HTML
