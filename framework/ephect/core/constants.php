@@ -4,10 +4,10 @@ $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_R
 define('DOCUMENT_ROOT', $document_root);
 
 define('SITE_ROOT', dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR);
-define('FRAMEWORK_ROOT', SITE_ROOT .  'framework' . DIRECTORY_SEPARATOR);
-define('FUNCOM_ROOT', FRAMEWORK_ROOT .  'ephect' . DIRECTORY_SEPARATOR);
-define('HOOKS_ROOT', FUNCOM_ROOT .  'hooks' . DIRECTORY_SEPARATOR);
-define('PLUGINS_ROOT', FRAMEWORK_ROOT .  'plugins' . DIRECTORY_SEPARATOR);
+define('FRAMEWORK_ROOT', SITE_ROOT . 'framework' . DIRECTORY_SEPARATOR);
+define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
+define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
+define('PLUGINS_ROOT', FRAMEWORK_ROOT . 'plugins' . DIRECTORY_SEPARATOR);
 define('SRC_ROOT', SITE_ROOT .  'src' . DIRECTORY_SEPARATOR);
 define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
 define('APP_ROOT', SRC_ROOT . APP_DIR);

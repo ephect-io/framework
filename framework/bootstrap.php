@@ -1,14 +1,14 @@
 <?php
 
 include 'ephect/core/constants.php';
-include FUNCOM_ROOT . 'core' . DIRECTORY_SEPARATOR . 'autoloader.php';
-include FUNCOM_ROOT . 'io' . DIRECTORY_SEPARATOR . 'utils.php';
-include FUNCOM_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_trait.php';
-include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_registry_interface.php';
-include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'static_registry_interface.php';
-include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_registry.php';
-include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_static_registry.php';
-include FUNCOM_ROOT . 'registry' . DIRECTORY_SEPARATOR . 'framework_registry.php';
+include EPHECT_ROOT . 'core' . DIRECTORY_SEPARATOR . 'autoloader.php';
+include EPHECT_ROOT . 'io' . DIRECTORY_SEPARATOR . 'utils.php';
+include EPHECT_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_trait.php';
+include EPHECT_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_registry_interface.php';
+include EPHECT_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'static_registry_interface.php';
+include EPHECT_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_registry.php';
+include EPHECT_ROOT . 'registry' . DIRECTORY_SEPARATOR  . 'objects' . DIRECTORY_SEPARATOR . 'abstract_static_registry.php';
+include EPHECT_ROOT . 'registry' . DIRECTORY_SEPARATOR . 'framework_registry.php';
 
 include HOOKS_ROOT . 'use_effect.php';
 include HOOKS_ROOT . 'use_state.php';
@@ -20,7 +20,7 @@ use Ephect\Core\Autoloader;
 
 if (!FrameworkRegistry::uncache()) {
 
-    include FUNCOM_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_utils.php';
+    include EPHECT_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_utils.php';
 
     $frameworkFiles = Utils::walkTreeFiltered(FRAMEWORK_ROOT, ['php']);
 
