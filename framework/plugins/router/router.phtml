@@ -47,7 +47,7 @@ function Router($children)
     });
 
     return (<<<HTML
-        <?php if($hasRouted) { return ''; } ?>
+        {? if({hasRouted}) { return ''; } ?}
         {{ children }}
     HTML);
 }
