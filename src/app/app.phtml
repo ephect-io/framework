@@ -6,9 +6,9 @@ function App()
 {
     return (<<<HTML
     <Router>
-        <Route method="GET" rule='^/$' redirect={Home} />
-        <Route method="GET" rule='^/info(/)?$' redirect={Info} />
-        <Route method="GET" rule='^/child(/)?$' redirect={Child} />
+        <Route method="GET" rule='^/$' redirect="Home" />
+        <Route method="GET" rule='^/info(/)?$' redirect="Info" />
+        <Route method="GET" rule='^/child(/)?$' redirect="Child" />
     </Router>
     HTML);
 }
