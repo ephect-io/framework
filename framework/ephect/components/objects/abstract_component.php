@@ -59,9 +59,11 @@ abstract class AbstractComponent implements ComponentInterface
         $parser = new ChildrenParser($this);
 
         $parser->doUncache();
+        $parser->doPhpTags();
 
         $this->children = $parser->doChildrenDeclaration();
-        $parser->doScalars();
+        $parser->doValues();
+        $parser->doEchoes();
         $parser->doArrays();
         $parser->useVariables();
         $parser->normalizeNamespace();
@@ -140,7 +142,7 @@ abstract class AbstractComponent implements ComponentInterface
         $fqFunctionName = explode('\\', $functionName);
         $function = array_pop($fqFunctionName);
         if ($function === 'App') {
-            $html = self::format($html);
+            // $html = self::format($html);
         }
 
         return $html;
@@ -163,7 +165,7 @@ abstract class AbstractComponent implements ComponentInterface
     {
         $config = [
             'indent'         => true,
-            'output-xhtml'   => true,
+            'output-html'   => true,
             'wrap'           => 200
         ];
 

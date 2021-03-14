@@ -19,9 +19,11 @@ abstract class AbstractPlugin extends AbstractFileComponent
         $parser = new ChildrenParser($this);
 
         $parser->doUncache();
+        $parser->doPhpTags();
 
         $this->children = $parser->doChildrenDeclaration();
-        $parser->doScalars();
+        $parser->doValues();
+        $parser->doEchoes();
         $parser->doArrays();
         $parser->useVariables();
         $parser->normalizeNamespace();

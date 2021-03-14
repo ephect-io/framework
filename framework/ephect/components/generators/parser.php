@@ -38,7 +38,36 @@ class Parser
         return CodeRegistry::uncache();
     }
 
-    public function doScalars(): bool
+
+    public function doValues(): bool
+    {
+        $result = null;
+
+        $re = '/\{([a-zA-Z0-9_\-\>]*)\}/m';
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $variable = $match[1];
+
+            $useVar = $variable;
+            $arrowPos = strpos($variable, '->');
+            if ($arrowPos > -1) {
+                $useVar = substr($useVar, 0, $arrowPos);
+            }
+
+            $this->useVariables[$useVar] = '$' . $useVar;
+
+            $this->html = str_replace('{' . $variable . '}', '$' . $variable . '', $this->html);
+        }
+
+        $result = $this->html !== null;
+
+        return $result;
+    }
+
+    public function doEchoes(): bool
     {
         $result = null;
 
@@ -67,11 +96,23 @@ class Parser
             }
 
             $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . '; ?>', $this->html);
+            $this->html = str_replace('{' . $variable . '}', '$' . $variable . '', $this->html);
         }
 
         $result = $this->html !== null;
 
         return $result;
+    }
+
+    public function doPhpTags(): bool
+    {
+        $this->html = str_replace('{?', '<?php ', $this->html);
+        $this->html = str_replace('?}', '?> ', $this->html);
+
+        $result = $this->html !== null;
+
+        return $result;
+
     }
 
     public function doArrays(): bool
@@ -188,7 +229,7 @@ class Parser
     {
         $result = [];
 
-        $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
+        $re = '/([A-Za-z0-9_]*)=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
 
         preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
 
