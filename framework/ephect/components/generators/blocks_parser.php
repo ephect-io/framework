@@ -30,8 +30,6 @@ class BlocksParser extends Parser
             $parentFilename = ComponentRegistry::read($parentClassName);
             $parentHtml = file_get_contents(SRC_COPY_DIR . $parentFilename);
 
-            // $parentHtml = $this->doHtml($parentHtml);
-            // $chldHtml = $this->doHtml();
             $token = '_' . str_replace('-', '', $this->component->getUID());
             $functionNameToken = $functionName . $token;
             $parentDoc = new ComponentDocument($parentHtml);

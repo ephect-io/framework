@@ -177,40 +177,6 @@ class Parser
         return $result;
     }
 
-    public function doComponents(): bool
-    {
-        $result = false;
-
-        $re = '/<([A-Z][\w]*)([\w\{\}\(\)\'"= ][^\>]*)((\s|[^\/\>].))?\/\>/m';
-        $str = $this->html;
-
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-
-        foreach ($matches as $match) {
-            $component = $match[0];
-            $componentName = $match[1];
-            $componentArgs = isset($match[2]) ? $match[2] : '';
-
-            $args = 'null';
-            if (trim($componentArgs) !== '') {
-                $componentArgs = $this->doArguments($componentArgs);
-                $args = Maker::doArgumentsToString($componentArgs);
-            }
-
-            $parent = $this->component->getFullyQualifiedFunction();
-
-            $componentRender = "<?php \Ephect\Components\Component::render('$componentName', $args, '$parent'); ?>";
-
-            $this->html = str_replace($component, $componentRender, $this->html);
-        }
-
-        $result = $this->html !== null;
-
-        return $result;
-    }
-
-
     /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
     public function doFunctionArguments(string $subject): ?array
     {

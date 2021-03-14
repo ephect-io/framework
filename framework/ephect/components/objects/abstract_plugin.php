@@ -28,7 +28,13 @@ abstract class AbstractPlugin extends AbstractFileComponent
         $parser->useVariables();
         $parser->normalizeNamespace();
         $parser->doComponents();
-        $this->componentList = $parser->doOpenComponents($this->tag);
+        $componentList = $parser->doComponents();
+        $openComponentList = $parser->doOpenComponents();
+
+        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
+
+        $parser->copyComponents($this->componentList);
+
         $html = $parser->getHtml();
 
         $parser->doCache();

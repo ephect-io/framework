@@ -67,8 +67,13 @@ abstract class AbstractComponent implements ComponentInterface
         $parser->doArrays();
         $parser->useVariables();
         $parser->normalizeNamespace();
-        $parser->doComponents();
-        $this->componentList = $parser->doOpenComponents();
+        $componentList = $parser->doComponents();
+        $openComponentList = $parser->doOpenComponents();
+
+        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
+
+        $parser->copyComponents($this->componentList);
+
         $html = $parser->getHtml();
 
         $parser->doCache();
@@ -146,6 +151,14 @@ abstract class AbstractComponent implements ComponentInterface
         }
 
         return $html;
+    }
+
+    public static function functionName($fullQualifiedName): string
+    {
+        $fqFunctionName = explode('\\', $fullQualifiedName);
+        $function = array_pop($fqFunctionName);
+
+        return $function;
     }
 
     public static function passChidren(array $children): array
