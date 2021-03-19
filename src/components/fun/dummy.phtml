@@ -4,7 +4,7 @@ namespace Fun;
 
 function Dummy()
 {
-    $a = "with a " . __FUNCTION__ . " component inside!";
+    $a = __FUNCTION__ . " component inside!";
 
     return (<<<HTML
     <p>{{ a }}</p>
