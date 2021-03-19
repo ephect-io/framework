@@ -3,6 +3,7 @@
 namespace Ephect\Plugins\Router;
 
 use Ephect\Components\Component;
+use Ephect\Components\ComponentEntity;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\Registry;
 
@@ -36,7 +37,8 @@ function Router($children)
             for ($i = 0; $i < $c; $i++) {
                 $child = $composition[$i];
                 if ($child['name'] == 'Router') {
-                    $router = $child;
+                    $entity = ComponentEntity::buildFromArray($child);
+                    $router = $entity->toArray();
                 }
             }
             if ($router !== null) {

@@ -49,7 +49,7 @@ class ComponentDocument
 
         $struct = new ComponentStructure($this->_list[$id]);
 
-        $match = new ComponentEntity($struct, $this);
+        $match = new ComponentEntity($struct);
 
         return $match;
     }
@@ -90,6 +90,7 @@ class ComponentDocument
         $parser = new ComponentParser($prehtml);
 
         $this->_list = $parser->doComponents();
+        $this->_list = $this->getList();
         $this->_depths = $parser->getDepths();
 
         $this->_matchesByDepth = $parser->getIdListByDepth(); //$this->sortMatchesByDepth();

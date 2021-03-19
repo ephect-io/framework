@@ -30,20 +30,16 @@ class Compiler
                 $comp->analyse();
 
                 $parser = new ComponentParser($comp);
-                $list = $parser->doComponents();
+                $parser->doComponents();
+                $list = $parser->getList();
 
-                $compose = new Composition($comp->getFullyQualifiedFunction());
+                // $composition = [];
+                // if(count($list) > 0) {
+                //     $entity = new ComponentEntity(new ComponentStructure($list[0]));
+                //     $composition = $entity->toArray();
+                // }
 
-                foreach ($list as $item) {
-                    $entity = new ComponentEntity(new ComponentStructure($item));
-                    $compose->items()->add($entity);
-                }
-
-                $compose->bindNodes();
-
-                $composition = $compose->toArray();
-
-                CodeRegistry::write($comp->getFullyQualifiedFunction(), $composition);
+                CodeRegistry::write($comp->getFullyQualifiedFunction(), $list);
                 ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
 
                 array_push($compList, $comp);
@@ -68,10 +64,19 @@ class Compiler
                     $comp->analyse();
 
                     ComponentRegistry::write($compFile, $comp->getUID());
-
                 }
-
             }
+
+            $compViews = [];
+            foreach ($compList as $comp) {
+                $parser = new ComponentParser($comp);
+                $filename = $parser->copyComponents();
+
+                if($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
+                    array_push($compViews, $filename);
+                }
+            }
+
         }
 
         if (!PluginRegistry::uncache()) {

@@ -145,37 +145,51 @@ class ChildrenParser extends Parser
         return $result;
     }
 
-    public function copyComponents($componentList): void
-    {
-        foreach($componentList as $component) {
-            $fqFuncName = ComponentRegistry::read($component);
-            $fqFuncFile = ComponentRegistry::read($fqFuncName);
-            $funcName = AbstractComponent::functionName($fqFuncName);
+    // public function copyComponents(): void
+    // {
+    //     /**
+    //      * TO DO 
+    //      * get composition
+    //      */
+    //     // $funcName = $this->component->getFunction();
+    //     $fqFuncName = $this->component->getFullyQualifiedFunction();
+    //     $flatEnttity = CodeRegistry::read($fqFuncName);
 
-            if($fqFuncFile === null) {
-                continue;
-            }
+    //     $compStruct = new ComponentStructure($flatEnttity);
+    //     $compEntity = new ComponentEntity($compStruct);
+    //     $compEntity->bindNode();
+        
+    //     $componentList = $compEntity->getComposedOf();
 
-            $fqFuncUID = ComponentRegistry::read($fqFuncFile);
+    //     foreach($componentList as $component) {
+    //         $fqFuncName = ComponentRegistry::read($component);
+    //         $fqFuncFile = ComponentRegistry::read($fqFuncName);
+    //         $funcName = AbstractComponent::functionName($fqFuncName);
 
-            $token = '_' . str_replace('-', '', $fqFuncUID);
+    //         if($fqFuncFile === null) {
+    //             continue;
+    //         }
 
-            $funcCopyFile = str_replace('\\', '_', strtolower($fqFuncName));
-            $funcCopyFile = str_replace($funcCopyFile, $funcCopyFile . $token, $fqFuncFile);
+    //         $fqFuncUID = ComponentRegistry::read($fqFuncFile);
 
-            if(file_exists(CACHE_DIR . $funcCopyFile)) {
-                continue;
-            }
+    //         $token = '_' . str_replace('-', '', $fqFuncUID);
 
-            $funcHtml = file_get_contents(SRC_COPY_DIR . $fqFuncFile);
+    //         $funcCopyFile = str_replace('\\', '_', strtolower($fqFuncName));
+    //         $funcCopyFile = str_replace($funcCopyFile, $funcCopyFile . $token, $fqFuncFile);
 
-            $funcToken = $funcName . $token;
+    //         if(file_exists(CACHE_DIR . $funcCopyFile)) {
+    //             continue;
+    //         }
 
-            $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
+    //         $funcHtml = file_get_contents(SRC_COPY_DIR . $fqFuncFile);
 
-            Utils::safeWrite(CACHE_DIR . $funcCopyFile, $funcHtml);
+    //         $funcToken = $funcName . $token;
 
-        }
-    }
+    //         $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
+
+    //         Utils::safeWrite(CACHE_DIR . $funcCopyFile, $funcHtml);
+
+    //     }
+    // }
 
 }

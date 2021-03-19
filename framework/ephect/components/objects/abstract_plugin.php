@@ -33,8 +33,6 @@ abstract class AbstractPlugin extends AbstractFileComponent
 
         $this->componentList = array_unique(array_merge($componentList, $openComponentList));
 
-        $parser->copyComponents($this->componentList);
-
         $html = $parser->getHtml();
 
         $parser->doCache();

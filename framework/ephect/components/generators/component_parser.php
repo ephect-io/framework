@@ -2,8 +2,13 @@
 
 namespace Ephect\Components\Generators;
 
+use Ephect\Components\AbstractComponent;
+use Ephect\Components\ComponentEntity;
 use Ephect\Components\ComponentInterface;
+use Ephect\Components\ComponentStructure;
 use Ephect\Crypto\Crypto;
+use Ephect\IO\Utils;
+use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 
 define('TERMINATOR', '/');
@@ -19,6 +24,7 @@ class ComponentParser
     protected $maker = null;
     protected $depths = [];
     protected $idListByDepth = [];
+    protected $list = [];
 
     public function __construct(ComponentInterface $comp)
     {
@@ -28,6 +34,11 @@ class ComponentParser
         $this->maker = new Maker($comp);
         ComponentRegistry::uncache();
 
+    }
+
+    public function getList(): array
+    {
+        return $this->list;
     }
 
     public function getHtml(): string
@@ -179,6 +190,8 @@ class ComponentParser
             }
         }
 
+        $this->list = $list;
+
         return $list;
     }
 
@@ -198,5 +211,80 @@ class ComponentParser
         }
 
         return $result;
+    }
+
+    public function bindNodes(): array
+    {
+        $list = $this->list;
+
+        $depths = $this->getIdListByDepth();
+
+        $c = count($list);
+        for ($j = $c - 1; $j > -1; $j--) {
+        // for($j = 0; $j < $c; $j++) {
+            $i = $depths[$j];
+            if ($list[$i]['parentId'] === -1) {
+                continue;
+            }
+            $pId = $list[$i]['parentId'];
+
+            if (!is_array($list[$pId]['node'])) {
+                $list[$pId]['node'] = [];
+            }
+            array_push($list[$pId]['node'], $list[$i]);
+            unset($list[$i]);
+        }
+
+        return $list;
+    }
+
+
+    public function copyComponents(): void
+    {
+        /**
+         * TO DO 
+         * get composition
+         */
+        // $funcName = $this->component->getFunction();
+        $fqFuncName = $this->component->getFullyQualifiedFunction();
+        $flatEnttity = CodeRegistry::read($fqFuncName);
+
+        // $compEntity =  ComponentEntity::buildFromArray($flatEnttity);
+        
+        $componentList = ComponentEntity::getComposedOf($flatEnttity);
+
+        if($componentList === null) {
+            return;
+        }
+
+        foreach($componentList as $component) {
+            $fqFuncName = ComponentRegistry::read($component);
+            $fqFuncFile = ComponentRegistry::read($fqFuncName);
+            $funcName = AbstractComponent::functionName($fqFuncName);
+
+            if($fqFuncFile === null) {
+                continue;
+            }
+
+            $fqFuncUID = ComponentRegistry::read($fqFuncFile);
+
+            $token = '_' . str_replace('-', '', $fqFuncUID);
+
+            $funcCopyFile = str_replace('\\', '_', strtolower($fqFuncName));
+            $funcCopyFile = str_replace($funcCopyFile, $funcCopyFile . $token, $fqFuncFile);
+
+            if(file_exists(CACHE_DIR . $funcCopyFile)) {
+                continue;
+            }
+
+            $funcHtml = file_get_contents(SRC_COPY_DIR . $fqFuncFile);
+
+            $funcToken = $funcName . $token;
+
+            $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
+
+            Utils::safeWrite(CACHE_DIR . $funcCopyFile, $funcHtml);
+
+        }
     }
 }

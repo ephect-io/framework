@@ -26,7 +26,7 @@ abstract class AbstractComponent implements ComponentInterface
         return $this->parentHTML;
     }
 
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -71,8 +71,6 @@ abstract class AbstractComponent implements ComponentInterface
         $openComponentList = $parser->doOpenComponents();
 
         $this->componentList = array_unique(array_merge($componentList, $openComponentList));
-
-        $parser->copyComponents($this->componentList);
 
         $html = $parser->getHtml();
 
