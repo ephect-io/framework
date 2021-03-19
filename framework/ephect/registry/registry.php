@@ -95,17 +95,24 @@ class Registry extends StaticElement
         if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
         }
-        if (count($params) === 2) {
-            $key = $params[0];
-            $value = $params[1];
-            self::$_items[$item][$key] = $value;
-        }
+
         if (is_array($params) && count($params) === 1 ) {
-            if (is_array($params[0]) && count($params[0]) > 0) {
-                foreach ($params[0] as $key => $value) {
+            $param0 = $params[0];
+            if(is_object($param0)) {
+                $param0 = json_encode($param0);
+                $param0 = json_decode($param0, JSON_OBJECT_AS_ARRAY);
+            }
+            if (is_array($param0) && count($param0) > 0) {
+                foreach ($param0 as $key => $value) {
                     self::$_items[$item][$key] = $value;
                 }
             }
+        }
+
+        if (is_array($params) && count($params) === 2) {
+            $key = $params[0];
+            $value = $params[1];
+            self::$_items[$item][$key] = $value;
         }
     }
 
