@@ -12,7 +12,7 @@ trait TreeTrait
 
     protected $innerList = [];
     protected $count = 0;
-    protected $innerNode = null;
+    protected $children = null;
     protected $hasChildren = false;
     protected $index = 0;
 
@@ -114,20 +114,30 @@ trait TreeTrait
 
     }
 
+    public function getChildren(): ?TreeInterface
+    {
+        if ($this->children === null) {
+            $this->children = new Tree();
+        }
+        return $this->children;
+    }
+
+    public function hasChildren(): bool
+    {
+        if ($this->hasChildren === false) {
+            $this->hasChildren = $this->children !== null && $this->children->count() > 0;
+        }
+        return $this->hasChildren;
+    }
+
     public function node(): ?TreeInterface
     {
-        if ($this->innerNode === null) {
-            $this->innerNode = new Tree();
-        }
-        return $this->innerNode;
+        return $this->getChildren();
     }
 
     public function hasNode(): bool
     {
-        if ($this->hasChildren === false) {
-            $this->hasChildren = $this->innerNode !== null && $this->innerNode->count() > 0;
-        }
-        return $this->hasChildren;
+        return $this->hasChildren();
     }
 
     public function toArray(): array

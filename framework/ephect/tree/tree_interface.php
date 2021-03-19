@@ -4,7 +4,7 @@ namespace Ephect\Tree;
 
 use Iterator;
 //
-interface TreeInterface  extends Iterator
+interface TreeInterface  extends \RecursiveIterator
 {
     public function add($object): int;
     public function insert($object, $index): bool;
@@ -13,5 +13,5 @@ interface TreeInterface  extends Iterator
     public function find($object): ?int;
     public function items(?int $index = null);
     public function count(): int;
-    public function node(): ?TreeInterface;
+    // public function node(): ?TreeInterface;
 }
