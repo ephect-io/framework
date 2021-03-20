@@ -11,6 +11,7 @@ use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
 use Ephect\Tree\TreeInterface;
 use Ephect\Tree\TreeTrait;
+use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 
 /**
@@ -70,22 +71,24 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
         $this->bindNode();
     }
 
-    public static function buildFromArray(?array $list): ?ComponentEntity
+    private static function listIdsByDepth(array $list): ?array
     {
         if($list === null)
         {
             return null;
         }
         
-        $result = null;
+        $result = [];
 
         $structs = [];
         $depths = [];
 
-        $c = count($list);
+        // $c = count($list);
 
-        for ($i = 0; $i < $c; $i++) {
-            $struct = new ComponentStructure($list[$i]);
+        // $ra = new RecursiveArrayIterator($list);
+        foreach ($list as $match) {
+
+            $struct = new ComponentStructure($match);
             array_push($structs, $struct);
             $depths[$struct->depth] = 1;
         }
@@ -94,10 +97,25 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
         for ($i = $maxDepth; $i > -1; $i--) {
             foreach ($list as $match) {
                 if ($match["depth"] == $i) {
-                    array_push($depthIds, $match['id']);
+                    array_push($result, $match['id']);
                 }
             }
         }
+
+        return $result;
+    }
+
+    public static function buildFromArray(?array $list): ?ComponentEntity
+    {
+        $result = null;
+
+        $depthIds = static::listIdsByDepth($list);
+
+        if($depthIds === null) {    
+            return null;
+        }
+
+        $c = count($list);
 
         for ($j = $c - 1; $j > -1; $j--) {
             // for($j = 0; $j < $c; $j++) {
@@ -125,6 +143,12 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     {
 
         $result = null;
+
+        $depthIds = static::listIdsByDepth($list);
+
+        if($depthIds === null) {    
+            return null;
+        }
 
         $c = count($list);
 
