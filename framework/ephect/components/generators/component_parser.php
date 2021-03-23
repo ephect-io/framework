@@ -2,13 +2,8 @@
 
 namespace Ephect\Components\Generators;
 
-use Ephect\Components\AbstractComponent;
-use Ephect\Components\ComponentEntity;
 use Ephect\Components\ComponentInterface;
-use Ephect\Components\ComponentStructure;
 use Ephect\Crypto\Crypto;
-use Ephect\IO\Utils;
-use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 
 define('TERMINATOR', '/');
@@ -94,7 +89,6 @@ class ComponentParser
                             'id' => $i,
                             'parentId' => $j,
                             'text' => $list[$i][0][0],
-                            'name' => $list[$i][2][0],
                             'startsAt' => $list[$i][0][1],
                             'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
@@ -239,52 +233,4 @@ class ComponentParser
     }
 
 
-    public function copyComponents(): void
-    {
-        /**
-         * TO DO 
-         * get composition
-         */
-        // $funcName = $this->component->getFunction();
-        $fqFuncName = $this->component->getFullyQualifiedFunction();
-        $flatEnttity = CodeRegistry::read($fqFuncName);
-
-        // $compEntity =  ComponentEntity::buildFromArray($flatEnttity);
-        
-        $componentList = ComponentEntity::getComposedOf($flatEnttity);
-
-        if($componentList === null) {
-            return;
-        }
-
-        foreach($componentList as $component) {
-            $fqFuncName = ComponentRegistry::read($component);
-            $fqFuncFile = ComponentRegistry::read($fqFuncName);
-            $funcName = AbstractComponent::functionName($fqFuncName);
-
-            if($fqFuncFile === null) {
-                continue;
-            }
-
-            $fqFuncUID = ComponentRegistry::read($fqFuncFile);
-
-            $token = '_' . str_replace('-', '', $fqFuncUID);
-
-            $funcCopyFile = str_replace('\\', '_', strtolower($fqFuncName));
-            $funcCopyFile = str_replace($funcCopyFile, $funcCopyFile . $token, $fqFuncFile);
-
-            if(file_exists(CACHE_DIR . $funcCopyFile)) {
-                continue;
-            }
-
-            $funcHtml = file_get_contents(SRC_COPY_DIR . $fqFuncFile);
-
-            $funcToken = $funcName . $token;
-
-            $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
-
-            Utils::safeWrite(CACHE_DIR . $funcCopyFile, $funcHtml);
-
-        }
-    }
 }

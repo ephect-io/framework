@@ -10,7 +10,7 @@ use Ephect\Registry\ComponentRegistry;
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
 
-class AbstractFileComponent  extends AbstractComponent implements FileComponentInterface
+class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
 {
 
     protected $filename = '';

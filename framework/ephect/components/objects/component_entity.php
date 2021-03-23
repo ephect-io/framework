@@ -3,26 +3,20 @@
 namespace Ephect\Components;
 
 use Ephect\Components\ComponentStructure;
-use Ephect\Core\StructureInterface;
-use Ephect\ElementInterface;
 use Ephect\ElementTrait;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
 use Ephect\Tree\TreeInterface;
-use Ephect\Tree\TreeTrait;
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
 
 /**
  * Description of match
  *
  * @author david
  */
-class ComponentEntity implements ElementInterface, StructureInterface, TreeInterface
+class ComponentEntity extends Tree implements ComponentEntityInterface
 {
     use ElementTrait;
-    use TreeTrait;
 
     protected $parentId = 0;
     protected $name = '';
@@ -41,11 +35,11 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     protected $className = '';
     protected $attributes = null;
     protected $composedOf = null;
-    protected $innerNode = [];
+    // protected $innerNode = [];
 
     public function __construct(?ComponentStructure $attributes)
     {
-        if($attributes === null) {
+        if ($attributes === null) {
             return null;
         }
 
@@ -65,19 +59,17 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
         $this->contents = $this->hasCloser ? $this->closer['contents'] : null;
         $this->attributes = $attributes;
 
-        $this->children = null;
-        $this->innerNode = $attributes->node;
+        $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
 
         $this->bindNode();
     }
 
     private static function listIdsByDepth(array $list): ?array
     {
-        if($list === null)
-        {
+        if ($list === null) {
             return null;
         }
-        
+
         $result = [];
 
         $structs = [];
@@ -111,7 +103,7 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
 
         $depthIds = static::listIdsByDepth($list);
 
-        if($depthIds === null) {    
+        if ($depthIds === null) {
             return null;
         }
 
@@ -139,76 +131,29 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
         return $result;
     }
 
-    public static function getComposedOf($list): ?array
+    public function contains(): array
     {
+        $names = [];
+        array_push($names, $this->name);
 
-        $result = null;
-
-        $depthIds = static::listIdsByDepth($list);
-
-        if($depthIds === null) {    
-            return null;
-        }
-
-        $c = count($list);
-
-        if($c > 0) {
-            $result = [];
-        }
-        for ($i = 0; $i < $c; $i++) {
-            if(count($list[$i]) === 0) {
-                continue;
-            }
-            $struct = new ComponentStructure($list[$i]);
-
-            if ($struct->parentId === -1) {
-                continue;
-            }
-
-            $name = $struct->name;
-            array_push($result, $name);
-        }
-
-        return $result;
+        $this->recurse($this, function (ComponentEntityInterface $tree) use (&$names) {
+            array_push($names, $tree->getName());
+        });       
+        
+        $names = array_unique($names);
+        
+        return $names;
     }
 
     public function bindNode(): void
     {
-        if ($this->innerNode === false || count($this->innerNode) === 0) {
+        if ($this->elementList === false || $this->elementList === null) {
             return;
         }
-
-        foreach ($this->innerNode as $childNode) {
-            $childEntity = new ComponentEntity(new ComponentStructure($childNode));
-            $this->getChildren()->add($childEntity);
-            array_shift($this->innerNode);
-        }
-    }
-
-    protected function bindNodes(): void
-    {
-
-        $list = $this->toArray();
-
-        $c = count($list);
-        for ($i = 0; $i < $c; $i++) {
-            if ($list[$i]['parentId'] === -1) {
-                continue;
-            }
-            $pId = $list[$i]['parentId'];
-
-            if (!is_array($list[$pId]['node'])) {
-                $list[$pId]['node'] = [];
-            }
-            array_push($list[$pId]['node'], $list[$i]);
-            unset($list[$i]);
-        }
-
-        foreach ($list as $item) {
-            $childEntity = new ComponentEntity(new ComponentStructure($item));
-            $childEntity->bindNode();
-            $this->components->add($childEntity);
-        }
+        
+        $this->elementList = array_map(function ($child) {
+            return new ComponentEntity(new ComponentStructure($child));
+        }, $this->elementList);
     }
 
     public function toArray(): array

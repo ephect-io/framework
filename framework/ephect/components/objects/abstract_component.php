@@ -6,12 +6,14 @@ use BadFunctionCallException;
 use Ephect\Components\Generators\ChildrenParser;
 use Ephect\Components\Generators\Parser;
 use Ephect\ElementTrait;
+use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
+use Ephect\Tree\Tree;
 use tidy;
 
-abstract class AbstractComponent implements ComponentInterface
+abstract class AbstractComponent extends Tree implements ComponentInterface
 {
     use ElementTrait;
 
@@ -46,6 +48,66 @@ abstract class AbstractComponent implements ComponentInterface
         $parser = new Parser($this);
         $parser->doUses();
         $parser->doUsesAs();
+    }
+
+    public function compose(): void
+    {
+        $composition = CodeRegistry::read($this->getFullyQualifiedFunction());
+        $entity = ComponentEntity::buildFromArray($composition);
+        $this->add($entity);
+    }
+
+    public function contains(): array
+    {
+        $names = [];
+        
+        $this->recurse($this, function (ComponentEntityInterface $tree) use (&$names) {
+            array_push($names, $tree->getName());
+        });       
+        
+        $names = array_unique($names);
+        
+        return $names;
+    }
+
+    public function copyComponents(): void
+    {
+        $fqFuncName = $this->getFullyQualifiedFunction();
+        $componentList = $this->contains();
+
+        if($componentList === null) {
+            return;
+        }
+
+        foreach($componentList as $component) {
+            $fqFuncName = ComponentRegistry::read($component);
+            $fqFuncFile = ComponentRegistry::read($fqFuncName);
+            $funcName = AbstractComponent::functionName($fqFuncName);
+
+            if($fqFuncFile === null) {
+                continue;
+            }
+
+            $fqFuncUID = ComponentRegistry::read($fqFuncFile);
+
+            $token = '_' . str_replace('-', '', $fqFuncUID);
+
+            $funcCopyFile = str_replace('\\', '_', strtolower($fqFuncName));
+            $funcCopyFile = str_replace($funcCopyFile, $funcCopyFile . $token, $fqFuncFile);
+
+            if(file_exists(CACHE_DIR . $funcCopyFile)) {
+                continue;
+            }
+
+            $funcHtml = file_get_contents(SRC_COPY_DIR . $fqFuncFile);
+
+            $funcToken = $funcName . $token;
+
+            $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
+
+            Utils::safeWrite(CACHE_DIR . $funcCopyFile, $funcHtml);
+
+        }
     }
 
     public function parse(): void

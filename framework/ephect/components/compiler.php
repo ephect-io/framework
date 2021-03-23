@@ -33,15 +33,11 @@ class Compiler
                 $parser->doComponents();
                 $list = $parser->getList();
 
-                // $composition = [];
-                // if(count($list) > 0) {
-                //     $entity = new ComponentEntity(new ComponentStructure($list[0]));
-                //     $composition = $entity->toArray();
-                // }
-
                 CodeRegistry::write($comp->getFullyQualifiedFunction(), $list);
                 ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
 
+                $comp->compose();
+                
                 array_push($compList, $comp);
             }
             CodeRegistry::cache();
@@ -69,8 +65,7 @@ class Compiler
 
             $compViews = [];
             foreach ($compList as $comp) {
-                $parser = new ComponentParser($comp);
-                $filename = $parser->copyComponents();
+                $filename = $comp->copyComponents();
 
                 if($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
                     array_push($compViews, $filename);
