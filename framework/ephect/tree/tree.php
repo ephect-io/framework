@@ -2,8 +2,6 @@
 
 namespace Ephect\Tree;
 
-use IteratorAggregate;
-
 class Tree implements TreeInterface
 {
     protected $elementList = [];
@@ -88,13 +86,13 @@ class Tree implements TreeInterface
         }
     }
 
-    public function recurse(TreeInterface $tree, callable $callback)
+    public function forEach(callable $callback, TreeInterface $tree)
     {
-        foreach ($tree as $k => $v) {
-            call_user_func($callback, $v);
+        foreach ($tree as $key => $item) {
+            call_user_func($callback, $item);
 
-            if ($v->hasChildren()) {
-                $this->recurse($v, $callback);
+            if ($item->hasChildren()) {
+                $this->forEach($callback, $item);
             }
         }
     }

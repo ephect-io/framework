@@ -136,9 +136,9 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $names = [];
         array_push($names, $this->name);
 
-        $this->recurse($this, function (ComponentEntityInterface $tree) use (&$names) {
-            array_push($names, $tree->getName());
-        });       
+        $this->forEach(function (ComponentEntityInterface $item) use (&$names) {
+            array_push($names, $item->getName());
+        }, $this);       
         
         $names = array_unique($names);
         

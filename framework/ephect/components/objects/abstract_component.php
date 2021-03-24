@@ -61,9 +61,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         $names = [];
         
-        $this->recurse($this, function (ComponentEntityInterface $tree) use (&$names) {
-            array_push($names, $tree->getName());
-        });       
+        $this->forEach(function (ComponentEntityInterface $item) use (&$names) {
+            array_push($names, $item->getName());
+        }, $this);       
         
         $names = array_unique($names);
         
