@@ -68,7 +68,7 @@ class ChildrenParser extends Parser
                 $componentArgs = $this->doArguments($componentArgs);
             }
 
-            if ($this->maker->makeChildren($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject)) {
+            if ($componentName !== 'Block' && $this->maker->makeChildren($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject)) {
                 array_push($result, $componentName);
             }
         }
