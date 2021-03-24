@@ -109,8 +109,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         $c = count($list);
 
-        for ($j = $c - 1; $j > -1; $j--) {
-            // for($j = 0; $j < $c; $j++) {
+        for ($j = 0; $j < $c; $j++) {
             $i = $depthIds[$j];
             if ($list[$i]['parentId'] === -1) {
                 continue;
@@ -138,10 +137,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         $this->forEach(function (ComponentEntityInterface $item) use (&$names) {
             array_push($names, $item->getName());
-        }, $this);       
-        
+        }, $this);
+
         $names = array_unique($names);
-        
+
         return $names;
     }
 
@@ -150,7 +149,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         if ($this->elementList === false || $this->elementList === null) {
             return;
         }
-        
+
         $this->elementList = array_map(function ($child) {
             return new ComponentEntity(new ComponentStructure($child));
         }, $this->elementList);
