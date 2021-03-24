@@ -63,7 +63,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         
         $this->forEach(function (ComponentEntityInterface $item) use (&$names) {
             array_push($names, $item->getName());
-        }, $this);       
+        }, $this);    
         
         $names = array_unique($names);
         
@@ -129,6 +129,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $parser->doArrays();
         $parser->useVariables();
         $parser->normalizeNamespace();
+        $parser->doFragments();
         $componentList = $parser->doComponents();
         $openComponentList = $parser->doOpenComponents();
 
@@ -207,7 +208,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $fqFunctionName = explode('\\', $functionName);
         $function = array_pop($fqFunctionName);
         if ($function === 'App') {
-            // $html = self::format($html);
+            $html = self::format($html);
         }
 
         return $html;

@@ -57,7 +57,7 @@ class ComponentParser
 
         $list = [];
 
-        $re = '/<(\/)?([A-Z]\w+).*?>/m';
+        $re = '/<\/?([A-Z]\w+).*?>|<\/?>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -70,11 +70,11 @@ class ComponentParser
             $list[$i]['uid'] = Crypto::createUID();
 
             $list[$i]['id'] = $i;
-            $list[$i]['class'] = ComponentRegistry::read($list[$i][2][0]);
+            $list[$i]['name'] = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
+            $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
             $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
-            $list[$i]['name'] = $list[$i][2][0];
-            $list[$i]['method'] = $list[$i][2][0];
+            $list[$i]['method'] = $list[$i]['name'];
             $list[$i]['startsAt'] = $list[$i][0][1];
             $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
             $list[$i]['props'] = $this->doArguments($list[$i][0][0]);
@@ -82,9 +82,9 @@ class ComponentParser
             $list[$i]['hasCloser'] = false;
             $list[$i]['isCloser'] = false;
 
-            if ($list[$i][1][0] === '/') {
+            if ($list[$i][0][0][1] === '/') {
                 for ($j = $i - 1; $j > -1; $j--) {
-                    if ($list[$i][2][0] === $list[$j][2][0] && $list[$j][1][0] === '') {
+                    if ($list[$i][1][0] === $list[$j][1][0]) {
                         $list[$j]['closer'] = [
                             'id' => $i,
                             'parentId' => $j,
@@ -102,7 +102,7 @@ class ComponentParser
             if (isset($list[$i])) {
                 unset($list[$i][0]);
                 unset($list[$i][1]);
-                unset($list[$i][2]);
+                // unset($list[$i][2]);
             }
             if (isset($list[$i]['closer'])) {
                 $list[$i]['isCloser'] = false;

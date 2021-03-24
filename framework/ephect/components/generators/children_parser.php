@@ -145,51 +145,10 @@ class ChildrenParser extends Parser
         return $result;
     }
 
-    // public function copyComponents(): void
-    // {
-    //     /**
-    //      * TO DO 
-    //      * get composition
-    //      */
-    //     // $funcName = $this->component->getFunction();
-    //     $fqFuncName = $this->component->getFullyQualifiedFunction();
-    //     $flatEnttity = CodeRegistry::read($fqFuncName);
+    public function doFragments(): void
+    {
+        $this->html = str_replace('<>', '', $this->html);
+        $this->html = str_replace('</>', '', $this->html);
 
-    //     $compStruct = new ComponentStructure($flatEnttity);
-    //     $compEntity = new ComponentEntity($compStruct);
-    //     $compEntity->bindNode();
-        
-    //     $componentList = $compEntity->getComposedOf();
-
-    //     foreach($componentList as $component) {
-    //         $fqFuncName = ComponentRegistry::read($component);
-    //         $fqFuncFile = ComponentRegistry::read($fqFuncName);
-    //         $funcName = AbstractComponent::functionName($fqFuncName);
-
-    //         if($fqFuncFile === null) {
-    //             continue;
-    //         }
-
-    //         $fqFuncUID = ComponentRegistry::read($fqFuncFile);
-
-    //         $token = '_' . str_replace('-', '', $fqFuncUID);
-
-    //         $funcCopyFile = str_replace('\\', '_', strtolower($fqFuncName));
-    //         $funcCopyFile = str_replace($funcCopyFile, $funcCopyFile . $token, $fqFuncFile);
-
-    //         if(file_exists(CACHE_DIR . $funcCopyFile)) {
-    //             continue;
-    //         }
-
-    //         $funcHtml = file_get_contents(SRC_COPY_DIR . $fqFuncFile);
-
-    //         $funcToken = $funcName . $token;
-
-    //         $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
-
-    //         Utils::safeWrite(CACHE_DIR . $funcCopyFile, $funcHtml);
-
-    //     }
-    // }
-
+    }
 }

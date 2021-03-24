@@ -5,8 +5,10 @@ namespace Fun;
 function HeaderAndFooter($children)
 {
     return (<<<HTML
-        <Header />
-        {{ children }}
-        <Footer />
+        <>
+            <Header />
+            {{ children }}
+            <Footer />
+        </>
     HTML);
 }
