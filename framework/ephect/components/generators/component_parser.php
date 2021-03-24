@@ -28,7 +28,6 @@ class ComponentParser
         $this->parentHTML = $comp->getParentHTML();
         $this->maker = new Maker($comp);
         ComponentRegistry::uncache();
-
     }
 
     public function getList(): array
@@ -57,7 +56,12 @@ class ComponentParser
 
         $list = [];
 
-        $re = '/<\/?([A-Z]\w+).*?>|<\/?>/m';
+        /**
+         * parse only components as defined by JSX
+         * $re = '/<\/?([A-Z]\w+)(.*)?>|<\/?>/m';
+         */
+        // parse all tags comprising HTML ones 
+        $re = '/<\/?(\w+)(.*)?\/?>|<\/?>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -77,14 +81,17 @@ class ComponentParser
             $list[$i]['method'] = $list[$i]['name'];
             $list[$i]['startsAt'] = $list[$i][0][1];
             $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
-            $list[$i]['props'] = $this->doArguments($list[$i][0][0]);
+            $list[$i]['props'] = ($list[$i]['name'] === 'Fragment') ? [] : $this->doArguments($list[$i][2][0]);
             $list[$i]['node'] = false;
             $list[$i]['hasCloser'] = false;
             $list[$i]['isCloser'] = false;
 
             if ($list[$i][0][0][1] === '/') {
                 for ($j = $i - 1; $j > -1; $j--) {
-                    if ($list[$i][1][0] === $list[$j][1][0]) {
+                    if (
+                        ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
+                        || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
+                    ) {
                         $list[$j]['closer'] = [
                             'id' => $i,
                             'parentId' => $j,
@@ -102,7 +109,7 @@ class ComponentParser
             if (isset($list[$i])) {
                 unset($list[$i][0]);
                 unset($list[$i][1]);
-                // unset($list[$i][2]);
+                unset($list[$i][2]);
             }
             if (isset($list[$i]['closer'])) {
                 $list[$i]['isCloser'] = false;
@@ -193,7 +200,7 @@ class ComponentParser
     {
         $result = [];
 
-        $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
+        $re = '/([A-Za-z0-9_]*)=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
 
         preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
 
@@ -215,7 +222,7 @@ class ComponentParser
 
         $c = count($list);
         for ($j = $c - 1; $j > -1; $j--) {
-        // for($j = 0; $j < $c; $j++) {
+            // for($j = 0; $j < $c; $j++) {
             $i = $depths[$j];
             if ($list[$i]['parentId'] === -1) {
                 continue;
@@ -231,6 +238,4 @@ class ComponentParser
 
         return $list;
     }
-
-
 }
