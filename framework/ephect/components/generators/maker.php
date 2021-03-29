@@ -50,11 +50,7 @@ class Maker
         $args = (($args === null) ? "null" : $args);
 
         $children = <<<CHILDREN
-        <?php
-        
-        namespace $namespace;
 
-        ?>
         $componentBody
         
         CHILDREN;

@@ -91,7 +91,15 @@ class Parser
             $uid = $this->component->getUID();
 
             if ($variable === 'children') {
-                $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
+                /**
+                 * $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
+                 */
+                
+                $html = CodeRegistry::read($uid);
+                $html = urldecode($html);
+         
+                $this->html = str_replace('{{ children }}', $html, $this->html);
+
                 continue;
             }
 
