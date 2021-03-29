@@ -36,19 +36,19 @@ class BlocksParser extends Parser
             $parentDoc->matchAll();
 
             $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
-            $parentHtml = str_replace($functionName, $functionNameToken, $parentHtml);
+            // $parentHtml = str_replace($functionName, $functionNameToken, $parentHtml);
 
             $childHtml = $this->html;
-            $childHtml = str_replace($functionName, $functionNameToken, $childHtml);
+            // $childHtml = str_replace($functionName, $functionNameToken, $childHtml);
 
-            $functionFilename = strtolower($functionName);
-            $functionFilename = '' . Component::getCacheFilename(str_replace($functionFilename, $functionFilename . $token, $parentFilename));
+            // $functionFilename = strtolower($functionName);
+            // $functionFilename = '' . Component::getCacheFilename(str_replace($functionFilename, $functionFilename . $token, $parentFilename));
             if ($parentHtml !== '') {
-                Utils::safeWrite(CACHE_DIR . $functionFilename, $parentHtml);
+                Utils::safeWrite(CACHE_DIR . $parentFilename, $parentHtml);
                 Utils::safeWrite(CACHE_DIR . $this->component->getCachedFilename(), $childHtml);
 
-                ComponentRegistry::write($parentClassName . $token, $functionFilename);
-                ComponentRegistry::write($className, $this->component->getCachedFilename());
+                // ComponentRegistry::write($parentClassName . $token, $functionFilename);
+                // ComponentRegistry::write($className, $this->component->getCachedFilename());
             }
         }
 

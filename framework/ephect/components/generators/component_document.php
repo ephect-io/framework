@@ -89,8 +89,8 @@ class ComponentDocument
         $prehtml = new PreHtml($this->_text);
         $parser = new ComponentParser($prehtml);
 
-        $this->_list = $parser->doComponents();
-        $this->_list = $this->getList();
+        $parser->doComponents();
+        $this->_list = $parser->getList();
         $this->_depths = $parser->getDepths();
 
         $this->_matchesByDepth = $parser->getIdListByDepth(); //$this->sortMatchesByDepth();
@@ -210,7 +210,7 @@ class ComponentDocument
 
                 if (
                     $childMatch->getMethod() !== 'Block'
-                    || $parentMatch->properties('name') !== $childMatch->properties('name')
+                    || $parentMatch->props('name') !== $childMatch->props('name')
                 ) {
                     continue;
                 }

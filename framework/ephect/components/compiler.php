@@ -6,12 +6,16 @@ use Ephect\Cache\Cache;
 use Ephect\Components\Generators\BlocksParser;
 use Ephect\Components\Generators\ComponentParser;
 use Ephect\IO\Utils as IOUtils;
+use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
 
 class Compiler
 {
+
+    protected $list = [];
+
     /** @return void  */
     public function perform(): void
     {
@@ -37,23 +41,23 @@ class Compiler
                 ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
 
                 $comp->compose();
-                
-                array_push($compList, $comp);
+
+                $this->list[$comp->getFullyQualifiedFunction()] = $comp;
             }
             CodeRegistry::cache();
             ComponentRegistry::cache();
 
             $blocksViews = [];
-            foreach ($compList as $comp) {
+            foreach ($this->list as $class => $comp) {
                 $parser = new BlocksParser($comp);
                 $filename = $parser->doBlocks();
 
-                if($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
+                if ($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
                     array_push($blocksViews, $filename);
                 }
             }
 
-            if(count($blocksViews) > 0) {
+            if (count($blocksViews) > 0) {
                 foreach ($blocksViews as $compFile) {
                     $comp = new Component();
                     $comp->load($compFile);
@@ -62,16 +66,6 @@ class Compiler
                     ComponentRegistry::write($compFile, $comp->getUID());
                 }
             }
-
-            $compViews = [];
-            foreach ($compList as $comp) {
-                $filename = $comp->copyComponents();
-
-                if($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
-                    array_push($compViews, $filename);
-                }
-            }
-
         }
 
         if (!PluginRegistry::uncache()) {
@@ -86,5 +80,80 @@ class Compiler
             PluginRegistry::cache();
             ComponentRegistry::cache();
         }
+    }
+
+    public function postPerform(): void
+    {
+
+        $routes = $this->searchForRoutes();
+        $compViews = [];
+        foreach ($routes as $route) {
+            $fqRoute = ComponentRegistry::read($route);
+            $comp = $this->list[$fqRoute];
+
+            $filename = $comp->copyComponents($this->list);
+
+            if ($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
+                array_push($compViews, $filename);
+            }
+        }
+    }
+
+    public function searchForRoutes(): array
+    {
+        $result = [];
+
+        $items = CodeRegistry::items();
+
+        $root = $this->findRouter($items, 'App');
+        if($root !== null) {
+            $routes = $root->items();
+            foreach($routes as $route) {
+                $props = (object) $route->props();
+                $rb = new RouteBuilder($props);
+                $re = $rb->build();
+
+                array_push($result, $re->getRedirect());
+            }
+        }
+        if($root === null) {
+            $root = $this->findFirstComponent($items, 'App');
+            array_push($result, $root->getName());
+
+        }
+
+        return $result;
+    }
+    protected function findFirstComponent(array $items, string $name): ?ComponentEntity
+    {
+        $class = ComponentRegistry::read($name);
+
+        $composition = $items[$class];
+
+            $first = ComponentEntity::buildFromArray($composition);
+        
+        return $first;
+
+    }
+    protected function findRouter(array $items, string $name): ?ComponentEntity
+    {
+        $class = ComponentRegistry::read($name);
+
+        $composition = $items[$class];
+
+        $router = null;
+        foreach ($composition as $child) {
+            $name = $child['name'];
+            if ($name == 'Router') {
+                $router = ComponentEntity::buildFromArray($composition);
+                break;
+            }
+            $router = $this->findRouter($items, $name);
+            if ($router !== null) {
+                break;
+            }
+        }
+
+        return $router;
     }
 }

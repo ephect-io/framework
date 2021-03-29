@@ -46,22 +46,4 @@ class Component extends AbstractFileComponent
         echo $html;
     }
 
-    public static function bind(string $uid)
-    {
-        $filename = CACHE_DIR . "render_$uid.php";
-        if (null === $html = Utils::safeRead($filename)) {
-            CodeRegistry::uncache();
-
-            $html = CodeRegistry::read($uid);
-            $html = urldecode($html);
-         
-            Utils::safeWrite($filename, $html);
-            
-            CodeRegistry::delete($uid);
-            CodeRegistry::cache();
-        }
-
-        eval('?>' . $html);
-    }
-
 }

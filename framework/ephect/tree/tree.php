@@ -89,10 +89,10 @@ class Tree implements TreeInterface
     public function forEach(callable $callback, TreeInterface $tree)
     {
         foreach ($tree as $key => $item) {
-            call_user_func($callback, $item);
+            call_user_func($callback, $item, $key);
 
             if ($item->hasChildren()) {
-                $this->forEach($callback, $item);
+                $this->forEach($callback, $item, $key);
             }
         }
     }

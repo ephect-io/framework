@@ -50,7 +50,7 @@ class ComponentParser
         return $this->idListByDepth;
     }
 
-    public function doComponents(): array
+    public function doComponents(): void
     {
         $result = [];
 
@@ -193,7 +193,7 @@ class ComponentParser
 
         $this->list = $list;
 
-        return $list;
+        // return $list;
     }
 
     public function doArguments(string $componentArgs): ?array

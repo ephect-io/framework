@@ -125,5 +125,60 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         }
     }
     
-  
+    public function copyComponents(array $list, ?string $motherUID = null, ?ComponentInterface $component = null): void
+    {
+        if ($component === null) {
+            $component = $this;
+        }
+
+        if ($motherUID === null) {
+            $motherUID = $component->getUID();
+        }
+
+        $componentList = $component->composedOf();
+
+        if ($componentList === null) {
+            return;
+        }
+
+        $fqFuncName = $component->getFullyQualifiedFunction();
+
+        $token = '_' . str_replace('-', '', $motherUID);
+
+        $copyFile = $component->getCachedSourceFilename();
+        $copyFile = str_replace(PREHTML_EXTENSION, $token . PREHTML_EXTENSION, $copyFile);
+
+        $subject = $component->getCode();
+
+        $name = $component->getFunction();
+
+        $subject = str_replace($name, $name . $token, $subject);
+
+        foreach ($componentList as $name => $fqFuncName) {
+
+            $nextComponent = $list[$fqFuncName];
+            $subject = str_replace($name, $name . $token, $subject);
+
+            $fqFuncFile = $nextComponent->getCachedSourceFilename();
+            $nextCopyFile = str_replace(PREHTML_EXTENSION, $token . PREHTML_EXTENSION, $fqFuncFile);
+
+            if (file_exists(CACHE_DIR . $nextCopyFile)) {
+                continue;
+            }
+
+            $funcName = $nextComponent->getFunction();
+            $funcHtml = $nextComponent->getCode();
+            $funcToken = $funcName . $token;
+
+            $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
+
+            Utils::safeWrite(CACHE_DIR . $nextCopyFile, $funcHtml);
+
+            $component->code = $subject;
+
+            $component->copyComponents($list, $motherUID, $nextComponent);
+        }
+
+        Utils::safeWrite(CACHE_DIR . $copyFile, $component->code);
+    }
 }

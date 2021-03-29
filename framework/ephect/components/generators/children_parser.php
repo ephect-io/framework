@@ -2,14 +2,6 @@
 
 namespace Ephect\Components\Generators;
 
-use Ephect\Components\AbstractComponent;
-use Ephect\Components\Component;
-use Ephect\Components\ComponentEntity;
-use Ephect\Components\ComponentStructure;
-use Ephect\IO\Utils;
-use Ephect\Registry\CodeRegistry;
-use Ephect\Registry\ComponentRegistry;
-
 class ChildrenParser extends Parser
 {
     /**

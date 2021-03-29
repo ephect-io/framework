@@ -57,58 +57,30 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $this->add($entity);
     }
 
-    public function contains(): array
+    public function composedOf(): ?array
     {
         $names = [];
-        
-        $this->forEach(function (ComponentEntityInterface $item) use (&$names) {
-            array_push($names, $item->getName());
-        }, $this);    
-        
+
+        $this->forEach(function (ComponentEntityInterface $item, $key) use (&$names) {
+            $name = $item->getName();
+            $fqName = ComponentRegistry::read($name);
+            $names[$name] = $fqName;
+        }, $this);
+
         $names = array_unique($names);
-        
+
+        $names = array_filter($names, function ($item) {
+            return $item !== null;
+        });
+
+        if (count($names) === 0) {
+            $names = null;
+        }
+
         return $names;
     }
 
-    public function copyComponents(): void
-    {
-        $fqFuncName = $this->getFullyQualifiedFunction();
-        $componentList = $this->contains();
-
-        if($componentList === null) {
-            return;
-        }
-
-        foreach($componentList as $component) {
-            $fqFuncName = ComponentRegistry::read($component);
-            $fqFuncFile = ComponentRegistry::read($fqFuncName);
-            $funcName = AbstractComponent::functionName($fqFuncName);
-
-            if($fqFuncFile === null) {
-                continue;
-            }
-
-            $fqFuncUID = ComponentRegistry::read($fqFuncFile);
-
-            $token = '_' . str_replace('-', '', $fqFuncUID);
-
-            $funcCopyFile = str_replace('\\', '_', strtolower($fqFuncName));
-            $funcCopyFile = str_replace($funcCopyFile, $funcCopyFile . $token, $fqFuncFile);
-
-            if(file_exists(CACHE_DIR . $funcCopyFile)) {
-                continue;
-            }
-
-            $funcHtml = file_get_contents(SRC_COPY_DIR . $fqFuncFile);
-
-            $funcToken = $funcName . $token;
-
-            $funcHtml = str_replace($funcName, $funcToken, $funcHtml);
-
-            Utils::safeWrite(CACHE_DIR . $funcCopyFile, $funcHtml);
-
-        }
-    }
+   
 
     public function parse(): void
     {

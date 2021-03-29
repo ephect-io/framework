@@ -33,9 +33,7 @@ function Router($children)
 
         foreach ($items as $component => $composition) {
             $router = null;
-            $c = count($composition);
-            for ($i = 0; $i < $c; $i++) {
-                $child = $composition[$i];
+            foreach ($composition as $child) {
                 if ($child['name'] == 'Router') {
                     $entity = ComponentEntity::buildFromArray($composition);
                     $router = $entity->toArray();

@@ -130,12 +130,12 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $result;
     }
 
-    public function contains(): array
+    public function composedOf(): array
     {
         $names = [];
         array_push($names, $this->name);
 
-        $this->forEach(function (ComponentEntityInterface $item) use (&$names) {
+        $this->forEach(function (ComponentEntityInterface $item, $key) use (&$names) {
             array_push($names, $item->getName());
         }, $this);
 
@@ -180,9 +180,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $this->depth;
     }
 
-    public function properties($key)
+    public function props(?string $key = null)
     {
-        $result = false;
+        if($key === null) {
+            return $this->properties;
+        }
         if (isset($this->properties[$key])) {
             $result = $this->properties[$key];
         }
