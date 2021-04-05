@@ -82,7 +82,11 @@ class ChildrenParser extends Parser
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
+        $uid = $this->component->getMotherUID();
+        $motherUID = '';
+        if(file_exists(CACHE_DIR . $uid)) {
+            $motherUID = $uid;
+        }
 
         foreach ($matches as $match) {
             $component = $match[0];
@@ -95,9 +99,9 @@ class ChildrenParser extends Parser
                 $args = Maker::doArgumentsToString($componentArgs);
             }
 
-            $parent = $this->component->getFullyQualifiedFunction();
+            //$parent = $this->component->getFullyQualifiedFunction();
 
-            $componentRender = "<?php \Ephect\Components\Component::render('$componentName', $args, '$parent'); ?>";
+            $componentRender = "<?php \Ephect\Components\Component::render('$componentName', $args, '$motherUID'); ?>";
 
             $this->html = str_replace($component, $componentRender, $this->html);
 
