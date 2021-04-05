@@ -26,7 +26,7 @@ class Compiler
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($templateList as $key => $compFile) {
 
-                $cachedSourceViewFile = Component::getCacheFilename('source_' . $compFile);
+                $cachedSourceViewFile = Component::getFlatFilename($compFile);
                 copy(SRC_ROOT . $compFile, CACHE_DIR . $cachedSourceViewFile);
 
                 $comp = new Component();
@@ -52,7 +52,7 @@ class Compiler
                 $parser = new BlocksParser($comp);
                 $filename = $parser->doBlocks();
 
-                if ($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
+                if ($filename !== null && file_exists(CACHE_DIR . $filename)) {
                     array_push($blocksViews, $filename);
                 }
             }
@@ -87,15 +87,15 @@ class Compiler
 
         $routes = $this->searchForRoutes();
         $compViews = [];
+
+        array_unshift($routes, 'App');
+
         foreach ($routes as $route) {
             $fqRoute = ComponentRegistry::read($route);
             $comp = $this->list[$fqRoute];
 
-            $filename = $comp->copyComponents($this->list);
+            $comp->copyComponents($this->list);
 
-            if ($filename !== null && file_exists(SRC_COPY_DIR . $filename)) {
-                array_push($compViews, $filename);
-            }
         }
     }
 
@@ -106,9 +106,9 @@ class Compiler
         $items = CodeRegistry::items();
 
         $root = $this->findRouter($items, 'App');
-        if($root !== null) {
+        if ($root !== null) {
             $routes = $root->items();
-            foreach($routes as $route) {
+            foreach ($routes as $route) {
                 $props = (object) $route->props();
                 $rb = new RouteBuilder($props);
                 $re = $rb->build();
@@ -116,25 +116,26 @@ class Compiler
                 array_push($result, $re->getRedirect());
             }
         }
-        if($root === null) {
+
+        if ($root === null) {
             $root = $this->findFirstComponent($items, 'App');
             array_push($result, $root->getName());
-
         }
 
         return $result;
     }
+
     protected function findFirstComponent(array $items, string $name): ?ComponentEntity
     {
         $class = ComponentRegistry::read($name);
 
         $composition = $items[$class];
 
-            $first = ComponentEntity::buildFromArray($composition);
-        
-        return $first;
+        $first = ComponentEntity::buildFromArray($composition);
 
+        return $first;
     }
+
     protected function findRouter(array $items, string $name): ?ComponentEntity
     {
         $class = ComponentRegistry::read($name);
@@ -148,6 +149,7 @@ class Compiler
                 $router = ComponentEntity::buildFromArray($composition);
                 break;
             }
+
             $router = $this->findRouter($items, $name);
             if ($router !== null) {
                 break;

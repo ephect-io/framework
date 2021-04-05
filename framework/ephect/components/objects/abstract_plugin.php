@@ -8,12 +8,6 @@ abstract class AbstractPlugin extends AbstractFileComponent
 {
     protected $tag = '';
 
-    public function analyse(): void
-    {
-        parent::analyse();
-    }
-
-    
     public function parse(): void
     {
         $parser = new ChildrenParser($this);

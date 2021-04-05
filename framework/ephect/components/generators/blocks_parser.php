@@ -4,11 +4,17 @@ namespace Ephect\Components\Generators;
 
 use Ephect\Cache\Cache;
 use Ephect\Components\Component;
+use Ephect\Components\FileComponentInterface;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 
 class BlocksParser extends Parser
 {
+    public function __construct(FileComponentInterface $comp)
+    {
+        $this->component = $comp;
+        parent::__construct($comp);
+    }
 
     public function doBlocks(): ?string
     {
@@ -28,7 +34,7 @@ class BlocksParser extends Parser
                 return null;
             }
             $parentFilename = ComponentRegistry::read($parentClassName);
-            $parentHtml = file_get_contents(SRC_COPY_DIR . $parentFilename);
+            $parentHtml = Utils::safeRead(CACHE_DIR . $parentFilename);
 
             $token = '_' . str_replace('-', '', $this->component->getUID());
             $functionNameToken = $functionName . $token;
@@ -36,19 +42,12 @@ class BlocksParser extends Parser
             $parentDoc->matchAll();
 
             $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
-            // $parentHtml = str_replace($functionName, $functionNameToken, $parentHtml);
 
             $childHtml = $this->html;
-            // $childHtml = str_replace($functionName, $functionNameToken, $childHtml);
-
-            // $functionFilename = strtolower($functionName);
-            // $functionFilename = '' . Component::getCacheFilename(str_replace($functionFilename, $functionFilename . $token, $parentFilename));
             if ($parentHtml !== '') {
                 Utils::safeWrite(CACHE_DIR . $parentFilename, $parentHtml);
-                Utils::safeWrite(CACHE_DIR . $this->component->getCachedFilename(), $childHtml);
+                Utils::safeWrite(CACHE_DIR . $this->component->getFlattenFilename(), $childHtml);
 
-                // ComponentRegistry::write($parentClassName . $token, $functionFilename);
-                // ComponentRegistry::write($className, $this->component->getCachedFilename());
             }
         }
 

@@ -2,25 +2,16 @@
 
 namespace Ephect\Components;
 
-use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
-use Ephect\Registry\CodeRegistry;
 
 class Component extends AbstractFileComponent
 {
 
-    public function __construct(string $uid = '')
+    public function __construct(string $uid = '', string $motherUID = '')
     {
         $this->uid = $uid;
+        $this->motherUID = ($motherUID === '') ? $uid : $motherUID;
         $this->getUID();
-    }
-
-    public function analyse(): void
-    {
-        parent::analyse();
-
-        ComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
-        ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
     public function parse(): void
@@ -29,21 +20,13 @@ class Component extends AbstractFileComponent
 
         $this->cacheHtml();
     }
-
-    private function cacheHtml(): ?string
+    
+    public function analyse(): void
     {
-        $cache_file = static::getCacheFilename($this->filename);
-        $result = Utils::safeWrite(CACHE_DIR . $cache_file, $this->code);
+        parent::analyse();
 
-        return $result === null ? $result : $cache_file;
-    }
-
-    public static function render(string $functionName, ?array $functionArgs = null, ?string $parent = null): void
-    {
-        [$namespace, $functionName, $html] = parent::renderComponent($functionName, $functionArgs);
-
-        $html = parent::renderHTML($functionName, $functionArgs);
-        echo $html;
+        ComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
+        ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
 
 }

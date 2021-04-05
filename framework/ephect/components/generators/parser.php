@@ -10,7 +10,7 @@ use Ephect\Registry\FrameworkRegistry;
 class Parser
 {
     protected $html = '';
-    protected $comp = null;
+    protected $component = null;
     protected $useVariables = [];
     protected $parentHTML = '';
     protected $maker = null;
@@ -120,7 +120,6 @@ class Parser
         $result = $this->html !== null;
 
         return $result;
-
     }
 
     public function doArrays(): bool
@@ -192,9 +191,6 @@ class Parser
         $re = '/((function) ([\w]+)\()?([\,]?[\.]*\$[\w]*)/m';
 
         preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
-
-
-
 
         return $result;
     }
