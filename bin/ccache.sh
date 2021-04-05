@@ -9,5 +9,6 @@ then
 fi
 
 sudo rm -rf cache
+sudo rm -rf runtime
 echo Cache cleared
 echo
