@@ -61,7 +61,7 @@ class ComponentParser
          * $re = '/<\/?([A-Z]\w+)(.*)?>|<\/?>/m';
          */
         // parse all tags comprising HTML ones 
-        $re = '/<\/?(\w+)(.*)?\/?>|<\/?>/m';
+        $re = '/<\/?(\w+)(.*?)\/?>|<\/?>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
