@@ -8,6 +8,7 @@ trait ElementTrait
 {
     protected $parent = null;
     protected $uid = '';
+    protected $motherUID = '';
     protected $id = 'noname';
     protected $type = '';
     protected $namespace = '';
@@ -20,6 +21,11 @@ trait ElementTrait
             $this->uid = Crypto::createUID();
         }
         return $this->uid;
+    }
+
+    public function getMotherUID(): string
+    {
+        return $this->motherUID;
     }
 
     public function getId(): string

@@ -4,11 +4,11 @@ namespace Fun;
 
 use Com as FunCom;
 
-use function Ephect\Hooks\setState;
+use function Ephect\Hooks\useState;
 
 function Home()
 {
-    setState('m', ['n' => 'o']);
+    useState(['m' => ['n' => 'with a']]);
 
     return (<<<HTML
     <Mother>
@@ -18,7 +18,7 @@ function Home()
             <link rel="stylesheet" href="/css/app.css" />
         </Block>
         <div class="App-content" >
-            <FunCom message='Hello World!' from="the app" />
+            <FunCom message="Hello World!" from="the app" />
         </div>
         <Block name="javascripts">
             <script src="js/ephect.js"></script>

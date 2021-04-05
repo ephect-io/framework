@@ -7,7 +7,7 @@ use Ephect\Registry\ComponentRegistry;
 
 class ComponentFactory
 {
-    public static function create(string $fullyQualifiedName): AbstractFileComponent
+    public static function create(string $fullyQualifiedName, string $motherUID): AbstractFileComponent
     {
 
         $filename = ComponentRegistry::read($fullyQualifiedName);
@@ -15,14 +15,14 @@ class ComponentFactory
 
         if ($isPlugin) {
             $uid = PluginRegistry::read($filename);
-            $plugin = new Plugin($uid);
+            $plugin = new Plugin($uid, $motherUID);
             $plugin->load($filename);
 
             return $plugin;
         }
 
         $uid = ComponentRegistry::read($filename);
-        $comp = new Component($uid);
+        $comp = new Component($uid, $motherUID);
         $comp->load($filename);
 
         return $comp;

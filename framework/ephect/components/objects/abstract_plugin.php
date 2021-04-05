@@ -8,25 +8,25 @@ abstract class AbstractPlugin extends AbstractFileComponent
 {
     protected $tag = '';
 
-    public function analyse(): void
-    {
-        parent::analyse();
-    }
-
-    
     public function parse(): void
     {
         $parser = new ChildrenParser($this);
 
         $parser->doUncache();
+        $parser->doPhpTags();
 
         $this->children = $parser->doChildrenDeclaration();
-        $parser->doScalars();
+        $parser->doValues();
+        $parser->doEchoes();
         $parser->doArrays();
         $parser->useVariables();
         $parser->normalizeNamespace();
         $parser->doComponents();
-        $this->componentList = $parser->doOpenComponents($this->tag);
+        $componentList = $parser->doComponents();
+        $openComponentList = $parser->doOpenComponents();
+
+        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
+
         $html = $parser->getHtml();
 
         $parser->doCache();

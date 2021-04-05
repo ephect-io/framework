@@ -4,8 +4,6 @@ namespace Ephect\Plugins\Route;
 
 use Ephect\Components\Component;
 use Ephect\Plugins\Router\RouterService;
-use Ephect\Registry\Registry;
-use Ephect\Registry\RouteRegistry;
 
 use function Ephect\Hooks\useEffect;
 
@@ -18,14 +16,7 @@ function Route($props)
         $router = new RouterService();
         $router->addRoute($route->getMethod(), $route->getRule(), $route->getRedirect());
         $router->saveRoutes();
-
-        $routes = Registry::item('router')['node'];
-        array_shift($routes);
-        Registry::write('router', 'node', $routes);
-        
-        if(count($routes) === 0) {
-            rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
-        }
+        $router->shiftRegistry();
 
         $match = $router->matchRoute($route);
 

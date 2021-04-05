@@ -7,9 +7,12 @@ use Error;
 class Structure implements StructureInterface
 {
 
-    public function __construct(array $properties)
+    public function __construct(?array $props)
     {
-        foreach ($properties as $key => $value) {
+        if ($props === null) {
+            return null;
+        }
+        foreach ($props as $key => $value) {
             if(!property_exists($this, $key)) {
                 throw new Error("The property [$key] is not defined.");
             }

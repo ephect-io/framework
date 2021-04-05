@@ -22,6 +22,7 @@ class Application extends AbstractApplication
         if(!CacheRegistry::uncache()) {
             $compiler = new Compiler;
             $compiler->perform();
+            $compiler->postPerform();
         }
 
         Component::render('App');

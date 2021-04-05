@@ -19,6 +19,7 @@ class ComponentParser
     protected $maker = null;
     protected $depths = [];
     protected $idListByDepth = [];
+    protected $list = [];
 
     public function __construct(ComponentInterface $comp)
     {
@@ -27,7 +28,11 @@ class ComponentParser
         $this->parentHTML = $comp->getParentHTML();
         $this->maker = new Maker($comp);
         ComponentRegistry::uncache();
+    }
 
+    public function getList(): array
+    {
+        return $this->list;
     }
 
     public function getHtml(): string
@@ -45,13 +50,18 @@ class ComponentParser
         return $this->idListByDepth;
     }
 
-    public function doComponents(): array
+    public function doComponents(): void
     {
         $result = [];
 
         $list = [];
 
-        $re = '/<(\/)?([A-Z]\w+).*?>/m';
+        /**
+         * parse only components as defined by JSX
+         * $re = '/<\/?([A-Z]\w+)(.*)?>|<\/?>/m';
+         */
+        // parse all tags comprising HTML ones 
+        $re = '/<\/?(\w+)(.*?)\/?>|<\/?>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -64,26 +74,28 @@ class ComponentParser
             $list[$i]['uid'] = Crypto::createUID();
 
             $list[$i]['id'] = $i;
-            $list[$i]['class'] = ComponentRegistry::read($list[$i][2][0]);
+            $list[$i]['name'] = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
+            $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
             $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
-            $list[$i]['name'] = $list[$i][2][0];
-            $list[$i]['method'] = $list[$i][2][0];
+            $list[$i]['method'] = $list[$i]['name'];
             $list[$i]['startsAt'] = $list[$i][0][1];
             $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
-            $list[$i]['props'] = $this->doArguments($list[$i][0][0]);
+            $list[$i]['props'] = ($list[$i]['name'] === 'Fragment') ? [] : $this->doArguments($list[$i][2][0]);
             $list[$i]['node'] = false;
             $list[$i]['hasCloser'] = false;
             $list[$i]['isCloser'] = false;
 
-            if ($list[$i][1][0] === '/') {
+            if ($list[$i][0][0][1] === '/') {
                 for ($j = $i - 1; $j > -1; $j--) {
-                    if ($list[$i][2][0] === $list[$j][2][0] && $list[$j][1][0] === '') {
+                    if (
+                        ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
+                        || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
+                    ) {
                         $list[$j]['closer'] = [
                             'id' => $i,
                             'parentId' => $j,
                             'text' => $list[$i][0][0],
-                            'name' => $list[$i][2][0],
                             'startsAt' => $list[$i][0][1],
                             'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
@@ -179,14 +191,16 @@ class ComponentParser
             }
         }
 
-        return $list;
+        $this->list = $list;
+
+        // return $list;
     }
 
     public function doArguments(string $componentArgs): ?array
     {
         $result = [];
 
-        $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
+        $re = '/([A-Za-z0-9_]*)=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
 
         preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
 
@@ -198,5 +212,30 @@ class ComponentParser
         }
 
         return $result;
+    }
+
+    public function bindNodes(): array
+    {
+        $list = $this->list;
+
+        $depths = $this->getIdListByDepth();
+
+        $c = count($list);
+        for ($j = $c - 1; $j > -1; $j--) {
+            // for($j = 0; $j < $c; $j++) {
+            $i = $depths[$j];
+            if ($list[$i]['parentId'] === -1) {
+                continue;
+            }
+            $pId = $list[$i]['parentId'];
+
+            if (!is_array($list[$pId]['node'])) {
+                $list[$pId]['node'] = [];
+            }
+            array_push($list[$pId]['node'], $list[$i]);
+            unset($list[$i]);
+        }
+
+        return $list;
     }
 }

@@ -3,24 +3,20 @@
 namespace Ephect\Components;
 
 use Ephect\Components\ComponentStructure;
-use Ephect\Core\StructureInterface;
-use Ephect\ElementInterface;
 use Ephect\ElementTrait;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
 use Ephect\Tree\TreeInterface;
-use Ephect\Tree\TreeTrait;
 
 /**
  * Description of match
  *
  * @author david
  */
-class ComponentEntity implements ElementInterface, StructureInterface, TreeInterface
+class ComponentEntity extends Tree implements ComponentEntityInterface
 {
     use ElementTrait;
-    use TreeTrait;
 
     protected $parentId = 0;
     protected $name = '';
@@ -32,52 +28,131 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     protected $closer = '';
     protected $contents = null;
     protected $hasCloser = '';
-    protected $properties = array();
+    protected $properties = [];
     protected $method = '';
     protected $doc = null;
     protected $compName = '';
     protected $className = '';
     protected $attributes = null;
-    protected $children = null;
+    protected $composedOf = null;
+    // protected $innerNode = [];
 
-    public function __construct(ComponentStructure $attributes)
+    public function __construct(?ComponentStructure $attributes)
     {
+        if ($attributes === null) {
+            return null;
+        }
+
         $this->id = $attributes->id;
         $this->className = $attributes->class;
         $this->componentName = $attributes->component;
         $this->parentId = $attributes->parentId;
         $this->text = $attributes->text;
         $this->name = $attributes->name;
+        $this->method = $attributes->method;
         $this->start = $attributes->startsAt;
         $this->end = $attributes->endsAt;
         $this->depth = $attributes->depth;
-        $this->closer = $attributes->closer;
-        $this->contents = is_array($this->closer) ? $this->closer['contents'] : null;
         $this->properties = $attributes->props;
-        $this->hasCloser = isset($this->closer);
-        $this->method = $attributes->method;
+        $this->closer = $attributes->closer;
+        $this->hasCloser = is_array($this->closer);
+        $this->contents = $this->hasCloser ? $this->closer['contents'] : null;
         $this->attributes = $attributes;
 
-        $this->children = $attributes->node;
+        $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
 
-        $this->innerNode = new Tree();
-        // $this->bindNode();
-
+        $this->bindNode();
     }
 
-    
+    private static function listIdsByDepth(array $list): ?array
+    {
+        if ($list === null) {
+            return null;
+        }
+
+        $result = [];
+
+        $structs = [];
+        $depths = [];
+
+        // $c = count($list);
+
+        // $ra = new RecursiveArrayIterator($list);
+        foreach ($list as $match) {
+
+            $struct = new ComponentStructure($match);
+            array_push($structs, $struct);
+            $depths[$struct->depth] = 1;
+        }
+
+        $maxDepth = count($depths);
+        for ($i = $maxDepth; $i > -1; $i--) {
+            foreach ($list as $match) {
+                if ($match["depth"] == $i) {
+                    array_push($result, $match['id']);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public static function buildFromArray(?array $list): ?ComponentEntity
+    {
+        $result = null;
+
+        $depthIds = static::listIdsByDepth($list);
+
+        if ($depthIds === null) {
+            return null;
+        }
+
+        $c = count($list);
+
+        for ($j = 0; $j < $c; $j++) {
+            $i = $depthIds[$j];
+            if ($list[$i]['parentId'] === -1) {
+                continue;
+            }
+            $pId = $list[$i]['parentId'];
+
+            if (!is_array($list[$pId]['node'])) {
+                $list[$pId]['node'] = [];
+            }
+            array_push($list[$pId]['node'], $list[$i]);
+            unset($list[$i]);
+        }
+
+        if (count($list) > 0) {
+            $result = new ComponentEntity(new ComponentStructure($list[0]));
+        }
+
+        return $result;
+    }
+
+    public function composedOf(): array
+    {
+        $names = [];
+        array_push($names, $this->name);
+
+        $this->forEach(function (ComponentEntityInterface $item, $key) use (&$names) {
+            array_push($names, $item->getName());
+        }, $this);
+
+        $names = array_unique($names);
+
+        return $names;
+    }
 
     public function bindNode(): void
     {
-
-        if ($this->children === null || $this->children === false) {
+        if ($this->elementList === false || $this->elementList === null) {
             return;
         }
 
-        foreach($this->children as $child) {
-            $childEntity = new ComponentEntity(new ComponentStructure($child));
-            $this->node()->add($childEntity);
-        }
+        $this->elementList = array_map(function ($child) {
+            return new ComponentEntity(new ComponentStructure($child));
+        }, $this->elementList);
     }
 
     public function toArray(): array
@@ -105,9 +180,11 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
         return $this->depth;
     }
 
-    public function properties($key)
+    public function props(?string $key = null)
     {
-        $result = false;
+        if($key === null) {
+            return $this->properties;
+        }
         if (isset($this->properties[$key])) {
             $result = $this->properties[$key];
         }
@@ -151,11 +228,6 @@ class ComponentEntity implements ElementInterface, StructureInterface, TreeInter
     public function getChildName(): string
     {
         return $this->childName;
-    }
-
-    public function hasChildren(): bool
-    {
-        return $this->hasChildren;
     }
 
     public function hasCloser(): bool

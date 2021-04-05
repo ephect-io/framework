@@ -10,7 +10,7 @@ use Ephect\Registry\ComponentRegistry;
 class Maker
 {
     private $html = '';
-    private $comp = null;
+    private $component = null;
     private $parentHTML = '';
 
     public function __construct(ComponentInterface $comp)
@@ -40,21 +40,19 @@ class Maker
     {
         ComponentRegistry::uncache();
 
+        $motherUID = $this->component->getMotherUID();
         $fqClass = ComponentRegistry::read($componentName);
-        $component = ComponentFactory::create($fqClass);
+        $component = ComponentFactory::create($fqClass, $motherUID);
 
         $uid = $component->getUID();
+        $motherUID = $component->getMotherUID();
         $namespace = $component->getNamespace();
 
         $args = $componentArgs === null ? null : $this->doArgumentsToString($componentArgs);
         $args = (($args === null) ? "null" : $args);
 
         $children = <<<CHILDREN
-        <?php
-        
-        namespace $namespace;
 
-        ?>
         $componentBody
         
         CHILDREN;
@@ -68,7 +66,7 @@ class Maker
 
         $fqComponentName = '\\' . ComponentRegistry::read($componentName);
 
-        $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid']]";
+        $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']]";
 
         $componentRender = "<?php \$fn = $fqComponentName($children); \$fn(); ?>";
 

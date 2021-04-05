@@ -10,7 +10,7 @@ use Ephect\Registry\FrameworkRegistry;
 class Parser
 {
     protected $html = '';
-    protected $comp = null;
+    protected $component = null;
     protected $useVariables = [];
     protected $parentHTML = '';
     protected $maker = null;
@@ -38,7 +38,36 @@ class Parser
         return CodeRegistry::uncache();
     }
 
-    public function doScalars(): bool
+
+    public function doValues(): bool
+    {
+        $result = null;
+
+        $re = '/\{([a-zA-Z0-9_\-\>]*)\}/m';
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $variable = $match[1];
+
+            $useVar = $variable;
+            $arrowPos = strpos($variable, '->');
+            if ($arrowPos > -1) {
+                $useVar = substr($useVar, 0, $arrowPos);
+            }
+
+            $this->useVariables[$useVar] = '$' . $useVar;
+
+            $this->html = str_replace('{' . $variable . '}', '$' . $variable . '', $this->html);
+        }
+
+        $result = $this->html !== null;
+
+        return $result;
+    }
+
+    public function doEchoes(): bool
     {
         $result = null;
 
@@ -62,12 +91,31 @@ class Parser
             $uid = $this->component->getUID();
 
             if ($variable === 'children') {
-                $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
+                /**
+                 * $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
+                 */
+                
+                $html = CodeRegistry::read($uid);
+                $html = urldecode($html);
+         
+                $this->html = str_replace('{{ children }}', $html, $this->html);
+
                 continue;
             }
 
             $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . '; ?>', $this->html);
+            $this->html = str_replace('{' . $variable . '}', '$' . $variable . '', $this->html);
         }
+
+        $result = $this->html !== null;
+
+        return $result;
+    }
+
+    public function doPhpTags(): bool
+    {
+        $this->html = str_replace('{?', '<?php ', $this->html);
+        $this->html = str_replace('?}', '?> ', $this->html);
 
         $result = $this->html !== null;
 
@@ -136,40 +184,6 @@ class Parser
         return $result;
     }
 
-    public function doComponents(): bool
-    {
-        $result = false;
-
-        $re = '/<([A-Z][\w]*)([\w\{\}\(\)\'"= ][^\>]*)((\s|[^\/\>].))?\/\>/m';
-        $str = $this->html;
-
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-
-        foreach ($matches as $match) {
-            $component = $match[0];
-            $componentName = $match[1];
-            $componentArgs = isset($match[2]) ? $match[2] : '';
-
-            $args = 'null';
-            if (trim($componentArgs) !== '') {
-                $componentArgs = $this->doArguments($componentArgs);
-                $args = Maker::doArgumentsToString($componentArgs);
-            }
-
-            $parent = $this->component->getFullyQualifiedFunction();
-
-            $componentRender = "<?php \Ephect\Components\Component::render('$componentName', $args, '$parent'); ?>";
-
-            $this->html = str_replace($component, $componentRender, $this->html);
-        }
-
-        $result = $this->html !== null;
-
-        return $result;
-    }
-
-
     /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
     public function doFunctionArguments(string $subject): ?array
     {
@@ -178,9 +192,6 @@ class Parser
 
         preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
 
-
-
-
         return $result;
     }
 
@@ -188,7 +199,7 @@ class Parser
     {
         $result = [];
 
-        $re = '/([A-Za-z0-9_]*)=("([\S\\\\\" ]*)"|\'([\S\\\\\' ]*)\'|\{([\S\\\\\{\}\(\)=\<\> ]*)\})/m';
+        $re = '/([A-Za-z0-9_]*)=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
 
         preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
 
