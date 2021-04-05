@@ -158,4 +158,9 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
     {
         return static::getInstance()->_getCacheFilename();
     }
+
+    public static function clear(): void
+    {
+        static::getInstance()->_clear();
+    }
 }

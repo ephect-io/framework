@@ -99,4 +99,10 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
     {
         $this->baseDirectory = $directory;
     }
+
+    public function _clear(): void
+    {
+        $this->entries = [];
+    }
+
 }
