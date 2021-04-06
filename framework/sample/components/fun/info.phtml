@@ -1,0 +1,14 @@
+<?php
+
+namespace Fun;
+
+function Info()
+{
+    ob_start();
+    phpinfo();
+    $info = ob_get_clean();
+
+    return (<<<HTML
+        {{ info }}
+    HTML);
+}

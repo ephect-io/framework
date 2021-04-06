@@ -1,0 +1,14 @@
+<?php
+
+namespace Fun;
+
+function HeaderAndFooter($children)
+{
+    return (<<<HTML
+        <>
+            <Header />
+            {{ children }}
+            <Footer />
+        </>
+    HTML);
+}

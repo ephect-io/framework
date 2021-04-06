@@ -1,0 +1,46 @@
+<?php
+
+namespace Fun;
+
+use function Ephect\Hooks\useEffect;
+
+function Second()
+{
+
+    useEffect(function() use (&$firstname) {
+        $firstname = "David";
+    });
+
+    return (<<<HTML
+    <First>
+        <Block name="title">Ephect!</Block>
+        <Block name="stylesheets">
+            <link rel="stylesheet" href="/css/index.css" />
+            <link rel="stylesheet" href="/css/app.css" />
+        </Block>
+        <Block name="main">
+            <section>
+            <h2>Main</h2>
+                <p>
+                    Hello&nbsp;{{ firstname }}!
+                </p>
+                <p>This is reed</p>
+                <p>again</p>
+            </section>
+        </Block>
+        <Block name="second">
+            <section>
+            <h2>Second</h2>
+                <p>
+                    Me
+                </p>
+                My computer
+                will be stunning
+            </section>
+        </Block>
+        <Block name="javascripts">
+            <script src="/js/ephect.js"></script>
+        </Block>
+    </First>
+    HTML);
+}

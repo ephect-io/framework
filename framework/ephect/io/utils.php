@@ -23,19 +23,23 @@ class Utils
                 continue;
             }
             
-            if (isset($fi['extension'])) {
-                if (count($filter) > 0 && in_array($fi['extension'], $filter)) {
-                    array_push($result, substr($file->getPathName(), $l));
-                } elseif (count($filter) === 0) {
-                    array_push($result, substr($file->getPathName(), $l));
-                }
+            if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                continue;
             }
+
+            if (count($filter) > 0 && in_array($fi['extension'], $filter)) {
+                array_push($result, substr($file->getPathName(), $l));
+            }
+            if (count($filter) === 0) {
+                array_push($result, substr($file->getPathName(), $l));
+            }
+
         }
 
         return $result;
     }
 
-    public static function walkTree(string $path, ?array &$tree)
+    public static function walkTree(string $path, array &$tree = [])
     {
         $class_func = array(__CLASS__, __FUNCTION__);
         return is_file($path) ?

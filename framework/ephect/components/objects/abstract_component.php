@@ -80,8 +80,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $names;
     }
 
-
-
     public function parse(): void
     {
         /* TO BEGIN WITH */
@@ -139,7 +137,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
     public static function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
     {
-
         include_once CACHE_DIR . $cacheFilename;
 
         $html = '';
@@ -198,9 +195,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     public static function format(string $html): string
     {
         $config = [
-            'indent'         => true,
-            'output-html'   => true,
-            'wrap'           => 200
+            'indent'      => true,
+            'output-html' => true,
+            'wrap'        => 200
         ];
 
         $tidy = new tidy;
