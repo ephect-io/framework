@@ -64,7 +64,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->bindNode();
     }
 
-    private static function listIdsByDepth(array $list): ?array
+    private static function listIdsByDepth(?array $list): ?array
     {
         if ($list === null) {
             return null;
@@ -101,11 +101,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     {
         $result = null;
 
-        $depthIds = static::listIdsByDepth($list);
-
-        if ($depthIds === null) {
+        if($list === null) {
             return null;
         }
+
+        $depthIds = static::listIdsByDepth($list);
 
         $c = count($list);
 
@@ -183,6 +183,9 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     public function props(?string $key = null)
     {
         if($key === null) {
+            if(count($this->properties) === 0) {
+                return null;
+            }
             return $this->properties;
         }
         if (isset($this->properties[$key])) {
