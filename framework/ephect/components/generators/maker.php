@@ -83,6 +83,9 @@ class Maker
 
         foreach ($componentArgs as $key => $value) {
 
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
             $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
         }
         $result = ($result === '') ? null : '[' . $result . ']';

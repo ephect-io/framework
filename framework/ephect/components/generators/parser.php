@@ -71,7 +71,7 @@ class Parser
     {
         $result = null;
 
-        $re = '/\{\{ ([a-z0-9_\-\>]*) \}\}/m';
+        $re = '/\{\{ ([A-Za-z0-9_\-\>]*) \}\}/m';
         $su = '<?php echo $\1 ?>';
         $str = $this->html;
 
@@ -199,15 +199,24 @@ class Parser
     {
         $result = [];
 
-        $re = '/([A-Za-z0-9_]*)=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
+        $re = '/([A-Za-z0-9_]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
 
         preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
             $key = $match[1];
-            $value = substr(substr($match[2], 1), 0, -1);
+            $value = substr(substr($match[3], 1), 0, -1);
 
-            $result[$key] = $value;
+            if(isset($match[2]) && $match[2] === '[]') {
+                if(!isset($result[$key])) {
+                    $result[$key] = [];
+                }
+                $result[$key][] = $value;
+
+            } else {
+                $result[$key] = $value;
+            }
+
         }
 
         return $result;

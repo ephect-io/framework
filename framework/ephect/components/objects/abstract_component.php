@@ -6,7 +6,6 @@ use BadFunctionCallException;
 use Ephect\Components\Generators\ChildrenParser;
 use Ephect\Components\Generators\Parser;
 use Ephect\ElementTrait;
-use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
@@ -139,6 +138,10 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         include_once CACHE_DIR . $cacheFilename;
 
+        // $flatComp = CodeRegistry::read($fqFunctionName);
+        // $comp = ComponentEntity::buildFromArray($flatComp);
+        // $functionArgs = ($comp !== null) ? $comp->props() : $functionArgs;
+
         $html = '';
         if ($functionArgs === null) {
             ob_start();
@@ -149,13 +152,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
         if ($functionArgs !== null) {
 
-            $props = [];
-            foreach ($functionArgs as $key => $value) {
-                $props[$key] = urldecode($value);
+            $json = json_encode($functionArgs);
+            $props = json_decode($json);
+            foreach ($props as $key => $value) {
+                $props->{$key} = urldecode($value);
             }
-
-            $props = (object) $props;
-
             ob_start();
             $fn = call_user_func($fqFunctionName, $props);
             $fn();
