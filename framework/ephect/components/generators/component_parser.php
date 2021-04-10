@@ -51,11 +51,11 @@ class ComponentParser extends Parser
 
         /**
          * parse only components as defined by JSX
-         * $re = '/<\/?([A-Z]\w+)(.*)?>|<\/?>/m';
-         * $re = '/<\/?(\w+)(.*?)\/?>|<\/?>/m';
+         * $re = '/<\/?([A-Z]\w+)(.*?)>|<\/?>/m';
          */
         // parse all tags comprising HTML ones 
-        $re = '/<\/?([A-Z]\w+)(.*?)>|<\/?>/m';
+        
+        $re = '/<\/?([A-Z]\w+)((\s|.*?)+)>|<\/?>/m';
 
         $str = $this->html;
 
@@ -105,7 +105,9 @@ class ComponentParser extends Parser
                 unset($list[$i][0]);
                 unset($list[$i][1]);
                 unset($list[$i][2]);
+                unset($list[$i][3]);
             }
+
             if (isset($list[$i]['closer'])) {
                 $list[$i]['isCloser'] = false;
                 $list[$i]['hasCloser'] = true;
