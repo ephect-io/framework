@@ -10,23 +10,16 @@ define('TERMINATOR', '/');
 define('SKIP_MARK', '!');
 define('QUEST_MARK', '?');
 
-class ComponentParser
+class ComponentParser extends Parser
 {
-    protected $html = '';
-    protected $comp = null;
-    protected $useVariables = [];
-    protected $parentHTML = '';
-    protected $maker = null;
     protected $depths = [];
     protected $idListByDepth = [];
     protected $list = [];
 
     public function __construct(ComponentInterface $comp)
     {
-        $this->component = $comp;
-        $this->html = $comp->getCode();
-        $this->parentHTML = $comp->getParentHTML();
-        $this->maker = new Maker($comp);
+        parent::__construct($comp);
+
         ComponentRegistry::uncache();
     }
 
@@ -59,9 +52,11 @@ class ComponentParser
         /**
          * parse only components as defined by JSX
          * $re = '/<\/?([A-Z]\w+)(.*)?>|<\/?>/m';
+         * $re = '/<\/?(\w+)(.*?)\/?>|<\/?>/m';
          */
         // parse all tags comprising HTML ones 
-        $re = '/<\/?(\w+)(.*?)\/?>|<\/?>/m';
+        $re = '/<\/?([A-Z]\w+)(.*?)>|<\/?>/m';
+
         $str = $this->html;
 
         preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -196,46 +191,4 @@ class ComponentParser
         // return $list;
     }
 
-    public function doArguments(string $componentArgs): ?array
-    {
-        $result = [];
-
-        $re = '/([A-Za-z0-9_]*)=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
-
-        preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-            $key = $match[1];
-            $value = substr(substr($match[2], 1), 0, -1);
-
-            $result[$key] = $value;
-        }
-
-        return $result;
-    }
-
-    public function bindNodes(): array
-    {
-        $list = $this->list;
-
-        $depths = $this->getIdListByDepth();
-
-        $c = count($list);
-        for ($j = $c - 1; $j > -1; $j--) {
-            // for($j = 0; $j < $c; $j++) {
-            $i = $depths[$j];
-            if ($list[$i]['parentId'] === -1) {
-                continue;
-            }
-            $pId = $list[$i]['parentId'];
-
-            if (!is_array($list[$pId]['node'])) {
-                $list[$pId]['node'] = [];
-            }
-            array_push($list[$pId]['node'], $list[$i]);
-            unset($list[$i]);
-        }
-
-        return $list;
-    }
 }
