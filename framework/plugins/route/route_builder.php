@@ -9,7 +9,7 @@ class RouteBuilder extends AbstractBuilder
 
     public function __construct(object $props)
     {
-        parent::__construct($props, ['method', 'rule', 'redirect']);
+        parent::__construct($props, RouteStructure::class);
     }
 
     public function build(): RouteInterface

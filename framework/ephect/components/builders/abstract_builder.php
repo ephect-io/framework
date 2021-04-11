@@ -8,22 +8,21 @@ use Ephect\ElementInterface;
 abstract class AbstractBuilder
 {
     protected $props;
-    protected $fields;
+    protected $struct;
 
-    public function __construct(object $props, array $fields)
+    public function __construct(object $props, string $struct)
     {
         $this->props = $props;
-        $this->fields = $fields;
+        $this->struct = $struct;
     }
 
     protected function buildEx(string $type): ElementInterface
     {
         $result = null;
-
-        $props  = (new PropsValidator($this->props, $this->fields))->validate();
-        $values = array_values($props);
         
-        $result = new $type(...$values);
+        $struct  = (new PropsValidator($this->props, $this->struct))->validate();
+        
+        $result = new $type($struct);
 
         return $result;
     }

@@ -2,31 +2,32 @@
 
 namespace Ephect\Components\Validators;
 
+use Ephect\Core\Structure;
+use ErrorException;
+use Exception;
 use InvalidArgumentException;
 
 class PropsValidator
 {
     protected $props;
-    protected $fields;
+    protected $structClass;
 
-    public function __construct(object $props, array $fields)
+    public function __construct(object $props, string $structClass)
     {
         $this->props = $props;
-        $this->fields = $fields;
+        $this->structClass = $structClass;
     }
 
-    public function validate(): ?array
+    public function validate(): ?Structure
     {
-        $result = [];
+        $result = null;
 
-        foreach($this->fields as $field) {
+        $structType = $this->structClass;
 
-            if(!isset($this->props->$field)) {
-                $result = null;
-                throw new InvalidArgumentException("Argument $field is missing.");
-            }
-    
-            $result[$field] = $this->props->$field;
+        try {
+            $result = new $structType($this->props);
+        } catch (Exception $ex) {
+            throw new ErrorException("Invalid route.", 1, 3, __FILE__, __LINE__, $ex);
         }
 
         return $result;
