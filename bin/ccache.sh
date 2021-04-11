@@ -1,11 +1,11 @@
 #!/bin/sh
-if [ -d /Sites/ephect ];
+
+pwd
+
+if [ ! -d ./cache ] || [ ! -d ./runtime ];
 then
-    cd /Sites/ephect;
-fi
-if [ -d /Users/david/Sites/CodePhoenixOrg/SDK/php/ephect ];
-then
-    cd /Users/david/Sites/CodePhoenixOrg/SDK/php/ephect;
+    echo "Be sure you are at the root of your Ephect site."
+    exit 1;
 fi
 
 sudo rm -rf cache

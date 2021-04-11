@@ -1,9 +1,19 @@
 <?php
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
+
+$app_is_web = true;
+if($document_root === '') {
+    $document_root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    $app_is_web = false;
+}
+
+$document_root = dirname(dirname($document_root)) . DIRECTORY_SEPARATOR;
+
+define('IS_WEB_APP', $app_is_web);
 define('DOCUMENT_ROOT', $document_root);
 
-define('SITE_ROOT', dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR);
+define('SITE_ROOT', DOCUMENT_ROOT);
 define('FRAMEWORK_ROOT', SITE_ROOT . 'framework' . DIRECTORY_SEPARATOR);
 define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
 define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
@@ -28,7 +38,7 @@ define('PREHTML_EXTENSION', '.phtml');
 define('CSS_EXTENSION', '.css');
 define('JS_EXTENSION', '.js');
 
-if(DOCUMENT_ROOT === '') {
+if(!IS_WEB_APP) {
     return;
 }
 
@@ -38,7 +48,6 @@ if (file_exists(CONFIG_DIR . 'rewrite_base') && $rewrite_base = file_get_content
     $rewrite_base = trim($rewrite_base);
 }
 define('REWRITE_BASE', $rewrite_base);
-
 
 $scheme = 'http';
 if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
