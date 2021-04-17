@@ -39,6 +39,7 @@ class Compiler
 
                 CodeRegistry::write($comp->getFullyQualifiedFunction(), $list);
                 ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+                ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
                 $comp->compose();
 
@@ -76,6 +77,8 @@ class Compiler
                 $plugin->analyse();
 
                 PluginRegistry::write($pluginFile, $plugin->getUID());
+                PluginRegistry::write($plugin->getUID(), $plugin->getFullyQualifiedFunction());
+
             }
             PluginRegistry::cache();
             ComponentRegistry::cache();
