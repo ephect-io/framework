@@ -73,7 +73,7 @@ class ComponentParser extends Parser
             $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
             $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
-            $list[$i]['method'] = $list[$i]['name'];
+            $list[$i]['method'] = 'echo';
             $list[$i]['startsAt'] = $list[$i][0][1];
             $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
             $list[$i]['props'] = ($list[$i]['name'] === 'Fragment') ? [] : $this->doArguments($list[$i][2][0]);
@@ -96,6 +96,8 @@ class ComponentParser extends Parser
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
                         ];
                         $list[$i]['isCloser'] = true;
+                        $list[$i]['method'] = 'render';
+
                         break;
                     }
                 }
