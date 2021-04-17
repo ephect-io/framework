@@ -10,7 +10,7 @@ class PreHtml extends AbstractComponent implements ComponentInterface
     {
         $this->code = $preHtml;        
     }
-    
+
     public function analyse(): void
     {
         parent::analyse();

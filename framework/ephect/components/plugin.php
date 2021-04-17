@@ -11,14 +11,7 @@ use Ephect\Registry\PluginRegistry;
 
 class Plugin extends AbstractPlugin
 {
-
-    public function __construct(string $uid = '', string $motherUID = '')
-    {
-        $this->uid = $uid;
-        $this->motherUID = ($motherUID === '') ? $uid : $motherUID;
-        $this->getUID();
-    }
-
+    
     public function load(string $filename): bool
     {
         $result = false;
@@ -26,9 +19,9 @@ class Plugin extends AbstractPlugin
 
         $this->code = Utils::safeRead(PLUGINS_ROOT . $this->filename);
 
-        list($this->namespace, $this->function) = ElementUtils::getFunctionDefinition($this->code);
+        [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if($this->function === null) {
-            list($this->namespace, $this->function) = ElementUtils::getClassDefinition($this->code);
+            [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getClassDefinition($this->code);
         } 
         $result = $this->code !== null;
 
