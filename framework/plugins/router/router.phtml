@@ -11,19 +11,17 @@ use function Ephect\Hooks\useEffect;
 
 function Router($children)
 {
-
-    $hasRouted = false;
-    useEffect(function () use (&$hasRouted) {
+    useEffect(function () use (/* bool */ &$hasRouted) {
 
         CodeRegistry::uncache();
         $items = CodeRegistry::items();
 
         $service = new RouterService;
 
-        if($service->tryRouting()) {
+        if ($service->tryRouting()) {
 
             $route = $service->doRouting();
-            if($route !== null) {
+            if ($route !== null) {
                 list($path, $query) = $route;
                 Component::render($path);
             }

@@ -19,6 +19,7 @@ abstract class AbstractPlugin extends AbstractFileComponent
         $parser->doValues();
         $parser->doEchoes();
         $parser->doArrays();
+        $parser->doUseEffect();
         $parser->useVariables();
         $parser->normalizeNamespace();
         $parser->doComponents();

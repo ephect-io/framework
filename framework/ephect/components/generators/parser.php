@@ -43,7 +43,7 @@ class Parser
     {
         $result = null;
 
-        $re = '/\{([a-zA-Z0-9_\-\>]*)\}/m';
+        $re = '/\{([a-zA-Z0-9_@\-\>]*)\}/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -57,9 +57,16 @@ class Parser
                 $useVar = substr($useVar, 0, $arrowPos);
             }
 
-            $this->useVariables[$useVar] = '$' . $useVar;
+            if($useVar[0] !== '@') {
+                $this->useVariables[$useVar] = '$' . $useVar;
+            }
 
-            $this->html = str_replace('{' . $variable . '}', '$' . $variable . '', $this->html);
+            $translate = $useVar;
+            if($useVar[0] === '@') {
+                $translate = substr($translate, 1);
+            }
+
+            $this->html = str_replace('{' . $variable . '}', '$' . $translate . '', $this->html);
         }
 
         $result = $this->html !== null;
@@ -71,7 +78,7 @@ class Parser
     {
         $result = null;
 
-        $re = '/\{\{ ([A-Za-z0-9_\-\>]*) \}\}/m';
+        $re = '/\{\{ ([A-Za-z0-9_@\-\>]*) \}\}/m';
         $su = '<?php echo $\1 ?>';
         $str = $this->html;
 
@@ -86,7 +93,14 @@ class Parser
                 $useVar = substr($useVar, 0, $arrowPos);
             }
 
-            $this->useVariables[$useVar] = '$' . $useVar;
+            if($useVar[0] !== '@') {
+                $this->useVariables[$useVar] = '$' . $useVar;
+            }
+
+            $translate = $useVar;
+            if($useVar[0] === '@') {
+                $translate = substr($translate, 1);
+            }
 
             $uid = $this->component->getUID();
 
@@ -94,17 +108,17 @@ class Parser
                 /**
                  * $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
                  */
-                
+
                 $html = CodeRegistry::read($uid);
                 $html = urldecode($html);
-         
+
                 $this->html = str_replace('{{ children }}', $html, $this->html);
 
                 continue;
             }
 
-            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $variable . '; ?>', $this->html);
-            $this->html = str_replace('{' . $variable . '}', '$' . $variable . '', $this->html);
+
+            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $translate . '; ?>', $this->html);
         }
 
         $result = $this->html !== null;
@@ -155,12 +169,80 @@ class Parser
         return $result;
     }
 
+    public function doUseEffect(): bool
+    {
+        $re = '/useEffect\(function ?\(\) use \(((\s|.*?)+)\) {/m';
+
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        $match = count($matches) === 0 ?: !isset($matches[0][1]) ?:$matches[0][1];
+        if ($match === true) {
+            return !$match;
+        }
+
+        $useVars = explode(',', $match);
+        $declVars = array_filter($useVars, function ($item) {
+            return $item !== '$props' && $item !== '$children';
+        });
+
+        $declVars = count($declVars) === 0 ?: array_map(function ($item) {
+            $item = trim($item);
+            $item = str_replace('&', '', $item);
+            
+            $isset = false;
+            if (strpos($item, '* bool *') > -1) {
+                $isset = true;
+                return $item . ' = false; ';
+            }
+            if (strpos($item, '* int *') > -1) {
+                $isset = true;
+                return $item . ' = 0; ';
+            }
+            if (strpos($item, '* float *') > -1) {
+                $isset = true;
+                return $item . ' = 0.0; ';
+            }
+            if (strpos($item, '* real *') > -1) {
+                $isset = true;
+                return $item . ' = 0.0; ';
+            }
+            if (strpos($item, '* string *') > -1) {
+                $isset = true;
+                return $item . ' = \'\'; ';
+            }
+            if (strpos($item, '* array *') > -1) {
+                $isset = true;
+                return $item . ' = []; ';
+            }
+            if (!$isset) {
+                return $item . ' = null; ';
+            }
+        }, $declVars);
+
+        if($declVars === true) {
+            return !$declVars;
+        }
+
+        $decl2 = implode(' ', $declVars);
+
+        $decl1 = substr($this->html, 0, $this->component->getBodyStart() + 1);
+        $decl3 = substr($this->html, $this->component->getBodyStart() + 1);
+
+        $this->html = $decl1 . "\n\t" . $decl2 . "\n" . $decl3;
+        $result = $this->html !== '';
+
+        return $result;
+    }
+
     public function useVariables(): bool
     {
         $result = false;
 
         $useVars = array_values($this->useVariables);
         $use = count($useVars) > 0 ? 'use(' . implode(', ', $useVars) . ') ' : '';
+
 
         $this->html = str_replace('(<<< HTML', 'function () ' . $use . '{?>', $this->html);
         $this->html = str_replace('HTML);', "<?php\n\t};", $this->html);
@@ -207,16 +289,14 @@ class Parser
             $key = $match[1];
             $value = substr(substr($match[3], 1), 0, -1);
 
-            if(isset($match[2]) && $match[2] === '[]') {
-                if(!isset($result[$key])) {
+            if (isset($match[2]) && $match[2] === '[]') {
+                if (!isset($result[$key])) {
                     $result[$key] = [];
                 }
                 $result[$key][] = $value;
-
             } else {
                 $result[$key] = $value;
             }
-
         }
 
         return $result;
