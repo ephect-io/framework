@@ -139,9 +139,17 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             array_push($names, $item->getName());
         }, $this);
 
-        $names = array_unique($names);
-
         return $names;
+    }
+
+    public function composedOfUnique(): array
+    {
+        $result = $this->composedOf();
+
+
+        $result = array_unique($result);
+
+        return $result;
     }
 
     public function bindNode(): void

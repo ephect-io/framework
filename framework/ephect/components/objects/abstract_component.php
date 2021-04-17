@@ -10,6 +10,7 @@ use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
+use Exception;
 use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
@@ -21,19 +22,58 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     protected $parentHTML;
     protected $componentList = [];
     protected $children = null;
+    protected $entity = null;
+    protected $bodyStartsAt = 0;
+
+    public function __construct(string $uid = '', string $motherUID = '')
+    {
+        $this->uid = $uid;
+        $this->motherUID = ($motherUID === '') ? $uid : $motherUID;
+        $this->getUID();
+
+    }
+
+    public function getBodyStart(): int
+    {
+        return $this->bodyStartsAt;
+    }
+
+    public function getEntity(): ?ComponentEntity
+    {
+        if($this->entity === null) {
+            $this->setEntity();
+        }
+
+        return $this->entity;
+    }
+
+    protected function setEntity() {
+        $fqName = ComponentRegistry::read($this->uid);
+
+        if($fqName === null ) {
+            $fqName = $this->getFullyQualifiedFunction();
+            if($fqName === null ) {
+                throw new Exception('Please the component is defined in the registry before asking for its entity');
+            }
+        }
+
+        $list = CodeRegistry::read($fqName);
+        $this->entity = ComponentEntity::buildFromArray($list);
+    }
 
     public function getParentHTML(): ?string
     {
         return $this->parentHTML;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function getFullyQualifiedFunction(): string
+    public function getFullyQualifiedFunction(): ?string
     {
+        if($this->function === null) return null;
         return $this->namespace  . '\\' . $this->function;
     }
 
@@ -66,8 +106,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $names[$funcName] = $fqFuncName;
         }, $this);
 
-        $names = array_unique($names);
-
         $names = array_filter($names, function ($item) {
             return $item !== null;
         });
@@ -77,6 +115,17 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         }
 
         return $names;
+    }
+
+    public function composedOfUnique():?array
+    {
+        $result = $this->composedOf();
+
+        if($result === null) return null;
+
+        $result = array_unique($result);
+
+        return $result;
     }
 
     public function parse(): void
@@ -96,9 +145,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $parser->doValues();
         $parser->doEchoes();
         $parser->doArrays();
+        $parser->doUseEffect();
         $parser->useVariables();
         $parser->normalizeNamespace();
         $parser->doFragments();
+        $parser->doEntities();
         $componentList = $parser->doComponents();
         $openComponentList = $parser->doOpenComponents();
 

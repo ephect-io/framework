@@ -2,6 +2,10 @@
 
 namespace Ephect\Components\Generators;
 
+use Ephect\Components\ComponentEntity;
+use Ephect\Components\ComponentEntityInterface;
+use Ephect\Registry\CodeRegistry;
+
 class ChildrenParser extends Parser
 {
     /**
@@ -47,11 +51,19 @@ class ChildrenParser extends Parser
 
         preg_match_all($re, $subject, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
+        // $entity = $this->component->getEntity();
+
         foreach ($matches as $match) {
             $component = $match[0][0];
             $componentName = $match[1][0];
             $componentArgs = empty(trim($match[2][0])) ? null : trim($match[2][0]);
             $componentBody = trim($match[3][0]);
+
+
+            // $componentName = $child->getName();
+            // $componentArgs = $child->props();
+            // $args = Maker::doArgumentsToString($componentArgs);
+            // $component = $child->getText();
 
             $componentBoundaries = '["opener" => "' . urlencode(substr($component, 0, $match[3][1] - $match[0][1])) . '", ';
             $componentBoundaries .= '"closer" => "' . urlencode($match[4][0]) . '", ]';
@@ -70,6 +82,38 @@ class ChildrenParser extends Parser
         return $result;
     }
 
+    public function doEntities(): array
+    {
+        $result = [];
+
+        $entity = $this->component->getEntity();
+
+        if($entity === null) {
+            return $result;
+        }
+        
+        if(!$entity->hasChildren()) {
+            $this->doClosedEntity($entity);
+        }
+
+        if($entity->hasChildren()) {
+            $this->doOpenEntity($entity);
+        }
+
+        return $result;
+    }
+
+    protected function doClosedEntity(ComponentEntityInterface $entity): void
+    {
+        $name = $entity->getName();
+        $args = $entity->props();
+    }
+
+    protected function doOpenEntity(ComponentEntity $entity): void
+    {
+        # code...
+    }
+
     /**
      * 
      * @return array 
@@ -78,7 +122,10 @@ class ChildrenParser extends Parser
     {
         $result = [];
 
-        $re = '/<([A-Z][\w]*)([\w\{\}\(\)\'"= ][^\>]*)((\s|[^\/\>].))?\/\>/m';
+        /*
+        * $re = '/<\/?([A-Z]\w+)((\s|.*?)+)>|<\/?>/m';
+        */
+        $re = '/<([A-Z][\w]*)([\w\s\{\}\(\)\'"=][^\>]*)((\s|[^\/\>].))?\/\>/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
