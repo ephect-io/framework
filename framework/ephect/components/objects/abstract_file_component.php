@@ -5,8 +5,10 @@ namespace Ephect\Components;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
+use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
+use Exception;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
@@ -55,7 +57,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             $this->code = Utils::safeRead(CACHE_DIR . $this->filename);
         }
 
-        list($this->namespace, $this->function) = ElementUtils::getFunctionDefinition($this->code);
+        [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         $result = $this->code !== null;
 
         return  $result;
@@ -135,7 +137,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         }
 
         $cachedir = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
-        $componentList = $component->composedOf();
+        $componentList = $component->composedOfUnique();
         $copyFile = $component->getFlattenSourceFilename();
 
         if ($componentList === null) {
@@ -178,9 +180,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $cache_file = static::getFlatFilename($this->filename);
         $result = Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
         
-        if(file_exists(CACHE_DIR . $cache_file)) {
-            unlink(CACHE_DIR . $cache_file);
-        }
+        // if(file_exists(CACHE_DIR . $cache_file)) {
+        //     unlink(CACHE_DIR . $cache_file);
+        // }
 
         $cache = (($cache = CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
 
