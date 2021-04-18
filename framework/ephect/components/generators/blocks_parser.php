@@ -2,17 +2,19 @@
 
 namespace Ephect\Components\Generators;
 
-use Ephect\Cache\Cache;
-use Ephect\Components\Component;
+// use Ephect\Cache\Cache;
+// use Ephect\Components\Component;
 use Ephect\Components\FileComponentInterface;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 
 class BlocksParser extends Parser
 {
+    protected $blockComponent;
+
     public function __construct(FileComponentInterface $comp)
     {
-        $this->component = $comp;
+        $this->blockComponent = $comp;
         parent::__construct($comp);
     }
 
@@ -36,18 +38,27 @@ class BlocksParser extends Parser
             $parentFilename = ComponentRegistry::read($parentClassName);
             $parentHtml = Utils::safeRead(CACHE_DIR . $parentFilename);
 
-            $token = '_' . str_replace('-', '', $this->component->getUID());
-            $functionNameToken = $functionName . $token;
+            // $parentHtml = $this->doHtml($parentHtml);
+            // $chldHtml = $this->doHtml();
+            // $token = '_' . str_replace('-', '', $this->component->getUID());
+            // $functionNameToken = $functionName . $token;
             $parentDoc = new ComponentDocument($parentHtml);
             $parentDoc->matchAll();
 
             $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
+            // $parentHtml = str_replace($functionName, $functionNameToken, $parentHtml);
 
             $childHtml = $this->html;
+            // $childHtml = str_replace($functionName, $functionNameToken, $childHtml);
+
+            // $functionFilename = strtolower($functionName);
+            // $functionFilename = '' . Component::getFlatFilename(str_replace($functionFilename, $functionFilename . $token, $parentFilename));
             if ($parentHtml !== '') {
                 Utils::safeWrite(CACHE_DIR . $parentFilename, $parentHtml);
-                Utils::safeWrite(CACHE_DIR . $this->component->getFlattenFilename(), $childHtml);
+                Utils::safeWrite(CACHE_DIR . $this->blockComponent->getFlattenFilename(), $childHtml);
 
+                // ComponentRegistry::write($parentClassName . $token, $functionFilename);
+                // ComponentRegistry::write($className, $this->component->getFlattenFilename());
             }
         }
 
