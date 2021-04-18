@@ -57,12 +57,12 @@ class Parser
                 $useVar = substr($useVar, 0, $arrowPos);
             }
 
-            if($useVar[0] !== '@') {
+            if($variable[0] !== '@') {
                 $this->useVariables[$useVar] = '$' . $useVar;
             }
 
-            $translate = $useVar;
-            if($useVar[0] === '@') {
+            $translate = $variable;
+            if($translate[0] === '@') {
                 $translate = substr($translate, 1);
             }
 
@@ -97,8 +97,8 @@ class Parser
                 $this->useVariables[$useVar] = '$' . $useVar;
             }
 
-            $translate = $useVar;
-            if($useVar[0] === '@') {
+            $translate = $variable;
+            if($translate[0] === '@') {
                 $translate = substr($translate, 1);
             }
 
