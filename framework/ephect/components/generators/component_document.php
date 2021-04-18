@@ -183,7 +183,7 @@ class ComponentDocument
             $parentMatch = $this->getMatchById($parentId);
             $parentReplaced = '';
 
-            if ($parentMatch->getMethod() !== 'Block') {
+            if ($parentMatch->getName() !== 'Block') {
                 continue;
             }
 
@@ -209,7 +209,7 @@ class ComponentDocument
                 $childReplacing = '';
 
                 if (
-                    $childMatch->getMethod() !== 'Block'
+                    $childMatch->getName() !== 'Block'
                     || $parentMatch->props('name') !== $childMatch->props('name')
                 ) {
                     continue;
