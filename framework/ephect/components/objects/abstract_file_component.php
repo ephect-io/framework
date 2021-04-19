@@ -87,18 +87,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         ComponentRegistry::uncache();
 
-        if ($this->children !== null) {
-
-
-            $statment = <<<PHP
-            \tlist(\$props, \$children) = \Ephect\Components\AbstractComponent::passChidren(\$children);
-
-            PHP;
-
-            $declaration = $this->children->declaration . PHP_EOL;
-            $this->code = str_replace($declaration, $declaration . $statment, $this->code);
-        }
-
         foreach ($this->componentList as $component) {
 
             $motherUID = $this->motherUID;

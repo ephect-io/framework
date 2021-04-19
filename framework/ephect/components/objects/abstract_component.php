@@ -231,19 +231,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $function;
     }
 
-    public static function passChidren(array $children): array
-    {
-        $componentProps = $children["props"];
-        $childProps = $children["child"]["props"];
-        $props = is_array($componentProps) && is_array($childProps) ? array_merge($componentProps, $childProps) : $componentProps;
-        $props = !is_array($componentProps) && is_array($childProps) ? $childProps : $componentProps;
-
-        $child = $children["child"]["name"];
-        $uid = $children["child"]["uid"];
-
-        return [$props, $uid];
-    }
-
     public static function format(string $html): string
     {
         $config = [

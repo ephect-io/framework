@@ -35,7 +35,6 @@ class Maker
         return CodeRegistry::uncache();
     }
 
-
     public function makeChildren(string $componentText, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
     {
         ComponentRegistry::uncache();
@@ -48,6 +47,9 @@ class Maker
         $motherUID = $component->getMotherUID();
         $namespace = $component->getNamespace();
 
+        $entity = $component->getEntity();
+        $useChildren = $entity !== null && $entity->hasChildren() ? " use (\$children) " : ' ';
+
         $args = $componentArgs === null ? null : $this->doArgumentsToString($componentArgs);
         $args = (($args === null) ? "null" : $args);
 
@@ -57,18 +59,14 @@ class Maker
         
         CHILDREN;
 
-        // Utils::safeWrite(CACHE_DIR . "render_$uid.php", $children);
-        $body = urlencode($children);
-        CodeRegistry::write($uid, $body);
-
         $className = $this->component->getFunction() ?: $componentName;
         $classArgs = 'null';
 
         $fqComponentName = '\\' . ComponentRegistry::read($componentName);
 
-        $children = "['props' => $args, 'child' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']]";
+        $params = "['props' => $args, 'callback' => function()$useChildren{?>\n$children<?php\n}, 'parent' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']]";
 
-        $componentRender = "<?php \$fn = $fqComponentName($children); \$fn(); ?>";
+        $componentRender = "<?php \$fn = $fqComponentName($params); \$fn(); ?>";
 
         $subject = str_replace($componentText, $componentRender, $subject);
 
@@ -92,5 +90,4 @@ class Maker
 
         return $result;
     }
-
 }

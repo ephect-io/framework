@@ -57,12 +57,12 @@ class Parser
                 $useVar = substr($useVar, 0, $arrowPos);
             }
 
-            if($variable[0] !== '@') {
+            if ($variable[0] !== '@') {
                 $this->useVariables[$useVar] = '$' . $useVar;
             }
 
             $translate = $variable;
-            if($translate[0] === '@') {
+            if ($translate[0] === '@') {
                 $translate = substr($translate, 1);
             }
 
@@ -93,12 +93,12 @@ class Parser
                 $useVar = substr($useVar, 0, $arrowPos);
             }
 
-            if($useVar[0] !== '@') {
+            if ($useVar[0] !== '@') {
                 $this->useVariables[$useVar] = '$' . $useVar;
             }
 
             $translate = $variable;
-            if($translate[0] === '@') {
+            if ($translate[0] === '@') {
                 $translate = substr($translate, 1);
             }
 
@@ -109,10 +109,10 @@ class Parser
                  * $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
                  */
 
-                $html = CodeRegistry::read($uid);
-                $html = urldecode($html);
+                // $html = CodeRegistry::read($uid);
+                // $html = urldecode($html);
 
-                $this->html = str_replace('{{ children }}', $html, $this->html);
+                $this->html = str_replace('{{ children }}', '<?php $fn = $children[\'callback\']; $fn(); ?>', $this->html);
 
                 continue;
             }
@@ -177,7 +177,7 @@ class Parser
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
-        $match = count($matches) === 0 ?: !isset($matches[0][1]) ?:$matches[0][1];
+        $match = count($matches) === 0 ?: !isset($matches[0][1]) ?: $matches[0][1];
         if ($match === true) {
             return !$match;
         }
@@ -190,7 +190,7 @@ class Parser
         $declVars = count($declVars) === 0 ?: array_map(function ($item) {
             $item = trim($item);
             $item = str_replace('&', '', $item);
-            
+
             $isset = false;
             if (strpos($item, '* bool *') > -1) {
                 $isset = true;
@@ -221,7 +221,7 @@ class Parser
             }
         }, $declVars);
 
-        if($declVars === true) {
+        if ($declVars === true) {
             return !$declVars;
         }
 
