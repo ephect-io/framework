@@ -17,21 +17,13 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 {
     use ElementTrait;
 
-    protected $function = null;
+    // protected $function = null;
     protected $code;
     protected $parentHTML;
     protected $componentList = [];
     protected $children = null;
     protected $entity = null;
     protected $bodyStartsAt = 0;
-
-    public function __construct(string $uid = '', string $motherUID = '')
-    {
-        $this->uid = $uid;
-        $this->motherUID = ($motherUID === '') ? $uid : $motherUID;
-        $this->getUID();
-
-    }
 
     public function getBodyStart(): int
     {
@@ -221,14 +213,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         // }
 
         return $html;
-    }
-
-    public static function functionName($fullQualifiedName): string
-    {
-        $fqFunctionName = explode('\\', $fullQualifiedName);
-        $function = array_pop($fqFunctionName);
-
-        return $function;
     }
 
     public static function format(string $html): string
