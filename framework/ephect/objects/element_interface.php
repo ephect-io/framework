@@ -8,8 +8,9 @@ interface ElementInterface
     public function getMotherUID(): string;
     public function getId(): string;
     public function getParent(): ?ElementInterface;
-    // public function getType(): string;
-    // public function getFullType(): string;
+    public function getType(): string;
     public function getBaseType(): string;
     public function getNamespace(): string;
+    public static function functionName($fullQualifiedName): string;
+
 }

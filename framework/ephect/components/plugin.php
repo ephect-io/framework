@@ -12,7 +12,7 @@ use Ephect\Registry\PluginRegistry;
 class Plugin extends AbstractPlugin
 {
     
-    public function load(string $filename): bool
+    public function load(string $filename = ''): bool
     {
         $result = false;
         $this->filename = $filename;

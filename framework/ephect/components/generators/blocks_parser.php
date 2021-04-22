@@ -2,8 +2,7 @@
 
 namespace Ephect\Components\Generators;
 
-// use Ephect\Cache\Cache;
-// use Ephect\Components\Component;
+use Ephect\Components\Component;
 use Ephect\Components\FileComponentInterface;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
@@ -23,7 +22,7 @@ class BlocksParser extends Parser
         ComponentRegistry::uncache();
         $functionFilename = null;
 
-        $doc = new ComponentDocument($this->html);
+        $doc = new ComponentDocument($this->blockComponent);
         $doc->matchAll();
 
         $firstMatch = $doc->getNextMatch();
@@ -32,15 +31,14 @@ class BlocksParser extends Parser
         }
 
         $functionName = $firstMatch->getName();
-        $parentClassName = ComponentRegistry::read($functionName);
-        if ($parentClassName === null) {
+
+        $parentComponent = new Component($functionName);
+        if(!$parentComponent->load()) {
             return null;
         }
-        $parentFilename = ComponentRegistry::read($parentClassName);
-        $functionFilename = $parentFilename;
-        $parentHtml = Utils::safeRead(CACHE_DIR . $parentFilename);
 
-        $parentDoc = new ComponentDocument($parentHtml);
+        $parentFilename = $parentComponent->getFlattenSourceFilename();
+        $parentDoc = new ComponentDocument($parentComponent);
         $parentDoc->matchAll();
 
         $parentHtml = $parentDoc->replaceMatches($doc, $this->html);

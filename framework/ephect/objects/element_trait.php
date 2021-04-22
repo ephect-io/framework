@@ -12,11 +12,11 @@ trait ElementTrait
     protected $id = 'noname';
     protected $type = '';
     protected $namespace = '';
-    protected $fqClassName = '';
+    protected $function = '';
 
     public function getUID(): string
     {
-        if ($this->uid === '') {
+        if ($this->uid === null) {
             // $this->uid = str_replace('.', '_', uniqid(time(), true));
             $this->uid = Crypto::createUID();
         }
@@ -56,11 +56,11 @@ trait ElementTrait
 
     public function getType(): string
     {
-        if ($this->fqClassName == '') {
-            $this->fqClassName = get_class($this);
+        if ($this->type == '') {
+            $this->type = get_class($this);
         }
 
-        return $this->fqClassName;
+        return $this->type;
     }
 
     public function getBaseType(): string
@@ -73,10 +73,18 @@ trait ElementTrait
 
         if ($this->namespace === '') {
             $typeParts = explode('\\', $this->getType());
-            $this->type = array_pop($typeParts);
+            $this->function = array_pop($typeParts);
             $this->namespace = implode('\\', $typeParts);
         }
 
         return $this->namespace;
+    }
+
+    public static function functionName($fullQualifiedName): string
+    {
+        $fqFunctionName = explode('\\', $fullQualifiedName);
+        $function = array_pop($fqFunctionName);
+
+        return $function;
     }
 }

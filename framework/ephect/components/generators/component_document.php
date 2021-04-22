@@ -3,51 +3,53 @@
 namespace Ephect\Components\Generators;
 
 use Ephect\Components\ComponentEntity;
+use Ephect\Components\ComponentInterface;
 use Ephect\Components\ComponentStructure;
-use Ephect\Components\PreHtml;
 
 class ComponentDocument
 {
-    private $_list = [];
-    private $_text = '';
-    private $_count = 0;
-    private $_matches = [];
-    private $_currentMatchKey = -1;
-    private $_match = null;
-    private $_depths = [];
-    private $_matchesByDepth = [];
-    private $_matchesById = [];
-    private $_matchesByKey = [];
-    private $_offsetsById = [];
+    protected $list = [];
+    protected $text = '';
+    protected $count = 0;
+    protected $matches = [];
+    protected $currentMatchKey = -1;
+    protected $match = null;
+    protected $depths = [];
+    protected $matchesByDepth = [];
+    protected $matchesById = [];
+    protected $matchesByKey = [];
+    protected $offsetsById = [];
+    protected $component = null;
 
-    public function __construct(string $text)
+    public function __construct(ComponentInterface $comp)
     {
-        $this->_text = $text;
+        $this->component = $comp;
+        $this->text = $comp->getCode();
     }
 
     public function getText(): string
     {
-        return $this->_text;
+        return $this->text;
     }
 
     public function getList(): array
     {
-        return $this->_list;
+        return $this->list;
     }
     public function getMatches(): array
     {
-        return $this->_matches;
+        return $this->matches;
     }
 
     public function getMatchById(int $id): ?ComponentEntity
     {
         $match = null;
 
-        if (!isset($this->_list[$id])) {
+        if (!isset($this->list[$id])) {
             return $match;
         }
 
-        $struct = new ComponentStructure($this->_list[$id]);
+        $struct = new ComponentStructure($this->list[$id]);
 
         $match = new ComponentEntity($struct);
 
@@ -56,58 +58,57 @@ class ComponentDocument
 
     public function getCount(): int
     {
-        return $this->_count;
+        return $this->count;
     }
 
     public function fieldValue(int $i, string $field, string $value)
     {
-        $this->_list[$i][$field] = $value;
+        $this->list[$i][$field] = $value;
     }
 
     public function getMaxDepth(): int
     {
-        return count($this->_depths);
+        return count($this->depths);
     }
 
     public function getDepthsOfMatches(): array
     {
-        return $this->_matchesByDepth;
+        return $this->matchesByDepth;
     }
 
     public function getIDsOfMatches(): array
     {
-        return $this->_matchesById;
+        return $this->matchesById;
     }
 
     public function getKeysOfMatches(): array
     {
-        return $this->_matchesByKey;
+        return $this->matchesByKey;
     }
 
     public function matchAll(): bool
     {
-        $prehtml = new PreHtml($this->_text);
-        $parser = new ComponentParser($prehtml);
+        $parser = new ComponentParser($this->component);
 
         $parser->doComponents();
-        $this->_list = $parser->getList();
-        $this->_depths = $parser->getDepths();
+        $this->list = $parser->getList();
+        $this->depths = $parser->getDepths();
 
-        $this->_matchesByDepth = $parser->getIdListByDepth(); //$this->sortMatchesByDepth();
-        $this->_matchesById = $this->sortMatchesById();
-        $this->_matchesByKey = $this->sortMatchesByKey();
+        $this->matchesByDepth = $parser->getIdListByDepth(); //$this->sortMatchesByDepth();
+        $this->matchesById = $this->sortMatchesById();
+        $this->matchesByKey = $this->sortMatchesByKey();
 
-        $this->_count = count($this->_list);
+        $this->count = count($this->list);
 
-        return ($this->_count > 0);
+        return ($this->count > 0);
     }
 
     public function sortMatchesByDepth(): array
     {
-        $maxDepth = count($this->_depths);
+        $maxDepth = count($this->depths);
         $result = [];
         for ($i = $maxDepth; $i > -1; $i--) {
-            foreach ($this->_list as $match) {
+            foreach ($this->list as $match) {
                 if ($match["depth"] == $i) {
                     array_push($result, $match['id']);
                 }
@@ -121,7 +122,7 @@ class ComponentDocument
     {
         $result = [];
         $i = 0;
-        foreach ($this->_list as $match) {
+        foreach ($this->list as $match) {
             $result[$match['id']] = $i;
             $i++;
         }
@@ -132,7 +133,7 @@ class ComponentDocument
     public function sortMatchesById(): array
     {
         $result = [];
-        foreach ($this->_list as $match) {
+        foreach ($this->list as $match) {
             array_push($result, $match['id']);
         }
 
@@ -141,26 +142,26 @@ class ComponentDocument
 
     public function resetMatchId(): void
     {
-        $this->_currentMatchKey = -1;
+        $this->currentMatchKey = -1;
     }
 
     public function getCurrentMatch(): ?ComponentEntity
     {
-        $currentId = $this->_matchesById[$this->_currentMatchKey];
-        if ($this->_match === null || $this->_match->getId() !== $currentId) {
-            $struct =  new ComponentStructure($this->_list[$currentId]);
-            $this->_match = new ComponentEntity($struct, $this);
+        $currentId = $this->matchesById[$this->currentMatchKey];
+        if ($this->match === null || $this->match->getId() !== $currentId) {
+            $struct =  new ComponentStructure($this->list[$currentId]);
+            $this->match = new ComponentEntity($struct, $this);
         }
 
-        return $this->_match;
+        return $this->match;
     }
 
     public function getNextMatch(): ?ComponentEntity
     {
-        $this->_currentMatchKey++;
+        $this->currentMatchKey++;
 
-        $this->_match = null;
-        if ($this->_currentMatchKey == $this->_count) {
+        $this->match = null;
+        if ($this->currentMatchKey == $this->count) {
             return null;
         }
 
@@ -171,7 +172,7 @@ class ComponentDocument
     {
         $parentMatchesById = $this->getIDsOfMatches();
         $parentCount = $this->getCount();
-        $parentText = $this->_text;
+        $parentText = $this->text;
         $parentReplacing = '';
 
         $childMatchesById = $doc->getIDsOfMatches();
@@ -245,7 +246,7 @@ class ComponentDocument
         }
 
     
-        // $parentText = str_replace($this->_endOfFile, '', $parentText);
+        // $parentText = str_replace($this->endOfFile, '', $parentText);
 
         return $parentText;
     }
@@ -258,11 +259,11 @@ class ComponentDocument
             $length = $closer['endsAt'] - $match->getStart() + 1;
 
             $offset = strlen($replacing) - $length;
-            $this->_offsetsById[$match->getId()] = $offset;
+            $this->offsetsById[$match->getId()] = $offset;
             $offset = 0;
 
-            $currentMatchKey = $this->_matchesByKey[$match->getId()];
-            $previousMatchId = isset($this->_matchesById[$currentMatchKey + 1]) ? $this->_matchesById[$currentMatchKey + 1] : $match->getId();
+            $currentMatchKey = $this->matchesByKey[$match->getId()];
+            $previousMatchId = isset($this->matchesById[$currentMatchKey + 1]) ? $this->matchesById[$currentMatchKey + 1] : $match->getId();
 
             if (
                 !$match->isSibling()
@@ -271,8 +272,8 @@ class ComponentDocument
                 $replacingLength = $closer['startsAt'] - $match->getEnd() - 1;
 
                 if (
-                    $match->getDepth() !== $this->_list[$previousMatchId]['depth']
-                    && $this->_list[$previousMatchId]['depth'] > 0
+                    $match->getDepth() !== $this->list[$previousMatchId]['depth']
+                    && $this->list[$previousMatchId]['depth'] > 0
                 ) {
 
                     $offset = $this->findOffset($match->getId());
@@ -298,7 +299,7 @@ class ComponentDocument
             $text = str_replace($parentReplaced, $replacing, $text);
         } else {
             $offset = strlen($replacing) - strlen($match->getText());
-            $this->_offsetsById[$match->getId()] = $offset;
+            $this->offsetsById[$match->getId()] = $offset;
 
             $text = str_replace($match->getText(), $replacing, $text);
         }
@@ -306,14 +307,14 @@ class ComponentDocument
         return $text;
     }
 
-    private function findOffset(int $parentId): int
+    protected function findOffset(int $parentId): int
     {
         $offset = 0;
-        $l = count($this->_matchesById);
+        $l = count($this->matchesById);
         for ($j = $l - 1; $j > -1; $j--) {
-            $id = $this->_matchesById[$j];
-            if ($this->_list[$id]['parentId'] == $parentId) {
-                $offset += isset($this->_offsetsById[$id]) ? $this->_offsetsById[$id] : 0;
+            $id = $this->matchesById[$j];
+            if ($this->list[$id]['parentId'] == $parentId) {
+                $offset += isset($this->offsetsById[$id]) ? $this->offsetsById[$id] : 0;
                 $offset += $this->findOffset($id);
             }
         }

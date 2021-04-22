@@ -5,10 +5,8 @@ namespace Ephect\Components;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
-use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
-use Exception;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
@@ -17,6 +15,19 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 {
 
     protected $filename = '';
+
+    public function __construct(string $id = '', string $motherUID = '')
+    {
+        if ($id !== null) {
+            ComponentRegistry::uncache();
+            $this->type = ComponentRegistry::read($id);
+            $this->filename = ComponentRegistry::read($this->type);
+            $this->uid = ComponentRegistry::read($this->filename);
+        }
+
+        $this->motherUID = ($motherUID === '') ? $this->uid : $motherUID;
+        $this->getUID();
+    }
 
     public function getSourceFilename(): string
     {
@@ -47,10 +58,15 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         return $cache_file;
     }
 
-    public function load(string $filename): bool
+    public function load(string $filename = ''): bool
     {
         $result = false;
-        $this->filename = $filename;
+
+        $this->filename = ($filename !== '') ? $filename : $this->filename;
+
+        if($this->filename === null) {
+            return false;
+        }
 
         $this->code = Utils::safeRead(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
         if ($this->code === null) {
@@ -102,7 +118,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
             $this->code = str_replace($ns, $ns . PHP_EOL . $include, $this->code);
         }
-
     }
 
     public static function render(string $functionName, ?array $functionArgs = null, string $motherUID = ''): void
@@ -141,18 +156,18 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             $nextComponent = !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
 
             $nextCopyFile = '';
-            if($nextComponent !== null) {
+            if ($nextComponent !== null) {
                 $nextCopyFile = $nextComponent->getFlattenSourceFilename();
             }
 
-            if($nextComponent === null) {
+            if ($nextComponent === null) {
                 $nextCopyFile = PluginRegistry::read($fqFuncName);
             }
             if (file_exists($cachedir . $nextCopyFile)) {
                 continue;
             }
 
-            if($nextComponent !== null) {
+            if ($nextComponent !== null) {
                 $component->copyComponents($list, $motherUID, $nextComponent);
             }
         }
@@ -167,7 +182,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
     {
         $cache_file = static::getFlatFilename($this->filename);
         $result = Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
-        
+
         // if(file_exists(CACHE_DIR . $cache_file)) {
         //     unlink(CACHE_DIR . $cache_file);
         // }
