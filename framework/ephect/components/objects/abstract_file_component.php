@@ -16,17 +16,22 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     protected $filename = '';
 
-    public function __construct(string $id = '', string $motherUID = '')
+    public function __construct(?string $id = null, string $motherUID = '')
     {
         if ($id !== null) {
             ComponentRegistry::uncache();
             $this->type = ComponentRegistry::read($id);
-            $this->filename = ComponentRegistry::read($this->type);
-            $this->uid = ComponentRegistry::read($this->filename);
+            if($this->type !== null) {
+                $this->filename = ComponentRegistry::read($this->type);
+                $this->filename = $this->filename ?: '';
+
+                $this->uid = ComponentRegistry::read($this->filename);
+            }
         }
 
-        $this->motherUID = ($motherUID === '') ? $this->uid : $motherUID;
         $this->getUID();
+        $this->motherUID = $motherUID ?: $this->uid;
+
     }
 
     public function getSourceFilename(): string
@@ -64,7 +69,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $this->filename = ($filename !== '') ? $filename : $this->filename;
 
-        if($this->filename === null) {
+        if($this->filename === '') {
             return false;
         }
 
