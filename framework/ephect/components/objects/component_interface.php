@@ -12,4 +12,5 @@ interface ComponentInterface extends ElementInterface
     public function getFunction(): ?string;
     public function getEntity(): ?ComponentEntity;
     public function getBodyStart(): int;
+    // public function render(): void;
 }

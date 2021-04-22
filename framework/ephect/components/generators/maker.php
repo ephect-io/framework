@@ -60,13 +60,16 @@ class Maker
         CHILDREN;
 
         $className = $this->component->getFunction() ?: $componentName;
-        $classArgs = 'null';
+        $classArgs = '[]';
 
         $fqComponentName = '\\' . ComponentRegistry::read($componentName);
 
-        $params = "['props' => $args, 'callback' => function()$useChildren{?>\n$children<?php\n}, 'parent' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']]";
-
-        $componentRender = "<?php \$fn = $fqComponentName($params); \$fn(); ?>";
+        /**
+         * $params = "['props' => $args, 'onrender' => function()$useChildren{?>\n$children<?php\n}, 'parent' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']]";
+         */
+        $componentRender = "<?php \$struct = new \\Ephect\\Components\\ChildrenStructure(['props' => $args, 'onrender' => function()$useChildren{?>\n$children<?php\n}, 'type' => '$className', 'parentProps' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']); ?>\n";
+        $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Components\\Children(\$struct); ?>\n";
+        $componentRender .= "\t\t\t<?php \$fn = $fqComponentName(\$children); \$fn(); ?>\n";
 
         $subject = str_replace($componentText, $componentRender, $subject);
 
@@ -80,7 +83,6 @@ class Maker
         $result = '';
 
         foreach ($componentArgs as $key => $value) {
-
             if (is_array($value)) {
                 $value = json_encode($value);
             }

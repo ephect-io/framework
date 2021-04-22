@@ -112,7 +112,13 @@ class Parser
                 // $html = CodeRegistry::read($uid);
                 // $html = urldecode($html);
 
-                $this->html = str_replace('{{ children }}', '<?php $fn = $children[\'callback\']; $fn(); ?>', $this->html);
+                /**
+                 * $this->html = str_replace('{{ children }}', '<?php $fn = $children[\'callback\']; $fn(); ?>', $this->html);
+                 * $this->html = str_replace('{{ children }}', '<?php $children = (Object) $children; $fn = $children->render; $fn(); ?>', $this->html);
+                 * $this->html = str_replace('{{ children }}', '<?php $fn = $children->onrender; $fn(); ?>', $this->html);
+                 */
+                
+                $this->html = str_replace('{{ children }}', '<?php $children->onrender(); ?>', $this->html);
 
                 continue;
             }
