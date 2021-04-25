@@ -28,6 +28,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     protected $closer = '';
     protected $contents = null;
     protected $hasCloser = '';
+    protected $hasProperties = false;
     protected $properties = [];
     protected $method = '';
     protected $doc = null;
@@ -35,7 +36,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     protected $className = '';
     protected $attributes = null;
     protected $composedOf = null;
-    // protected $innerNode = [];
 
     public function __construct(?ComponentStructure $attributes)
     {
@@ -54,6 +54,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->end = $attributes->endsAt;
         $this->depth = $attributes->depth;
         $this->properties = $attributes->props;
+        $this->hasProperties = count($this->properties) !== 0;
         $this->closer = $attributes->closer;
         $this->hasCloser = is_array($this->closer);
         $this->contents = $this->hasCloser ? $this->closer['contents'] : null;
@@ -62,6 +63,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
 
         $this->bindNode();
+    }
+
+    public function hasProps(): bool
+    {
+        return $this->hasProperties;
     }
 
     private static function listIdsByDepth(?array $list): ?array
@@ -192,6 +198,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     {
         if($key === null) {
             if(count($this->properties) === 0) {
+                $this->hasProperties = false;
                 return null;
             }
             return $this->properties;
