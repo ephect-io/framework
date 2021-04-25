@@ -35,23 +35,18 @@ class Maker
         return CodeRegistry::uncache();
     }
 
-    public function makeChildren(string $componentText, string $componentName, ?array $componentArgs, string $componentBody, string $componentBoundaries, ?string &$subject): bool
+    public function makeChildren(string $componentText, string $componentName, ?array $componentArgs, string $componentBody, ?string &$subject): bool
     {
         ComponentRegistry::uncache();
 
         $motherUID = $this->component->getMotherUID();
-        $fqClass = ComponentRegistry::read($componentName);
-        $component = ComponentFactory::create($fqClass, $motherUID);
+        // $entity = $this->component->getEntity();
+        $decl = $this->component->getDeclaration();
 
-        $uid = $component->getUID();
-        $motherUID = $component->getMotherUID();
-        $namespace = $component->getNamespace();
+        $componentArgs = $componentArgs === null ? null : $this->doArgumentsToString($componentArgs);
+        $props = (($componentArgs === null) ? "null" : $componentArgs);
 
-        $entity = $component->getEntity();
-        $useChildren = $entity !== null && $entity->hasChildren() ? " use (\$children) " : ' ';
-
-        $args = $componentArgs === null ? null : $this->doArgumentsToString($componentArgs);
-        $args = (($args === null) ? "null" : $args);
+        $useChildren = $decl->hasArguments() ? " use (\$children) " : ' ';
 
         $children = <<<CHILDREN
 
@@ -67,7 +62,7 @@ class Maker
         /**
          * $params = "['props' => $args, 'onrender' => function()$useChildren{?>\n$children<?php\n}, 'parent' => ['name' => '$className', 'props' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']]";
          */
-        $componentRender = "<?php \$struct = new \\Ephect\\Components\\ChildrenStructure(['props' => $args, 'onrender' => function()$useChildren{?>\n$children<?php\n}, 'type' => '$className', 'parentProps' => $classArgs, 'uid' => '$uid', 'motherUID' => '$motherUID']); ?>\n";
+        $componentRender = "<?php \$struct = new \\Ephect\\Components\\ChildrenStructure(['props' => $props, 'onrender' => function()$useChildren{?>\n$children<?php\n}, 'class' => '$className', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
         $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Components\\Children(\$struct); ?>\n";
         $componentRender .= "\t\t\t<?php \$fn = $fqComponentName(\$children); \$fn(); ?>\n";
 
