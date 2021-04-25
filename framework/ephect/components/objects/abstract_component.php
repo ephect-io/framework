@@ -22,12 +22,40 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     protected $parentHTML;
     protected $componentList = [];
     protected $children = null;
+    protected $declaration = null;
     protected $entity = null;
     protected $bodyStartsAt = 0;
 
     public function getBodyStart(): int
     {
         return $this->bodyStartsAt;
+    }
+
+    public function getDeclaration(): ?ComponentDeclaration
+    {
+        if($this->declaration === null) {
+            $this->setDeclaration();
+        }
+
+        return $this->declaration;
+    }
+
+    protected function setDeclaration(): void
+    {
+        $fqName = ComponentRegistry::read($this->uid);
+
+        if($fqName === null ) {
+            $fqName = $this->getFullyQualifiedFunction();
+            if($fqName === null ) {
+                throw new Exception('Please the component is defined in the registry before asking for its entity');
+            }
+        }
+
+        $list = CodeRegistry::read($fqName);
+        $struct = new ComponentDeclarationStructure($list);
+        $decl = new ComponentDeclaration($struct);
+
+        $this->declaration = $decl;
     }
 
     public function getEntity(): ?ComponentEntity
@@ -40,17 +68,8 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     }
 
     protected function setEntity() {
-        $fqName = ComponentRegistry::read($this->uid);
-
-        if($fqName === null ) {
-            $fqName = $this->getFullyQualifiedFunction();
-            if($fqName === null ) {
-                throw new Exception('Please the component is defined in the registry before asking for its entity');
-            }
-        }
-
-        $list = CodeRegistry::read($fqName);
-        $this->entity = ComponentEntity::buildFromArray($list);
+        $decl = $this->getDeclaration();
+        $this->entity = $decl->getComposition();
     }
 
     public function getParentHTML(): ?string
@@ -79,13 +98,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $parser = new Parser($this);
         $parser->doUses();
         $parser->doUsesAs();
-    }
-
-    public function compose(): void
-    {
-        $composition = CodeRegistry::read($this->getFullyQualifiedFunction());
-        $entity = ComponentEntity::buildFromArray($composition);
-        $this->add($entity);
     }
 
     public function composedOf(): ?array
@@ -154,8 +166,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $this->code = $html;
     }
 
-    public static function findComponent(string $componentName, string $motherUID): array
-    {
+    // public static function findComponent(string $componentName, string $motherUID): array
+    public function findComponent(string $componentName, string $motherUID): array
+    {        
         ComponentRegistry::uncache();
         $uses = ComponentRegistry::items();
         $fqFuncName = isset($uses[$componentName]) ? $uses[$componentName] : null;
@@ -177,7 +190,8 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return [$fqFuncName, $filename, $isCached];
     }
 
-    public static function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
+    // public static function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
+    public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
     {
         include_once CACHE_DIR . $cacheFilename;
 

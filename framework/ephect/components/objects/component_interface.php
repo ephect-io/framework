@@ -10,6 +10,7 @@ interface ComponentInterface extends ElementInterface
     public function getCode(): ?string;
     public function getFullyQualifiedFunction(): ?string;
     public function getFunction(): ?string;
+    public function getDeclaration(): ?ComponentDeclaration;
     public function getEntity(): ?ComponentEntity;
     public function getBodyStart(): int;
     // public function render(): void;

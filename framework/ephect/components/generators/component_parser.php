@@ -2,6 +2,7 @@
 
 namespace Ephect\Components\Generators;
 
+use Ephect\Components\ComponentDeclarationStructure;
 use Ephect\Components\ComponentInterface;
 use Ephect\Crypto\Crypto;
 use Ephect\Registry\ComponentRegistry;
@@ -21,6 +22,17 @@ class ComponentParser extends Parser
         parent::__construct($comp);
 
         ComponentRegistry::uncache();
+    }
+
+    public function doDeclaration(): ComponentDeclarationStructure
+    {
+        $this->doComponents();
+        $func = $this->doFunctionDeclaration();
+        $decl = ['type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];
+
+        $struct = new ComponentDeclarationStructure($decl);
+
+        return $struct;
     }
 
     public function getList(): array
@@ -43,6 +55,41 @@ class ComponentParser extends Parser
         return $this->idListByDepth;
     }
 
+    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
+    public function doFunctionDeclaration(): ?array
+    {
+        $result = [];
+        $re = '/(function) *?([\w]+)\(((\s|.*?)*)\)/m';
+
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+
+            $args = $this->doFunctionArguments($match[3]);
+            $result = [$match[1], $match[2], $args];
+        }
+
+        return $result;
+    }
+
+    private function doFunctionArguments(string $arguments): ?array
+    {
+        $result = [];
+        $re = '/([\,]?[\.]?\$[\w]+)/s';
+
+        $str = $arguments;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+                array_push($result, $match[1]);
+        }
+
+        return $result;
+    }
+
     public function doComponents(): void
     {
         $result = [];
@@ -54,7 +101,7 @@ class ComponentParser extends Parser
          * $re = '/<\/?([A-Z]\w+)(.*?)>|<\/?>/m';
          */
         // parse all tags comprising HTML ones 
-        
+
         $re = '/<\/?([A-Z]\w+)((\s|.*?)+)>|<\/?>/m';
 
         $str = $this->html;
@@ -194,5 +241,4 @@ class ComponentParser extends Parser
 
         // return $list;
     }
-
 }

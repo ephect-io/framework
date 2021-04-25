@@ -272,17 +272,6 @@ class Parser
         return $result;
     }
 
-    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
-    public function doFunctionArguments(string $subject): ?array
-    {
-        $result = [];
-        $re = '/((function) ([\w]+)\()?([\,]?[\.]*\$[\w]*)/m';
-
-        preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
-
-        return $result;
-    }
-
     public function doArguments(string $componentArgs): ?array
     {
         $result = [];
