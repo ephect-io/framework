@@ -6,13 +6,13 @@ include  dirname(__DIR__) . '/framework/bootstrap.php';
 
 use Ephect\CLI\Application;
 use Ephect\Components\Compiler;
+use Ephect\Components\Component;
 use Ephect\IO\Utils;
 
 class Program extends Application
 {
     public static function main($argv, $argc)
     {
-        
         (new Program)->run($argv);
     }
 
@@ -70,6 +70,8 @@ class Program extends Application
         $compiler = new Compiler;
         $compiler->perform();
         $compiler->postPerform();
+        $compiler->followRoutes();
+
     }
 }
 

@@ -15,6 +15,7 @@ class Compiler
 {
 
     protected $list = [];
+    protected $routes = [];
 
     /** @return void  */
     public function perform(): void
@@ -34,17 +35,19 @@ class Compiler
                 $comp->analyse();
 
                 $parser = new ComponentParser($comp);
-                $parser->doComponents();
-                $list = $parser->getList();
+                $struct = $parser->doDeclaration();
+                $decl = $struct->toArray();
 
-                CodeRegistry::write($comp->getFullyQualifiedFunction(), $list);
+                CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
                 ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
                 ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
-                $comp->compose();
+                $entity = ComponentEntity::buildFromArray($struct->composition);
+                $comp->add($entity);
 
                 $this->list[$comp->getFullyQualifiedFunction()] = $comp;
             }
+
             CodeRegistry::cache();
             ComponentRegistry::cache();
 
@@ -89,7 +92,6 @@ class Compiler
     {
 
         $routes = $this->searchForRoutes();
-        $compViews = [];
 
         array_unshift($routes, 'App');
 
@@ -99,6 +101,26 @@ class Compiler
 
             $comp->copyComponents($this->list);
 
+        }
+
+        $this->routes = $routes;
+    }
+
+    public function followRoutes(): void
+    {
+        foreach($this->routes as $route) {
+            
+            $comp = new Component($route);
+            $filename = $comp->getFlattenSourceFilename();
+
+            ob_start();
+            $comp->render();
+            $html = ob_get_clean();
+
+            if ($route === 'App') {
+                continue;
+            }
+            IOUtils::safeWrite(STATIC_DIR . $filename, $html);
         }
     }
 
@@ -132,9 +154,11 @@ class Compiler
     {
         $class = ComponentRegistry::read($name);
 
-        $composition = $items[$class];
+        $list = $items[$class];
+        $struct = new ComponentDeclarationStructure($list);
+        $decl = new ComponentDeclaration($struct);
 
-        $first = ComponentEntity::buildFromArray($composition);
+        $first = $decl->getComposition();
 
         return $first;
     }
@@ -142,8 +166,11 @@ class Compiler
     protected function findRouter(array $items, string $name): ?ComponentEntity
     {
         $class = ComponentRegistry::read($name);
+        $list = $items[$class];
 
-        $composition = $items[$class];
+        $struct = new ComponentDeclarationStructure($list);
+
+        $composition = $struct->composition;
 
         $router = null;
         foreach ($composition as $child) {
