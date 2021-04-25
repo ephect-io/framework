@@ -13,7 +13,7 @@ use Ephect\StaticElement;
 
 class ClassInfo extends StaticElement
 {
-    private $_type = '';
+    private $_class = '';
     private $_alias = '';
     private $_path = '';
     private $_namespace = '';
@@ -25,8 +25,8 @@ class ClassInfo extends StaticElement
 
     public function __construct(array $info) 
     {
-        $this->_type = key($info);
-        $this->_details = isset($info[$this->_type]) ? $info[$this->_type] : [];
+        $this->_class = key($info);
+        $this->_details = isset($info[$this->_class]) ? $info[$this->_class] : [];
 
         if(count($this->_details) < 5) {
             throw new \Exception("The class info is incomplete");
@@ -72,9 +72,9 @@ class ClassInfo extends StaticElement
         $ci = ClassInfo::create($info);
     }
 
-    public function getType(): string
+    public function getClass(): string
     {
-        return $this->_type;
+        return $this->_class;
     }
     
     public function getAlias(): string

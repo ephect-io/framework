@@ -19,7 +19,7 @@ class Children extends Tree implements ChildrenInterface
         $this->motherUID = $struct->motherUID;
         $this->props = $struct->props;
         $this->parentProps = $struct->parentProps;
-        $this->type = $struct->type;
+        $this->class = $struct->class;
         $this->onrender = $struct->onrender;
     }
 

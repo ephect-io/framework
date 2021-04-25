@@ -69,9 +69,9 @@ final class ElementUtils
 
     public static function getNamespaceFromFQClassName($fqClassName): string
     {
-        $typeParts = explode('\\', $fqClassName);
-        $type = array_pop($typeParts);
-        $namespace = implode('\\', $typeParts);
+        $classParts = explode('\\', $fqClassName);
+        $class = array_pop($classParts);
+        $namespace = implode('\\', $classParts);
 
         return $namespace;
     }

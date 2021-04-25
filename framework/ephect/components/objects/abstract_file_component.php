@@ -20,12 +20,21 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
     {
         if ($id !== null) {
             ComponentRegistry::uncache();
-            $this->type = ComponentRegistry::read($id);
-            if($this->type !== null) {
-                $this->filename = ComponentRegistry::read($this->type);
+            $this->class = ComponentRegistry::read($id);
+            if($this->class !== null) {
+                $this->filename = ComponentRegistry::read($this->class);
                 $this->filename = $this->filename ?: '';
 
                 $this->uid = ComponentRegistry::read($this->filename);
+                $this->uid = $this->uid ?: '';
+
+            }
+
+            if($this->uid !== $this->id) {
+                $this->function = $id;
+            }
+            if($this->uid === $this->id) {
+                $this->function = self::functionName($this->class);
             }
         }
 
@@ -84,9 +93,10 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         return  $result;
     }
 
-    public static function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
+    // public static function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
+    public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
     {
-        [$fqFunctionName, $cacheFilename, $isCached] = static::findComponent($functionName, $motherUID);
+        [$fqFunctionName, $cacheFilename, $isCached] = $this->findComponent($functionName, $motherUID);
         if (!$isCached) {
             ComponentRegistry::uncache();
 
@@ -111,7 +121,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         foreach ($this->componentList as $component) {
 
             $motherUID = $this->motherUID;
-            [$fqFunctionName, $cacheFilename] = self::renderComponent($motherUID, $component);
+            [$fqFunctionName, $cacheFilename] = $this->renderComponent($motherUID, $component);
 
             $ns = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
             if (false === strpos($this->code, $ns)) {
@@ -125,11 +135,12 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         }
     }
 
-    public static function render(string $functionName, ?array $functionArgs = null, string $motherUID = ''): void
+    // public static function render(string $functionName, ?array $functionArgs = null, string $motherUID = ''): void
+    public function render(?array $functionArgs = null): void
     {
-        [$fqFunctionName, $cacheFilename] = self::renderComponent($motherUID, $functionName, $functionArgs);
+        [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
 
-        $html = parent::renderHTML($cacheFilename, $fqFunctionName, $functionArgs);
+        $html = $this->renderHTML($cacheFilename, $fqFunctionName, $functionArgs);
         echo $html;
     }
 

@@ -22,10 +22,10 @@ class PropsValidator
     {
         $result = null;
 
-        $structType = $this->structClass;
+        $structClass = $this->structClass;
 
         try {
-            $result = new $structType($this->props);
+            $result = new $structClass($this->props);
         } catch (Exception $ex) {
             throw new ErrorException("Invalid route.", 1, 3, __FILE__, __LINE__, $ex);
         }

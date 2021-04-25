@@ -8,7 +8,7 @@ class ChildrenStructure extends Structure
 {
     public $uid;
     public $props;
-    public $type;
+    public $class;
     public $parentProps;
     public $motherUID;
     public $onrender;
