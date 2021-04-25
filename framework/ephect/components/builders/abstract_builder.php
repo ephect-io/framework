@@ -16,13 +16,13 @@ abstract class AbstractBuilder
         $this->struct = $struct;
     }
 
-    protected function buildEx(string $type): ElementInterface
+    protected function buildEx(string $class): ElementInterface
     {
         $result = null;
         
         $struct  = (new PropsValidator($this->props, $this->struct))->validate();
         
-        $result = new $type($struct);
+        $result = new $class($struct);
 
         return $result;
     }
