@@ -3,6 +3,7 @@ nbproject/
 runtime/*
 vendor/
 cache/*
+static/*
 *.code-workspace
 *.log
 *_log
