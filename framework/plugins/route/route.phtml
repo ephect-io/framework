@@ -18,11 +18,16 @@ function Route($props)
         $router->saveRoutes();
         $router->shiftRegistry();
 
+        if(!IS_WEB_APP) {
+            return;
+        }
+        
         $match = $router->matchRoute($route);
 
         if($match !== null) {
             list($path, $query) = $match;
-            Component::render($path);
+            $comp = new Component($path);
+            $comp->render();
         }
 
     });

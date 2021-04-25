@@ -23,7 +23,9 @@ class RouterService
 
     public function doRouting(): ?array 
     {
-        $result = null;
+        if(!IS_WEB_APP) {
+            return null;
+        }
 
         $json = file_get_contents(CACHE_DIR . 'routes.json');
         $routes = json_decode($json);
