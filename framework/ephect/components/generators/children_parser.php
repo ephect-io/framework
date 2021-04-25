@@ -65,14 +65,11 @@ class ChildrenParser extends Parser
             // $args = Maker::doArgumentsToString($componentArgs);
             // $component = $child->getText();
 
-            $componentBoundaries = '["opener" => "' . urlencode(substr($component, 0, $match[3][1] - $match[0][1])) . '", ';
-            $componentBoundaries .= '"closer" => "' . urlencode($match[4][0]) . '", ]';
-
             if ($componentArgs !== null) {
                 $componentArgs = $this->doArguments($componentArgs);
             }
 
-            if ($componentName !== 'Block' && $this->maker->makeChildren($component, $componentName, $componentArgs, $componentBody, $componentBoundaries, $subject)) {
+            if ($componentName !== 'Block' && $this->maker->makeChildren($component, $componentName, $componentArgs, $componentBody, $subject)) {
                 array_push($result, $componentName);
             }
         }
@@ -148,7 +145,8 @@ class ChildrenParser extends Parser
 
             //$parent = $this->component->getFullyQualifiedFunction();
 
-            $componentRender = "<?php \Ephect\Components\Component::render('$componentName', $args, '$motherUID'); ?>";
+            $componentRender = "<?php \$$componentName = new \\Ephect\\Components\\Component('$componentName', '$motherUID'); ?>\n";
+            $componentRender .= "\t\t\t<?php \$${componentName}->render($args); ?>\n";
 
             $this->html = str_replace($component, $componentRender, $this->html);
 

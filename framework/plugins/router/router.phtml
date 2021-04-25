@@ -23,14 +23,16 @@ function Router($children)
             $route = $service->doRouting();
             if ($route !== null) {
                 list($path, $query) = $route;
-                Component::render($path);
+                $comp = new Component($path);
+                $comp->render();
             }
             $hasRouted = true;
             return;
         }
 
-        foreach ($items as $component => $composition) {
+        foreach ($items as $type => $declaration) {
             $router = null;
+            $composition = $declaration['composition'];
             foreach ($composition as $child) {
                 if ($child['name'] == 'Router') {
                     $entity = ComponentEntity::buildFromArray($composition);

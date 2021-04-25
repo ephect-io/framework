@@ -30,6 +30,7 @@ class Application extends AbstractApplication
             PluginRegistry::uncache();            
         }
 
-        Component::render('App');
+        $app = new Component('App');
+        $app->render();
     }
 }
