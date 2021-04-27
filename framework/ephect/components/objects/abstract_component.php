@@ -229,7 +229,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $html;
     }
 
-    public static function format(string $html): string
+    protected function format(string $html): string
     {
         $config = [
             'indent'      => true,
