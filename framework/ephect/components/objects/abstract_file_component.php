@@ -9,6 +9,7 @@ use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
+define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 define('CHILDREN_PLACEHOLDER', "// \$children = null;" . PHP_EOL);
 
 class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
@@ -117,21 +118,22 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         parent::parse();
 
         ComponentRegistry::uncache();
+        $motherUID = $this->motherUID;
+        $token = 'N' . str_replace('-', '', $motherUID);
 
         foreach ($this->componentList as $component) {
 
-            $motherUID = $this->motherUID;
+            
             [$fqFunctionName, $cacheFilename] = $this->renderComponent($motherUID, $component);
 
-            $ns = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
-            if (false === strpos($this->code, $ns)) {
-                $namespace = ElementUtils::getNamespaceFromFQClassName($fqFunctionName);
-                $ns = "namespace " . $namespace . ';' . PHP_EOL;
-            }
+            $moduleNs = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
+            $compNs = ElementUtils::getNamespaceFromFQClassName($fqFunctionName);
 
             $include = str_replace('%s', $cacheFilename, INCLUDE_PLACEHOLDER);
 
-            $this->code = str_replace($ns, $ns . PHP_EOL . $include, $this->code);
+            $this->code = str_replace($moduleNs, $moduleNs . PHP_EOL . $include, $this->code);
+            // $this->code = str_replace($compNs , $compNs . '\\' . $token, $this->code);
+
         }
     }
 
@@ -155,11 +157,17 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             mkdir(CACHE_DIR . $motherUID, 0775);
         }
 
+        $token = 'N' . str_replace('-', '', $motherUID);
+
         $cachedir = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
         $componentList = $component->composedOfUnique();
         $copyFile = $component->getFlattenSourceFilename();
+        $html = $component->getCode();
+        $ns = $component->getNamespace();
+        $html = str_replace($ns , $ns . '\\' . $token, $html);
 
         if ($componentList === null) {
+            // Utils::safeWrite($cachedir . $copyFile, $html);
             copy(CACHE_DIR . $copyFile, $cachedir . $copyFile);
 
             return $copyFile;
@@ -188,8 +196,8 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             }
         }
 
-        // Utils::safeWrite($cachedir . $copyFile, $subject);
         copy(CACHE_DIR . $copyFile, $cachedir . $copyFile);
+        // Utils::safeWrite($cachedir . $copyFile, $html);
 
         return $copyFile;
     }
