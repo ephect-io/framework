@@ -16,7 +16,7 @@ class Crypto
         return $token;
     }
 
-    public static function createUID(string $key = ''): string
+    public static function createUID(): string
     {
         return sprintf(
             '%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
