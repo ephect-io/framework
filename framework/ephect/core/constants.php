@@ -65,7 +65,7 @@ if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
 define('HTTP_PROTOCOL', $scheme);
 define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
 define('HTTP_HOST', $_SERVER['HTTP_HOST']);
-define('HTTP_ORIGIN', $_SERVER['HTTP_ORIGIN'] ?: '');
+define('HTTP_ORIGIN', isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '');
 define('HTTP_ACCEPT', $_SERVER['HTTP_ACCEPT'] ?: '');
 define('HTTP_PORT', $_SERVER['SERVER_PORT']);
 define('COOKIE', $_COOKIE);
