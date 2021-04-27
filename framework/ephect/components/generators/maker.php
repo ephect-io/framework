@@ -40,7 +40,6 @@ class Maker
         ComponentRegistry::uncache();
 
         $motherUID = $this->component->getMotherUID();
-        // $entity = $this->component->getEntity();
         $decl = $this->component->getDeclaration();
 
         $componentArgs = $componentArgs === null ? null : $this->doArgumentsToString($componentArgs);
