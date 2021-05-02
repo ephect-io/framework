@@ -10,7 +10,10 @@ use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
-
+use Ephect\Tasks\Task;
+use Ephect\Tasks\TaskRunner;
+use Ephect\Tasks\TaskStructure;
+use parallel\{channel};
 class Compiler
 {
 
@@ -108,20 +111,45 @@ class Compiler
 
     public function followRoutes(): void
     {
-        foreach($this->routes as $route) {
-            
-            $comp = new Component($route);
-            $filename = $comp->getFlattenSourceFilename();
 
-            ob_start();
-            $comp->render();
-            $html = ob_get_clean();
+
+        foreach ($this->routes as $route) {
+
+            $struct = new TaskStructure(['name' => $route, 'arguments' => [$route]]);
+            $task = new Task($struct);
+            $task->setCallback(function (string $route, Channel $channel) {
+
+                include  dirname(dirname(dirname(__FILE__))) . '/bootstrap.php';
+
+                PluginRegistry::uncache();
+
+                $comp = new Component($route);
+                $filename = $comp->getFlattenSourceFilename();
+
+                ob_start();
+                $comp->render();
+                $html = ob_get_clean();
+
+                $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html]);
+            });
+
+            $runner = new TaskRunner($task);
+            $runner->run();
+            
+            $result = $runner->getResult();
+
+            $runner->close();
+
+            $filename = $result['filename'];
+            $html = $result['html'];
 
             if ($route === 'App') {
                 continue;
             }
+
             IOUtils::safeWrite(STATIC_DIR . $filename, $html);
         }
+
     }
 
     public function searchForRoutes(): array
