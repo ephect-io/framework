@@ -7,7 +7,6 @@ use Ephect\ElementTrait;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
-use Ephect\Tree\TreeInterface;
 
 /**
  * Description of match

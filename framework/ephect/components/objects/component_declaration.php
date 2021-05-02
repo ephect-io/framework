@@ -3,7 +3,6 @@
 namespace Ephect\Components;
 
 use Ephect\Element;
-use Ephect\Registry\ComponentRegistry;
 
 class ComponentDeclaration extends Element implements ComponentDeclarationInterface
 {

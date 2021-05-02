@@ -21,13 +21,13 @@ class Application extends AbstractApplication
 
     public function run(?array ...$params): void
     {
-        if(!ComponentRegistry::uncache()) {
+        if (!ComponentRegistry::uncache()) {
             $compiler = new Compiler;
             $compiler->perform();
             $compiler->postPerform();
         }
-        if(!CacheRegistry::uncache()) {
-            PluginRegistry::uncache();            
+        if (!CacheRegistry::uncache()) {
+            PluginRegistry::uncache();
         }
 
         $app = new Component('App');

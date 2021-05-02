@@ -73,9 +73,10 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         return $cache_file;
     }
 
-    public function load(string $filename = ''): bool
+    public function load(?string $filename = null): bool
     {
         $result = false;
+        $filename = $filename ?: '';
 
         $this->filename = ($filename !== '') ? $filename : $this->filename;
 

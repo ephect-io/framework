@@ -12,10 +12,10 @@ use Ephect\Registry\PluginRegistry;
 class Plugin extends AbstractPlugin
 {
     
-    public function load(string $filename = ''): bool
+    public function load(?string $filename = null): bool
     {
         $result = false;
-        $this->filename = $filename;
+        $this->filename = $filename ?: '';
 
         $this->code = Utils::safeRead(PLUGINS_ROOT . $this->filename);
 
