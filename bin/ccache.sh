@@ -10,5 +10,7 @@ fi
 
 sudo rm -rf cache
 sudo rm -rf runtime
+rm php_errors.log
+rm src/public/php_errors.log
 echo Cache cleared
 echo

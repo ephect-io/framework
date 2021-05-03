@@ -14,6 +14,7 @@ use Ephect\Tasks\Task;
 use Ephect\Tasks\TaskRunner;
 use Ephect\Tasks\TaskStructure;
 use parallel\{channel};
+
 class Compiler
 {
 
@@ -111,7 +112,6 @@ class Compiler
 
     public function followRoutes(): void
     {
-
 
         foreach ($this->routes as $route) {
 

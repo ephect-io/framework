@@ -4,8 +4,6 @@ namespace Ephect\Components;
 
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
-use Ephect\Registry\CacheRegistry;
-use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
 
