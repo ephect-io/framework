@@ -2,9 +2,11 @@
 
 namespace Ephect\Components\Generators;
 
+use Ephect\Components\Component;
 use Ephect\Components\ComponentEntity;
 use Ephect\Components\ComponentEntityInterface;
 use Ephect\Registry\CodeRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 class ChildrenParser extends Parser
 {
@@ -137,16 +139,22 @@ class ChildrenParser extends Parser
             $componentName = $match[1];
             $componentArgs = isset($match[2]) ? $match[2] : '';
 
-            $args = 'null';
+            $funcName = ComponentRegistry::read($componentName);
+            $args = '';
             if (trim($componentArgs) !== '') {
                 $componentArgs = $this->doArguments($componentArgs);
-                $args = Maker::doArgumentsToString($componentArgs);
+                // $args = Maker::doArgumentsToString($componentArgs);
+                $args = json_encode($componentArgs);
+                $args = "json_decode('$args')";
             }
 
             //$parent = $this->component->getFullyQualifiedFunction();
 
-            $componentRender = "<?php \$$componentName = new \\Ephect\\Components\\Component('$componentName', '$motherUID'); ?>\n";
-            $componentRender .= "\t\t\t<?php \$${componentName}->render($args); ?>\n";
+            /**
+             * $componentRender = "<?php \$$componentName = new \\Ephect\\Components\\Component('$componentName', '$motherUID'); ?>\n";
+             * $componentRender .= "\t\t\t<?php \$${componentName}->render($args); ?>\n";
+             */
+            $componentRender = "\t\t\t<?php \$fn = \\${funcName}($args); \$fn(); ?>\n";
 
             $this->html = str_replace($component, $componentRender, $this->html);
 
