@@ -18,7 +18,6 @@ class Parser
     {
         $this->component = $comp;
         $this->html = $comp->getCode();
-        $this->parentHTML = $comp->getParentHTML();
     }
 
     public function getHtml()

@@ -15,11 +15,10 @@ class ChildrenParser extends Parser
      * @param null|string $subject 
      * @return null|object 
      */
-    public function doChildrenDeclaration(?string $subject = null): ?object    {
+    public function doChildrenDeclaration(): ?object    {
         $result = null;
-        $subject = $subject ?: $this->html;
+        $subject = $this->html;
 
-        
         $re = '/(function([\w ]+)\(\$([\w]+)[^\)]*\)(\s|.)+?(\{))(\s|.)+?(\{\{ \3 \}\})/';
         preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
 
