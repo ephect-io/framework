@@ -13,14 +13,12 @@ class Parser
     protected $component = null;
     protected $useVariables = [];
     protected $parentHTML = '';
-    protected $maker = null;
 
     public function __construct(ComponentInterface $comp)
     {
         $this->component = $comp;
         $this->html = $comp->getCode();
         $this->parentHTML = $comp->getParentHTML();
-        $this->maker = new Maker($comp);
     }
 
     public function getHtml()
@@ -102,27 +100,12 @@ class Parser
                 $translate = substr($translate, 1);
             }
 
-            $uid = $this->component->getUID();
-
             if ($variable === 'children') {
-                /**
-                 * $this->html = str_replace('{{ children }}', "<?php \Ephect\Components\Component::bind('$uid'); ?>", $this->html);
-                 */
 
-                // $html = CodeRegistry::read($uid);
-                // $html = urldecode($html);
-
-                /**
-                 * $this->html = str_replace('{{ children }}', '<?php $fn = $children[\'callback\']; $fn(); ?>', $this->html);
-                 * $this->html = str_replace('{{ children }}', '<?php $children = (Object) $children; $fn = $children->render; $fn(); ?>', $this->html);
-                 * $this->html = str_replace('{{ children }}', '<?php $fn = $children->onrender; $fn(); ?>', $this->html);
-                 */
-                
                 $this->html = str_replace('{{ children }}', '<?php $children->onrender(); ?>', $this->html);
 
                 continue;
             }
-
 
             $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $translate . '; ?>', $this->html);
         }
@@ -293,6 +276,21 @@ class Parser
                 $result[$key] = $value;
             }
         }
+
+        return $result;
+    }
+
+    public static function doArgumentsToString(array $componentArgs): ?string
+    {
+        $result = '';
+
+        foreach ($componentArgs as $key => $value) {
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
+            $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
+        }
+        $result = ($result === '') ? null : '[' . $result . ']';
 
         return $result;
     }

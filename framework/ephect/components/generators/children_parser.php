@@ -21,7 +21,6 @@ class ChildrenParser extends Parser
 
         
         $re = '/(function([\w ]+)\(\$([\w]+)[^\)]*\)(\s|.)+?(\{))(\s|.)+?(\{\{ \3 \}\})/';
-        //$re = '/(function([\w ]+)\(\$([\w]+)[^\)]*\))(\s|.)+?(\{\$\3\})/';
         preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
@@ -71,7 +70,7 @@ class ChildrenParser extends Parser
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
     
-            $componentArgs = $componentArgs === null ? null : Maker::doArgumentsToString($componentArgs);
+            $componentArgs = $componentArgs === null ? null : self::doArgumentsToString($componentArgs);
             $props = (($componentArgs === null) ? "null" : $componentArgs);
     
             $useChildren = $decl->hasArguments() ? " use (\$children) " : ' ';
