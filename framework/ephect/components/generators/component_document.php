@@ -150,7 +150,7 @@ class ComponentDocument
         $currentId = $this->matchesById[$this->currentMatchKey];
         if ($this->match === null || $this->match->getId() !== $currentId) {
             $struct =  new ComponentStructure($this->list[$currentId]);
-            $this->match = new ComponentEntity($struct, $this);
+            $this->match = new ComponentEntity($struct);
         }
 
         return $this->match;
@@ -244,9 +244,6 @@ class ComponentDocument
                 $parentText = str_replace($parentReplaced, $parentReplacing, $parentText);
             }
         }
-
-    
-        // $parentText = str_replace($this->endOfFile, '', $parentText);
 
         return $parentText;
     }

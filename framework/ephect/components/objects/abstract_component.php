@@ -4,6 +4,7 @@ namespace Ephect\Components;
 
 use BadFunctionCallException;
 use Ephect\Components\Generators\ChildrenParser;
+use Ephect\Components\Generators\ComponentParser;
 use Ephect\Components\Generators\Parser;
 use Ephect\ElementTrait;
 use Ephect\Registry\CacheRegistry;
@@ -38,6 +39,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         }
 
         return $this->declaration;
+    }
+
+    public function resetDeclaration(): void
+    {
+        $this->declaration = null;
     }
 
     protected function setDeclaration(): void
@@ -130,40 +136,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $result = array_unique($result);
 
         return $result;
-    }
-
-    public function parse(): void
-    {
-        /* TO BEGIN WITH */
-        // CodeRegistry::uncache();
-        // $class = $this->getFullyQualifiedFunction();
-        // $item = CodeRegistry::read($class);
-        /* TO BEGIN WITH */
-
-        $parser = new ChildrenParser($this);
-
-        $parser->doUncache();
-        $parser->doPhpTags();
-
-        $this->children = $parser->doChildrenDeclaration();
-        $parser->doValues();
-        $parser->doEchoes();
-        $parser->doArrays();
-        $parser->doUseEffect();
-        $parser->useVariables();
-        $parser->normalizeNamespace();
-        $parser->doFragments();
-        $parser->doEntities();
-        $componentList = $parser->doComponents();
-        $openComponentList = $parser->doOpenComponents();
-
-        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
-
-        $html = $parser->getHtml();
-
-        $parser->doCache();
-
-        $this->code = $html;
     }
 
     // public static function findComponent(string $componentName, string $motherUID): array

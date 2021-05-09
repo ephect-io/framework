@@ -2,10 +2,8 @@
 
 namespace Ephect\Components\Generators;
 
-use Ephect\Components\Component;
 use Ephect\Components\ComponentEntity;
 use Ephect\Components\ComponentEntityInterface;
-use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 
 class ChildrenParser extends Parser
@@ -39,42 +37,65 @@ class ChildrenParser extends Parser
     }
 
     /**
-     * 
-     * @param string $tag 
-     * @param null|string $subject 
-     * @return array 
+     * Renders open components
+     *
+     * @return array
      */
-    public function doOpenComponents(string $tag = '[A-Z][\w]+', ?string &$subject = null): array
+    public function doOpenComponents(): array
     {
         $result = [];
 
-        $re = '/<(' . $tag . ')(\b[^>]*)>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)(<\/\1>)/m';
-        $subject = $subject ?: $this->html;
+        $comp = $this->component;
+        $comp->resetDeclaration();
+        $decl = $comp->getDeclaration();
+        $cmpz = $decl->getComposition();
 
-        preg_match_all($re, $subject, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
-
-        // $entity = $this->component->getEntity();
-
-        foreach ($matches as $match) {
-            $component = $match[0][0];
-            $componentName = $match[1][0];
-            $componentArgs = empty(trim($match[2][0])) ? null : trim($match[2][0]);
-            $componentBody = trim($match[3][0]);
-
-
-            // $componentName = $child->getName();
-            // $componentArgs = $child->props();
-            // $args = Maker::doArgumentsToString($componentArgs);
-            // $component = $child->getText();
-
-            if ($componentArgs !== null) {
-                $componentArgs = $this->doArguments($componentArgs);
-            }
-
-            if ($componentName !== 'Block' && $this->maker->makeChildren($component, $componentName, $componentArgs, $componentBody, $subject)) {
-                array_push($result, $componentName);
-            }
+        if($cmpz === null || !$cmpz->hasCloser()) {
+            return $result;
         }
+
+        $subject = $this->html;
+
+        $closure = function (ComponentEntityInterface $item, int $index)  use (&$subject, &$result) {
+
+            if(!$item->hasCloser()) {
+                return;
+            }
+
+            $opener = $item->getText();
+            $closer = ((object) $item->getCloser())->text;
+            $componentName = $item->getName();
+            $componentBody = $item->getContents($subject);
+            $componentArgs = $item->props();
+
+            $motherUID = $this->component->getMotherUID();
+            $decl = $this->component->getDeclaration();
+    
+            $componentArgs = $componentArgs === null ? null : Maker::doArgumentsToString($componentArgs);
+            $props = (($componentArgs === null) ? "null" : $componentArgs);
+    
+            $useChildren = $decl->hasArguments() ? " use (\$children) " : ' ';
+    
+            $className = $this->component->getFunction() ?: $componentName;
+            $classArgs = '[]';
+    
+            $fqComponentName = '\\' . ComponentRegistry::read($componentName);
+    
+            $componentRender = "<?php \$struct = new \\Ephect\\Components\\ChildrenStructure(['props' => $props, 'onrender' => function()$useChildren{?>\n\n$componentBody\n<?php\n}, 'class' => '$className', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
+            $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Components\\Children(\$struct); ?>\n";
+            $componentRender .= "\t\t\t<?php \$fn = $fqComponentName(\$children); \$fn(); ?>\n";
+    
+            $subject = str_replace($componentBody, $componentRender, $subject);
+            $subject = str_replace($opener, '', $subject);
+            $subject = str_replace($closer, '', $subject);
+
+            array_push($result, $componentName);
+        };
+
+        $closure($cmpz, 0);
+        if($cmpz->hasChildren()) {
+            $cmpz->forEach($closure, $cmpz);
+        } 
 
         $this->html = $subject;
 
@@ -114,82 +135,59 @@ class ChildrenParser extends Parser
     }
 
     /**
-     * 
-     * @return array 
+     * Undocumented function
+     *
+     * @return array
      */
     public function doComponents(): array
     {
         $result = [];
 
-        /*
-        * $re = '/<\/?([A-Z]\w+)((\s|.*?)+)>|<\/?>/m';
-        */
-        $re = '/<([A-Z][\w]*)([\w\s\{\}\(\)\'"=][^\>]*)((\s|[^\/\>].))?\/\>/m';
-        $str = $this->html;
+        $comp = $this->component;
+        $decl = $comp->getDeclaration();
+        $cmpz = $decl->getComposition();
 
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-        $uid = $this->component->getMotherUID();
-        $motherUID = '';
-        if(file_exists(CACHE_DIR . $uid)) {
-            $motherUID = $uid;
+        if($cmpz === null) {
+            return $result;
         }
 
-        foreach ($matches as $match) {
-            $component = $match[0];
-            $componentName = $match[1];
-            $componentArgs = isset($match[2]) ? $match[2] : '';
+        $str = $this->html;
+
+        $closure = function (ComponentEntityInterface $item, int $index)  use (&$str, &$result) {
+            $args = '';
+
+            if($item->hasCloser()) {
+                return;
+            }
+
+            $component = $item->getText();
+            $componentName = $item->getName();
+
+            $componentArgs = $item->props();
 
             $funcName = ComponentRegistry::read($componentName);
-            $args = '';
-            if (trim($componentArgs) !== '') {
-                $componentArgs = $this->doArguments($componentArgs);
-                // $args = Maker::doArgumentsToString($componentArgs);
+
+            if ($componentArgs !== null) {
                 $args = json_encode($componentArgs);
                 $args = "json_decode('$args')";
             }
 
-            //$parent = $this->component->getFullyQualifiedFunction();
-
-            /**
-             * $componentRender = "<?php \$$componentName = new \\Ephect\\Components\\Component('$componentName', '$motherUID'); ?>\n";
-             * $componentRender .= "\t\t\t<?php \$${componentName}->render($args); ?>\n";
-             */
             $componentRender = "\t\t\t<?php \$fn = \\${funcName}($args); \$fn(); ?>\n";
 
-            $this->html = str_replace($component, $componentRender, $this->html);
+            $str = str_replace($component, $componentRender, $str);
 
             array_push($result, $componentName);
+        };
 
-        }
-        
-        return $result;
-    }
+        if (!$cmpz->hasChildren()) 
+        {
+            $closure($cmpz, 0);
+        } 
+        if($cmpz->hasChildren()) {
+            $cmpz->forEach($closure, $cmpz);
+        } 
 
-    /**
-     * May be obsolete
-     * 
-     * @param string $componentName 
-     * @param array $componentArgs 
-     * @param string $componentBody 
-     * @return bool 
-     */
-    public function doOpenComponent(string $componentName, array $componentArgs, string $componentBody): bool
-    {
-        $componentArgs = Maker::doArgumentsToString($componentArgs);
-
-        $result = false;
-        $re = '/<(' . $componentName . ')(' . $componentArgs . ')>((?:(?>[^<]+)|<(?!\1\b[^>]*>))*?)<\/\1>/m';
-
-        $str = $this->parentHTML;
-
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-            $parentComponent = $match[0];
-            $this->parentHTML = str_replace($parentComponent, $componentBody, $this->parentHTML);
-        }
-
-        $result = $this->parentHTML !== null;
+        $this->html = $str;
 
         return $result;
     }
@@ -200,4 +198,5 @@ class ChildrenParser extends Parser
         $this->html = str_replace('</>', '', $this->html);
 
     }
+
 }

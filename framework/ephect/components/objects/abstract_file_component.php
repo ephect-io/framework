@@ -2,9 +2,12 @@
 
 namespace Ephect\Components;
 
+use Ephect\Components\Generators\ChildrenParser;
+use Ephect\Components\Generators\ComponentParser;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
+use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
 
@@ -114,26 +117,59 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         return [$fqFunctionName, $cacheFilename];
     }
 
+
     public function parse(): void
     {
-        parent::parse();
+        /* TO BEGIN WITH */
+        // CodeRegistry::uncache();
+        // $class = $this->getFullyQualifiedFunction();
+        // $item = CodeRegistry::read($class);
+        /* TO BEGIN WITH */
 
+        $parser = new ChildrenParser($this);
+
+        $parser->doUncache();
+        $parser->doPhpTags();
+
+        $this->children = $parser->doChildrenDeclaration();
+        $parser->doValues();
+        $parser->doEchoes();
+        $parser->doArrays();
+        $parser->doUseEffect();
+        $parser->useVariables();
+        $parser->normalizeNamespace();
+        $parser->doFragments();
+        // $parser->doEntities();
+
+        $componentList = $parser->doComponents();
+        $html = $parser->getHtml();
+        $this->code = $html;
+        $this->updateFile();
+        
+        $openComponentList = $parser->doOpenComponents();
+        $html = $parser->getHtml();
+        $this->code = $html;
+        $this->updateFile();
+
+        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
+
+        $this->doIncludes();
+
+        $parser->doCache();
+
+    }
+
+    public function doIncludes(): void
+    {
         ComponentRegistry::uncache();
         $motherUID = $this->motherUID;
-        $token = 'N' . str_replace('-', '', $motherUID);
 
         foreach ($this->componentList as $component) {
-
-            
             [$fqFunctionName, $cacheFilename] = $this->renderComponent($motherUID, $component);
 
             $moduleNs = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
-            $compNs = ElementUtils::getNamespaceFromFQClassName($fqFunctionName);
-
             $include = str_replace('%s', $cacheFilename, INCLUDE_PLACEHOLDER);
-
             $this->code = str_replace($moduleNs, $moduleNs . PHP_EOL . $include, $this->code);
-            // $this->code = str_replace($compNs , $compNs . '\\' . $token, $this->code);
 
         }
     }
@@ -201,6 +237,20 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         // Utils::safeWrite($cachedir . $copyFile, $html);
 
         return $copyFile;
+    }
+
+
+    public function updateFile():  void 
+    {
+
+        $cp = new ComponentParser($this);
+        $struct = $cp->doDeclaration();
+        $decl = $struct->toArray();
+        $filename = $this->getFlattenSourceFilename();
+        Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $filename, $this->code);
+
+        CodeRegistry::write($this->getFullyQualifiedFunction(), $decl);
+        CodeRegistry::cache();
     }
 
     protected function cacheHtml(): ?string

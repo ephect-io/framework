@@ -13,5 +13,6 @@ interface ComponentInterface extends ElementInterface
     public function getDeclaration(): ?ComponentDeclaration;
     public function getEntity(): ?ComponentEntity;
     public function getBodyStart(): int;
+    public function resetDeclaration(): void;
     // public function render(): void;
 }
