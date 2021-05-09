@@ -64,11 +64,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->bindNode();
     }
 
-    public function hasProps(): bool
-    {
-        return $this->hasProperties;
-    }
-
     private static function listIdsByDepth(?array $list): ?array
     {
         if ($list === null) {
@@ -193,11 +188,15 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $this->depth;
     }
 
-    public function props(?string $key = null)
+    public function hasProps(): bool
+    {
+        return count($this->properties) > 0;
+    }
+    
+    public function props(?string $key = null): string|array|null
     {
         if($key === null) {
             if(count($this->properties) === 0) {
-                $this->hasProperties = false;
                 return null;
             }
             return $this->properties;
@@ -218,7 +217,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $this->end;
     }
 
-    public function getContents(): ?string
+    public function getContents(?string $html = null): ?string
     {
         if ($this->contents === null) {
             return null;
@@ -236,7 +235,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         if ($compFile === null) {
             return null;
         }
-        $t = Utils::safeRead(SRC_COPY_DIR . $compFile);
+        $t = $html ?: Utils::safeRead(CACHE_DIR . $compFile);
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;
