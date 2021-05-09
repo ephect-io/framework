@@ -16,8 +16,10 @@ function Route($props)
         $router = new RouterService();
         $router->addRoute($route->getMethod(), $route->getRule(), $route->getRedirect());
         $router->saveRoutes();
-        $router->shiftRegistry();
 
+        /**
+         * BEGIN code to remove if CLI build is mandatory
+         */
         if(!IS_WEB_APP) {
             return;
         }
@@ -29,6 +31,9 @@ function Route($props)
             $comp = new Component($path);
             $comp->render();
         }
+        /**
+         * END code to remove if CLI build is mandatory
+         */
 
     });
 

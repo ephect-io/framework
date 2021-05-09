@@ -14,7 +14,7 @@ class RouterService
         RouteRegistry::uncache();
     }
 
-    public function tryRouting(): bool
+    public function routesAreCached(): bool
     {
         $result = file_exists(CACHE_DIR . 'routes.json');
 
