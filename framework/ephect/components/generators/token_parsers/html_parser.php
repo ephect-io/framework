@@ -2,7 +2,7 @@
 
 namespace Ephect\Components\Generators\TokenParsers;
 
-final class PhpTagsParser extends AbstractTokenParser
+final class HtmlParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
