@@ -4,7 +4,7 @@ namespace Ephect\Components\Generators\TokenParsers;
 
 final class NamespaceParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null): void
     {
         $re = '/namespace([ ]+)(\w+)([ ]+)?;([ ]+)?/';
         $subst = 'namespace \\2;';

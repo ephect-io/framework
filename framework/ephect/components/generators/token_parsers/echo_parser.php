@@ -2,10 +2,11 @@
 
 namespace Ephect\Components\Generators\TokenParsers;
 
-final class ValuesParser extends AbstractTokenParser
+final class EchoParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null) : void
     {
+        $this->useVariables = $parameter;
 
         $re = '/\{\{ ([A-Za-z0-9_@\-\>]*) \}\}/m';
         $str = $this->html;

@@ -2,9 +2,9 @@
 
 namespace Ephect\Components\Generators\TokenParsers;
 
-final class PhpTagsParser extends AbstractTokenParser
+final class ArraysParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null): void
     {
         $re = '/\{\{ \.\.\.([a-z0-9_\-\>]*) \}\}/m';
         $su = '<?php echo print_r($\1, true) ?>';

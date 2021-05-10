@@ -4,7 +4,7 @@ namespace Ephect\Components\Generators\TokenParsers;
 
 final class UseEffectParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null): void
     {
         $re = '/useEffect\(function ?\(\) use \(((\s|.*?)+)\) {/m';
 

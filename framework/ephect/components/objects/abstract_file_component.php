@@ -4,6 +4,7 @@ namespace Ephect\Components;
 
 use Ephect\Components\Generators\ChildrenParser;
 use Ephect\Components\Generators\ComponentParser;
+use Ephect\Components\Generators\ParserService;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
@@ -126,36 +127,44 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         // $item = CodeRegistry::read($class);
         /* TO BEGIN WITH */
 
-        $parser = new ChildrenParser($this);
+        CodeRegistry::uncache();
 
-        $parser->doUncache();
-        $parser->doPhpTags();
+        // $parser = new ChildrenParser($this);
 
-        $this->children = $parser->doChildrenDeclaration();
-        $parser->doValues();
-        $parser->doEchoes();
-        $parser->doArrays();
-        $parser->doUseEffect();
-        $parser->useVariables();
-        $parser->normalizeNamespace();
-        $parser->doFragments();
-        // $parser->doEntities();
+        // $parser->doUncache();
+        // $parser->doPhpTags();
 
-        $componentList = $parser->doComponents();
-        $html = $parser->getHtml();
-        $this->code = $html;
-        $this->updateFile();
+        // $this->children = $parser->doChildrenDeclaration();
+        // $parser->doValues();
+        // $parser->doEchoes();
+        // $parser->doArrays();
+        // $parser->doUseEffect();
+        // $parser->useVariables();
+        // $parser->normalizeNamespace();
+        // $parser->doFragments();
+        // // $parser->doEntities();
+
+        // $componentList = $parser->doComponents();
+        // $html = $parser->getHtml();
+        // $this->code = $html;
+        // $this->updateFile();
         
-        $openComponentList = $parser->doOpenComponents();
-        $html = $parser->getHtml();
-        $this->code = $html;
-        $this->updateFile();
+        // $openComponentList = $parser->doOpenComponents();
+        // $html = $parser->getHtml();
+        // $this->code = $html;
+        // $this->updateFile();
 
-        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
+        // $this->componentList = array_unique(array_merge($componentList, $openComponentList));
 
-        $this->doIncludes();
+        // $this->doIncludes();
 
-        $parser->doCache();
+        // $parser->doCache();
+
+        $ps = new ParserService($this);
+        $ps->parse();
+
+        CodeRegistry::cache();
+
 
     }
 

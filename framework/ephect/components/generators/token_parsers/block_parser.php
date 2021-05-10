@@ -9,7 +9,7 @@ use Ephect\Registry\ComponentRegistry;
 
 class BlocksParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null): void
     {
         ComponentRegistry::uncache();
         $functionFilename = null;

@@ -4,8 +4,10 @@ namespace Ephect\Components\Generators\TokenParsers;
 
 final class UseVariablesParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null) : void
     {
+        $this->useVariables = $parameter;
+        
         $useVars = array_values($this->useVariables);
         $use = count($useVars) > 0 ? 'use(' . implode(', ', $useVars) . ') ' : '';
 

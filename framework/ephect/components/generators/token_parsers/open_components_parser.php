@@ -7,7 +7,7 @@ use Ephect\Registry\ComponentRegistry;
 
 final class OpenComponentsParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null): void
     {
         $comp = $this->component;
         $comp->resetDeclaration();

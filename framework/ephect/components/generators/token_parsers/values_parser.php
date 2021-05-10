@@ -4,7 +4,7 @@ namespace Ephect\Components\Generators\TokenParsers;
 
 final class ValuesParser extends AbstractTokenParser
 {
-    public function do(): void
+    public function do(null|string|array $parameter = null): void
     {
         $this->useVariables = [];
         $re = '/\{([a-zA-Z0-9_@\-\>]*)\}/m';
