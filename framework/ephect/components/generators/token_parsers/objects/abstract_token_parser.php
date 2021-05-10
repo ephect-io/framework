@@ -10,7 +10,7 @@ abstract class AbstractTokenParser implements TokenParserInterface
 
     protected $html = '';
     protected $component = null;
-    protected $result = '';
+    protected $result = null;
     protected $useVariables = [];
 
     public function __construct(FileComponentInterface $comp)

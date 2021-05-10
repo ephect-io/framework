@@ -9,6 +9,8 @@ final class OpenComponentsParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
+        $this->result = [];
+     
         $comp = $this->component;
         $comp->resetDeclaration();
         $decl = $comp->getDeclaration();
@@ -53,7 +55,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             $subject = str_replace($opener, '', $subject);
             $subject = str_replace($closer, '', $subject);
 
-            array_push($result, $componentName);
+            array_push($this->result, $componentName);
         };
 
         $closure($cmpz, 0);

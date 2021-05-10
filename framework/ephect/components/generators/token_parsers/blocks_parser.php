@@ -14,7 +14,7 @@ class BlocksParser extends AbstractTokenParser
         ComponentRegistry::uncache();
         $functionFilename = null;
 
-        $doc = new ComponentDocument($this->blockComponent);
+        $doc = new ComponentDocument($this->component);
         $doc->matchAll();
 
         $firstMatch = $doc->getNextMatch();
@@ -39,7 +39,7 @@ class BlocksParser extends AbstractTokenParser
 
         if ($parentHtml !== '') {
             Utils::safeWrite(CACHE_DIR . $parentFilename, $parentHtml);
-            Utils::safeWrite(CACHE_DIR . $this->blockComponent->getFlattenFilename(), $this->html);
+            Utils::safeWrite(CACHE_DIR . $this->component->getFlattenFilename(), $this->html);
         }
 
         if ($doc->getCount() > 0) {

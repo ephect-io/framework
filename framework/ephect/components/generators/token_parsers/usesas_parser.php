@@ -5,12 +5,10 @@ namespace Ephect\Components\Generators\TokenParsers;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\FrameworkRegistry;
 
-final class UsesParser extends AbstractTokenParser
+final class UsesAsParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null) : void
     {
-        $this->useVariables = $parameter;
-        
         $compNamespace = $this->component->getNamespace();
 
         $re = '/use ([A-Za-z0-9\\\\ ]*\\\\)?([A-Za-z0-9 ]*) as ([A-Za-z0-9 ]*);/m';

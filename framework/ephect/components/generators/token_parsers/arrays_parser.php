@@ -6,6 +6,8 @@ final class ArraysParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
+        $this->useVariables = $parameter;
+        
         $re = '/\{\{ \.\.\.([a-z0-9_\-\>]*) \}\}/m';
         $su = '<?php echo print_r($\1, true) ?>';
         $str = $this->html;

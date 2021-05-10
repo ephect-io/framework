@@ -6,7 +6,8 @@ final class ValuesParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $this->useVariables = [];
+        $this->useVariables = $parameter;
+
         $re = '/\{([a-zA-Z0-9_@\-\>]*)\}/m';
         $str = $this->html;
 

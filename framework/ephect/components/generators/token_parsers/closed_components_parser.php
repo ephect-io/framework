@@ -9,6 +9,8 @@ final class ClosedComponentsParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
+        $this->result = [];
+
         $comp = $this->component;
         $decl = $comp->getDeclaration();
         $cmpz = $decl->getComposition();
@@ -42,7 +44,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
             $str = str_replace($component, $componentRender, $str);
 
-            array_push($result, $componentName);
+            array_push($this->result, $componentName);
         };
 
         if (!$cmpz->hasChildren()) 
