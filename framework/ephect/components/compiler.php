@@ -3,8 +3,8 @@
 namespace Ephect\Components;
 
 use Ephect\Cache\Cache;
-use Ephect\Components\Generators\BlocksParser;
 use Ephect\Components\Generators\ComponentParser;
+use Ephect\Components\Generators\ParserService;
 use Ephect\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Registry\CodeRegistry;
@@ -56,9 +56,11 @@ class Compiler
             ComponentRegistry::cache();
 
             $blocksViews = [];
+            $parser = new ParserService;
             foreach ($this->list as $class => $comp) {
-                $parser = new BlocksParser($comp);
-                $filename = $parser->doBlocks();
+                
+                $parser->doBlocks($comp);
+                $filename = $parser->getResult();
 
                 if ($filename !== null && file_exists(CACHE_DIR . $filename)) {
                     array_push($blocksViews, $filename);

@@ -118,53 +118,58 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         return [$fqFunctionName, $cacheFilename];
     }
 
+    public function analyse(): void
+    {
+        $parser = new ParserService;
+        $parser->doUses($this);
+        $parser->doUsesAs($this);
+    }
 
     public function parse(): void
     {
-        /* TO BEGIN WITH */
-        // CodeRegistry::uncache();
-        // $class = $this->getFullyQualifiedFunction();
-        // $item = CodeRegistry::read($class);
-        /* TO BEGIN WITH */
-
         CodeRegistry::uncache();
 
-        // $parser = new ChildrenParser($this);
+        $parser = new ParserService();
 
-        // $parser->doUncache();
-        // $parser->doPhpTags();
+        $parser->doPhpTags($this);
+        $this->code = $parser->getHtml();
 
-        // $this->children = $parser->doChildrenDeclaration();
-        // $parser->doValues();
-        // $parser->doEchoes();
-        // $parser->doArrays();
-        // $parser->doUseEffect();
-        // $parser->useVariables();
-        // $parser->normalizeNamespace();
-        // $parser->doFragments();
-        // // $parser->doEntities();
+        $parser->doChildrenDeclaration($this);
+        $this->children = $parser->getChildren();
 
-        // $componentList = $parser->doComponents();
-        // $html = $parser->getHtml();
-        // $this->code = $html;
-        // $this->updateFile();
-        
-        // $openComponentList = $parser->doOpenComponents();
-        // $html = $parser->getHtml();
-        // $this->code = $html;
-        // $this->updateFile();
+        $parser->doValues($this);
+        $this->code = $parser->getHtml();
 
-        // $this->componentList = array_unique(array_merge($componentList, $openComponentList));
+        $parser->doEchoes($this);
+        $this->code = $parser->getHtml();
 
-        // $this->doIncludes();
+        $parser->doArrays($this);
+        $this->code = $parser->getHtml();
 
-        // $parser->doCache();
+        $parser->doUseEffect($this);
+        $this->code = $parser->getHtml();
 
-        $ps = new ParserService($this);
-        $ps->parse();
+        $parser->doUseVariables($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doNamespace($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doFragments($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doClosedComponents($this);
+        $this->code = $parser->getHtml();
+        $parser->updateFile($this);
+
+        $parser->doOpenComponents($this);
+        $this->code = $parser->getHtml();
+        $parser->updateFile($this);
+
+        $parser->doIncludes($this);
+        $this->code = $parser->getHtml();
 
         CodeRegistry::cache();
-
 
     }
 

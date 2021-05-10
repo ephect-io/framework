@@ -3,9 +3,6 @@
 namespace Ephect\Components;
 
 use BadFunctionCallException;
-use Ephect\Components\Generators\ChildrenParser;
-use Ephect\Components\Generators\ComponentParser;
-use Ephect\Components\Generators\Parser;
 use Ephect\ElementTrait;
 use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\CodeRegistry;
@@ -97,13 +94,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     public function getFunction(): ?string
     {
         return $this->function;
-    }
-
-    public function analyse(): void
-    {
-        $parser = new Parser($this);
-        $parser->doUses();
-        $parser->doUsesAs();
     }
 
     public function composedOf(): ?array

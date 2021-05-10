@@ -3,6 +3,8 @@
 namespace Ephect\Components;
 
 use Ephect\Components\Generators\ChildrenParser;
+use Ephect\Components\Generators\ParserService;
+use Ephect\Registry\CodeRegistry;
 
 abstract class AbstractPlugin extends AbstractFileComponent
 {
@@ -10,29 +12,45 @@ abstract class AbstractPlugin extends AbstractFileComponent
 
     public function parse(): void
     {
-        $parser = new ChildrenParser($this);
+        CodeRegistry::uncache();
 
-        $parser->doUncache();
-        $parser->doPhpTags();
+        $parser = new ParserService;
 
-        $this->children = $parser->doChildrenDeclaration();
-        $parser->doValues();
-        $parser->doEchoes();
-        $parser->doArrays();
-        $parser->doUseEffect();
-        $parser->useVariables();
-        $parser->normalizeNamespace();
-        $parser->doComponents();
-        $componentList = $parser->doComponents();
-        $openComponentList = $parser->doOpenComponents();
+        $parser->doPhpTags($this);
+        $this->code = $parser->getHtml();
 
-        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
+        $parser->doChildrenDeclaration($this);
+        $this->children = $parser->getChildren();
 
-        $html = $parser->getHtml();
+        $parser->doValues($this);
+        $this->code = $parser->getHtml();
 
-        $parser->doCache();
+        $parser->doEchoes($this);
+        $this->code = $parser->getHtml();
 
-        $this->code = $html;
+        $parser->doArrays($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doUseEffect($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doUseVariables($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doNamespace($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doFragments($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doClosedComponents($this);
+        $this->code = $parser->getHtml();
+
+        $parser->doOpenComponents($this);
+        $this->code = $parser->getHtml();
+
+        CodeRegistry::cache();
+
     }
 
 }
