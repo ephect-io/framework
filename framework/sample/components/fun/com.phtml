@@ -7,7 +7,8 @@ use function Ephect\Hooks\useState;
 
 function Com($props)
 {
-    useEffect(function () use ($props, &$b, &$c, &$d, &$m) {
+    useEffect(function () use ($props, /* string */ &$b, /* string */ &$c, /* string */ &$d, /* string */ &$m) {
+
         $b = 'It is a';
         $c = 'functional component';
         $d = $props->from;
