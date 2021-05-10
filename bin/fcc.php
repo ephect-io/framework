@@ -32,29 +32,23 @@ class Program extends Application
     public function sample(): void
     {
         $sample = FRAMEWORK_ROOT . 'sample';
+        $destDir = SRC_ROOT;
 
-        if (!\file_exists($sample)) {
+        if (!file_exists($sample)) {
             return;
         }
 
         $tree = Utils::walkTreeFiltered($sample);
 
-        $destDir = SRC_ROOT;
+        Utils::safeMkDir($destDir);
 
-        if (!\file_exists($destDir)) {
-            mkdir($destDir, 0775);
-        }
-
-        if (\file_exists($destDir)) {
+        if (file_exists($destDir)) {
 
             foreach ($tree as $filePath) {
-                $path = pathinfo($filePath, PATHINFO_DIRNAME);
 
-                if (!\file_exists($destDir . $path)) {
-                    mkdir($destDir . $path, 0755, true);
-                }
+                Utils::safeMkDir($destDir . $filePath);
 
-                if (!\file_exists($destDir . $filePath)) {
+                if (!file_exists($destDir . $filePath)) {
                     copy($sample . $filePath, $destDir . $filePath);
                 }
             }
@@ -70,6 +64,7 @@ class Program extends Application
         $compiler->perform();
         $compiler->postPerform();
         $compiler->followRoutes();
+        $compiler->purgeCopies();
 
     }
 }

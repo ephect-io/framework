@@ -38,8 +38,8 @@ class BlocksParser extends AbstractTokenParser
         $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
 
         if ($parentHtml !== '') {
-            Utils::safeWrite(CACHE_DIR . $parentFilename, $parentHtml);
-            Utils::safeWrite(CACHE_DIR . $this->component->getFlattenFilename(), $this->html);
+            Utils::safeWrite(COPY_DIR . $parentFilename, $parentHtml);
+            Utils::safeWrite(COPY_DIR . $this->component->getFlattenFilename(), $this->html);
         }
 
         if ($doc->getCount() > 0) {

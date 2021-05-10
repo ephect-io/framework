@@ -90,7 +90,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $this->code = Utils::safeRead(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
         if ($this->code === null) {
-            $this->code = Utils::safeRead(CACHE_DIR . $this->filename);
+            $this->code = Utils::safeRead(COPY_DIR . $this->filename);
         }
 
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
@@ -219,7 +219,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         if ($componentList === null) {
             // Utils::safeWrite($cachedir . $copyFile, $html);
-            copy(CACHE_DIR . $copyFile, $cachedir . $copyFile);
+            copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
 
             return $copyFile;
         }
@@ -247,7 +247,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             }
         }
 
-        copy(CACHE_DIR . $copyFile, $cachedir . $copyFile);
+        copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
         // Utils::safeWrite($cachedir . $copyFile, $html);
 
         return $copyFile;

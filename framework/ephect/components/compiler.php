@@ -25,14 +25,16 @@ class Compiler
     public function perform(): void
     {
         if (!ComponentRegistry::uncache()) {
-            Cache::createCacheDir();
+            IOUtils::safeMkDir(CACHE_DIR);
+            IOUtils::safeMkDir(COPY_DIR);
+            IOUtils::safeMkDir(STATIC_DIR);
 
             $compList = [];
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($templateList as $key => $compFile) {
 
                 $cachedSourceViewFile = Component::getFlatFilename($compFile);
-                copy(SRC_ROOT . $compFile, CACHE_DIR . $cachedSourceViewFile);
+                copy(SRC_ROOT . $compFile, COPY_DIR . $cachedSourceViewFile);
 
                 $comp = new Component();
                 $comp->load($cachedSourceViewFile);
@@ -62,7 +64,7 @@ class Compiler
                 $parser->doBlocks($comp);
                 $filename = $parser->getResult();
 
-                if ($filename !== null && file_exists(CACHE_DIR . $filename)) {
+                if ($filename !== null && file_exists(COPY_DIR . $filename)) {
                     array_push($blocksViews, $filename);
                 }
             }
@@ -217,5 +219,10 @@ class Compiler
         }
 
         return $router;
+    }
+
+    public function purgeCopies(): void
+    {
+        IOUtils::delTree(COPY_DIR);
     }
 }

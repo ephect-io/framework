@@ -235,7 +235,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         if ($compFile === null) {
             return null;
         }
-        $t = $html ?: Utils::safeRead(CACHE_DIR . $compFile);
+        $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;

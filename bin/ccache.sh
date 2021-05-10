@@ -2,7 +2,7 @@
 
 pwd
 
-if [ ! -d ./cache ] || [ ! -d ./runtime ] || [ ! -d ./static ];
+if [ ! -d ./cache ] || [ ! -d ./runtime ];
 then
     echo "Be sure you are at the root of your Ephect site."
     exit 1;
