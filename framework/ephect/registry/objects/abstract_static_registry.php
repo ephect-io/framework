@@ -63,6 +63,11 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
     {
         return static::getInstance()->_getCacheFilename();
     }
+    
+    public static function getFlatFilename(): string 
+    {
+        return static::getInstance()->_getFlatFilename();
+    }
 
     public static function clear(): void
     {

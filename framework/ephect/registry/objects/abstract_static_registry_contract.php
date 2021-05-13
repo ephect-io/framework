@@ -9,6 +9,7 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
     private $entries = [];
     private $isLoaded = false;
     private $baseDirectory = CACHE_DIR;
+    private $flatFilename = '';
     private $cacheFilename = '';
 
     use ElementTrait;
@@ -16,6 +17,8 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
     protected function __construct()
     {
     }
+
+    protected function _clear(): void { }
 
     abstract public static function getInstance(): AbstractRegistryInterface;
 
@@ -88,6 +91,11 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
         return $this->isLoaded;
     }
 
+    public function _getFlatFilename(): string
+    {
+        return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_',  get_class($this))) . '.json';
+    }
+
     protected function _getCacheFileName(): string
     {
         if($this->cacheFilename === '')
@@ -157,6 +165,11 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
     public static function getCacheFilename(): string
     {
         return static::getInstance()->_getCacheFilename();
+    }
+
+    public static function getFlatFilename(): string
+    {
+        return static::getInstance()->_getFlatFilename();
     }
 
     public static function clear(): void

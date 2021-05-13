@@ -19,6 +19,8 @@ abstract class AbstractRegistryContract
 
     abstract protected function _uncache(): bool;
 
+    abstract protected function _getFlatFileName(): string;
+    
     abstract protected function _getCacheFileName(): string;
 
     abstract protected function _setCacheDirectory(string $directory): void;
