@@ -127,6 +127,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function parse(): void
     {
+        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
         CodeRegistry::uncache();
 
         $parser = new ParserService();
@@ -216,6 +217,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         if ($motherUID === null) {
             $motherUID = $component->getUID();
             mkdir(CACHE_DIR . $motherUID, 0775);
+            
+            $flatFilename = CodeRegistry::getFlatFilename();
+            copy(CACHE_DIR . $flatFilename, CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
         }
 
         $token = 'N' . str_replace('-', '', $motherUID);

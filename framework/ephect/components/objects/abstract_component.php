@@ -53,6 +53,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
                 throw new Exception('Please the component is defined in the registry before asking for its entity');
             }
         }
+        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
 
         $list = CodeRegistry::read($fqName);
         $struct = new ComponentDeclarationStructure($list);
