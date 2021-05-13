@@ -57,7 +57,7 @@ class Compiler
             CodeRegistry::cache();
             ComponentRegistry::cache();
 
-            $blocksViews = [];
+            // $blocksViews = [];
             $parser = new ParserService;
             foreach ($this->list as $class => $comp) {
                 
@@ -65,19 +65,10 @@ class Compiler
                 $filename = $parser->getResult();
 
                 if ($filename !== null && file_exists(COPY_DIR . $filename)) {
-                    array_push($blocksViews, $filename);
+                    Component::updateComponent($comp);
                 }
             }
 
-            if (count($blocksViews) > 0) {
-                foreach ($blocksViews as $compFile) {
-                    $comp = new Component();
-                    $comp->load($compFile);
-                    $comp->analyse();
-
-                    ComponentRegistry::write($compFile, $comp->getUID());
-                }
-            }
         }
 
         if (!PluginRegistry::uncache()) {

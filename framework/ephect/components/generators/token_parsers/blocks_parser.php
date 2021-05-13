@@ -32,6 +32,7 @@ class BlocksParser extends AbstractTokenParser
         }
 
         $parentFilename = $parentComponent->getFlattenSourceFilename();
+        $functionFilename = $parentFilename;
         $parentDoc = new ComponentDocument($parentComponent);
         $parentDoc->matchAll();
 
