@@ -3,7 +3,9 @@
 namespace Ephect\Components\Generators\TokenParsers;
 
 use Ephect\Components\ComponentEntityInterface;
+use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
+use Ephect\Regisubjecty\ComponentRegisubjecty;
 
 final class ClosedComponentsParser extends AbstractTokenParser
 {
@@ -19,32 +21,35 @@ final class ClosedComponentsParser extends AbstractTokenParser
             return;
         }
 
-        $str = $this->html;
+        $subject = $this->html;
 
-        $closure = function (ComponentEntityInterface $item, int $index)  use (&$str, &$result) {
-            $args = '';
+        $closure = function (ComponentEntityInterface $item, int $index)  use (&$subject, &$result) {
 
             if($item->hasCloser()) {
                 return;
             }
-
+            
             $component = $item->getText();
             $componentName = $item->getName();
-
             $componentArgs = $item->props();
 
-            $funcName = ComponentRegistry::read($componentName);
-
+            $args = '';
             if ($componentArgs !== null) {
                 $args = json_encode($componentArgs);
                 $args = "json_decode('$args')";
             }
 
+            $funcName = ComponentRegistry::read($componentName);
             $componentRender = "\t\t\t<?php \$fn = \\${funcName}($args); \$fn(); ?>\n";
 
-            $str = str_replace($component, $componentRender, $str);
+            $subject = str_replace($component, $componentRender, $subject);
 
             array_push($this->result, $componentName);
+
+            $filename = $this->component->getFlattenSourceFilename();
+            Utils::safeWrite(COPY_DIR . $filename, $subject);
+            Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+
         };
 
         if (!$cmpz->hasChildren()) 
@@ -55,7 +60,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
             $cmpz->forEach($closure, $cmpz);
         } 
 
-        $this->html = $str;
+        $this->html = $subject;
 
     }
     

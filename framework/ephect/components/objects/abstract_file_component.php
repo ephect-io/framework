@@ -157,17 +157,27 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $parser->doFragments($this);
         $this->code = $parser->getHtml();
+        $filename = $this->getFlattenSourceFilename();
+        Utils::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
+        $this->updateComponent($this);
 
-        $parser->doClosedComponents($this);
-        $this->code = $parser->getHtml();
-        $parser->updateFile($this);
+        while($compz = $this->getDeclaration()->getComposition() !== null)
+        {
+            $parser->doClosedComponents($this);
+            $this->code = $parser->getHtml();
+            $this->updateComponent($this);
+    
+            $parser->doOpenComponents($this);
+            $this->code = $parser->getHtml();
+            $this->updateComponent($this);
+    
+            $parser->doIncludes($this);
+            $this->code = $parser->getHtml();
+        }
 
-        $parser->doOpenComponents($this);
-        $this->code = $parser->getHtml();
-        $parser->updateFile($this);
-
-        $parser->doIncludes($this);
-        $this->code = $parser->getHtml();
+        // $parser->doComponents($this);
+        // $this->code = $parser->getHtml();
+        // $parser->updateFile($this);
 
         CodeRegistry::cache();
 
@@ -265,6 +275,24 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         CodeRegistry::write($this->getFullyQualifiedFunction(), $decl);
         CodeRegistry::cache();
+    }
+
+    public static function updateComponent(FileComponentInterface $component): string 
+    {
+        $uid = $component->getUID();
+        $motherUID = $component->getMotherUID();
+        $filename = $component->getFlattenSourceFilename();
+
+        $comp = new Component($uid, $motherUID);
+        $comp->load($filename);
+        $parser = new ComponentParser($comp);
+        $struct = $parser->doDeclaration();
+        $decl = $struct->toArray();
+
+        CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
+        CodeRegistry::cache();
+
+        return $filename;
     }
 
     protected function cacheHtml(): ?string

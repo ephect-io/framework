@@ -3,6 +3,7 @@
 namespace Ephect\Components\Generators\TokenParsers;
 
 use Ephect\Components\ComponentEntityInterface;
+use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 
 final class OpenComponentsParser extends AbstractTokenParser
@@ -28,12 +29,22 @@ final class OpenComponentsParser extends AbstractTokenParser
                 return;
             }
 
+
             $opener = $item->getText();
             $closer = ((object) $item->getCloser())->text;
             $componentName = $item->getName();
             $componentBody = $item->getContents($subject);
             $componentArgs = $item->props();
 
+
+            if($componentName === 'Fragment') {
+                return;
+            }
+
+            if($componentName === 'Block') {
+                return;
+            }
+            
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
     
@@ -55,7 +66,14 @@ final class OpenComponentsParser extends AbstractTokenParser
             $subject = str_replace($opener, '', $subject);
             $subject = str_replace($closer, '', $subject);
 
+            $filename = $this->component->getFlattenSourceFilename();
+            //Utils::safeWrite(COPY_DIR . $filename, $subject);
+            Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+
+
+
             array_push($this->result, $componentName);
+
         };
 
         $closure($cmpz, 0);
