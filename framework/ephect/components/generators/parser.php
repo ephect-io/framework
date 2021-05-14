@@ -16,6 +16,7 @@ class Parser
     {
         $this->component = $comp;
         $this->html = $comp->getCode();
+        $this->doUncache();
     }
 
     public function getHtml()
@@ -30,6 +31,7 @@ class Parser
 
     public function doUncache(): bool
     {
+        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->component->getMotherUID());
         return CodeRegistry::uncache();
     }
 

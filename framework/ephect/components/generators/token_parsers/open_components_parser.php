@@ -44,7 +44,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             if($componentName === 'Block') {
                 return;
             }
-            
+
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
     
@@ -67,7 +67,6 @@ final class OpenComponentsParser extends AbstractTokenParser
             $subject = str_replace($closer, '', $subject);
 
             $filename = $this->component->getFlattenSourceFilename();
-            //Utils::safeWrite(COPY_DIR . $filename, $subject);
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
 
