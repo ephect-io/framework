@@ -162,6 +162,12 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         Utils::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
         $this->updateComponent($this);
 
+        $parser->doBlocks($this);
+        $this->code = $parser->getHtml();
+        // $filename = $this->getFlattenSourceFilename();
+        // Utils::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
+        $this->updateComponent($this);        
+
         while($compz = $this->getDeclaration()->getComposition() !== null)
         {
             $parser->doClosedComponents($this);
@@ -176,27 +182,8 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             $this->code = $parser->getHtml();
         }
 
-        // $parser->doComponents($this);
-        // $this->code = $parser->getHtml();
-        // $parser->updateFile($this);
-
         CodeRegistry::cache();
 
-    }
-
-    public function doIncludes(): void
-    {
-        ComponentRegistry::uncache();
-        $motherUID = $this->motherUID;
-
-        foreach ($this->componentList as $component) {
-            [$fqFunctionName, $cacheFilename] = $this->renderComponent($motherUID, $component);
-
-            $moduleNs = "namespace " . $this->getNamespace() . ';' . PHP_EOL;
-            $include = str_replace('%s', $cacheFilename, INCLUDE_PLACEHOLDER);
-            $this->code = str_replace($moduleNs, $moduleNs . PHP_EOL . $include, $this->code);
-
-        }
     }
 
     // public static function render(string $functionName, ?array $functionArgs = null, string $motherUID = ''): void
@@ -216,10 +203,12 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         if ($motherUID === null) {
             $motherUID = $component->getUID();
-            mkdir(CACHE_DIR . $motherUID, 0775);
+            if(!file_exists(CACHE_DIR . $motherUID)) {
+                mkdir(CACHE_DIR . $motherUID, 0775);
             
-            $flatFilename = CodeRegistry::getFlatFilename();
-            copy(CACHE_DIR . $flatFilename, CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
+                $flatFilename = CodeRegistry::getFlatFilename();
+                copy(CACHE_DIR . $flatFilename, CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
+            }
         }
 
         $token = 'N' . str_replace('-', '', $motherUID);

@@ -8,6 +8,7 @@ use Ephect\Components\Generators\TokenParsers\ArraysParser;
 use Ephect\Components\Generators\TokenParsers\BlocksParser;
 use Ephect\Components\Generators\TokenParsers\ChildrenDeclarationParser;
 use Ephect\Components\Generators\TokenParsers\ClosedComponentsParser;
+use Ephect\Components\Generators\TokenParsers\ComponentsParser;
 use Ephect\Components\Generators\TokenParsers\EchoParser;
 use Ephect\Components\Generators\TokenParsers\FragmentsParser;
 use Ephect\Components\Generators\TokenParsers\NamespaceParser;
@@ -59,7 +60,7 @@ class ParserService
     {
         $p = new BlocksParser($component);
         $p->do();
-
+        $this->html = $p->getHtml();
         $this->result = $p->getResult();
     }
 
@@ -158,17 +159,6 @@ class ParserService
         $this->html = $p->getHtml();
     }
 
-    public function updateFile(FileComponentinterface $component): void 
-    {
-        $cp = new ComponentParser($component);
-        $struct = $cp->doDeclaration();
-        $decl = $struct->toArray();
-        $filename = $component->getFlattenSourceFilename();
-        Utils::safeWrite(CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->html);
-
-        CodeRegistry::write($component->getFullyQualifiedFunction(), $decl);
-        CodeRegistry::cache();
-    }
 
     public function doIncludes(FileComponentinterface $component): void
     {

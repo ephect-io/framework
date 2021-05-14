@@ -29,6 +29,8 @@ class Compiler
             IOUtils::safeMkDir(COPY_DIR);
             IOUtils::safeMkDir(STATIC_DIR);
 
+            CodeRegistry::uncache();
+
             $compList = [];
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($templateList as $key => $compFile) {
@@ -56,18 +58,6 @@ class Compiler
 
             CodeRegistry::cache();
             ComponentRegistry::cache();
-
-            // $blocksViews = [];
-            $parser = new ParserService;
-            foreach ($this->list as $class => $comp) {
-                
-                $parser->doBlocks($comp);
-                $filename = $parser->getResult();
-
-                if ($filename !== null && file_exists(COPY_DIR . $filename)) {
-                    Component::updateComponent($comp);
-                }
-            }
 
         }
 

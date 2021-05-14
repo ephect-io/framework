@@ -14,6 +14,7 @@ class BlocksParser extends AbstractTokenParser
         ComponentRegistry::uncache();
         $functionFilename = null;
 
+        $motherUID = $this->component->getMotherUID();
         $doc = new ComponentDocument($this->component);
         $doc->matchAll();
 
@@ -39,8 +40,8 @@ class BlocksParser extends AbstractTokenParser
         $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
 
         if ($parentHtml !== '') {
-            Utils::safeWrite(COPY_DIR . $parentFilename, $parentHtml);
-            Utils::safeWrite(COPY_DIR . $this->component->getFlattenFilename(), $this->html);
+            Utils::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
+            Utils::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getFlattenFilename(), $this->html);
         }
 
         if ($doc->getCount() > 0) {
