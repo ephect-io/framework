@@ -4,13 +4,13 @@ namespace Ephect\Registry;
 
 use Ephect\ElementTrait;
 use Ephect\IO\Utils;
-
 abstract class AbstractRegistry implements AbstractRegistryInterface
 {
     private $entries = [];
     private $isLoaded = false;
     private $baseDirectory = CACHE_DIR;
     private $cacheFilename = '';
+    private $flatFilename = '';
 
     use ElementTrait;
 
@@ -76,20 +76,22 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         $json = Utils::safeRead($registryFilename);
         $this->isLoaded = $json !== null;
 
-        if($this->isLoaded) {
+        if ($this->isLoaded) {
             $this->entries = json_decode($json, JSON_OBJECT_AS_ARRAY);
         }
 
         return $this->isLoaded;
     }
 
+    public function _getFlatFilename(): string
+    {
+        return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_',  get_class($this))) . '.json';
+    }
+
     public function _getCacheFileName(): string
     {
-        if($this->cacheFilename === '')
-        {
-            $fileName = str_replace('\\', '_',  get_class($this));
-            $this->cacheFilename =$this->baseDirectory . strtolower($fileName) . '.json';
-             
+        if ($this->cacheFilename === '') {
+            $this->cacheFilename = $this->baseDirectory . $this->_getFlatFilename();
         }
 
         return $this->cacheFilename;
@@ -97,6 +99,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
     public function _setCacheDirectory(string $directory): void
     {
+        $directory = substr($directory, 0, -1) !== DIRECTORY_SEPARATOR ? $directory . DIRECTORY_SEPARATOR : $directory;
         $this->baseDirectory = $directory;
     }
 
@@ -104,5 +107,4 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
     {
         $this->entries = [];
     }
-
 }

@@ -3,51 +3,32 @@
 namespace Ephect\Plugins\Router;
 
 use Ephect\Components\Component;
-use Ephect\Components\ComponentEntity;
-use Ephect\Registry\CodeRegistry;
-use Ephect\Registry\Registry;
+use Ephect\Registry\RouteRegistry;
 
 use function Ephect\Hooks\useEffect;
 
 function Router($children)
 {
-
-    $hasRouted = false;
-    useEffect(function () use (&$hasRouted) {
-
-        CodeRegistry::uncache();
-        $items = CodeRegistry::items();
+    useEffect(function () use (/* bool */ &$hasRouted) {
 
         $service = new RouterService;
 
-        if($service->tryRouting()) {
+        if ($service->routesAreCached()) {
 
             $route = $service->doRouting();
-            if($route !== null) {
+            if ($route !== null) {
                 list($path, $query) = $route;
-                Component::render($path);
+                $comp = new Component($path);
+                $comp->render();
             }
             $hasRouted = true;
-            return;
         }
 
-        foreach ($items as $component => $composition) {
-            $router = null;
-            foreach ($composition as $child) {
-                if ($child['name'] == 'Router') {
-                    $entity = ComponentEntity::buildFromArray($composition);
-                    $router = $entity->toArray();
-                }
-            }
-            if ($router !== null) {
-                Registry::write('router', $router);
-                break;
-            }
-        }
     });
 
-    return (<<<HTML
+    return (<<< HTML
         {? if({hasRouted}) { return ''; } ?}
         {{ children }}
+        {? rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json'); ?}
     HTML);
 }

@@ -3,69 +3,62 @@
 namespace Ephect\Components;
 
 use Ephect\Cache\Cache;
-use Ephect\Components\Generators\BlocksParser;
 use Ephect\Components\Generators\ComponentParser;
+use Ephect\Components\Generators\ParserService;
 use Ephect\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
+use Ephect\Tasks\Task;
+use Ephect\Tasks\TaskRunner;
+use Ephect\Tasks\TaskStructure;
+use parallel\{channel};
 
 class Compiler
 {
 
     protected $list = [];
+    protected $routes = [];
 
     /** @return void  */
     public function perform(): void
     {
         if (!ComponentRegistry::uncache()) {
-            Cache::createCacheDir();
+            IOUtils::safeMkDir(CACHE_DIR);
+            IOUtils::safeMkDir(COPY_DIR);
+            IOUtils::safeMkDir(STATIC_DIR);
+
+            CodeRegistry::uncache();
 
             $compList = [];
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($templateList as $key => $compFile) {
 
                 $cachedSourceViewFile = Component::getFlatFilename($compFile);
-                copy(SRC_ROOT . $compFile, CACHE_DIR . $cachedSourceViewFile);
+                copy(SRC_ROOT . $compFile, COPY_DIR . $cachedSourceViewFile);
 
                 $comp = new Component();
                 $comp->load($cachedSourceViewFile);
                 $comp->analyse();
 
                 $parser = new ComponentParser($comp);
-                $parser->doComponents();
-                $list = $parser->getList();
+                $struct = $parser->doDeclaration();
+                $decl = $struct->toArray();
 
-                CodeRegistry::write($comp->getFullyQualifiedFunction(), $list);
+                CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
                 ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+                ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
-                $comp->compose();
+                $entity = ComponentEntity::buildFromArray($struct->composition);
+                $comp->add($entity);
 
                 $this->list[$comp->getFullyQualifiedFunction()] = $comp;
             }
+
             CodeRegistry::cache();
             ComponentRegistry::cache();
 
-            $blocksViews = [];
-            foreach ($this->list as $class => $comp) {
-                $parser = new BlocksParser($comp);
-                $filename = $parser->doBlocks();
-
-                if ($filename !== null && file_exists(CACHE_DIR . $filename)) {
-                    array_push($blocksViews, $filename);
-                }
-            }
-
-            if (count($blocksViews) > 0) {
-                foreach ($blocksViews as $compFile) {
-                    $comp = new Component();
-                    $comp->load($compFile);
-                    $comp->analyse();
-
-                    ComponentRegistry::write($compFile, $comp->getUID());
-                }
-            }
         }
 
         if (!PluginRegistry::uncache()) {
@@ -76,6 +69,8 @@ class Compiler
                 $plugin->analyse();
 
                 PluginRegistry::write($pluginFile, $plugin->getUID());
+                PluginRegistry::write($plugin->getUID(), $plugin->getFullyQualifiedFunction());
+
             }
             PluginRegistry::cache();
             ComponentRegistry::cache();
@@ -86,7 +81,6 @@ class Compiler
     {
 
         $routes = $this->searchForRoutes();
-        $compViews = [];
 
         array_unshift($routes, 'App');
 
@@ -97,6 +91,50 @@ class Compiler
             $comp->copyComponents($this->list);
 
         }
+
+        $this->routes = $routes;
+    }
+
+    public function followRoutes(): void
+    {
+
+        foreach ($this->routes as $route) {
+
+            $struct = new TaskStructure(['name' => $route, 'arguments' => [$route]]);
+            $task = new Task($struct);
+            $task->setCallback(function (string $route, Channel $channel) {
+
+                include  dirname(dirname(dirname(__FILE__))) . '/bootstrap.php';
+
+                PluginRegistry::uncache();
+
+                $comp = new Component($route);
+                $filename = $comp->getFlattenSourceFilename();
+
+                ob_start();
+                $comp->render();
+                $html = ob_get_clean();
+
+                $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html]);
+            });
+
+            $runner = new TaskRunner($task);
+            $runner->run();
+            
+            $result = $runner->getResult();
+
+            $runner->close();
+
+            $filename = $result['filename'];
+            $html = $result['html'];
+
+            if ($route === 'App') {
+                continue;
+            }
+
+            IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+        }
+
     }
 
     public function searchForRoutes(): array
@@ -129,9 +167,11 @@ class Compiler
     {
         $class = ComponentRegistry::read($name);
 
-        $composition = $items[$class];
+        $list = $items[$class];
+        $struct = new ComponentDeclarationStructure($list);
+        $decl = new ComponentDeclaration($struct);
 
-        $first = ComponentEntity::buildFromArray($composition);
+        $first = $decl->getComposition();
 
         return $first;
     }
@@ -139,8 +179,11 @@ class Compiler
     protected function findRouter(array $items, string $name): ?ComponentEntity
     {
         $class = ComponentRegistry::read($name);
+        $list = $items[$class];
 
-        $composition = $items[$class];
+        $struct = new ComponentDeclarationStructure($list);
+
+        $composition = $struct->composition;
 
         $router = null;
         foreach ($composition as $child) {
@@ -157,5 +200,10 @@ class Compiler
         }
 
         return $router;
+    }
+
+    public function purgeCopies(): void
+    {
+        IOUtils::delTree(COPY_DIR);
     }
 }

@@ -1,0 +1,39 @@
+<?php
+
+namespace Fun;
+
+function First($children)
+{
+    return (<<< HTML
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            <Block name="title">Welcome!</Block>
+        </title>
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <Block name="stylesheets"></Block>
+    </head>
+
+    <body>
+        <div class="App">
+        <HeaderAndFooter>
+
+        <div class="App-content">
+            <Block name="main"></Block>
+            {{ children }}
+            <Block name="second"></Block>
+        </div>
+
+        </HeaderAndFooter>
+        </div>
+        <Block name="javascripts"></Block>
+    </body>
+
+    </html>
+    HTML);
+}

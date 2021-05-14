@@ -10,11 +10,11 @@ class RouteEntity extends Element implements RouteInterface
     private $rule = '';
     private $redirect = '';
 
-    public function __construct(string $method = '', string $rule = '', string $redirect = '')
+    public function __construct(RouteStructure $struct)
     {
-        $this->method = $method;
-        $this->rule = $rule;
-        $this->redirect = $redirect;
+        $this->method = $struct->method;
+        $this->rule = $struct->rule;
+        $this->redirect = $struct->redirect;
     }
 
     public function getMethod(): string

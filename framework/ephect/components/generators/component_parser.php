@@ -2,6 +2,7 @@
 
 namespace Ephect\Components\Generators;
 
+use Ephect\Components\ComponentDeclarationStructure;
 use Ephect\Components\ComponentInterface;
 use Ephect\Crypto\Crypto;
 use Ephect\Registry\ComponentRegistry;
@@ -10,24 +11,28 @@ define('TERMINATOR', '/');
 define('SKIP_MARK', '!');
 define('QUEST_MARK', '?');
 
-class ComponentParser
+class ComponentParser extends Parser
 {
-    protected $html = '';
-    protected $comp = null;
-    protected $useVariables = [];
-    protected $parentHTML = '';
-    protected $maker = null;
     protected $depths = [];
     protected $idListByDepth = [];
     protected $list = [];
 
     public function __construct(ComponentInterface $comp)
     {
-        $this->component = $comp;
-        $this->html = $comp->getCode();
-        $this->parentHTML = $comp->getParentHTML();
-        $this->maker = new Maker($comp);
+        parent::__construct($comp);
+
         ComponentRegistry::uncache();
+    }
+
+    public function doDeclaration(): ComponentDeclarationStructure
+    {
+        $this->doComponents();
+        $func = $this->doFunctionDeclaration();
+        $decl = ['type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];
+
+        $struct = new ComponentDeclarationStructure($decl);
+
+        return $struct;
     }
 
     public function getList(): array
@@ -50,6 +55,41 @@ class ComponentParser
         return $this->idListByDepth;
     }
 
+    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
+    public function doFunctionDeclaration(): ?array
+    {
+        $result = [];
+        $re = '/(function) *?([\w]+)\(((\s|.*?)*)\)/m';
+
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+
+            $args = $this->doFunctionArguments($match[3]);
+            $result = [$match[1], $match[2], $args];
+        }
+
+        return $result;
+    }
+
+    private function doFunctionArguments(string $arguments): ?array
+    {
+        $result = [];
+        $re = '/([\,]?[\.]?\$[\w]+)/s';
+
+        $str = $arguments;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+                array_push($result, $match[1]);
+        }
+
+        return $result;
+    }
+
     public function doComponents(): void
     {
         $result = [];
@@ -58,10 +98,12 @@ class ComponentParser
 
         /**
          * parse only components as defined by JSX
-         * $re = '/<\/?([A-Z]\w+)(.*)?>|<\/?>/m';
+         * $re = '/<\/?([A-Z]\w+)(.*?)>|<\/?>/m';
          */
         // parse all tags comprising HTML ones 
-        $re = '/<\/?(\w+)(.*?)\/?>|<\/?>/m';
+
+        $re = '/<\/?([A-Z]\w+)((\s|.*?)+)>|<\/?>/m';
+
         $str = $this->html;
 
         preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -78,7 +120,7 @@ class ComponentParser
             $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
             $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
-            $list[$i]['method'] = $list[$i]['name'];
+            $list[$i]['method'] = 'echo';
             $list[$i]['startsAt'] = $list[$i][0][1];
             $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
             $list[$i]['props'] = ($list[$i]['name'] === 'Fragment') ? [] : $this->doArguments($list[$i][2][0]);
@@ -101,6 +143,8 @@ class ComponentParser
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
                         ];
                         $list[$i]['isCloser'] = true;
+                        $list[$i]['method'] = 'render';
+
                         break;
                     }
                 }
@@ -110,7 +154,9 @@ class ComponentParser
                 unset($list[$i][0]);
                 unset($list[$i][1]);
                 unset($list[$i][2]);
+                unset($list[$i][3]);
             }
+
             if (isset($list[$i]['closer'])) {
                 $list[$i]['isCloser'] = false;
                 $list[$i]['hasCloser'] = true;
@@ -194,48 +240,5 @@ class ComponentParser
         $this->list = $list;
 
         // return $list;
-    }
-
-    public function doArguments(string $componentArgs): ?array
-    {
-        $result = [];
-
-        $re = '/([A-Za-z0-9_]*)=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
-
-        preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-            $key = $match[1];
-            $value = substr(substr($match[2], 1), 0, -1);
-
-            $result[$key] = $value;
-        }
-
-        return $result;
-    }
-
-    public function bindNodes(): array
-    {
-        $list = $this->list;
-
-        $depths = $this->getIdListByDepth();
-
-        $c = count($list);
-        for ($j = $c - 1; $j > -1; $j--) {
-            // for($j = 0; $j < $c; $j++) {
-            $i = $depths[$j];
-            if ($list[$i]['parentId'] === -1) {
-                continue;
-            }
-            $pId = $list[$i]['parentId'];
-
-            if (!is_array($list[$pId]['node'])) {
-                $list[$pId]['node'] = [];
-            }
-            array_push($list[$pId]['node'], $list[$i]);
-            unset($list[$i]);
-        }
-
-        return $list;
     }
 }

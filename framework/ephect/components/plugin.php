@@ -4,31 +4,22 @@ namespace Ephect\Components;
 
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
-use Ephect\Registry\CacheRegistry;
-use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
 
-class Plugin extends AbstractPlugin
+class Plugin extends AbstractFileComponent
 {
-
-    public function __construct(string $uid = '', string $motherUID = '')
-    {
-        $this->uid = $uid;
-        $this->motherUID = ($motherUID === '') ? $uid : $motherUID;
-        $this->getUID();
-    }
-
-    public function load(string $filename): bool
+    
+    public function load(?string $filename = null): bool
     {
         $result = false;
-        $this->filename = $filename;
+        $this->filename = $filename ?: '';
 
         $this->code = Utils::safeRead(PLUGINS_ROOT . $this->filename);
 
-        list($this->namespace, $this->function) = ElementUtils::getFunctionDefinition($this->code);
+        [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if($this->function === null) {
-            list($this->namespace, $this->function) = ElementUtils::getClassDefinition($this->code);
+            [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getClassDefinition($this->code);
         } 
         $result = $this->code !== null;
 

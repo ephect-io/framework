@@ -8,6 +8,6 @@ interface FileComponentInterface extends ComponentInterface
     static function getFlatFilename(string $basename): string;
     function getFlattenFilename(): string;
     function getFlattenSourceFilename(): string;
-    function load(string $filename): bool;
+    function load(string $filename = ''): bool;
     
 }

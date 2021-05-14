@@ -10,9 +10,9 @@ trait ElementTrait
     protected $uid = '';
     protected $motherUID = '';
     protected $id = 'noname';
-    protected $type = '';
+    protected $class = '';
     protected $namespace = '';
-    protected $fqClassName = '';
+    protected $function = '';
 
     public function getUID(): string
     {
@@ -43,27 +43,27 @@ trait ElementTrait
         return $this->parent;
     }
 
-    // public function getType(): string
+    // public function getclass(): string
     // {
-    //     if ($this->type === '') {
-    //         $typeParts = explode('\\', $this->getFullType());
-    //         $this->type = array_pop($typeParts);
-    //         $this->namespace = implode('\\', $typeParts);
+    //     if ($this->class === '') {
+    //         $classParts = explode('\\', $this->getFullclass());
+    //         $this->class = array_pop($classParts);
+    //         $this->namespace = implode('\\', $classParts);
     //     }
 
-    //     return $this->type;
+    //     return $this->class;
     // }
 
-    public function getType(): string
+    public function getClass(): string
     {
-        if ($this->fqClassName == '') {
-            $this->fqClassName = get_class($this);
+        if ($this->class == '') {
+            $this->class = get_class($this);
         }
 
-        return $this->fqClassName;
+        return $this->class;
     }
 
-    public function getBaseType(): string
+    public function getBaseclass(): string
     {
         return get_parent_class($this);
     }
@@ -72,11 +72,19 @@ trait ElementTrait
     {
 
         if ($this->namespace === '') {
-            $typeParts = explode('\\', $this->getType());
-            $this->type = array_pop($typeParts);
-            $this->namespace = implode('\\', $typeParts);
+            $classParts = explode('\\', $this->getclass());
+            $this->function = array_pop($classParts);
+            $this->namespace = implode('\\', $classParts);
         }
 
         return $this->namespace;
+    }
+
+    public static function functionName($fullQualifiedName): string
+    {
+        $fqFunctionName = explode('\\', $fullQualifiedName);
+        $function = array_pop($fqFunctionName);
+
+        return $function;
     }
 }

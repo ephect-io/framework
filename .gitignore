@@ -3,10 +3,11 @@ nbproject/
 runtime/*
 vendor/
 cache/*
+static/*
 *.code-workspace
 *.log
 *_log
 docker/
 .devcontainer/
 docker-compose.yml
-
+src/*

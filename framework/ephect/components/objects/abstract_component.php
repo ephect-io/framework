@@ -3,58 +3,98 @@
 namespace Ephect\Components;
 
 use BadFunctionCallException;
-use Ephect\Components\Generators\ChildrenParser;
-use Ephect\Components\Generators\Parser;
 use Ephect\ElementTrait;
-use Ephect\IO\Utils;
 use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
+use Exception;
 use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
 {
     use ElementTrait;
 
-    protected $function = null;
+    // protected $function = null;
     protected $code;
     protected $parentHTML;
     protected $componentList = [];
     protected $children = null;
+    protected $declaration = null;
+    protected $entity = null;
+    protected $bodyStartsAt = 0;
+
+    public function getBodyStart(): int
+    {
+        return $this->bodyStartsAt;
+    }
+
+    public function getDeclaration(): ?ComponentDeclaration
+    {
+        if($this->declaration === null) {
+            $this->setDeclaration();
+        }
+
+        return $this->declaration;
+    }
+
+    public function resetDeclaration(): void
+    {
+        $this->declaration = null;
+    }
+
+    protected function setDeclaration(): void
+    {
+        $fqName = ComponentRegistry::read($this->uid);
+
+        if($fqName === null ) {
+            $fqName = $this->getFullyQualifiedFunction();
+            if($fqName === null ) {
+                throw new Exception('Please the component is defined in the registry before asking for its entity');
+            }
+        }
+        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
+
+        $list = CodeRegistry::read($fqName);
+        $struct = new ComponentDeclarationStructure($list);
+        $decl = new ComponentDeclaration($struct);
+
+        $this->declaration = $decl;
+    }
+
+    public function getEntity(): ?ComponentEntity
+    {
+        if($this->entity === null) {
+            $this->setEntity();
+        }
+
+        return $this->entity;
+    }
+
+    protected function setEntity() {
+        $decl = $this->getDeclaration();
+        $this->entity = $decl->getComposition();
+    }
 
     public function getParentHTML(): ?string
     {
         return $this->parentHTML;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function getFullyQualifiedFunction(): string
+    public function getFullyQualifiedFunction(): ?string
     {
+        if($this->function === null) return null;
         return $this->namespace  . '\\' . $this->function;
     }
 
     public function getFunction(): ?string
     {
         return $this->function;
-    }
-
-    public function analyse(): void
-    {
-        $parser = new Parser($this);
-        $parser->doUses();
-        $parser->doUsesAs();
-    }
-
-    public function compose(): void
-    {
-        $composition = CodeRegistry::read($this->getFullyQualifiedFunction());
-        $entity = ComponentEntity::buildFromArray($composition);
-        $this->add($entity);
     }
 
     public function composedOf(): ?array
@@ -67,8 +107,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $names[$funcName] = $fqFuncName;
         }, $this);
 
-        $names = array_unique($names);
-
         $names = array_filter($names, function ($item) {
             return $item !== null;
         });
@@ -80,42 +118,20 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $names;
     }
 
-
-
-    public function parse(): void
+    public function composedOfUnique():?array
     {
-        /* TO BEGIN WITH */
-        // CodeRegistry::uncache();
-        // $class = $this->getFullyQualifiedFunction();
-        // $item = CodeRegistry::read($class);
-        /* TO BEGIN WITH */
+        $result = $this->composedOf();
 
-        $parser = new ChildrenParser($this);
+        if($result === null) return null;
 
-        $parser->doUncache();
-        $parser->doPhpTags();
+        $result = array_unique($result);
 
-        $this->children = $parser->doChildrenDeclaration();
-        $parser->doValues();
-        $parser->doEchoes();
-        $parser->doArrays();
-        $parser->useVariables();
-        $parser->normalizeNamespace();
-        $parser->doFragments();
-        $componentList = $parser->doComponents();
-        $openComponentList = $parser->doOpenComponents();
-
-        $this->componentList = array_unique(array_merge($componentList, $openComponentList));
-
-        $html = $parser->getHtml();
-
-        $parser->doCache();
-
-        $this->code = $html;
+        return $result;
     }
 
-    public static function findComponent(string $componentName, string $motherUID): array
-    {
+    // public static function findComponent(string $componentName, string $motherUID): array
+    public function findComponent(string $componentName, string $motherUID): array
+    {        
         ComponentRegistry::uncache();
         $uses = ComponentRegistry::items();
         $fqFuncName = isset($uses[$componentName]) ? $uses[$componentName] : null;
@@ -137,10 +153,14 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return [$fqFuncName, $filename, $isCached];
     }
 
-    public static function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
+    // public static function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
+    public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
     {
-
         include_once CACHE_DIR . $cacheFilename;
+
+        // $flatComp = CodeRegistry::read($fqFunctionName);
+        // $comp = ComponentEntity::buildFromArray($flatComp);
+        // $functionArgs = ($comp !== null) ? $comp->props() : $functionArgs;
 
         $html = '';
         if ($functionArgs === null) {
@@ -152,13 +172,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
         if ($functionArgs !== null) {
 
-            $props = [];
-            foreach ($functionArgs as $key => $value) {
-                $props[$key] = urldecode($value);
+            $json = json_encode($functionArgs);
+            $props = json_decode($json);
+            foreach ($props as $key => $value) {
+                $props->{$key} = urldecode($value);
             }
-
-            $props = (object) $props;
-
             ob_start();
             $fn = call_user_func($fqFunctionName, $props);
             $fn();
@@ -174,33 +192,12 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $html;
     }
 
-    public static function functionName($fullQualifiedName): string
-    {
-        $fqFunctionName = explode('\\', $fullQualifiedName);
-        $function = array_pop($fqFunctionName);
-
-        return $function;
-    }
-
-    public static function passChidren(array $children): array
-    {
-        $componentProps = $children["props"];
-        $childProps = $children["child"]["props"];
-        $props = is_array($componentProps) && is_array($childProps) ? array_merge($componentProps, $childProps) : $componentProps;
-        $props = !is_array($componentProps) && is_array($childProps) ? $childProps : $componentProps;
-
-        $child = $children["child"]["name"];
-        $uid = $children["child"]["uid"];
-
-        return [$props, $uid];
-    }
-
-    public static function format(string $html): string
+    protected function format(string $html): string
     {
         $config = [
-            'indent'         => true,
-            'output-html'   => true,
-            'wrap'           => 200
+            'indent'      => true,
+            'output-html' => true,
+            'wrap'        => 200
         ];
 
         $tidy = new tidy;

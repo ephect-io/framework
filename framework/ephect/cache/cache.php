@@ -104,7 +104,7 @@ class Cache extends StaticElement
             $result = $result || self::createCacheDir();
 
         } catch (\Throwable $ex) {
-            self::writeException($ex);
+            self::getLogger()->error($ex);
 
             $result = false;
         }

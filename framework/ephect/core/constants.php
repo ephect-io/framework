@@ -1,9 +1,19 @@
 <?php
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
+
+$app_is_web = true;
+if($document_root === '') {
+    $document_root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    $app_is_web = false;
+}
+
+$document_root = dirname(dirname($document_root)) . DIRECTORY_SEPARATOR;
+
+define('IS_WEB_APP', $app_is_web);
 define('DOCUMENT_ROOT', $document_root);
 
-define('SITE_ROOT', dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR);
+define('SITE_ROOT', DOCUMENT_ROOT);
 define('FRAMEWORK_ROOT', SITE_ROOT . 'framework' . DIRECTORY_SEPARATOR);
 define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
 define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
@@ -16,8 +26,11 @@ define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
 define('RUNTIME_DIR', SITE_ROOT . REL_RUNTIME_DIR);
 define('REL_CACHE_DIR', 'cache' . DIRECTORY_SEPARATOR);
 define('CACHE_DIR', SITE_ROOT . REL_CACHE_DIR);
-define('SRC_COPY_DIR', SITE_ROOT . REL_CACHE_DIR);
-define('LOG_PATH', SRC_ROOT . 'logs' . DIRECTORY_SEPARATOR);
+define('REL_STATIC_DIR', 'static' . DIRECTORY_SEPARATOR);
+define('STATIC_DIR', CACHE_DIR . REL_STATIC_DIR);
+define('REL_COPY_DIR', 'copy' . DIRECTORY_SEPARATOR);
+define('COPY_DIR', CACHE_DIR . REL_COPY_DIR);
+define('LOG_PATH', SITE_ROOT . 'logs' . DIRECTORY_SEPARATOR);
 define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
@@ -28,7 +41,10 @@ define('PREHTML_EXTENSION', '.phtml');
 define('CSS_EXTENSION', '.css');
 define('JS_EXTENSION', '.js');
 
-if(DOCUMENT_ROOT === '') {
+if(!IS_WEB_APP) {
+    define('REQUEST_URI', 'https://localhost/');
+    define('REQUEST_METHOD', 'GET');
+    define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
     return;
 }
 
@@ -38,7 +54,6 @@ if (file_exists(CONFIG_DIR . 'rewrite_base') && $rewrite_base = file_get_content
     $rewrite_base = trim($rewrite_base);
 }
 define('REWRITE_BASE', $rewrite_base);
-
 
 $scheme = 'http';
 if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
@@ -54,8 +69,8 @@ if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
 define('HTTP_PROTOCOL', $scheme);
 define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
 define('HTTP_HOST', $_SERVER['HTTP_HOST']);
-define('HTTP_ORIGIN', (isset($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_ORIGIN'] : '');
-define('HTTP_ACCEPT', (isset($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '');
+define('HTTP_ORIGIN', isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '');
+define('HTTP_ACCEPT', $_SERVER['HTTP_ACCEPT'] ?: '');
 define('HTTP_PORT', $_SERVER['SERVER_PORT']);
 define('COOKIE', $_COOKIE);
 define('REQUEST_URI', $_SERVER['REQUEST_URI']);

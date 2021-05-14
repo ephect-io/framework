@@ -7,7 +7,6 @@ use Ephect\ElementTrait;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
-use Ephect\Tree\TreeInterface;
 
 /**
  * Description of match
@@ -28,6 +27,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     protected $closer = '';
     protected $contents = null;
     protected $hasCloser = '';
+    protected $hasProperties = false;
     protected $properties = [];
     protected $method = '';
     protected $doc = null;
@@ -35,7 +35,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     protected $className = '';
     protected $attributes = null;
     protected $composedOf = null;
-    // protected $innerNode = [];
 
     public function __construct(?ComponentStructure $attributes)
     {
@@ -54,6 +53,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->end = $attributes->endsAt;
         $this->depth = $attributes->depth;
         $this->properties = $attributes->props;
+        $this->hasProperties = count($this->properties) !== 0;
         $this->closer = $attributes->closer;
         $this->hasCloser = is_array($this->closer);
         $this->contents = $this->hasCloser ? $this->closer['contents'] : null;
@@ -64,7 +64,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->bindNode();
     }
 
-    private static function listIdsByDepth(array $list): ?array
+    private static function listIdsByDepth(?array $list): ?array
     {
         if ($list === null) {
             return null;
@@ -101,11 +101,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     {
         $result = null;
 
-        $depthIds = static::listIdsByDepth($list);
-
-        if ($depthIds === null) {
+        if($list === null) {
             return null;
         }
+
+        $depthIds = static::listIdsByDepth($list);
 
         $c = count($list);
 
@@ -139,9 +139,17 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             array_push($names, $item->getName());
         }, $this);
 
-        $names = array_unique($names);
-
         return $names;
+    }
+
+    public function composedOfUnique(): array
+    {
+        $result = $this->composedOf();
+
+
+        $result = array_unique($result);
+
+        return $result;
     }
 
     public function bindNode(): void
@@ -180,9 +188,17 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $this->depth;
     }
 
-    public function props(?string $key = null)
+    public function hasProps(): bool
+    {
+        return count($this->properties) > 0;
+    }
+    
+    public function props(?string $key = null): string|array|null
     {
         if($key === null) {
+            if(count($this->properties) === 0) {
+                return null;
+            }
             return $this->properties;
         }
         if (isset($this->properties[$key])) {
@@ -201,7 +217,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $this->end;
     }
 
-    public function getContents(): ?string
+    public function getContents(?string $html = null): ?string
     {
         if ($this->contents === null) {
             return null;
@@ -219,7 +235,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         if ($compFile === null) {
             return null;
         }
-        $t = Utils::safeRead(SRC_COPY_DIR . $compFile);
+        $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;
