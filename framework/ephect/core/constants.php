@@ -42,6 +42,9 @@ define('CSS_EXTENSION', '.css');
 define('JS_EXTENSION', '.js');
 
 if(!IS_WEB_APP) {
+    define('REQUEST_URI', 'https://localhost/');
+    define('REQUEST_METHOD', 'GET');
+    define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
     return;
 }
 
