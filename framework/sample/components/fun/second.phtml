@@ -7,8 +7,8 @@ use function Ephect\Hooks\useEffect;
 function Second($props)
 {
 
-    useEffect(function() use (&$props) {
-        $props->firstname = "David";
+    useEffect(function() use (/* string */ &$firstname) {
+        $firstname = "David";
     });
 
     return (<<< HTML
@@ -22,7 +22,7 @@ function Second($props)
             <section>
             <h2>Main</h2>
                 <p>
-                    Hello&nbsp;{{ props->firstname }}!
+                    Hello&nbsp;{{ firstname }}!
                 </p>
                 <p>This is reed</p>
                 <p>again</p>
