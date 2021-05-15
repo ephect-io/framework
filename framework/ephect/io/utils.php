@@ -59,8 +59,7 @@ class Utils
     {
         $result = false;
 
-        $dir = pathinfo($directory, PATHINFO_DIRNAME);
-        if (file_exists($dir)) {
+        if (!file_exists($directory)) {
             $result = mkdir($directory, 0775, true);
         }
 
