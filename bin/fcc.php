@@ -20,44 +20,37 @@ class Program extends Application
         $argv = $params[0];
 
         $arg1 = !isset($argv[1]) ? null : $argv[1];
-        if($arg1 === '-c') {
+        if ($arg1 === '-c') {
             $this->compile();
         }
 
-        if($arg1 === '-s') {
+        if ($arg1 === '-s') {
             $this->sample();
         }
     }
-    
+
     public function sample(): void
     {
         $sample = FRAMEWORK_ROOT . 'sample';
-        $destDir = SRC_ROOT;
 
-        if (!file_exists($sample)) {
+        Utils::safeMkDir(SRC_ROOT);
+        $destDir = realpath(SRC_ROOT);
+
+        if (!file_exists($sample) || !file_exists($destDir)) {
             return;
         }
 
         $tree = Utils::walkTreeFiltered($sample);
 
-        Utils::safeMkDir($destDir);
-
-        if (file_exists($destDir)) {
-
-            foreach ($tree as $filePath) {
-
-                Utils::safeMkDir($destDir . $filePath);
-
-                if (!file_exists($destDir . $filePath)) {
-                    copy($sample . $filePath, $destDir . $filePath);
-                }
-            }
+        foreach ($tree as $filePath) {
+            Utils::safeWrite($destDir . $filePath, '');
+            copy($sample . $filePath, $destDir . $filePath);
         }
     }
 
     public function compile(): void
     {
-        if(file_exists(CACHE_DIR)) {
+        if (file_exists(CACHE_DIR)) {
             Utils::delTree(CACHE_DIR);
         }
         $compiler = new Compiler;
@@ -65,7 +58,6 @@ class Program extends Application
         $compiler->postPerform();
         $compiler->followRoutes();
         $compiler->purgeCopies();
-
     }
 }
 
