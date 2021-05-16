@@ -75,9 +75,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $structs = [];
         $depths = [];
 
-        // $c = count($list);
-
-        // $ra = new RecursiveArrayIterator($list);
         foreach ($list as $match) {
 
             $struct = new ComponentStructure($match);

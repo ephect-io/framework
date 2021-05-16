@@ -17,7 +17,6 @@ trait ElementTrait
     public function getUID(): string
     {
         if ($this->uid === '') {
-            // $this->uid = str_replace('.', '_', uniqid(time(), true));
             $this->uid = Crypto::createUID();
         }
         return $this->uid;
@@ -42,17 +41,6 @@ trait ElementTrait
     {
         return $this->parent;
     }
-
-    // public function getclass(): string
-    // {
-    //     if ($this->class === '') {
-    //         $classParts = explode('\\', $this->getFullclass());
-    //         $this->class = array_pop($classParts);
-    //         $this->namespace = implode('\\', $classParts);
-    //     }
-
-    //     return $this->class;
-    // }
 
     public function getClass(): string
     {
