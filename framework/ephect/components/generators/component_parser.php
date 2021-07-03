@@ -197,7 +197,6 @@ class ComponentParser extends Parser
 
                     $list[$i]['parentId'] = $parentIds[$depth];
                     $list[$i]['depth'] = $depth;
-                    // array_push($this->idListByDepth, $i);
 
                     if ($list[$pId]['isSibling']) {
                         $list[$i]['depth'] = $list[$pId]['depth'];
@@ -238,7 +237,5 @@ class ComponentParser extends Parser
         }
 
         $this->list = $list;
-
-        // return $list;
     }
 }

@@ -5,7 +5,6 @@ namespace Ephect\Components\Generators\TokenParsers;
 use Ephect\Components\ComponentEntityInterface;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
-use Ephect\Regisubjecty\ComponentRegisubjecty;
 
 final class ClosedComponentsParser extends AbstractTokenParser
 {
@@ -35,7 +34,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
             $args = '';
             if ($componentArgs !== null) {
-                $args = json_encode($componentArgs);
+                $args = json_encode($componentArgs, JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG);
                 $args = "json_decode('$args')";
             }
 
