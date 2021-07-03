@@ -15,7 +15,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 {
     use ElementTrait;
 
-    // protected $function = null;
     protected $code;
     protected $parentHTML;
     protected $componentList = [];
@@ -129,7 +128,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $result;
     }
 
-    // public static function findComponent(string $componentName, string $motherUID): array
     public function findComponent(string $componentName, string $motherUID): array
     {        
         ComponentRegistry::uncache();
@@ -153,14 +151,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return [$fqFuncName, $filename, $isCached];
     }
 
-    // public static function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
     public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
     {
         include_once CACHE_DIR . $cacheFilename;
-
-        // $flatComp = CodeRegistry::read($fqFunctionName);
-        // $comp = ComponentEntity::buildFromArray($flatComp);
-        // $functionArgs = ($comp !== null) ? $comp->props() : $functionArgs;
 
         $html = '';
         if ($functionArgs === null) {
