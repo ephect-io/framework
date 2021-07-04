@@ -3,6 +3,7 @@
 namespace Ephect\Core;
 
 use Ephect\Registry\FrameworkRegistry;
+use Ephect\Registry\UserLibraryRegistry;
 
 class Autoloader
 {
@@ -19,9 +20,14 @@ class Autoloader
 
     public static function load($className): void
     {
-        $classFilename =  FrameworkRegistry::read($className);
+        
+        $classFilename = FrameworkRegistry::read($className);
+        $root = FRAMEWORK_ROOT;
+        if($classFilename === null) {
+            $classFilename = UserLibraryRegistry::read($className);
+            $root = SRC_ROOT;
+        }
 
-        include FRAMEWORK_ROOT . $classFilename;
+        include $root . $classFilename;
     }
 }
-
