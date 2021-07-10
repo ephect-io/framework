@@ -24,9 +24,9 @@ class FrameworkRegistry extends AbstractStaticRegistry
         if (!FrameworkRegistry::uncache()) {
 
             include EPHECT_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_utils.php';
-        
+
             $frameworkFiles = Utils::walkTreeFiltered(FRAMEWORK_ROOT, ['php']);
-        
+
             foreach ($frameworkFiles as $filename) {
                 if (
                     $filename === 'bootstrap.php'
@@ -35,32 +35,66 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 ) {
                     continue;
                 }
-        
+
                 if (false !== strpos($filename, 'interface')) {
                     list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
-                    FrameworkRegistry::write($fqname, $filename);
+                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
                     continue;
                 }
-        
+
                 if (false !== strpos($filename, 'trait')) {
                     list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
-                    FrameworkRegistry::write($fqname, $filename);
+                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
                     continue;
                 }
-        
+
                 list($namespace, $class) = ElementUtils::getClassDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                 $fqname = $namespace . '\\' . $class;
                 if ($class === '') {
                     list($namespace, $function) = ElementUtils::getFunctionDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $function;
                 }
-                FrameworkRegistry::write($fqname, $filename);
+                if ($fqname !== '\\') {
+                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
+                }
             }
-        
+
+            self::registerUserClasses();
+
             FrameworkRegistry::cache();
         }
-        
+    }
+
+    public static function registerUserClasses(): void
+    {
+        $sourceFiles = Utils::walkTreeFiltered(SRC_ROOT, ['php']);
+
+        foreach ($sourceFiles as $filename) {
+            if (false !== strpos($filename, 'interface')) {
+                list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(SRC_ROOT . $filename);
+                $fqname = $namespace . '\\' . $interface;
+                FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
+                continue;
+            }
+
+            if (false !== strpos($filename, 'trait')) {
+                list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(SRC_ROOT . $filename);
+                $fqname = $namespace . '\\' . $trait;
+                FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
+                continue;
+            }
+
+            list($namespace, $class) = ElementUtils::getClassDefinitionFromFile(SRC_ROOT . $filename);
+            $fqname = $namespace . '\\' . $class;
+            if ($class === '') {
+                list($namespace, $function) = ElementUtils::getFunctionDefinitionFromFile(SRC_ROOT . $filename);
+                $fqname = $namespace . '\\' . $function;
+            }
+            if ($fqname !== '\\') {
+                FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
+            }
+        }
     }
 }

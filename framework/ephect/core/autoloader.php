@@ -20,14 +20,8 @@ class Autoloader
 
     public static function load($className): void
     {
-        
         $classFilename = FrameworkRegistry::read($className);
-        $root = FRAMEWORK_ROOT;
-        if($classFilename === null) {
-            $classFilename = UserLibraryRegistry::read($className);
-            $root = SRC_ROOT;
-        }
 
-        include $root . $classFilename;
+        include $classFilename;
     }
 }

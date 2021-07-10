@@ -16,9 +16,7 @@ include HOOKS_ROOT . 'use_state.php';
 
 use Ephect\Registry\FrameworkRegistry;
 use Ephect\Core\Autoloader;
-use Ephect\Registry\UserLibraryRegistry;
 
 FrameworkRegistry::register();
-UserLibraryRegistry::register();
 
 Autoloader::register();
