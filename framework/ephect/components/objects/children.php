@@ -25,9 +25,7 @@ class Children extends Tree implements ChildrenInterface
 
     public function props(): array
     {
-        $result = [];
-
-        return $result;
+        return $this->props;
     }
 
     public function onrender(): void
