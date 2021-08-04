@@ -21,9 +21,6 @@ final class UseSlotParser extends AbstractTokenParser
 
         $text = $matches[0][0];
 
-        // Remove useSlot from child component
-        $this->html = str_replace($text, "", $this->html);
-
         $useVars = explode(',', $match1);
         $declVars = array_filter($useVars, function ($item) {
             return $item !== '$props' && $item !== '$children';
@@ -70,13 +67,17 @@ final class UseSlotParser extends AbstractTokenParser
 
         $this->useVariables = $declVars;
 
-        $decl2 = implode(' ', $declVars);
+        //$decl2 = implode(' ', $declVars);
+        $decl2 = "";
 
         $useEffect = <<< USEFFECT
-        \Ephect\Hooks\useSlot(function () use ($match1) { $match2 });
+        \Ephect\Hooks\useEffect(function () use ($match1) { $match2 });
         USEFFECT;
 
-        $this->result = "\n\t" . $decl2 . "\n" . $useEffect;
+        $this->result = [
+            $text,
+            "\n\t" . $decl2 . "\n" . $useEffect,
+        ];
 
 
 

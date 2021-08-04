@@ -42,14 +42,15 @@ class SlotsParser extends AbstractTokenParser
         $slotParser = new UseSlotParser($this->component);
         $slotParser->do();
 
-        $decl2 = $slotParser->getResult();
+        [$source, $dest] = $slotParser->getResult();
         $vars = $slotParser->getVariables();
 
         $useVars = array_values($vars);
         $use = count($useVars) > 0 ? 'use(' . implode(', ', $vars) . ') ' : '';
 
+
         if(strpos($parentHtml, "return function () {") > -1) {
-            $parentHtml = str_replace("return function () {", 'return function () use(' . implode(', ', $vars) . ') {', $parentHtml);
+            $parentHtml = str_replace("return function () {", 'return function () ' . $use . ' {', $parentHtml);
         }
         if($p1 = strpos($parentHtml, "return function () use(") > -1) {
             $p1 += 23;
@@ -63,11 +64,16 @@ class SlotsParser extends AbstractTokenParser
         $decl1 = substr($parentHtml, 0, $parentComponent->getBodyStart() + 1);
         $decl3 = substr($parentHtml, $parentComponent->getBodyStart() + 1);
 
-        // // Remove useSlot from child component
-        // $this->html = str_replace($decl2, "", $this->html);
 
-        // Add useSlot in mother component
-        $parentHtml = $decl1 . "\n\t" . $decl2 . "\n" . $decl3;
+        // Remove useSlot from child component
+        if($source !== "" && $source !== null && $dest !== "" && $dest !== null) {
+            $this->html = str_replace($source, "", $this->html);
+
+            // Add useSlot in mother component
+            $parentHtml = $decl1 . "\n\t" . $dest . "\n" . $decl3;
+
+        }
+
 
         if ($parentHtml !== '') {
             Utils::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
