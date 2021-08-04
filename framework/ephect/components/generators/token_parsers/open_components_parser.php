@@ -11,6 +11,7 @@ final class OpenComponentsParser extends AbstractTokenParser
     public function do(null|string|array $parameter = null): void
     {
         $this->result = [];
+        $this->useVariables = $parameter;
      
         $comp = $this->component;
         $comp->resetDeclaration();
@@ -34,7 +35,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             $closer = ((object) $item->getCloser())->text;
             $componentName = $item->getName();
             $componentBody = $item->getContents($subject);
-            $componentArgs = $item->props();
+            $componentArgs = $this->useVariables; //$item->props();
 
 
             if($componentName === 'Fragment') {
@@ -48,10 +49,10 @@ final class OpenComponentsParser extends AbstractTokenParser
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
     
-            $componentArgs = $componentArgs === null ? null : self::doArgumentsToString($componentArgs);
-            $props = (($componentArgs === null) ? "null" : $componentArgs);
+            $propsArgs = $componentArgs === null ? null : self::doArgumentsToString($componentArgs);
+            $props = (($propsArgs === null) ? "null" : $propsArgs);
     
-            $useChildren = $decl->hasArguments() ? " use (\$children) " : ' ';
+            $useChildren = $decl->hasArguments() ? $this->useArguments($componentArgs) : ' ';
     
             $className = $this->component->getFunction() ?: $componentName;
             $classArgs = '[]';
@@ -83,6 +84,22 @@ final class OpenComponentsParser extends AbstractTokenParser
         $this->html = $subject;
     }
     
+    private function useArguments(array $componentArgs): ?string
+    {
+        $result = '';
+
+        $keys = [];
+
+        foreach ($componentArgs as $key => $value) {
+            array_push($keys, "\$" . $key);
+        }
+
+        $result = " use (" . implode(', ', $keys) . ")";
+
+        return $result;
+
+    }
+
     public static function doArgumentsToString(array $componentArgs): ?string
     {
         $result = '';
@@ -91,7 +108,12 @@ final class OpenComponentsParser extends AbstractTokenParser
             if (is_array($value)) {
                 $value = json_encode($value);
             }
-            $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
+            $pair = '"' . $key . '" => "' . urlencode($value) . '", ';
+            if($value[0] === '$') {
+                $pair = '"' . $key . '" => ' . $value . ', ';
+
+            }
+            $result .= $pair;
         }
         $result = ($result === '') ? null : '[' . $result . ']';
 
