@@ -70,8 +70,6 @@ final class OpenComponentsParser extends AbstractTokenParser
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
-
-
             array_push($this->result, $componentName);
 
         };
