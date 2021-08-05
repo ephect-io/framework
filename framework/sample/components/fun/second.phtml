@@ -7,8 +7,9 @@ use function Ephect\Hooks\useSlot;
 function Second()
 {
 
-    useSlot(function() use (/* string */ &$firstname) {
+    useSlot(function() use (/* string */ &$firstname, /* string */ &$adjective) {
         $firstname = "David";
+        $adjective = "stunning";
     });
 
     return (<<< HTML
@@ -24,18 +25,14 @@ function Second()
                 <p>
                     Hello&nbsp;{{ firstname }}!
                 </p>
-                <p>This is reed</p>
-                <p>again</p>
             </section>
         </Block>
         <Block name="second">
             <section>
             <h2>Second</h2>
                 <p>
-                    Me
+                Your computer is <strong> {{ adjective }} </strong>
                 </p>
-                My computer
-                will be stunning
             </section>
         </Block>
         <Block name="javascripts">
