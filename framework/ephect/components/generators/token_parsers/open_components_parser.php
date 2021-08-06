@@ -40,7 +40,7 @@ final class OpenComponentsParser extends AbstractTokenParser
                 return;
             }
 
-            if($componentName === 'Block') {
+            if($componentName === 'Slot') {
                 return;
             }
 

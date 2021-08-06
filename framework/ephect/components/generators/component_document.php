@@ -94,7 +94,7 @@ class ComponentDocument
         $this->list = $parser->getList();
         $this->depths = $parser->getDepths();
 
-        $this->matchesByDepth = $parser->getIdListByDepth(); //$this->sortMatchesByDepth();
+        $this->matchesByDepth = $parser->getIdListByDepth();
         $this->matchesById = $this->sortMatchesById();
         $this->matchesByKey = $this->sortMatchesByKey();
 
@@ -184,7 +184,7 @@ class ComponentDocument
             $parentMatch = $this->getMatchById($parentId);
             $parentReplaced = '';
 
-            if ($parentMatch->getName() !== 'Block') {
+            if ($parentMatch->getName() !== 'Slot') {
                 continue;
             }
 
@@ -210,7 +210,7 @@ class ComponentDocument
                 $childReplacing = '';
 
                 if (
-                    $childMatch->getName() !== 'Block'
+                    $childMatch->getName() !== 'Slot'
                     || $parentMatch->props('name') !== $childMatch->props('name')
                 ) {
                     continue;

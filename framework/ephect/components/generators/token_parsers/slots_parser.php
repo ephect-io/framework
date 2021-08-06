@@ -7,7 +7,7 @@ use Ephect\Components\Generators\ComponentDocument;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 
-class SlotsParser extends AbstractTokenParser
+class MotherSlotsParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {

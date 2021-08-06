@@ -5,15 +5,15 @@ namespace Ephect\Components\Generators;
 use Ephect\Components\FileComponentInterface;
 use Ephect\Components\Generators\TokenParsers\ArgumentsParser;
 use Ephect\Components\Generators\TokenParsers\ArraysParser;
-use Ephect\Components\Generators\TokenParsers\BlocksParser;
 use Ephect\Components\Generators\TokenParsers\ChildrenDeclarationParser;
+use Ephect\Components\Generators\TokenParsers\ChildSlotsParser;
 use Ephect\Components\Generators\TokenParsers\ClosedComponentsParser;
 use Ephect\Components\Generators\TokenParsers\EchoParser;
 use Ephect\Components\Generators\TokenParsers\FragmentsParser;
+use Ephect\Components\Generators\TokenParsers\MotherSlotsParser;
 use Ephect\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Components\Generators\TokenParsers\OpenComponentsParser;
 use Ephect\Components\Generators\TokenParsers\PhpTagsParser;
-use Ephect\Components\Generators\TokenParsers\SlotsParser;
 use Ephect\Components\Generators\TokenParsers\UseEffectParser;
 use Ephect\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Components\Generators\TokenParsers\UsesParser;
@@ -54,17 +54,17 @@ class ParserService
         $this->result = $p->getResult();
     }
 
-    public function doBlocks(FileComponentInterface $component): void
+    public function doChildSlots(FileComponentInterface $component): void
     {
-        $p = new BlocksParser($component);
+        $p = new ChildSlotsParser($component);
         $p->do();
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
     }
 
-    public function doSlots(FileComponentInterface $component): void
+    public function doMotherSlots(FileComponentInterface $component): void
     {
-        $p = new SlotsParser($component);
+        $p = new MotherSlotsParser($component);
         $p->do();
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
