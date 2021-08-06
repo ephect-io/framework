@@ -5,12 +5,12 @@ namespace Ephect\Components\Generators;
 use Ephect\Components\FileComponentInterface;
 use Ephect\Components\Generators\TokenParsers\ArgumentsParser;
 use Ephect\Components\Generators\TokenParsers\ArraysParser;
-use Ephect\Components\Generators\TokenParsers\BlocksParser;
 use Ephect\Components\Generators\TokenParsers\ChildrenDeclarationParser;
+use Ephect\Components\Generators\TokenParsers\ChildSlotsParser;
 use Ephect\Components\Generators\TokenParsers\ClosedComponentsParser;
-use Ephect\Components\Generators\TokenParsers\ComponentsParser;
 use Ephect\Components\Generators\TokenParsers\EchoParser;
 use Ephect\Components\Generators\TokenParsers\FragmentsParser;
+use Ephect\Components\Generators\TokenParsers\MotherSlotsParser;
 use Ephect\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Components\Generators\TokenParsers\OpenComponentsParser;
 use Ephect\Components\Generators\TokenParsers\PhpTagsParser;
@@ -19,8 +19,6 @@ use Ephect\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Components\Generators\TokenParsers\UsesParser;
 use Ephect\Components\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Components\Generators\TokenParsers\ValuesParser;
-use Ephect\IO\Utils;
-use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 
 class ParserService
@@ -56,14 +54,22 @@ class ParserService
         $this->result = $p->getResult();
     }
 
-    public function doBlocks(FileComponentInterface $component): void
+    public function doChildSlots(FileComponentInterface $component): void
     {
-        $p = new BlocksParser($component);
+        $p = new ChildSlotsParser($component);
         $p->do();
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
     }
 
+    public function doMotherSlots(FileComponentInterface $component): void
+    {
+        $p = new MotherSlotsParser($component);
+        $p->do();
+        $this->html = $p->getHtml();
+        $this->result = $p->getResult();
+    }
+    
     public function doUses(FileComponentInterface $component): void
     {
         $p = new UsesParser($component);
@@ -121,6 +127,13 @@ class ParserService
         $this->html = $p->getHtml();
     }
 
+    public function doUseSlot(FileComponentinterface $component): void
+    {
+        $p = new UseSlotParser($component);
+        $p->do();
+        $this->html = $p->getHtml();
+    }
+
     public function doUseVariables(FileComponentinterface $component): void
     {
         $p = new UseVariablesParser($component);
@@ -154,7 +167,7 @@ class ParserService
     public function doOpenComponents(FileComponentinterface $component): void
     {
         $p = new OpenComponentsParser($component);
-        $p->do();
+        $p->do($this->useVariables);
         $this->openComponentList = $p->getResult();
         $this->html = $p->getHtml();
     }

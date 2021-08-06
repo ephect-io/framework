@@ -11,12 +11,12 @@ function First($children)
     <head>
         <meta charset="UTF-8">
         <title>
-            <Block name="title">Welcome!</Block>
+            <Slot name="title">Welcome!</Slot>
         </title>
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <Block name="stylesheets"></Block>
+        <Slot name="stylesheets"></Slot>
     </head>
 
     <body>
@@ -24,14 +24,14 @@ function First($children)
         <HeaderAndFooter>
 
         <div class="App-content">
-            <Block name="main"></Block>
+            <Slot name="main"></Slot>
             {{ children }}
-            <Block name="second"></Block>
+            <Slot name="second"></Slot>
         </div>
 
         </HeaderAndFooter>
         </div>
-        <Block name="javascripts"></Block>
+        <Slot name="javascripts"></Slot>
     </body>
 
     </html>

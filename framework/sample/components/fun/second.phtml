@@ -2,45 +2,42 @@
 
 namespace Fun;
 
-use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useSlot;
 
 function Second()
 {
 
-    useEffect(function() use (/* string */ &$firstname) {
+    useSlot(function() use (/* string */ &$firstname, /* string */ &$adjective) {
         $firstname = "David";
+        $adjective = "stunning";
     });
 
     return (<<< HTML
     <First>
-        <Block name="title">Ephect!</Block>
-        <Block name="stylesheets">
+        <Slot name="title">Ephect!</Slot>
+        <Slot name="stylesheets">
             <link rel="stylesheet" href="/css/index.css" />
             <link rel="stylesheet" href="/css/app.css" />
-        </Block>
-        <Block name="main">
+        </Slot>
+        <Slot name="main">
             <section>
             <h2>Main</h2>
                 <p>
                     Hello&nbsp;{{ firstname }}!
                 </p>
-                <p>This is reed</p>
-                <p>again</p>
             </section>
-        </Block>
-        <Block name="second">
+        </Slot>
+        <Slot name="second">
             <section>
             <h2>Second</h2>
                 <p>
-                    Me
+                Your computer is <strong> {{ adjective }} </strong>
                 </p>
-                My computer
-                will be stunning
             </section>
-        </Block>
-        <Block name="javascripts">
+        </Slot>
+        <Slot name="javascripts">
             <script src="/js/ephect.js"></script>
-        </Block>
+        </Slot>
     </First>
     HTML);
 }
