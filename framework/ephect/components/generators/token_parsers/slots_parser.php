@@ -7,10 +7,21 @@ use Ephect\Components\Generators\ComponentDocument;
 use Ephect\IO\Utils;
 use Ephect\Registry\ComponentRegistry;
 
-class SlotsParser extends AbstractTokenParser
+class MotherSlotsParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
+
+        $slotParser = new UseSlotParser($this->component);
+        $slotParser->do();
+
+        [$source, $dest] = $slotParser->getResult();
+        $vars = $slotParser->getVariables();
+
+        if($source === "" || $source === null) {
+            return;
+        }
+
         ComponentRegistry::uncache();
         $functionFilename = null;
 
@@ -39,11 +50,6 @@ class SlotsParser extends AbstractTokenParser
 
         $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
 
-        $slotParser = new UseSlotParser($this->component);
-        $slotParser->do();
-
-        [$source, $dest] = $slotParser->getResult();
-        $vars = $slotParser->getVariables();
 
         $useVars = array_values($vars);
         $use = count($useVars) > 0 ? 'use(' . implode(', ', $vars) . ') ' : '';

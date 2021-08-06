@@ -128,10 +128,10 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $parser = new ParserService();
 
-        //$parser->doBlocks($this);
-        $parser->doSlots($this);
+        $parser->doMotherSlots($this);
+        $res = $parser->getResult();
+        $didMotherSlots = $res !== "" && $res !== null;
         $this->code = $parser->getHtml();
-        // $this->updateComponent($this);
 
         $parser->doPhpTags($this);
         $this->code = $parser->getHtml();
@@ -162,6 +162,12 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $filename = $this->getFlattenSourceFilename();
         Utils::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
         $this->updateComponent($this);
+
+        if(!$didMotherSlots) {
+            $parser->doChildSlots($this);
+            $this->code = $parser->getHtml();
+            $this->updateComponent($this);
+        }
 
         while($compz = $this->getDeclaration()->getComposition() !== null)
         {

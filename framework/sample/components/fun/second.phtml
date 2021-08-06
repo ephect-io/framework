@@ -14,30 +14,30 @@ function Second()
 
     return (<<< HTML
     <First>
-        <Block name="title">Ephect!</Block>
-        <Block name="stylesheets">
+        <Slot name="title">Ephect!</Slot>
+        <Slot name="stylesheets">
             <link rel="stylesheet" href="/css/index.css" />
             <link rel="stylesheet" href="/css/app.css" />
-        </Block>
-        <Block name="main">
+        </Slot>
+        <Slot name="main">
             <section>
             <h2>Main</h2>
                 <p>
                     Hello&nbsp;{{ firstname }}!
                 </p>
             </section>
-        </Block>
-        <Block name="second">
+        </Slot>
+        <Slot name="second">
             <section>
             <h2>Second</h2>
                 <p>
                 Your computer is <strong> {{ adjective }} </strong>
                 </p>
             </section>
-        </Block>
-        <Block name="javascripts">
+        </Slot>
+        <Slot name="javascripts">
             <script src="/js/ephect.js"></script>
-        </Block>
+        </Slot>
     </First>
     HTML);
 }
