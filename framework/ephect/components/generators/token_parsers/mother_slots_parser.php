@@ -16,7 +16,6 @@ class MotherSlotsParser extends AbstractTokenParser
         $slotParser->do();
 
         [$source, $dest] = $slotParser->getResult();
-        $vars = $slotParser->getVariables();
 
         if($source === "" || $source === null) {
             return;
@@ -50,23 +49,6 @@ class MotherSlotsParser extends AbstractTokenParser
 
         $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
 
-
-        $useVars = array_values($vars);
-        $use = count($useVars) > 0 ? 'use(' . implode(', ', $vars) . ') ' : '';
-
-        if(strpos($parentHtml, "return function () {") > -1) {
-            $parentHtml = str_replace("return function () {", 'return function () ' . $use . ' {', $parentHtml);
-        }
-        
-        if($p1 = strpos($parentHtml, "return function () use(") > -1) {
-            $p1 += 23;
-            $p2 = strpos($parentHtml, ")", $p1);
-            $use1 = substr($parentHtml, $p1, $p2 - $p1);
-            $use2 = $use1 . implode(', ', $vars);
-
-            $parentHtml = str_replace($use1, $use2, $parentHtml);
-        }
-
         $decl1 = substr($parentHtml, 0, $parentComponent->getBodyStart() + 1);
         $decl3 = substr($parentHtml, $parentComponent->getBodyStart() + 1);
 
@@ -88,7 +70,6 @@ class MotherSlotsParser extends AbstractTokenParser
         }
 
         $this->result = $functionFilename;
-
 
     }
 }
