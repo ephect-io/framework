@@ -1,2 +1,86 @@
-# ephect
-A ReactJS-like PHP framework
+# Ephect
+
+Make PHP effective again!
+
+## What is it ?
+
+In short, it's a ReactJS-like PHP framework. It allows you to create views by declaring components just like ReactJS does *today* <sup>1</sup>.
+
+## Requirements
+
+Ephect can pre-compile the site using the command line tool *fcc*. This tool uses a thread-safe paralellism mechanism to compile pages that may contain the same components. This mechanism ensures that there is no so called "*class* has already been declared" error. 
+
+It is not mandatory but recommended to enable this mechanism. Otherwise you can compile pages dynamically by calling your application in the browser.
+
+### PHP thread-safe
+
+If you want to enable the parallelism feature, you must have a ZTS version of PHP. This can be done quite easily by using PhpBrew.
+
+Here is a sample of PHP compilation statement for getting a thread safe version of php-fpm : 
+
+    phpbrew install 8.0.9 +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +fpm +ipc +json +mbregex +mbstring +mhash +pcntl +pcre +pdo +pear +phar +posix +readline +sockets +tokenizer +xml +curl +openssl +zip +sqlite +zts
+
+For installing PhpBrew, please refer to the documentation at [https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew).
+
+### Parallel extension
+
+Ephect uses Parallel extension as thread-safe mechanism. A the time writing, parallel ***cannot*** be installed in PhpBrew just by typing the PhpBrew statement:
+   
+    phpbrew ext install parallel
+
+Instead you need to download the [develop zip archive](https://github.com/krakjoe/parallel/archive/refs/heads/develop.zip) and add the extension to PhpBrew on your own:
+
+    wget https://github.com/krakjoe/parallel/archive/refs/heads/develop.zip
+    unzip develop.zip
+    cd parallel-develop
+    phpize
+    ./configure --enable-parallel
+    make
+    make test
+    make install
+    
+The library will be installed in the right place like: 
+
+    /home/<user>/.phpbrew/php/php-8.0.9/lib/php/extensions/no-debug-zts-20200930/
+
+However you still need to declare the extension:
+
+    echo extension=parallel.so > ~/.phpbrew/php/php-8.0.9/var/db/parallel.ini
+
+## Install the framework
+
+Using Composer just do:
+
+    composer create-project codephoenixorg/ephect *myproject*    
+
+where myproject is the name of your project. 
+
+## Install the sample application
+
+Move to *myproject* directory and type:
+
+    php ./bin/fcc.php -s
+
+You will see a **src** directory in which you will find the standard structure of an ephect application. Ephect doesn't really care of the actual structure provided that it is under **src** directory. It means you can organize your application tree as you wish.
+
+## Pre-compile the application
+
+If you setup PHP-ZTS, good choice, you can generate your application without browser by typing:
+
+    php ./bin/fcc.php -c
+
+You will find the generated application under the directory *cache*.
+
+## Launch the sample
+
+You can test the sample application by using the web server embedded in PHP:
+
+    php -S localhost:8888 -t src/public
+
+## Notes
+
+Ephect is in work in progress stage. This means that there's a lot to do. Breaking changes are yet to come.
+
+<sup>1</sup> by *today* it's meant that Ephect follows the ReactJS paradigm as it is in 2021. Future ReactJS changes may not be taken in account in Ephect framework.
+
+Happy coding again! :)
