@@ -8,7 +8,7 @@ In short, it's a ReactJS-like PHP framework. It allows you to create views by de
 
 ## Requirements
 
-Ephect can pre-compile the site using the command line tool *fcc*. This tool uses a thread-safe paralellism mechanism to compile pages that may contain the same components. This mechanism ensures that there is no so called "*class* has already been declared" error. 
+Ephect can pre-compile the site using the command line tool *fcc*. This tool uses a thread-safe parallelism mechanism to compile pages that may contain the same components. It ensures that there is no so called "*class* has already been declared" error. 
 
 It is not mandatory but recommended to enable this mechanism. Otherwise you can compile pages dynamically by calling your application in the browser.
 
@@ -24,7 +24,7 @@ For installing PhpBrew, please refer to the documentation at [https://github.com
 
 ### Parallel extension
 
-Ephect uses Parallel extension as thread-safe mechanism. A the time writing, parallel ***cannot*** be installed in PhpBrew just by typing the PhpBrew statement:
+Ephect uses Parallel extension as multi-thread mechanism. A the time of writing, Parallel ***cannot*** be installed in PhpBrew just by typing the PhpBrew usual statement:
    
     phpbrew ext install parallel
 
@@ -41,7 +41,7 @@ Instead you need to download the [develop zip archive](https://github.com/krakjo
     
 The library will be installed in the right place like: 
 
-    /home/<user>/.phpbrew/php/php-8.0.9/lib/php/extensions/no-debug-zts-20200930/
+    ~/.phpbrew/php/php-8.0.9/lib/php/extensions/no-debug-zts-20200930/
 
 However you still need to declare the extension:
 
@@ -51,9 +51,9 @@ However you still need to declare the extension:
 
 Using Composer just do:
 
-    composer create-project codephoenixorg/ephect *myproject*    
+    composer create-project codephoenixorg/ephect myproject
 
-where myproject is the name of your project. 
+where *myproject* is the name of your project. 
 
 ## Install the sample application
 
@@ -73,7 +73,7 @@ You will find the generated application under the directory *cache*.
 
 ## Launch the sample
 
-You can test the sample application by using the web server embedded in PHP:
+You can test the sample application by using the PHP embedded web server:
 
     php -S localhost:8888 -t src/public
 
