@@ -1,0 +1,16 @@
+<?php
+
+namespace Fun;
+
+use function Ephect\Hooks\useEffect;
+
+function Hello() {
+
+    useEffect(function() use (/* string */ &$name) {
+        $name = $_GET['name'];
+    });
+    
+    return (<<< HTML
+        Hello {{ name }}
+    HTML);
+}
