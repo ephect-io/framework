@@ -1,4 +1,4 @@
-![Ephect](salamandra.png)
+![Ephect](docs/salamandra.png)
 
 ## What is Ephect ?
 
