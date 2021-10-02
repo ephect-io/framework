@@ -1,4 +1,4 @@
-![Ephect](docs/salamandra.png)
+![Ephect](salamandra.png)
 
 ## What is Ephect ?
 
@@ -87,7 +87,7 @@ The main route shows how to use useEffect and useState hooks all in nesting seve
 
 The Hello route shows a classic query string parameter binding.
 
-The Second route shows how to use useSlot Hook to bind a variable nested inside the parent context.
+The Second route shows how to use useSlot hook to bind a variable nested inside the parent context.
 
 The Info route shows how to make the most simple component without hooks.
 
