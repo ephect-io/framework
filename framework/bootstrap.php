@@ -13,6 +13,7 @@ include EPHECT_ROOT . 'registry' . DIRECTORY_SEPARATOR . 'framework_registry.php
 include HOOKS_ROOT . 'use_effect.php';
 include HOOKS_ROOT . 'use_state.php';
 include HOOKS_ROOT . 'use_slot.php';
+include HOOKS_ROOT . 'use_query_argument.php';
 
 use Ephect\Registry\FrameworkRegistry;
 use Ephect\Core\Autoloader;

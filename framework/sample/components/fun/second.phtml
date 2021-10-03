@@ -2,13 +2,14 @@
 
 namespace Fun;
 
+use function Ephect\Hooks\useQueryArgument;
 use function Ephect\Hooks\useSlot;
 
 function Second()
 {
 
     useSlot(function() use (/* string */ &$firstname, /* string */ &$adjective) {
-        $firstname = "David";
+        $firstname = useQueryArgument('name', "David");
         $adjective = "stunning";
     });
 
