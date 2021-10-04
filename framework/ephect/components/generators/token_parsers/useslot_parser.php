@@ -74,9 +74,18 @@ final class UseSlotParser extends AbstractTokenParser
         \Ephect\Hooks\useEffect(function () use ($match1) { $match2 });
         USEFFECT;
 
+        $uses = '';
+        if(count($this->useTypes)) {
+            foreach($this->useTypes as $use) {
+                $uses .= $use . "\n\t";
+            }
+
+            $uses = "\n\t" . $uses;
+        }
+
         $this->result = [
             $text,
-            "\n\t" . $decl2 . "\n" . $useEffect,
+            $uses . "\n\t" . $decl2 . "\n" . $useEffect,
         ];
 
 

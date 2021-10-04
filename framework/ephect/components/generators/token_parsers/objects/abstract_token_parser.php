@@ -12,13 +12,14 @@ abstract class AbstractTokenParser implements TokenParserInterface
     protected $component = null;
     protected $result = null;
     protected $useVariables = [];
+    protected $useTypes = [];
 
     public function __construct(FileComponentInterface $comp)
     {
         $this->component = $comp;
         $this->html = $comp->getCode();
     }
-    
+
     public function getHtml(): string
     {
         return $this->html;
@@ -34,6 +35,11 @@ abstract class AbstractTokenParser implements TokenParserInterface
         return $this->useVariables;
     }
 
+    public function getUses(): ?array
+    {
+        return $this->useTypes;
+    }
+    
     public function doCache(): bool
     {
         return CodeRegistry::cache();

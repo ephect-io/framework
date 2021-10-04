@@ -18,6 +18,8 @@ final class UsesParser extends AbstractTokenParser
             $componentFunction = $match[2];
 
             $fqFunction = $componentNamespace . '\\' . $componentFunction;
+            $this->useTypes[] = $fqFunction;
+
             $frameworkUse = FrameworkRegistry::read($fqFunction);
             if ($frameworkUse !== null) {
                 continue;

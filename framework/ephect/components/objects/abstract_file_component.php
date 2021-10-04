@@ -128,6 +128,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $parser = new ParserService();
 
+        $parser->doUses($this);
+        $parser->doUsesAs($this);
+
         $parser->doMotherSlots($this);
         $res = $parser->getResult();
         $didMotherSlots = $res !== "" && $res !== null;

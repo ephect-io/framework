@@ -22,6 +22,7 @@ final class UsesAsParser extends AbstractTokenParser
 
             $componentNamespace = ($componentNamespace === '') ? $compNamespace : $componentNamespace;
             $fqFunctionName = $componentNamespace . '\\' . $componentFunction;
+            $this->useTypes[] = $fqFunctionName;
 
             ComponentRegistry::write($componentAlias, $fqFunctionName);
         }
