@@ -9,8 +9,6 @@ class Parser
 {
     protected $html = '';
     protected $component = null;
-    protected $useVariables = [];
-    protected $parentHTML = '';
 
     public function __construct(ComponentInterface $comp)
     {

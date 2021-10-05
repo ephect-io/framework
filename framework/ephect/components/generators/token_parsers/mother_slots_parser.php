@@ -12,7 +12,7 @@ class MotherSlotsParser extends AbstractTokenParser
     public function do(null|string|array $parameter = null): void
     {
 
-        $slotParser = new UseSlotParser($this->component);
+        $slotParser = new UseSlotParser($this->component, $this->parent);
         $slotParser->do();
 
         [$source, $dest] = $slotParser->getResult();
@@ -42,6 +42,7 @@ class MotherSlotsParser extends AbstractTokenParser
             return;
         }
 
+        $parentNamespace = "namespace " . $parentComponent->getNamespace() . ";\n";
         $parentFilename = $parentComponent->getFlattenSourceFilename();
         $functionFilename = $parentFilename;
         $parentDoc = new ComponentDocument($parentComponent);
@@ -49,6 +50,7 @@ class MotherSlotsParser extends AbstractTokenParser
 
         $parentHtml = $parentDoc->replaceMatches($doc, $this->html);
 
+        $decl0 = $parentNamespace;
         $decl1 = substr($parentHtml, 0, $parentComponent->getBodyStart() + 1);
         $decl3 = substr($parentHtml, $parentComponent->getBodyStart() + 1);
 
@@ -56,6 +58,19 @@ class MotherSlotsParser extends AbstractTokenParser
         if($source !== "" && $source !== null && $dest !== "" && $dest !== null) {
             $this->html = str_replace($source, "", $this->html);
 
+            $uses = '';
+            if(count($this->parent->getUses())) {
+                foreach($this->parent->getUses() as $use) {
+                    $uses .= "\tuse " . $use . ";\n";
+                }
+    
+                $uses = "\n" . $uses;
+            }
+
+            $decl0 .= $uses;
+
+            $decl1 = str_replace($parentNamespace, $decl0, $decl1);
+            
             // Add useSlot in mother component
             $parentHtml = $decl1 . "\n\t" . $dest . "\n" . $decl3;
         }

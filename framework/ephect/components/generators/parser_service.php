@@ -21,15 +21,28 @@ use Ephect\Components\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Components\Generators\TokenParsers\ValuesParser;
 use Ephect\Registry\ComponentRegistry;
 
-class ParserService
+class ParserService implements ParserServiceInterface
 {
+
+
     protected $component = null;
     protected $useVariables = [];
+    protected $useTypes = [];
     protected $html = '';
     protected $children = null;
     protected $componentList = [];
     protected $openComponentList = [];
     protected $result = null;
+
+    public function getVariables(): ?array
+    {
+        return $this->useVariables;
+    }
+
+    public function getUses(): ?array
+    {
+        return $this->useTypes;
+    }
 
     public function getResult(): null|string|array|bool
     {
@@ -64,7 +77,7 @@ class ParserService
 
     public function doMotherSlots(FileComponentInterface $component): void
     {
-        $p = new MotherSlotsParser($component);
+        $p = new MotherSlotsParser($component, $this);
         $p->do();
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
@@ -74,12 +87,14 @@ class ParserService
     {
         $p = new UsesParser($component);
         $p->do();
+        $this->useTypes = array_merge($this->useTypes, $p->getUses());
     }
 
     public function doUsesAs(FileComponentInterface $component): void
     {
         $p = new UsesAsParser($component);
         $p->do();
+        $this->useTypes = array_merge($this->useTypes, $p->getUses());
     }
 
     public function doPhpTags(FileComponentinterface $component): void
