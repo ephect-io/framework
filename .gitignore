@@ -1,3 +1,4 @@
+.idea/
 .vscode/
 nbproject/
 runtime/*
@@ -11,3 +12,4 @@ docker/
 .devcontainer/
 docker-compose.yml
 src/*
+framework/phink
