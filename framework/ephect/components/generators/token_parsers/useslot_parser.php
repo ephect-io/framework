@@ -79,7 +79,5 @@ final class UseSlotParser extends AbstractTokenParser
             "\n\t" . $decl2 . "\n" . $useEffect,
         ];
 
-
-
     }
 }
