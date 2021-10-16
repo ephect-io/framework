@@ -11,13 +11,10 @@ if($document_root === '') {
 $document_root = dirname(dirname($document_root)) . DIRECTORY_SEPARATOR;
 
 define('IS_WEB_APP', $app_is_web);
+define('IS_PHAR_APP', (\Phar::running() !== ''));
 define('DOCUMENT_ROOT', $document_root);
 
 define('SITE_ROOT', DOCUMENT_ROOT);
-define('FRAMEWORK_ROOT', SITE_ROOT . 'framework' . DIRECTORY_SEPARATOR);
-define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
-define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
-define('PLUGINS_ROOT', FRAMEWORK_ROOT . 'plugins' . DIRECTORY_SEPARATOR);
 define('SRC_ROOT', SITE_ROOT .  'src' . DIRECTORY_SEPARATOR);
 define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
 define('APP_ROOT', SRC_ROOT . APP_DIR);
@@ -35,6 +32,29 @@ define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
 define('ROUTES_JSON', RUNTIME_DIR . 'routes.json');
+
+define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+
+define('FRAMEWORK_ROOT', SITE_ROOT . FRAMEWORK . DIRECTORY_SEPARATOR);
+define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
+define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
+define('PLUGINS_ROOT', FRAMEWORK_ROOT . 'plugins' . DIRECTORY_SEPARATOR);
+
+$appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
+define('APP_NAME', $appname);
+// define('EPHECT_VENDOR_SRC', 'vendor' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
+// define('EPHECT_VENDOR_SRC', 'framework' . DIRECTORY_SEPARATOR);
+define('EPHECT_VENDOR_SRC', FRAMEWORK_ROOT);
+define('EPHECT_VENDOR_LIB', EPHECT_VENDOR_SRC . 'ephect' . DIRECTORY_SEPARATOR);
+define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'widgets' . DIRECTORY_SEPARATOR);
+define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'plugins' . DIRECTORY_SEPARATOR);
+define('EPHECT_VENDOR_APPS', EPHECT_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
+define('EPHECTJS_VENDOR', EPHECT_VENDOR_SRC . 'phinkjs' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
+// define('EPHECT_ROOT', SITE_ROOT . EPHECT_VENDOR_LIB);
+define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
+define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
+define('EPHECT_APPS_ROOT', SITE_ROOT . EPHECT_VENDOR_APPS);
+define('EPHECTJS_ROOT', SITE_ROOT . EPHECTJS_VENDOR);
 
 define('CLASS_EXTENSION', '.class.php');
 define('PREHTML_EXTENSION', '.phtml');
@@ -87,3 +107,17 @@ define('REL_RUNTIME_CSS_DIR', 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTOR
 define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
 define('RUNTIME_CSS_DIR', DOCUMENT_ROOT . REL_RUNTIME_CSS_DIR);
 
+/**
+ * TO BE TESTED ON SUBDIRECTORY
+ */
+// $hostPort = explode(':', HTTP_HOST);
+// $is127 = (($host = array_shift($hostPort) . (isset($hostPort[1]) ? $port = ':' . $hostPort[1] : $port = '') == '127.0.0.1' . $port) ? $hostname = 'localhost' : $hostname = $host) !== $host;
+// $isIndex = (((strpos(REQUEST_URI, 'index.php')  > -1) ? $requestUri = str_replace('index.php', '', REQUEST_URI) : $requestUri = REQUEST_URI) !== REQUEST_URI);
+
+// if ($is127 || $isIndex) {
+//     header('Location: //' . $hostname . $port . $requestUri);
+//     exit(302);
+// }
+/**
+ * END
+ */
