@@ -2,12 +2,14 @@
 
 namespace Ephect\Web;
 
+use Ephect\CLI\Application as CLIApplication;
 use Ephect\Components\Compiler;
 use Ephect\Components\Component;
 use Ephect\Core\AbstractApplication;
 use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
+use Ephect\Registry\Registry;
 
 class Application extends AbstractApplication
 {
@@ -19,7 +21,7 @@ class Application extends AbstractApplication
         $constants['DOCUMENT_ROOT'] = DOCUMENT_ROOT;
         $constants['HTTP_PROTOCOL'] = HTTP_PROTOCOL;
         $constants['SRC_ROOT'] = SRC_ROOT;
-        $constants['PHINK_ROOT'] = PHINK_ROOT;
+        $constants['EPHECT_ROOT'] = EPHECT_ROOT;
         $constants['APP_NAME'] = APP_NAME;
         $constants['APP_ROOT'] = APP_ROOT;
         $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
@@ -55,11 +57,11 @@ class Application extends AbstractApplication
         $constants['ROOT_NAMESPACE'] = ROOT_NAMESPACE;
         $constants['ROOT_PATH'] = ROOT_PATH;
 
-        TRegistry::write('console', 'buffer', $constants);
+        Registry::write('console', 'buffer', $constants);
 
-        \Phink\UI\TConsoleApplication::writeLine('Application constants are :');
+        CLIApplication::writeLine('Application constants are :');
         foreach ($constants as $key => $value) {
-            \Phink\UI\TConsoleApplication::writeLine($key . ' => ' . $value);
+            CLIApplication::writeLine($key . ' => ' . $value);
         }
 
         return $constants;
