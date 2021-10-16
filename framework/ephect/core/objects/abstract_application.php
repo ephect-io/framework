@@ -153,7 +153,7 @@ abstract class AbstractApplication extends Element
             '',
             'Display the data connections registered.',
             function (callable $callback = null) {
-                $data = TRegistry::item('connections');
+                $data = Registry::item('connections');
                 $this->writeLine($data);
 
                 if ($callback !== null) {
@@ -237,8 +237,8 @@ abstract class AbstractApplication extends Element
                 return;
             }
 
-            $this->appName = TRegistry::read('application', 'name');
-            $this->appTitle = TRegistry::read('application', 'title');
+            $this->appName = Registry::read('application', 'name');
+            $this->appTitle = Registry::read('application', 'title');
 
         } catch (\Throwable $ex) {
             $this->writeException($ex);
@@ -264,7 +264,7 @@ abstract class AbstractApplication extends Element
     public function getName(): string
     {
         if(empty($this->appName) || $this->appName == 'app') {
-            $this->appName = TRegistry::ini('application', 'name');
+            $this->appName = Registry::ini('application', 'name');
         }
 
         return $this->appName;
@@ -307,7 +307,7 @@ abstract class AbstractApplication extends Element
     //             call_user_func($statement, $callback, $arg);
     //         }
 
-    //         return TRegistry::read('console', 'buffer');
+    //         return Registry::read('console', 'buffer');
     //     }
     // }
 
@@ -329,7 +329,7 @@ abstract class AbstractApplication extends Element
     public static function setExecutionMode($myExecutionMode): void
     {
         if (!$myExecutionMode) {
-            $myExecutionMode = (APP_IS_WEB) ? 'debug' : 'prod';
+            $myExecutionMode = (IS_WEB_APP) ? 'debug' : 'prod';
         }
 
         $prod = ($myExecutionMode == 'prod');
