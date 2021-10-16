@@ -10,23 +10,39 @@ use Ephect\IO\Utils;
 
 class Program extends Application
 {
+
     public static function main($argv, $argc)
     {
-        (new Program)->run($argv);
+        (new Program($argc, $argv));
     }
 
-    public function run(?array ...$params): void
+    public function __construct($argc, $argv)
     {
-        $argv = $params[0];
+        $dir = dirname(__FILE__);
+        parent::__construct($argv, $argc, $dir);
+    }
 
-        $arg1 = !isset($argv[1]) ? null : $argv[1];
-        if ($arg1 === '-c') {
-            $this->compile();
-        }
+    public function ignite(): void {
+        parent::ignite();
 
-        if ($arg1 === '-s') {
-            $this->sample();
-        }
+        $this->setCommand(
+            'compile',
+            'c',
+            'compile all components of the application so they are readable by PHP processor',
+            function () {
+                $this->compile();
+            }
+        );
+
+        $this->setCommand(
+            'sample',
+            's',
+            'create the sample application',
+            function () {
+                $this->sample();
+            }
+        );
+
     }
 
     public function sample(): void
