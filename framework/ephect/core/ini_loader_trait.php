@@ -6,11 +6,11 @@ use Ephect\Registry\Registry;
 
 trait IniLoaderTrait
 {
-    public function loadINI(string $path = ''): void
+    public function loadINI(string $path = ''): bool
     {
         $ini = null;
         if (!file_exists($path . 'config/app.ini')) {
-            return;
+            return false;
         }
 
         $ini = parse_ini_file($path  . 'config/app.ini', TRUE, INI_SCANNER_TYPED);
@@ -42,6 +42,7 @@ trait IniLoaderTrait
             }
             $dataDir->close();
         }
-    }
 
+        return true;
+    }
 }
