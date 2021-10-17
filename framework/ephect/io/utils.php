@@ -89,4 +89,31 @@ class Utils
 
         return $result;
     }
+
+    /**
+     * Should be replaced by realpath()
+     *
+     * @param string $path
+     * @return void
+     */
+    public static function reducePath(string $path)
+    {
+        $result = '';
+        $array = explode(DIRECTORY_SEPARATOR, $path);
+        
+        $c = count($array);
+        $offset = 1;
+        for($i = 0; $i < $c; $i++) {
+            if($array[$i] == '..') {
+                unset($array[$i]);
+                unset($array[$i - $offset]);
+                $offset += 2;
+            }
+        }
+        
+        
+        $result = implode(DIRECTORY_SEPARATOR, $array);
+        
+        return $result;
+    }
 }
