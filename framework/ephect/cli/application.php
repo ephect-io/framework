@@ -3,6 +3,9 @@
 namespace Ephect\CLI;
 
 use Ephect\Core\AbstractApplication;
+use Ephect\IO\Utils;
+use Ephect\Utils\Zip;
+use Ephect\Web\Curl;
 
 class Application extends AbstractApplication
 {
@@ -40,7 +43,7 @@ class Application extends AbstractApplication
 
         $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
         $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
-        $lib = 'ephect' . DIRECTORY_SEPARATOR . 'phink_library.php';
+        $lib = 'ephect' . DIRECTORY_SEPARATOR . 'ephect_library.php';
 
         $framework_dir = $vendor_dir;
 
@@ -48,7 +51,7 @@ class Application extends AbstractApplication
 
         $script_root = '.' . $scriptDir;
         $site_root = $script_root;
-        $phink_root = \Phar::running();
+        $ephect_root = \Phar::running();
 
         if (!IS_PHAR_APP) {
             $script_root = $scriptDir;
@@ -58,29 +61,29 @@ class Application extends AbstractApplication
                 if (file_exists($site_root . $portable_dir . $lib)) {
                     $framework_dir = $portable_dir;
                 }
-                $phink_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
-                $phink_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
+                $ephect_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
+                $ephect_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
 
-                $phink_root = @realpath($site_root . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'ephect') . DIRECTORY_SEPARATOR;
+                $ephect_root = @realpath($site_root . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'ephect') . DIRECTORY_SEPARATOR;
             } else {
                 $site_root =  $siteDir;
                 if (file_exists($site_root . $portable_dir . $lib)) {
                     $framework_dir = $portable_dir;
                 }
-                $phink_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
-                $phink_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
+                $ephect_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
+                $ephect_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
 
-                $phink_root = $site_root . $phink_vendor_lib;
+                $ephect_root = $site_root . $ephect_vendor_lib;
             }
         }
 
         // define('EPHECT_VENDOR_SRC', $framework_dir);
-        // define('EPHECT_VENDOR_LIB', $phink_vendor_lib);
-        // define('EPHECT_VENDOR_APPS', $phink_vendor_apps);
+        // define('EPHECT_VENDOR_LIB', $ephect_vendor_lib);
+        // define('EPHECT_VENDOR_APPS', $ephect_vendor_apps);
 
         define('SCRIPT_ROOT', $script_root);
         // define('SITE_ROOT', $site_root);
-        // define('EPHECT_ROOT', $phink_root);
+        // define('EPHECT_ROOT', $ephect_root);
 
         // define('EPHECT_APPS_ROOT', SITE_ROOT . EPHECT_VENDOR_APPS);
         // define('SRC_ROOT', SITE_ROOT . 'src' . DIRECTORY_SEPARATOR);
@@ -120,7 +123,7 @@ class Application extends AbstractApplication
         self::$instance->run($params);
     }
 
-    public function run(?array ...$params) : void
+    public function run(?array ...$params): void
     {
     }
 
@@ -148,7 +151,7 @@ class Application extends AbstractApplication
             $this->setCommand(
                 'require-master',
                 '',
-                'Download the ZIP file of the master branch of Phink framework.',
+                'Download the ZIP file of the master branch of ephect framework.',
                 function () {
                     $this->_requireMaster();
                 }
@@ -191,21 +194,21 @@ class Application extends AbstractApplication
         );
 
         $this->setCommand(
-            'display-phink-tree',
+            'display-ephect-tree',
             '',
-            'Display the tree of the Phink framework.',
+            'Display the tree of the ephect framework.',
             function () {
-                $this->displayPhinkTree();
+                $this->displayephectTree();
             }
         );
 
         $this->setCommand(
             'display-master-tree',
             '',
-            'Display the tree of the master branch of Phink framework previously downloaded.',
+            'Display the tree of the master branch of ephect framework previously downloaded.',
             function () {
                 try {
-                    $this->displayTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect');
+                    $this->displayTree('master' . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect');
                 } catch (\Throwable $ex) {
                     $this->writeException($ex);
                 }
@@ -260,7 +263,9 @@ class Application extends AbstractApplication
                     }
 
                     break;
-                } elseif ($this->_argv[$i] == '-' . $short) {
+                }
+
+                if ($this->_argv[$i] == '-' . $short) {
                     $isFound = true;
 
                     $sa = explode('=', $this->_argv[$i]);
@@ -283,8 +288,8 @@ class Application extends AbstractApplication
         }
     }
 
-    protected function displayConstants(): array 
-    { 
+    protected function displayConstants(): array
+    {
         try {
             $constants = [];
             $constants['APP_NAME'] = APP_NAME;
@@ -326,7 +331,7 @@ class Application extends AbstractApplication
         }
     }
 
-  private function _requireMaster(): \stdClass
+    private function _requireMaster(): object
     {
         $result = [];
 
@@ -338,37 +343,37 @@ class Application extends AbstractApplication
 
         $master = $libRoot . 'master';
         $filename = $master . '.zip';
-        $phinkDir = $master . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
+        $ephectDir = $master . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
 
         $tree = [];
 
         if (!file_exists($filename)) {
-            self::writeLine('Downloading Phink github master');
-            $curl = new TCurl();
-            $result = $curl->request('https://codeload.github.com/CodePhoenixOrg/Phink/zip/master');
+            self::writeLine('Downloading ephect github master');
+            $curl = new Curl();
+            $result = $curl->request('https://codeload.github.com/CodePhoenixOrg/ephect/zip/master');
             file_put_contents($filename, $result->content);
         }
 
         if (file_exists($filename)) {
-            self::writeLine('Inflating Phink master archive');
-            $zip = new \Phink\Utils\TZip();
+            self::writeLine('Inflating ephect master archive');
+            $zip = new Zip();
             $zip->inflate($filename);
         }
 
         if (file_exists($master)) {
-            $tree = \Phink\Utils\TFileUtils::walkTree($phinkDir, ['php']);
+            $tree = Utils::walkTree($ephectDir, ['php']);
         }
 
-        $result = ['path' => $phinkDir, 'tree' => $tree];
+        $result = ['path' => $ephectDir, 'tree' => $tree];
 
         return (object) $result;
     }
 
-    private function _requireVendor(string $path = ''): \stdClass
+    private function _requireVendor(string $path = ''): object
     {
         $result = [];
 
-        $tree = \Phink\Utils\TFileUtils::walkTree(EPHECT_ROOT, ['php']);
+        $tree = Utils::walkTree(EPHECT_ROOT, ['php']);
 
         $result = ['path' => EPHECT_ROOT, 'tree' => $tree];
 
@@ -383,17 +388,17 @@ class Application extends AbstractApplication
 
     public function makeMasterPhar(): void
     {
-        $phinkTree = $this->_requireMaster();
-        $this->_makePhar($phinkTree);
+        $ephectTree = $this->_requireMaster();
+        $this->_makePhar($ephectTree);
     }
 
     public function makeVendorPhar(): void
     {
-        $phinkTree = $this->_requireVendor();
-        $this->_makePhar($phinkTree);
+        $ephectTree = $this->_requireVendor();
+        $this->_makePhar($ephectTree);
     }
 
-    private function _makePhar(\stdClass $phinkTree): void
+    private function _makePhar(object $ephectTree): void
     {
         try {
 
@@ -428,14 +433,14 @@ class Application extends AbstractApplication
             $this->writeLine('APP_DIR::' . $this->appDirectory);
             $this->addPharFiles();
 
-            $phinkDir = $phinkTree->path;
-            $phink_builder = $phinkDir . 'phink_library.php';
+            $ephectDir = $ephectTree->path;
+            $ephect_builder = $ephectDir . 'ephect_library.php';
 
-            $phink_builder = \Phink\Utils\TFileUtils::relativePathToAbsolute($phink_builder);
-            $this->addFileToPhar($phink_builder, "phink_library.php");
+            $ephect_builder = Utils::reducePath($ephect_builder);
+            $this->addFileToPhar($ephect_builder, "ephect_library.php");
 
-            foreach ($phinkTree->tree as $file) {
-                $filename = $phinkTree->path . $file;
+            foreach ($ephectTree->tree as $file) {
+                $filename = $ephectTree->path . $file;
                 $filename = realpath($filename);
                 $info = pathinfo($file, PATHINFO_BASENAME);
 
@@ -470,7 +475,7 @@ class Application extends AbstractApplication
     public function addPharFiles(): void
     {
         try {
-            $tree = \Phink\Utils\TFileUtils::walkTree($this->appDirectory, ['php']);
+            $tree = Utils::walkTree($this->appDirectory, ['php']);
 
             if (isset($tree[$this->appDirectory . $this->scriptName])) {
                 unset($tree[$this->appDirectory . $this->scriptName]);
@@ -484,18 +489,18 @@ class Application extends AbstractApplication
         }
     }
 
-    public function displayPhinkTree(): void
+    public function displayephectTree(): void
     {
         // $tree = [];
-        // \Phink\Utils\TFileUtils::walkTree(EPHECT_ROOT, $tree);
-        $tree = \Phink\Utils\TFileUtils::walkTree(EPHECT_ROOT);
+        // \ephect\Utils\TFileUtils::walkTree(EPHECT_ROOT, $tree);
+        $tree = Utils::walkTree(EPHECT_ROOT);
 
         $this->writeLine($tree);
     }
 
     public function displayTree($path): void
     {
-        $tree = \Phink\Utils\TFileUtils::walkTree($path);
+        $tree = Utils::walkTree($path);
         $this->writeLine($tree);
     }
 
