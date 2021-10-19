@@ -4,19 +4,14 @@ namespace Ephect\Utils;
 
 use ZipArchive;
 
-/**
- * Description of zip
- *
- * @author dpjb
- */
 class Zip
 {
     //put your code here
     function inflate($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true)
     {
-        $ar = new ZipArchive;
-        
-        if (!$zip = \zip_open($src_file)) {
+        $zip = new ZipArchive;
+
+        if (!$zip->open($src_file)) {
             return false;
         }
 
@@ -29,44 +24,21 @@ class Zip
         }
 
         // For every file in the zip-packet
-        while ($zip_entry = \zip_read($zip)) {
-            // Now we're going to create the directories in the destination directories
+        for ($i = 0; $i < $zip->numFiles; $i++) {
 
-            // If the file is not in the root dir
-            $pos_last_slash = strrpos(\zip_entry_name($zip_entry), "/");
+            $filename = $zip->statIndex($i)['name'];
+            $pos_last_slash = strrpos($filename, "/");
             if ($pos_last_slash !== false) {
                 // Create the directory where the zip-entry should be saved (with a "/" at the end)
-                $path = $dest_dir . substr(\zip_entry_name($zip_entry), 0, $pos_last_slash + 1);
+                $path = $dest_dir . substr($filename, 0, $pos_last_slash + 1);
                 if (!file_exists($path)) {
                     mkdir($path, 0777, true);
                 }
             }
 
-            // Open the entry
-            if (\zip_entry_open($zip, $zip_entry, "r")) {
-
-                // The name of the file to save on the disk
-                $file_name = $dest_dir . \zip_entry_name($zip_entry);
-
-                echo $file_name . PHP_EOL;
-
-                // Check if the files should be overwritten or not
-                if (($overwrite === true || ($overwrite === false && !file_exists($file_name)))) {
-                    // Get the content of the zip entry
-                    $size = \zip_entry_filesize($zip_entry);
-                    $fstream = \zip_entry_read($zip_entry, $size);
-
-                    if ($size > 0) {
-                        file_put_contents($file_name, $fstream);
-                    }
-                }
-
-                // Close the entry
-                \zip_entry_close($zip_entry);
-            }
+            $zip->extractTo($dest_dir, $filename);
         }
-        // Close the zip-file
-        \zip_close($zip);
+        $zip->close();
 
         return true;
     }
