@@ -369,20 +369,20 @@ class Application extends AbstractApplication
         return (object) $result;
     }
 
-    private function _requireVendor(string $path = ''): object
+    private function _requireTree(string $treePath): object
     {
         $result = [];
 
-        $tree = Utils::walkTree(EPHECT_ROOT, ['php']);
+        $tree = Utils::walkTreeFiltered($treePath, ['php']);
 
-        $result = ['path' => EPHECT_ROOT, 'tree' => $tree];
+        $result = ['path' => $treePath, 'tree' => $tree];
 
         return (object) $result;
     }
 
     public function addFileToPhar($file, $name): void
     {
-        $this->writeLine("Adding %s as %s", $file, $name);
+        $this->writeLine("Adding %s", $name);
         $this->_phar->addFile($file, $name);
     }
 
@@ -394,11 +394,10 @@ class Application extends AbstractApplication
 
     public function makeVendorPhar(): void
     {
-        $ephectTree = $this->_requireVendor();
-        $this->_makePhar($ephectTree);
+        $this->_makePhar();
     }
 
-    private function _makePhar(object $ephectTree): void
+    private function _makePhar(): void
     {
         try {
 
@@ -433,19 +432,27 @@ class Application extends AbstractApplication
             $this->writeLine('APP_DIR::' . $this->appDirectory);
             $this->addPharFiles();
 
-            $ephectDir = $ephectTree->path;
-            $ephect_builder = $ephectDir . 'ephect_library.php';
+            $ephectTree = $this->_requireTree(EPHECT_ROOT);
 
-            $ephect_builder = Utils::reducePath($ephect_builder);
-            $this->addFileToPhar($ephect_builder, "ephect_library.php");
+            $this->addFileToPhar(FRAMEWORK_ROOT . 'ephect_library.php', "ephect_library.php");
 
             foreach ($ephectTree->tree as $file) {
-                $filename = $ephectTree->path . $file;
-                $filename = realpath($filename);
-                $info = pathinfo($file, PATHINFO_BASENAME);
-
-                $this->addFileToPhar($filename, $info);
+                $filepath = $ephectTree->path . $file;
+                $filepath = realpath($filepath);
+                $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
+ 
+                $this->addFileToPhar($filepath, $filename);
             }
+
+            $hooksTree = $this->_requireTree(HOOKS_ROOT);
+         
+            foreach ($hooksTree->tree as $file) {
+                $filepath = $hooksTree->path . $file;
+                $filepath = realpath($filepath);
+                $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
+ 
+                $this->addFileToPhar($filepath, $filename);
+            }   
 
             // Create a custom stub to add the shebang
             $execHeader = "#!/usr/bin/env php \n";
@@ -475,7 +482,7 @@ class Application extends AbstractApplication
     public function addPharFiles(): void
     {
         try {
-            $tree = Utils::walkTree($this->appDirectory, ['php']);
+            $tree = Utils::walkTreeFiltered($this->appDirectory, ['php']);
 
             if (isset($tree[$this->appDirectory . $this->scriptName])) {
                 unset($tree[$this->appDirectory . $this->scriptName]);
