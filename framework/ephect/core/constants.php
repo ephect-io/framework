@@ -12,6 +12,8 @@ $document_root = dirname(dirname($document_root)) . DIRECTORY_SEPARATOR;
 
 define('IS_WEB_APP', $app_is_web);
 define('IS_PHAR_APP', (\Phar::running() !== ''));
+define('IS_CLI_APP', (\Phar::running() === '') && !IS_WEB_APP);
+
 define('DOCUMENT_ROOT', $document_root);
 
 define('SITE_ROOT', DOCUMENT_ROOT);
@@ -33,9 +35,15 @@ define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
 define('ROUTES_JSON', RUNTIME_DIR . 'routes.json');
 
-define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+if(IS_WEB_APP || IS_CLI_APP) {
+    define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+}
 
-define('FRAMEWORK_ROOT', SITE_ROOT . FRAMEWORK . DIRECTORY_SEPARATOR);
+if(IS_PHAR_APP) {
+    define('FRAMEWORK', 'framework');
+}
+
+define('FRAMEWORK_ROOT', SITE_ROOT .  FRAMEWORK . DIRECTORY_SEPARATOR);
 define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
 define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
 define('PLUGINS_ROOT', FRAMEWORK_ROOT . 'plugins' . DIRECTORY_SEPARATOR);
