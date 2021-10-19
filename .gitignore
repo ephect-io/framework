@@ -12,5 +12,4 @@ docker/
 .devcontainer/
 docker-compose.yml
 src/*
-framework/phink
-framework/apps
+phink
