@@ -15,10 +15,10 @@ trait IniLoaderTrait
 
         $ini = parse_ini_file($path  . 'config/app.ini', TRUE, INI_SCANNER_TYPED);
         if(isset($ini['application']['name'])) {
-            Registry::write('Application', 'name', $ini['application']['name']);
+            Registry::write('application', 'name', $ini['application']['name']);
         }
         if(isset($ini['application']['title'])) {
-            Registry::write('Application', 'title', $ini['application']['title']);
+            Registry::write('application', 'title', $ini['application']['title']);
         }
         
         foreach($ini as $key=>$values) {
