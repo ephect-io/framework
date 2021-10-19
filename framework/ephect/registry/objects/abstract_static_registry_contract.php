@@ -5,7 +5,8 @@ namespace Ephect\Registry;
 use Ephect\ElementTrait;
 use Ephect\IO\Utils;
 
-abstract class AbstractStaticRegistryContract extends AbstractRegistryContract implements AbstractRegistryInterface {    
+abstract class AbstractStaticRegistryContract extends AbstractRegistryContract
+{
     private $entries = [];
     private $isLoaded = false;
     private $baseDirectory = CACHE_DIR;
@@ -18,7 +19,9 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
     {
     }
 
-    protected function _clear(): void { }
+    protected function _clear(): void
+    {
+    }
 
     abstract public static function getInstance(): AbstractRegistryInterface;
 
@@ -84,7 +87,7 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
         $json = Utils::safeRead($registryFilename);
         $this->isLoaded = $json !== null;
 
-        if($this->isLoaded) {
+        if ($this->isLoaded) {
             $this->entries = json_decode($json, JSON_OBJECT_AS_ARRAY);
         }
 
@@ -98,11 +101,9 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
 
     protected function _getCacheFileName(): string
     {
-        if($this->cacheFilename === '')
-        {
+        if ($this->cacheFilename === '') {
             $fileName = str_replace('\\', '_',  get_class($this));
-            $this->cacheFilename =$this->baseDirectory . strtolower($fileName) . '.json';
-             
+            $this->cacheFilename = $this->baseDirectory . strtolower($fileName) . '.json';
         }
 
         return $this->cacheFilename;
@@ -151,7 +152,7 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract i
     {
         static::getInstance()->_delete($key);
     }
-    
+
     public static function exists(string $key): bool
     {
         return static::getInstance()->_exists($key);
