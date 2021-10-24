@@ -1,17 +1,17 @@
-.idea/
-.vscode/
-.devcontainer/
+/.idea/
+/.vscode/
+/.devcontainer/
 *.code-workspace
-nbproject/
+/nbproject/
 
-docker/
+/docker/
 docker-compose.yml
 
-vendor/
+/vendor/
 
-runtime/
-cache/
-static/
+/runtime/
+/cache/*
+/static/
 src/
 build/
 
