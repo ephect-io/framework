@@ -2,12 +2,15 @@
 
 namespace Ephect\Core;
 
+use Ephect\Apps\Egg\EggLib;
 use Ephect\CLI\Application;
 use Ephect\CLI\PharInterface;
 use Ephect\Components\Compiler;
 use Ephect\IO\Utils;
+use PharFileInfo;
 
 include \Phar::running() ? 'ephect_library.php' : dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'bootstrap.php';
+include 'lib.php';
 
 class Program extends Application implements PharInterface
 {
@@ -20,11 +23,33 @@ class Program extends Application implements PharInterface
     public function __construct($argc, $argv)
     {
         $dir = dirname(__FILE__);
+
+        $dir = ($dir === '/') ? './' : $dir;
         parent::__construct($argv, $argc, $dir);
     }
 
     public function ignite(): void {
         parent::ignite();
+
+        $egg = new EggLib($this);
+
+        $this->setCommand(
+            'create',
+            '',
+            'Create the application tree.',
+            function () use ($egg) {
+                $egg->createTree();
+            }
+        );            
+
+        $this->setCommand(
+            'delete',
+            '',
+            'Delete the application tree.',
+            function () use($egg) {
+                $egg->deleteTree();
+            }
+        );
 
         $this->setCommand(
             'compile',

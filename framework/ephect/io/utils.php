@@ -66,6 +66,29 @@ class Utils
         return $result;
     }
 
+    public static function safeRmdir($src): bool
+    {
+        if (!file_exists($src)) {
+            return false;
+        }
+
+        $dir = opendir($src);
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                $full = $src . DIRECTORY_SEPARATOR . $file;
+                if (is_dir($full)) {
+                    self::safeRmdir($full);
+                } else {
+                    unlink($full);
+                }
+            }
+        }
+        closedir($dir);
+        rmdir($src);
+
+        return true;
+    }
+
     public static function safeWrite(string $filename, string $contents): ?int
     {
         $result = null;
@@ -100,20 +123,20 @@ class Utils
     {
         $result = '';
         $array = explode(DIRECTORY_SEPARATOR, $path);
-        
+
         $c = count($array);
         $offset = 1;
-        for($i = 0; $i < $c; $i++) {
-            if($array[$i] == '..') {
+        for ($i = 0; $i < $c; $i++) {
+            if ($array[$i] == '..') {
                 unset($array[$i]);
                 unset($array[$i - $offset]);
                 $offset += 2;
             }
         }
-        
-        
+
+
         $result = implode(DIRECTORY_SEPARATOR, $array);
-        
+
         return $result;
     }
 }

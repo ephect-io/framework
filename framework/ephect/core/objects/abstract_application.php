@@ -2,6 +2,7 @@
 
 namespace Ephect\Core;
 
+use Ephect\Cache\Cache;
 use Ephect\Element;
 use Ephect\Registry\Registry;
 
@@ -137,7 +138,7 @@ abstract class AbstractApplication extends Element
             '',
             'Display the module section of phpinfo() output.',
             function (callable $callback = null) {
-                $info = new TPhpInfo();
+                $info = new PhpInfo();
                 $data = $info->getModulesSection(true);
                 // ob_start();
                 // phpinfo(INFO_MODULES);
@@ -208,7 +209,7 @@ abstract class AbstractApplication extends Element
     {
         $result = '';
         try {
-            TCache::clearRuntime();
+            Cache::clearRuntime();
 
             $result = 'All runtime files deleted';
         } catch (\Throwable $ex) {
