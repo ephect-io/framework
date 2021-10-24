@@ -14,6 +14,28 @@ use Ephect\Registry\Registry;
 class Application extends AbstractApplication
 {
 
+    public static function create(...$params): void
+    {
+        session_start();
+        self::$instance = new Application();
+        self::$instance->run($params);
+    }
+
+    public function run(?array ...$params): void
+    {
+        if (!ComponentRegistry::uncache()) {
+            $compiler = new Compiler;
+            $compiler->perform();
+            $compiler->postPerform();
+        }
+        if (!CacheRegistry::uncache()) {
+            PluginRegistry::uncache();
+        }
+
+        $app = new Component('App');
+        $app->render();
+    }
+
     protected function displayConstants(): array
     {
         $constants = [];
@@ -67,25 +89,5 @@ class Application extends AbstractApplication
         return $constants;
     }
 
-    public static function create(...$params): void
-    {
-        session_start();
-        self::$instance = new Application();
-        self::$instance->run($params);
-    }
-
-    public function run(?array ...$params): void
-    {
-        if (!ComponentRegistry::uncache()) {
-            $compiler = new Compiler;
-            $compiler->perform();
-            $compiler->postPerform();
-        }
-        if (!CacheRegistry::uncache()) {
-            PluginRegistry::uncache();
-        }
-
-        $app = new Component('App');
-        $app->render();
-    }
+  
 }

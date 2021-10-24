@@ -20,85 +20,8 @@ class Application extends AbstractApplication
         $this->_argv = $argv;
         $this->_argc = $argc;
 
-        $this->scriptName = $argv[0];
-
-        $this->appDirectory = $appDirectory . DIRECTORY_SEPARATOR;
-
-        $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
-        $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
-        $srcDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-        $srcDir = realpath($srcDir) . DIRECTORY_SEPARATOR;
-        $siteDir = $srcDir . '..' . DIRECTORY_SEPARATOR;
-        $siteDir = realpath($siteDir) . DIRECTORY_SEPARATOR;
-        $scriptDir = realpath($scriptDir) . DIRECTORY_SEPARATOR;
-
-        array_pop($path);
-        array_pop($path);
-        $this->appName = array_pop($path);
-
-        if (IS_PHAR_APP) {
-            $this->appName = pathinfo($argv[0])['filename'];
-            $this->appDirectory = str_replace('phar://', '', $scriptDir);
-        }
-
-        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
-        $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
-        $lib = 'ephect' . DIRECTORY_SEPARATOR . 'ephect_library.php';
-
-        $framework_dir = $vendor_dir;
-
-        // define('APP_NAME', $this->appName);
-
-        $script_root = '.' . $scriptDir;
-        $site_root = $script_root;
-        $ephect_root = \Phar::running();
-
-        if (!IS_PHAR_APP) {
-            $script_root = $scriptDir;
-
-            if (APP_NAME == 'egg') {
-                $site_root = $scriptDir;
-                if (file_exists($site_root . $portable_dir . $lib)) {
-                    $framework_dir = $portable_dir;
-                }
-                $ephect_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
-                $ephect_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
-
-                $ephect_root = @realpath($site_root . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'ephect') . DIRECTORY_SEPARATOR;
-            } else {
-                $site_root =  $siteDir;
-                if (file_exists($site_root . $portable_dir . $lib)) {
-                    $framework_dir = $portable_dir;
-                }
-                $ephect_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
-                $ephect_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
-
-                $ephect_root = $site_root . $ephect_vendor_lib;
-            }
-        }
-
-        // define('EPHECT_VENDOR_SRC', $framework_dir);
-        // define('EPHECT_VENDOR_LIB', $ephect_vendor_lib);
-        // define('EPHECT_VENDOR_APPS', $ephect_vendor_apps);
-
-        define('SCRIPT_ROOT', $script_root);
-        // define('SITE_ROOT', $site_root);
-        // define('EPHECT_ROOT', $ephect_root);
-
-        // define('EPHECT_APPS_ROOT', SITE_ROOT . EPHECT_VENDOR_APPS);
-        // define('SRC_ROOT', SITE_ROOT . 'src' . DIRECTORY_SEPARATOR);
-
-        // define('APP_ROOT', SRC_ROOT . 'app' . DIRECTORY_SEPARATOR);
-        define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
-        define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
-        define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-        define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
-        define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-        define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
-        define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
-        define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
-        // define('CACHE_DIR', SRC_ROOT . 'cache' . DIRECTORY_SEPARATOR);
-
+        $this->appDirectory = APP_CWD;
+        
         $useTransaction = $this->setCommand('useTransactions');
         $execution = $this->setCommand('executionMode');
         $verbose = $this->setCommand('verbose');
@@ -459,8 +382,8 @@ class Application extends AbstractApplication
             if (PHP_OS == 'WINNT') {
                 $execHeader = "@echo off\r\nphp.exe\r\n";
             }
-            $stub = $execHeader . $defaultStub;
 
+            $stub = $execHeader . $defaultStub;
             // Add the stub
             $this->_phar->setStub($stub);
 
