@@ -9,11 +9,6 @@ class EphectLibrary
         $filenames = [
             "core_constants.php",
 
-            "use_state.php",
-            "use_slot.php",
-            "use_effect.php",
-            "use_query_argument.php",
-
             "logger_logger.php",
             "core_ini_loader_trait.php",
             "io_utils.php",
@@ -35,6 +30,7 @@ class EphectLibrary
             "components_objects_component_entity_interface.php",
             "components_generators_objects_parser_service_interface.php",
             "components_generators_token_parsers_objects_token_parser_interface.php",
+            "route_route_interface.php",
 
             "objects_element_trait.php",
             "objects_element_utils.php",
@@ -113,6 +109,20 @@ class EphectLibrary
             "components_generators_parser_service.php",
 
             "components_compiler.php",
+
+            // hooks
+            "use_effect.php",
+            "use_query_argument.php",
+            "use_slot.php",
+            "use_state.php",
+
+            // Route component
+            "route_route_structure.php",
+            "route_route_entity.php",
+            "route_route_builder.php",
+
+            // Router component
+            "router_router_service.php",
 
         ];
 
