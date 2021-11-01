@@ -19,3 +19,5 @@ build/
 *_log
 
 phink/
+/egg
+/bin/egg
