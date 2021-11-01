@@ -23,8 +23,6 @@ class FrameworkRegistry extends AbstractStaticRegistry
     {
         if (!FrameworkRegistry::uncache()) {
 
-            include EPHECT_ROOT . 'objects' . DIRECTORY_SEPARATOR . 'element_utils.php';
-
             $frameworkFiles = Utils::walkTreeFiltered(FRAMEWORK_ROOT, ['php']);
 
             foreach ($frameworkFiles as $filename) {

@@ -4,10 +4,6 @@ namespace Ephect\Registry;
 
 abstract class AbstractStaticRegistry extends AbstractRegistry implements StaticRegistryInterface, AbstractRegistryInterface
 {    
-    protected function __construct()
-    {
-    }
-
     public abstract static function getInstance(): AbstractRegistryInterface;
 
     public static function write(string $key, $item): void

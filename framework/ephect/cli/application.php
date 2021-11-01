@@ -356,9 +356,9 @@ class Application extends AbstractApplication
             $this->writeLine('APP_DIR::' . $this->appDirectory);
             $this->addPharFiles();
 
-            $ephectTree = $this->_requireTree(EPHECT_ROOT);
+            $ephectTree = $this->_requireTree(FRAMEWORK_ROOT);
 
-            $this->addFileToPhar(FRAMEWORK_ROOT . 'ephect_library.php', "ephect_library.php");
+            // $this->addFileToPhar(FRAMEWORK_ROOT . 'ephect_library.php', "ephect_library.php");
 
             foreach ($ephectTree->tree as $file) {
                 $filepath = $ephectTree->path . $file;
@@ -368,25 +368,25 @@ class Application extends AbstractApplication
                 $this->addFileToPhar($filepath, $filename);
             }
 
-            $hooksTree = $this->_requireTree(HOOKS_ROOT);
+            // $hooksTree = $this->_requireTree(HOOKS_ROOT);
          
-            foreach ($hooksTree->tree as $file) {
-                $filepath = $hooksTree->path . $file;
-                $filepath = realpath($filepath);
-                $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
+            // foreach ($hooksTree->tree as $file) {
+            //     $filepath = $hooksTree->path . $file;
+            //     $filepath = realpath($filepath);
+            //     $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
  
-                $this->addFileToPhar($filepath, $filename);
-            }
+            //     $this->addFileToPhar($filepath, $filename);
+            // }
             
-            $pluginsTree = $this->_requireTree(PLUGINS_ROOT);
+            // $pluginsTree = $this->_requireTree(PLUGINS_ROOT);
          
-            foreach ($pluginsTree->tree as $file) {
-                $filepath = $pluginsTree->path . $file;
-                $filepath = realpath($filepath);
-                $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
+            // foreach ($pluginsTree->tree as $file) {
+            //     $filepath = $pluginsTree->path . $file;
+            //     $filepath = realpath($filepath);
+            //     $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
  
-                $this->addFileToPhar($filepath, $filename);
-            } 
+            //     $this->addFileToPhar($filepath, $filename);
+            // } 
 
             // Create a custom stub to add the shebang
             $execHeader = "#!/usr/bin/env php \n";

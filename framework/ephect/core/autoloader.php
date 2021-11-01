@@ -3,7 +3,7 @@
 namespace Ephect\Core;
 
 use Ephect\Registry\FrameworkRegistry;
-use Ephect\Registry\UserLibraryRegistry;
+use Ephect\Registry\PharRegistry;
 
 class Autoloader
 {
@@ -20,7 +20,7 @@ class Autoloader
 
     public static function load($className): void
     {
-        $classFilename = FrameworkRegistry::read($className);
+        $classFilename = (IS_PHAR_APP) ? PharRegistry::read($className) : FrameworkRegistry::read($className);
 
         include $classFilename;
     }

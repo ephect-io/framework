@@ -8,9 +8,8 @@ use Ephect\CLI\PharInterface;
 use Ephect\Components\Compiler;
 use Ephect\IO\Utils;
 
-include \Phar::running() ? 'ephect_library.php' : dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'bootstrap.php';
+include 'includes.php';
 include 'lib.php';
-
 class Program extends Application implements PharInterface
 {
 
