@@ -13,7 +13,7 @@ class Application extends AbstractApplication
     protected $_argc;
     private $_phar = null;
 
-    public function __construct(array $argv = [], int $argc = 0, string $appDirectory = '.')
+    public function __construct(array $argv = [], int $argc = 0)
     {
         parent::__construct();
 
@@ -216,7 +216,9 @@ class Application extends AbstractApplication
         try {
             $constants = [];
             $constants['APP_NAME'] = APP_NAME;
+            $constants['APP_CWD'] = APP_CWD;
             $constants['SCRIPT_ROOT'] = SCRIPT_ROOT;
+            $constants['SRC_ROOT'] = SRC_ROOT;
             $constants['SITE_ROOT'] = SITE_ROOT;
             $constants['IS_PHAR_APP'] = IS_PHAR_APP ? 'TRUE' : 'FALSE';
             $constants['EPHECT_ROOT'] = EPHECT_ROOT;
@@ -226,7 +228,6 @@ class Application extends AbstractApplication
             // $constants['EPHECT_VENDOR_APPS'] = EPHECT_VENDOR_APPS;
 
             if (APP_NAME !== 'egg') {
-                $constants['SRC_ROOT'] = SRC_ROOT;
                 $constants['APP_ROOT'] = APP_ROOT;
                 $constants['APP_SCRIPTS'] = APP_SCRIPTS;
                 $constants['APP_BUSINESS'] = APP_BUSINESS;
@@ -375,7 +376,17 @@ class Application extends AbstractApplication
                 $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
  
                 $this->addFileToPhar($filepath, $filename);
-            }   
+            }
+            
+            $pluginsTree = $this->_requireTree(PLUGINS_ROOT);
+         
+            foreach ($pluginsTree->tree as $file) {
+                $filepath = $pluginsTree->path . $file;
+                $filepath = realpath($filepath);
+                $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
+ 
+                $this->addFileToPhar($filepath, $filename);
+            } 
 
             // Create a custom stub to add the shebang
             $execHeader = "#!/usr/bin/env php \n";
