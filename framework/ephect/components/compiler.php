@@ -102,9 +102,9 @@ class Compiler
 
             $struct = new TaskStructure(['name' => $route, 'arguments' => [$route]]);
             $task = new Task($struct);
-            $task->setCallback(function (string $route, Channel $channel) {
+            $task->setCallback(function (string $route, string $framework_root, Channel $channel) {
 
-                include  dirname(dirname(dirname(__FILE__))) . '/bootstrap.php';
+                include $framework_root . 'bootstrap.php';
 
                 PluginRegistry::uncache();
 

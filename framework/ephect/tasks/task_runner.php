@@ -19,6 +19,7 @@ class TaskRunner implements TaskRunnerInterface
     public function run(): void
     {
         $argv = $this->task->getArguments();
+        $argv[] = FRAMEWORK_ROOT;
         $argv[] = $this->channel;
         $threadFunc = $this->task->getCallback();
         $r1 = new Runtime;
