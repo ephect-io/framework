@@ -7,7 +7,6 @@ use Ephect\CLI\Application;
 use Ephect\CLI\PharInterface;
 use Ephect\Components\Compiler;
 use Ephect\IO\Utils;
-use PharFileInfo;
 
 include \Phar::running() ? 'ephect_library.php' : dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 include 'lib.php';
@@ -22,10 +21,7 @@ class Program extends Application implements PharInterface
 
     public function __construct($argc, $argv)
     {
-        $dir = dirname(__FILE__);
-
-        $dir = ($dir === '/') ? './' : $dir;
-        parent::__construct($argv, $argc, $dir);
+        parent::__construct($argv, $argc);
     }
 
     public function ignite(): void {
