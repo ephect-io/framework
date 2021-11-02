@@ -10,6 +10,7 @@ use Ephect\IO\Utils;
 
 include 'includes.php';
 include 'lib.php';
+
 class Program extends Application implements PharInterface
 {
 

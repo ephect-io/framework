@@ -12,7 +12,7 @@ docker-compose.yml
 /runtime/
 /cache/*
 /static/
-src/
+/src/
 build/
 
 *.log
