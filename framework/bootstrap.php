@@ -38,7 +38,7 @@ if (!IS_PHAR_APP) {
     Utils::safeWrite(RUNTIME_DIR . 'hooks_registry.json',  json_encode($hooks_registry));
 }
 
-if (IS_PHAR_APP || IS_CLI_APP) {
+if (IS_PHAR_APP) {
     $hooks_registry = Utils::safeRead(RUNTIME_DIR . 'hooks_registry.json');
 
     $hooks = json_decode($hooks_registry);
