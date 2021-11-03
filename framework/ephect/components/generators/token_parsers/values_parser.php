@@ -16,6 +16,10 @@ final class ValuesParser extends AbstractTokenParser
         foreach ($matches as $match) {
             $variable = $match[1];
 
+            if($variable === '') {
+                continue;
+            }
+
             $useVar = $variable;
             $arrowPos = strpos($variable, '->');
             if ($arrowPos > -1) {
