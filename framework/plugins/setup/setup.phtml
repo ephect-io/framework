@@ -2,80 +2,75 @@
 
 namespace Ephect\Plugins\Setup;
 
-use Ephect\Components\Component;
-
 use function Ephect\Hooks\useEffect;
+
+define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 
 function Setup()
 {
-    $setup = new SetupService;
-    $SERVER_ERROR = 'Something went wrong, please check the server setup';
 
-    $sendResponse = function (array $response): void
+    function sendResponse(array $response): void
     {
         header('Content-Type: application/json');
         echo json_encode($response);
     };
 
-
-    $fixRewriteBase = function () use ($setup, $sendResponse, $SERVER_ERROR): void
+    function fixRewriteBase(): void
     {
+        $setup = new SetupService;
+
         $ok = $setup->findFramework();
         $rewritebase = $setup->fixRewritBase();
-        $sendResponse(
+        sendResponse(
             [
-                'result' => ($rewritebase !== null) ? $rewritebase : $SERVER_ERROR,
+                'result' => ($rewritebase !== null) ? $rewritebase : SERVER_ERROR,
                 'error' => ($rewritebase === null)
             ]
         );
     };
 
-    $installEphectJS = function () use ($setup, $sendResponse, $SERVER_ERROR): void
+    function installEphectJS(): void
     {
+        $setup = new SetupService;
+
         $ok = $setup->installPhinkJS();
-        $sendResponse(
+        sendResponse(
             [
-                'result' => ($ok) ? 'Javascript framework installation successful' : $SERVER_ERROR,
+                'result' => ($ok) ? 'Javascript framework installation successful' : SERVER_ERROR,
                 'error' => !$ok
             ]
         );
     };
 
-    $makeIndex = function () use ($setup, $sendResponse, $SERVER_ERROR): void
+    function makeIndex(): void
     {
+        $setup = new SetupService;
+
         $ok = $setup->makeBootstrap();
         $ok = $ok && $setup->makeIndex();
-        $sendResponse(
+        sendResponse(
             [
-                'result' => ($ok) ? 'Index created' : $SERVER_ERROR,
+                'result' => ($ok) ? 'Index created' : SERVER_ERROR,
                 'error' => !$ok
             ]
         );
     };
 
-    $ready = function () use ($setup): void
-    {
-        header('Location: ' . $setup->getRewriteBase());
-    };
+    useEffect(function () {
 
-
-    useEffect(function () use ($fixRewriteBase, $installEphectJS, $makeIndex) {
-
-        $service = new SetupService;
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
 
         if ($action === 'rewrite') {
-            $fixRewriteBase();
+            fixRewriteBase();
         }
 
         if ($action === 'js') {
-            $installEphectJS();
+            installEphectJS();
         }
 
         if ($action === 'index') {
-            $makeIndex();
+            makeIndex();
         }
-
     });
 
     return (<<< HTML
@@ -275,6 +270,7 @@ function Setup()
                     xhr.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
                     xhr.onload = function() {
                         if (xhr.status < 300 || xhr.status === 304) {
+                            console.log({'res': xhr.responseText});
                             var data = (xhr.responseText !== '') ? JSON.parse(xhr.responseText) : [];
 
                             if (typeof callback == 'function') {
