@@ -11,8 +11,8 @@ class Arguments extends AbstractAttributedCommand
 
     public function run(): void
     {
-        $data = ['argv' => $this->_application->getArgv(), 'argc' => $this->_application->getArgc()];
-        $this->_application->writeLine($data);
+        $data = ['argv' => $this->application->getArgv(), 'argc' => $this->application->getArgc()];
+        $this->application->writeLine($data);
     }
 
 }

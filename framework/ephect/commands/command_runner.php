@@ -65,13 +65,10 @@ class CommandRunner extends Element
         }
 
         if ($callback !== null && $isFound && $result === null) {
-            call_user_func($callback);
+            $callback->run();
         } elseif ($callback !== null && $isFound && $result !== null) {
             call_user_func($callback, $result);
         }
-
-        $isFound = false;
-        $commands = $this->_commands->commands();
 
         if ($isFound) return;
 
