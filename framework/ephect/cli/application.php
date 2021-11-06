@@ -2,6 +2,7 @@
 
 namespace Ephect\CLI;
 
+use Ephect\Commands\CommandRunner;
 use Ephect\Core\AbstractApplication;
 use Ephect\IO\Utils;
 use Ephect\Utils\Zip;
@@ -9,16 +10,24 @@ use Ephect\Web\Curl;
 
 class Application extends AbstractApplication
 {
-    protected $_argv;
-    protected $_argc;
     private $_phar = null;
 
-    public function __construct(array $argv = [], int $argc = 0)
+    public function getArgv(): array
+    {
+        return $this->argv;
+    }
+
+    public function getArgc(): int
+    {
+        return $this->argc;
+    }
+
+    public function __construct(protected array $argv = [], protected int $argc = 0)
     {
         parent::__construct();
 
-        $this->_argv = $argv;
-        $this->_argc = $argc;
+        $this->argv = $argv;
+        $this->argc = $argc;
 
         $this->appDirectory = APP_CWD;
         
@@ -80,93 +89,18 @@ class Application extends AbstractApplication
                 }
             );
         }
-        $this->setCommand(
-            'running',
-            '',
-            'Show Phar::running() output',
-            function () {
-                self::writeLine(\Phar::running());
-            }
-        );
-
-        $this->setCommand(
-            'source-path',
-            '',
-            'Display the running application source directory.',
-            function () {
-                $this->writeLine($this->getDirectory());
-            }
-        );
-
-        $this->setCommand(
-            'script-path',
-            '',
-            'Display the running application root.',
-            function () {
-                $this->writeLine(SCRIPT_ROOT);
-            }
-        );
-
-        $this->setCommand(
-            'display-tree',
-            '',
-            'Display the tree of the current application.',
-            function () {
-                $this->displayTree($this->appDirectory);
-            }
-        );
-
-        $this->setCommand(
-            'display-ephect-tree',
-            '',
-            'Display the tree of the ephect framework.',
-            function () {
-                $this->displayephectTree();
-            }
-        );
-
-        $this->setCommand(
-            'display-master-tree',
-            '',
-            'Display the tree of the master branch of ephect framework previously downloaded.',
-            function () {
-                try {
-                    $this->displayTree('master' . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect');
-                } catch (\Throwable $ex) {
-                    $this->writeException($ex);
-                }
-            }
-        );
-
-        $this->setCommand(
-            'show-arguments',
-            '',
-            'Show the application arguments.',
-            function (callable $callback = null) {
-                $data = ['argv' => $this->_argv, 'argc' => $this->_argc];
-                $this->writeLine($data);
-
-                if ($callback !== null) {
-                    \call_user_func($callback, $data);
-                }
-            }
-        );
-
-        $this->setCommand(
-            'display-history',
-            '',
-            'Display commands history.',
-            function () {
-                try {
-                    $this->writeLine(readline_list_history());
-                } catch (\Throwable $ex) {
-                    $this->writeException($ex);
-                }
-            }
-        );
+      
     }
 
     protected function execute(): void
+    {
+        $commands = new ApplicationCommands($this);
+        $runner = new CommandRunner($this, $commands);
+        $runner->run();
+        
+    }
+
+    protected function executeEx(): void
     {
         $isFound = false;
         $result = null;
@@ -175,23 +109,23 @@ class Application extends AbstractApplication
         foreach ($this->commands as $long => $cmd) {
             $short = $cmd['short'];
             $callback = $cmd['callback'];
-            for ($i = 1; $i < $this->_argc; $i++) {
-                if ($this->_argv[$i] == '--' . $long) {
+            for ($i = 1; $i < $this->argc; $i++) {
+                if ($this->argv[$i] == '--' . $long) {
                     $isFound = true;
 
-                    if (isset($this->_argv[$i + 1])) {
-                        if (substr($this->_argv[$i + 1], 0, 1) !== '-') {
-                            $result = $this->_argv[$i + 1];
+                    if (isset($this->argv[$i + 1])) {
+                        if (substr($this->argv[$i + 1], 0, 1) !== '-') {
+                            $result = $this->argv[$i + 1];
                         }
                     }
 
                     break;
                 }
 
-                if ($this->_argv[$i] == '-' . $short) {
+                if ($this->argv[$i] == '-' . $short) {
                     $isFound = true;
 
-                    $sa = explode('=', $this->_argv[$i]);
+                    $sa = explode('=', $this->argv[$i]);
                     if (count($sa) > 1) {
                         $result = $sa[1];
                     }
@@ -211,7 +145,7 @@ class Application extends AbstractApplication
         }
     }
 
-    protected function displayConstants(): array
+    public function displayConstants(): array
     {
         try {
             $constants = [];

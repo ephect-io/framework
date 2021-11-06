@@ -27,27 +27,11 @@ if (IS_WEB_APP) {
     $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
 
-    define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
-    define('APP_ROOT', SRC_ROOT . APP_DIR);
-    define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
-    define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
-    define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-    define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
-    define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-    define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
-    define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
-    define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
 
     define('EPHECT_VENDOR_SRC', FRAMEWORK_ROOT);
     define('EPHECT_VENDOR_LIB', EPHECT_VENDOR_SRC . 'ephect' . DIRECTORY_SEPARATOR);
-    define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'widgets' . DIRECTORY_SEPARATOR);
-    define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'plugins' . DIRECTORY_SEPARATOR);
     define('EPHECT_VENDOR_APPS', EPHECT_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
-    define('EPHECTJS_VENDOR', EPHECT_VENDOR_SRC . 'phinkjs' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
-    define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
-    define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
-    define('EPHECT_APPS_ROOT', SITE_ROOT . EPHECT_VENDOR_APPS);
-    define('EPHECTJS_ROOT', SITE_ROOT . EPHECTJS_VENDOR);
+
 
     $rewrite_base = '/';
 
@@ -121,7 +105,6 @@ if (!IS_WEB_APP) {
     define('IS_TASK_APP', false !== strpos(APP_CWD . $script_name, 'ephect' . DIRECTORY_SEPARATOR . FRAMEWORK . DIRECTORY_SEPARATOR . 'bootstrap.php'));
     define('IS_BIN_APP', false !== strpos(APP_CWD . $script_name, 'bin' . DIRECTORY_SEPARATOR . $script_name));
 
-
     if (IS_INNER_APP) {
         $script_root = dirname(APP_CWD) . DIRECTORY_SEPARATOR;
         $src_root =dirname(dirname(dirname($script_root))) . DIRECTORY_SEPARATOR  . 'src' . DIRECTORY_SEPARATOR;
@@ -147,17 +130,6 @@ if (!IS_WEB_APP) {
     define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
 
     define('FRAMEWORK_ROOT', SITE_ROOT .  FRAMEWORK . DIRECTORY_SEPARATOR);
-
-    define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
-    define('APP_ROOT', SRC_ROOT . APP_DIR);
-    define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
-    define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
-    define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-    define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
-    define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-    define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
-    define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
-    define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
 
     $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
     $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
@@ -204,6 +176,24 @@ if (!IS_WEB_APP) {
 }
 
 
+define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'widgets' . DIRECTORY_SEPARATOR);
+define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'plugins' . DIRECTORY_SEPARATOR);
+define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
+define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
+define('EPHECTJS_VENDOR', EPHECT_VENDOR_SRC . 'phinkjs' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
+define('EPHECTJS_ROOT', SITE_ROOT . EPHECTJS_VENDOR);
+
+define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
+define('APP_ROOT', SRC_ROOT . APP_DIR);
+define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
+define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
+define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
+define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
+define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
+define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
+
 define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
 define('RUNTIME_DIR', SITE_ROOT . REL_RUNTIME_DIR);
 define('REL_CACHE_DIR', 'cache' . DIRECTORY_SEPARATOR);
@@ -221,6 +211,7 @@ define('ROUTES_JSON', RUNTIME_DIR . 'routes.json');
 define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
 define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
 define('PLUGINS_ROOT', FRAMEWORK_ROOT . 'plugins' . DIRECTORY_SEPARATOR);
+define('COMMANDS_ROOT', FRAMEWORK_ROOT . 'attributed_commands' . DIRECTORY_SEPARATOR);
 
 define('CLASS_EXTENSION', '.class.php');
 define('PREHTML_EXTENSION', '.phtml');

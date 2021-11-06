@@ -36,7 +36,7 @@ class Application extends AbstractApplication
         $app->render();
     }
 
-    protected function displayConstants(): array
+    public function displayConstants(): array
     {
         $constants = [];
         $constants['REWRITE_BASE'] = REWRITE_BASE;

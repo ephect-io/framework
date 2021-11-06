@@ -3,11 +3,13 @@
 namespace Ephect\Apps\Egg;
 
 use Ephect\CLI\Application;
+use Ephect\Components\Compiler;
 use Ephect\Element;
 use Ephect\IO\Utils;
 
 class EggLib extends Element
 {
+
     /**
      * Defines the full directory tree of a Ephect web application
      */
@@ -52,24 +54,6 @@ class EggLib extends Element
     {
         parent::__construct($parent);
 
-        $this->appDirectory = $parent->getDirectory();
-        $this->appName = $parent->getName();
-    }
-
-    /**
-     * Deletes recursively a tree of directories containing files.
-     * It is a workaround for rmdir which doesn't allow the deletion
-     * of directories not empty.
-     *
-     * @param string $path Top directory of the tree
-     * @return boolean TRUE if deletion succeeds otherwise FALSE
-     */
-    private function _deltree($path)
-    {
-        $class_func = array(__CLASS__, __FUNCTION__);
-        return is_file($path) ?
-        @unlink($path) :
-        array_map($class_func, glob($path . './*')) == @rmdir($path);
     }
 
     /**
@@ -77,7 +61,7 @@ class EggLib extends Element
      */
     public function createTree()
     {
-        $this->parent->writeLine("Current directory %s", __DIR__);
+        $this->parent->writeLine("Current directory %s", APP_CWD);
 
         sort($this->directories);
         foreach ($this->directories as $directory) {
@@ -95,18 +79,48 @@ class EggLib extends Element
      */
     public function deleteTree()
     {
-        $this->parent->writeLine("Current directory %s", $this->appDirectory);
+        $this->parent->writeLine("Current directory %s", APP_CWD);
 
         rsort($this->directories);
         foreach ($this->directories as $directory) {
             $dir = APP_CWD . $directory;
             if (file_exists($dir)) {
                 $this->parent->writeLine("Removing directory %s", $dir);
-                // $this->_deltree($dir);
                 Utils::safeRmdir($dir);
             } else {
                 $this->parent->writeLine("Cannot find directory %s", $dir);
             }
         }
+    }
+
+    public function sample(): void
+    {
+        $sample = FRAMEWORK_ROOT . 'sample';
+
+        Utils::safeMkDir(SRC_ROOT);
+        $destDir = realpath(SRC_ROOT);
+
+        if (!file_exists($sample) || !file_exists($destDir)) {
+            return;
+        }
+
+        $tree = Utils::walkTreeFiltered($sample);
+
+        foreach ($tree as $filePath) {
+            Utils::safeWrite($destDir . $filePath, '');
+            copy($sample . $filePath, $destDir . $filePath);
+        }
+    }
+
+    public function compile(): void
+    {
+        if (file_exists(CACHE_DIR)) {
+            Utils::delTree(CACHE_DIR);
+        }
+        $compiler = new Compiler;
+        $compiler->perform();
+        $compiler->postPerform();
+        $compiler->followRoutes();
+        $compiler->purgeCopies();
     }
 }

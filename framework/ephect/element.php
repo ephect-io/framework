@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect;
 
 use DateTime;
@@ -74,4 +75,31 @@ class Element extends StaticElement implements ElementInterface
         return $reflection->getFileName();
     }
 
+
+    public static function getAttributesData($class): array
+    {
+        $result = [];
+        $temp = [];
+
+        $reflection = new ReflectionClass($class);
+        $attributes = $reflection->getAttributes();
+
+        foreach ($attributes as $attribute) {
+            $name = $attribute->getName();
+            $args = $attribute->getArguments();
+            if (isset($temp[$name])) {
+                $temp[$name] = array_merge($temp[$name], $args);
+            }
+            if(!isset($temp[$name])) {
+                $temp[$name] = $args;
+            }
+        
+        }
+
+        foreach($temp as $key => $value) {
+            $result[] = ["name" => $key, "args" => $value]; 
+        }
+
+        return $result;
+    }
 }
