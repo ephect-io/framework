@@ -2,18 +2,15 @@
 
 namespace Ephect\Commands;
 
-class Constants extends AbstractCommand
+use Ephect\Commands\Attributes\CommandDeclaration;
+
+#[CommandDeclaration(long: "constants")]
+#[CommandDeclaration(desc: "Display the application constants.")]
+class Constants extends AbstractAttributedCommand
 {
 
-    public function getCommand(): CommandStructure
+    public function run(): void
     {
-        return new CommandStructure([
-            'long' => 'constants',
-            'short' => '',
-            'description' => 'Display the application constants.',
-            'callback' => function () {
-                $data = $this->_application->displayConstants();
-            }
-        ]);
+        $this->application->displayConstants();
     }
 }

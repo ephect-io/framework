@@ -2,18 +2,14 @@
 
 namespace Ephect\Commands;
 
-class Running extends AbstractCommand
-{
+use Ephect\Commands\Attributes\CommandDeclaration;
 
-    public function getCommand(): CommandStructure
+#[CommandDeclaration(long: "running")]
+#[CommandDeclaration(desc: "Show Phar::running() output")]
+class Running extends AbstractAttributedCommand
+{
+    public function run(): void
     {
-        return new CommandStructure([
-            'long' => 'running',
-            'short' => '',
-            'description' => 'Show Phar::running() output',
-            'callback' => function () {
-                $this->_application->writeLine(\Phar::running());
-            }
-        ]);
+        $this->application->writeLine(\Phar::running());
     }
 }

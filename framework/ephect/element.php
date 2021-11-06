@@ -76,28 +76,27 @@ class Element extends StaticElement implements ElementInterface
     }
 
 
-    public static function getAttributesData($class): array
+    public static function getAttributesData(object $instance): array
     {
         $result = [];
         $temp = [];
 
-        $reflection = new ReflectionClass($class);
+        $reflection = new ReflectionClass($instance);
         $attributes = $reflection->getAttributes();
 
         foreach ($attributes as $attribute) {
             $name = $attribute->getName();
             $args = $attribute->getArguments();
+
             if (isset($temp[$name])) {
                 $temp[$name] = array_merge($temp[$name], $args);
-            }
-            if(!isset($temp[$name])) {
+            } else {
                 $temp[$name] = $args;
             }
-        
         }
 
-        foreach($temp as $key => $value) {
-            $result[] = ["name" => $key, "args" => $value]; 
+        foreach ($temp as $key => $value) {
+            $result[] = ["name" => $key, "args" => $value];
         }
 
         return $result;

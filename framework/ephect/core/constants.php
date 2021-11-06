@@ -211,7 +211,7 @@ define('ROUTES_JSON', RUNTIME_DIR . 'routes.json');
 define('EPHECT_ROOT', FRAMEWORK_ROOT . 'ephect' . DIRECTORY_SEPARATOR);
 define('HOOKS_ROOT', FRAMEWORK_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
 define('PLUGINS_ROOT', FRAMEWORK_ROOT . 'plugins' . DIRECTORY_SEPARATOR);
-define('COMMANDS_ROOT', FRAMEWORK_ROOT . 'attributed_commands' . DIRECTORY_SEPARATOR);
+define('COMMANDS_ROOT', FRAMEWORK_ROOT . 'commands' . DIRECTORY_SEPARATOR);
 
 define('CLASS_EXTENSION', '.class.php');
 define('PREHTML_EXTENSION', '.phtml');

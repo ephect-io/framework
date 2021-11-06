@@ -100,51 +100,6 @@ class Application extends AbstractApplication
         
     }
 
-    protected function executeEx(): void
-    {
-        $isFound = false;
-        $result = null;
-        $callback = null;
-
-        foreach ($this->commands as $long => $cmd) {
-            $short = $cmd['short'];
-            $callback = $cmd['callback'];
-            for ($i = 1; $i < $this->argc; $i++) {
-                if ($this->argv[$i] == '--' . $long) {
-                    $isFound = true;
-
-                    if (isset($this->argv[$i + 1])) {
-                        if (substr($this->argv[$i + 1], 0, 1) !== '-') {
-                            $result = $this->argv[$i + 1];
-                        }
-                    }
-
-                    break;
-                }
-
-                if ($this->argv[$i] == '-' . $short) {
-                    $isFound = true;
-
-                    $sa = explode('=', $this->argv[$i]);
-                    if (count($sa) > 1) {
-                        $result = $sa[1];
-                    }
-
-                    break;
-                }
-            }
-            if ($isFound) {
-                break;
-            }
-        }
-
-        if ($callback !== null && $isFound && $result === null) {
-            call_user_func($callback);
-        } elseif ($callback !== null && $isFound && $result !== null) {
-            call_user_func($callback, $result);
-        }
-    }
-
     public function displayConstants(): array
     {
         try {
@@ -364,7 +319,7 @@ class Application extends AbstractApplication
         }
     }
 
-    public function displayephectTree(): void
+    public function displayEphectTree(): void
     {
         // $tree = [];
         // \ephect\Utils\TFileUtils::walkTree(EPHECT_ROOT, $tree);
