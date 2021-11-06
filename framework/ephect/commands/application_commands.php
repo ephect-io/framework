@@ -1,17 +1,18 @@
 <?php
 
-namespace Ephect\CLI;
+namespace Ephect\Commands;
 
-use Ephect\Commands\CommandCollectionInterface;
+use Ephect\Core\AbstractApplication;
 use Ephect\Element;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
+use Ephect\Registry\Registry;
 
 class ApplicationCommands extends Element implements CommandCollectionInterface
 {
     private array $_commands = [];
 
-    public function __construct(private Application $_application)
+    public function __construct(private AbstractApplication $_application)
     {
         $this->collectCommands();
     }
@@ -23,6 +24,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 
     private function collectCommands(): void
     {
+        $usage = '';
         $commandFiles = Utils::walkTreeFiltered(COMMANDS_ROOT, ['php']);
 
         foreach ($commandFiles as $filename) {
@@ -36,9 +38,20 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
             $attr = Element::getAttributesData($object);
             $commandArgs = $attr[0]['args'];
 
+            $long = $commandArgs['long'];
+            $short = isset($commandArgs['short']) ? $commandArgs['short'] : '';
+            $desc = $commandArgs['desc'];
+
+            if ($short !== '') {
+                $usage .= "\t--$long, -$short : $desc" . PHP_EOL;
+            } else {
+                $usage .= "\t--$long : $desc" . PHP_EOL;
+            }
             $commandArgs['callback'] = $object;
 
             $this->_commands[] = $commandArgs;
         }
+
+        Registry::write('commands', ['usage' => $usage]);
     }
 }

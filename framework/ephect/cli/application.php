@@ -2,6 +2,7 @@
 
 namespace Ephect\CLI;
 
+use Ephect\Commands\ApplicationCommands;
 use Ephect\Commands\CommandRunner;
 use Ephect\Core\AbstractApplication;
 use Ephect\IO\Utils;

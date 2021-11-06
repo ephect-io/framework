@@ -117,7 +117,8 @@ abstract class AbstractApplication extends Element
     {
         $this->writeLine($this->getName());
         $this->writeLine('Expected commands : ');
-        $this->writeLine($this->_usage);
+        $usage = Registry::read('commands', 'usage'); 
+        $this->writeLine($usage);
     }
 
     public function getName(): string
