@@ -7,7 +7,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "delete-tree")]
 #[CommandDeclaration(desc: "Delete the application tree.")]
-class CreateTree extends AbstractAttributedCommand
+class DeleteTree extends AbstractAttributedCommand
 {
     public function run(): void
     {
