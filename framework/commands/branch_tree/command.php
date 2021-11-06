@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "display-branch-tree")]
 #[CommandDeclaration(desc: "Display the tree of the Ephect framework master branch.")]
-class BranchTree extends AbstractAttributedCommand
+class BranchTree extends AbstractCommand
 {
     public function run(): void
     {

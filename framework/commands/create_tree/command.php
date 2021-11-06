@@ -7,7 +7,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "create-tree")]
 #[CommandDeclaration(desc: "Create the application tree.")]
-class CreateTree extends AbstractAttributedCommand
+class CreateTree extends AbstractCommand
 {
     public function run(): void
     {

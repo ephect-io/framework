@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "clear-logs")]
 #[CommandDeclaration(desc: "Clear all logs.")]
-class ClearLogs extends AbstractAttributedCommand
+class ClearLogs extends AbstractCommand
 {
     public function run(): void
     {

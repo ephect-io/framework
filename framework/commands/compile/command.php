@@ -7,7 +7,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "compile", short: "c")]
 #[CommandDeclaration(desc: "Compile the application.")]
-class CompileApplication extends AbstractAttributedCommand
+class CompileApplication extends AbstractCommand
 {
     public function run(): void
     {

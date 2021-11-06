@@ -7,7 +7,7 @@ use Ephect\Registry\Registry;
 
 #[CommandDeclaration(long: "ini", short: "i")]
 #[CommandDeclaration(desc: "Display the ini file if exists")]
-class Ini extends AbstractAttributedCommand
+class Ini extends AbstractCommand
 {
     public function run(): void
     {

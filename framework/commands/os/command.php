@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "os")]
 #[CommandDeclaration(desc: "Display the running operating system name.")]
-class Os extends AbstractAttributedCommand
+class Os extends AbstractCommand
 {
     public function run(): void
     {

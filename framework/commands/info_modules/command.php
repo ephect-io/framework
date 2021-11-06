@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "info-modules")]
 #[CommandDeclaration(desc: "Display the module section of phpinfo() output.")]
-class InfoModules extends AbstractAttributedCommand
+class InfoModules extends AbstractCommand
 {
     public function run(): void
     {

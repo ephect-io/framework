@@ -3,5 +3,5 @@ namespace Ephect\Commands;
 
 interface CommandInterface
 {
-    function getCommand(): CommandStructure;
+    function run(): void;
 }

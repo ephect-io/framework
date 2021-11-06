@@ -7,7 +7,7 @@ use Ephect\Registry\Registry;
 
 #[CommandDeclaration(long: "connections")]
 #[CommandDeclaration(desc: "Display the data connections registered.")]
-class Connections extends AbstractAttributedCommand
+class Connections extends AbstractCommand
 {
     public function run(): void
     {

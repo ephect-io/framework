@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "debug")]
 #[CommandDeclaration(desc: "Display the debug log.")]
-class Debug extends AbstractAttributedCommand
+class Debug extends AbstractCommand
 {
     public function run(): void
     {

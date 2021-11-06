@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "error")]
 #[CommandDeclaration(desc: "Display the php error log.")]
-class Error extends AbstractAttributedCommand
+class Error extends AbstractCommand
 {
     public function run(): void
     {

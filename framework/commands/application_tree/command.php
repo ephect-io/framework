@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "display-tree")]
 #[CommandDeclaration(desc: "Display the tree of the current application.")]
-class ApplicationTree extends AbstractAttributedCommand
+class ApplicationTree extends AbstractCommand
 {
     public function run(): void
     {

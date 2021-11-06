@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "show-arguments")]
 #[CommandDeclaration(desc: "Show the application arguments.")]
-class Arguments extends AbstractAttributedCommand
+class Arguments extends AbstractCommand
 {
 
     public function run(): void

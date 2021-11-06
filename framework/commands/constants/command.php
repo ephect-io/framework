@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "constants")]
 #[CommandDeclaration(desc: "Display the application constants.")]
-class Constants extends AbstractAttributedCommand
+class Constants extends AbstractCommand
 {
 
     public function run(): void

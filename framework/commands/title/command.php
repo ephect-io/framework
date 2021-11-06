@@ -6,7 +6,7 @@ use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(long: "title")]
 #[CommandDeclaration(desc: "Display the running application title.")]
-class Title extends AbstractAttributedCommand
+class Title extends AbstractCommand
 {
     public function run(): void
     {
