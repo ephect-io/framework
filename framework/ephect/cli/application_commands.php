@@ -31,7 +31,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
             $fqClass = "$namespace\\$class";
 
             include COMMANDS_ROOT . $filename;
-            $object = new $fqClass($_application);
+            $object = new $fqClass($this->_application);
 
             $attr = Element::getAttributesData($object);
             $commandArgs = $attr[0]['args'];
