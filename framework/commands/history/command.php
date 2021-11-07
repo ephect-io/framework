@@ -11,6 +11,6 @@ class History extends AbstractCommand
     public function run(): void
     {
         $history = readline_list_history();
-        $this->application->displayTree($history);
+        $this->application->writeLine($history);
     }
 }
