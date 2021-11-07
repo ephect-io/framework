@@ -24,7 +24,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 
     private function collectCommands(): void
     {
-        $usage = '';
+        $usage = [];
         $commandFiles = Utils::walkTreeFiltered(COMMANDS_ROOT, ['php']);
 
         foreach ($commandFiles as $filename) {
@@ -41,17 +41,24 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
             $long = $commandArgs['long'];
             $short = isset($commandArgs['short']) ? $commandArgs['short'] : '';
             $desc = $commandArgs['desc'];
+            $isPhar = $commandArgs['isPhar'];
+
+            if($isPhar) {
+                continue;
+            }
 
             if ($short !== '') {
-                $usage .= "\t--$long, -$short : $desc" . PHP_EOL;
+                $usage[$long] = "\t--$long, -$short : $desc" . PHP_EOL;
             } else {
-                $usage .= "\t--$long : $desc" . PHP_EOL;
+                $usage[$long] = "\t--$long : $desc" . PHP_EOL;
             }
             $commandArgs['callback'] = $object;
 
             $this->_commands[] = $commandArgs;
         }
 
-        Registry::write('commands', ['usage' => $usage]);
+        ksort($usage);
+
+        Registry::write('commands', $usage);
     }
 }
