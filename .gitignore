@@ -1,11 +1,12 @@
 /.idea/
 /.vscode/
 /.devcontainer/
-*.code-workspace
+/node_modules
 /nbproject/
 
 /docker/
 docker-compose.yml
+*.code-workspace
 
 /vendor/
 
