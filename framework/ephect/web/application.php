@@ -18,11 +18,13 @@ class Application extends AbstractApplication
     {
         session_start();
         self::$instance = new Application();
-        self::$instance->run($params);
+        self::$instance->run(...$params);
     }
 
-    public function run(?array ...$params): void
+    public function run(...$params): void
     {
+        $this->loadInFile();
+
         if (!ComponentRegistry::uncache()) {
             $compiler = new Compiler;
             $compiler->perform();

@@ -34,17 +34,10 @@ abstract class AbstractApplication extends Element
         parent::__construct();
     }
 
-    abstract public function run(?array ...$params) : void;
+    abstract public function run(...$params) : void;
 
     protected function execute(): void
     {}
-
-    protected function ignite(): void
-    {
-        $this->loadInFile();
-
-       
-    }
 
     abstract public function displayConstants(): array;
 
@@ -115,10 +108,14 @@ abstract class AbstractApplication extends Element
 
     public function help(): void
     {
+        $help = '';
         $this->writeLine($this->getName());
         $this->writeLine('Expected commands : ');
-        $usage = Registry::read('commands', 'usage'); 
-        $this->writeLine($usage);
+        $usage = Registry::item('commands');
+        foreach($usage as $long => $desc) {
+            $help .= $desc;
+        }
+        $this->writeLine($help);
     }
 
     public function getName(): string
@@ -140,36 +137,6 @@ abstract class AbstractApplication extends Element
         return $this->appDirectory;
     }
 
-    public function setCommand(string $long, string $short = '', string $definition = '', $callback = null): void
-    {
-        $this->commands[$long] = [
-            'short' => $short,
-            'definition' => $definition,
-            'callback' => $callback,
-        ];
-
-        if ($short !== '') {
-            $this->_usage .= "\t--$long, -$short : $definition" . PHP_EOL;
-        } else {
-            $this->_usage .= "\t--$long : $definition" . PHP_EOL;
-        }
-    }
-
-    // public function commandRunner(string $cmd, callable $callback, $arg = null) {
-
-    //     if (isset($this->commands[$cmd])) {
-    //         $cmd = $this->commands[$cmd];
-    //         $statement = $cmd['callback'];
-
-    //         if ($statement !== null && $arg === null) {
-    //             call_user_func($statement, $callback);
-    //         } elseif ($statement !== null && $arg !== null) {
-    //             call_user_func($statement, $callback, $arg);
-    //         }
-
-    //         return Registry::read('console', 'buffer');
-    //     }
-    // }
 
     public function canStop()
     {

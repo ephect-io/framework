@@ -12,6 +12,8 @@ use Ephect\Web\Curl;
 class Application extends AbstractApplication
 {
     private $_phar = null;
+    protected array $argv = [];
+    protected int $argc = 0;
 
     public function getArgv(): array
     {
@@ -23,74 +25,36 @@ class Application extends AbstractApplication
         return $this->argc;
     }
 
-    public function __construct(protected array $argv = [], protected int $argc = 0)
+    public function init(): void
     {
-        parent::__construct();
+
+    }
+
+    public static function create(...$params): void
+    {
+        self::$instance = new Application();
+        self::$instance->run(...$params);
+    }
+
+    public function run(...$params): void
+    {
+        $argv = $params[0];
+        $argc = $params[1];
 
         $this->argv = $argv;
         $this->argc = $argc;
 
         $this->appDirectory = APP_CWD;
         
-        $useTransaction = $this->setCommand('useTransactions');
-        $execution = $this->setCommand('executionMode');
-        $verbose = $this->setCommand('verbose');
+        $this->loadInFile();
 
-        self::setExecutionMode($execution);
-        self::useTransactions($useTransaction);
-
-        $this->ignite();
-        $this->execute();
+        self::setExecutionMode(Application::PROD_MODE);
+        self::useTransactions(true);
 
         $this->init();
-        $this->run();
-    }
 
-    public function init(): void
-    {
-    }
+        $this->execute();
 
-    public static function create(...$params): void
-    {
-        self::$instance = new Application();
-        self::$instance->run($params);
-    }
-
-    public function run(?array ...$params): void
-    {
-    }
-
-    protected function ignite(): void
-    {
-        parent::ignite();
-
-        if (!IS_PHAR_APP) {
-            $this->setCommand(
-                'make-master-phar',
-                '',
-                'Make a phar archive of the current application with files from the master repository.',
-                function () {
-                    $this->makeMasterPhar();
-                }
-            );
-            $this->setCommand(
-                'make-phar',
-                '',
-                'Make a phar archive of the current application with files in vendor directory.',
-                function () {
-                    $this->makeVendorPhar();
-                }
-            );
-            $this->setCommand(
-                'require-master',
-                '',
-                'Download the ZIP file of the master branch of ephect framework.',
-                function () {
-                    $this->_requireMaster();
-                }
-            );
-        }
-      
     }
 
     protected function execute(): void
@@ -145,7 +109,7 @@ class Application extends AbstractApplication
         }
     }
 
-    private function _requireMaster(): object
+    public function requireMaster(): object
     {
         $result = [];
 
@@ -183,7 +147,7 @@ class Application extends AbstractApplication
         return (object) $result;
     }
 
-    private function _requireTree(string $treePath): object
+    public function requireTree(string $treePath): object
     {
         $result = [];
 
@@ -202,7 +166,7 @@ class Application extends AbstractApplication
 
     public function makeMasterPhar(): void
     {
-        $ephectTree = $this->_requireMaster();
+        $ephectTree = $this->requireMaster();
         $this->_makePhar($ephectTree);
     }
 
@@ -246,7 +210,7 @@ class Application extends AbstractApplication
             $this->writeLine('APP_DIR::' . $this->appDirectory);
             $this->addPharFiles();
 
-            $ephectTree = $this->_requireTree(FRAMEWORK_ROOT);
+            $ephectTree = $this->requireTree(FRAMEWORK_ROOT);
 
             // $this->addFileToPhar(FRAMEWORK_ROOT . 'ephect_library.php', "ephect_library.php");
 
