@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "require-master")]
+#[CommandDeclaration(verb: "wget", subject: "master-branch")]
 #[CommandDeclaration(desc: "Download the ZIP file of the master branch of Ephect framework.")]
 #[CommandDeclaration(isPhar: IS_PHAR_APP)]
 class RequireMaster extends AbstractCommand

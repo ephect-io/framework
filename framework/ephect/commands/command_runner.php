@@ -18,7 +18,7 @@ class CommandRunner extends Element
     public function run(): void
     {
         $isFound = false;
-        $result = null;
+        $arguments = null;
         $callback = null;
 
         $isFound = false;
@@ -29,45 +29,37 @@ class CommandRunner extends Element
 
             $callback = $struct->callback;
 
-            $short = $struct->short;
-            $long = $struct->long;
+            $verb = $struct->verb;
+            $subject = $struct->subject;
+
+            $call = $subject != '' ? $verb . ':' . $subject : $verb;
 
             $aac = $this->_application->getArgc();
             $aav = $this->_application->getArgv();
 
             for ($i = 1; $i < $aac; $i++) {
-                if ($aav[$i] == '--' . $long) {
+                if ($aav[$i] == $call) {
                     $isFound = true;
 
                     if (isset($aav[$i + 1])) {
                         if (substr($aav[$i + 1], 0, 1) !== '-') {
-                            $result = $aav[$i + 1];
+                            $arguments = $aav[$i + 1];
                         }
                     }
 
                     break;
                 }
 
-                if ($aav[$i] == '-' . $short) {
-                    $isFound = true;
-
-                    $sa = explode('=', $aav[$i]);
-                    if (count($sa) > 1) {
-                        $result = $sa[1];
-                    }
-
-                    break;
-                }
             }
             if ($isFound) {
                 break;
             }
         }
 
-        if ($callback !== null && $isFound && $result === null) {
+        if ($callback !== null && $isFound && $arguments === null) {
             $callback->run();
-        } elseif ($callback !== null && $isFound && $result !== null) {
-            call_user_func($callback, $result);
+        } elseif ($callback !== null && $isFound && $arguments !== null) {
+            call_user_func($callback, $arguments);
         }
 
         if ($isFound) return;

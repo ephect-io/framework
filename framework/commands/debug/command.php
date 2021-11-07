@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "debug")]
+#[CommandDeclaration(verb: "show", subject: "debug")]
 #[CommandDeclaration(desc: "Display the debug log.")]
 class Debug extends AbstractCommand
 {

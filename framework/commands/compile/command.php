@@ -5,7 +5,7 @@ namespace Ephect\Commands;
 use Ephect\Apps\Egg\EggLib;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "compile", short: "c")]
+#[CommandDeclaration(verb: "compile")]
 #[CommandDeclaration(desc: "Compile the application.")]
 class CompileApplication extends AbstractCommand
 {

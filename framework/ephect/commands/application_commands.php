@@ -38,19 +38,19 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
             $attr = Element::getAttributesData($object);
             $commandArgs = $attr[0]['args'];
 
-            $long = $commandArgs['long'];
-            $short = isset($commandArgs['short']) ? $commandArgs['short'] : '';
+            $verb = $commandArgs['verb'];
+            $subject = isset($commandArgs['subject']) ? $commandArgs['subject'] : '';
             $desc = $commandArgs['desc'];
-            $isPhar = $commandArgs['isPhar'];
+            $isPhar = isset($commandArgs['isPhar']) ? $commandArgs['isPhar'] : '';
 
             if($isPhar) {
                 continue;
             }
 
-            if ($short !== '') {
-                $usage[$long] = "\t--$long, -$short : $desc" . PHP_EOL;
+            if ($subject !== '') {
+                $usage[$verb . $subject] = "\t$verb:$subject => $desc" . PHP_EOL;
             } else {
-                $usage[$long] = "\t--$long : $desc" . PHP_EOL;
+                $usage[$verb] = "\t$verb => $desc" . PHP_EOL;
             }
             $commandArgs['callback'] = $object;
 

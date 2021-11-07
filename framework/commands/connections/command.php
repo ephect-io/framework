@@ -5,7 +5,7 @@ namespace Ephect\Commands;
 use Ephect\Commands\Attributes\CommandDeclaration;
 use Ephect\Registry\Registry;
 
-#[CommandDeclaration(long: "connections")]
+#[CommandDeclaration(verb: "show", subject: "connections")]
 #[CommandDeclaration(desc: "Display the data connections registered.")]
 class Connections extends AbstractCommand
 {

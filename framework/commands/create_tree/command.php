@@ -5,7 +5,7 @@ namespace Ephect\Commands;
 use Ephect\Apps\Egg\EggLib;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "create-tree")]
+#[CommandDeclaration(verb: "create", subject: "tree")]
 #[CommandDeclaration(desc: "Create the application tree.")]
 class CreateTree extends AbstractCommand
 {

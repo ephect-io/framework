@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "clear-logs")]
+#[CommandDeclaration(verb: "clear", subject: "logs")]
 #[CommandDeclaration(desc: "Clear all logs.")]
 class ClearLogs extends AbstractCommand
 {

@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "display-history")]
+#[CommandDeclaration(verb: "show", subject: "history")]
 #[CommandDeclaration(desc: "Display the commands history.")]
 class History extends AbstractCommand
 {

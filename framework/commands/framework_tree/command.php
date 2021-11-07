@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "display-ephect-tree")]
+#[CommandDeclaration(verb: "list", subject: "framework")]
 #[CommandDeclaration(desc: "Display the tree of the Ephect framework.")]
 class FrameworkTree extends AbstractCommand
 {

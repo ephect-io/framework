@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "constants")]
+#[CommandDeclaration(verb: "show", subject: "constants")]
 #[CommandDeclaration(desc: "Display the application constants.")]
 class Constants extends AbstractCommand
 {

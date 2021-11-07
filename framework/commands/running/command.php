@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "running")]
+#[CommandDeclaration(verb: "show", subject: "phar-running")]
 #[CommandDeclaration(desc: "Show Phar::running() output")]
 class Running extends AbstractCommand
 {

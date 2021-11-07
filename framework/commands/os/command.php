@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "os")]
+#[CommandDeclaration(verb: "os")]
 #[CommandDeclaration(desc: "Display the running operating system name.")]
 class Os extends AbstractCommand
 {

@@ -3,8 +3,8 @@
     "yarn": "^1.22.17"
   },
   "scripts": {
-    "egg": "./egg $1 $2",
-    "build": "./egg -c",
+    "egg": "./egg",
+    "build": "./egg compile",
     "serve": "php -S localhost:8888 -t src/public"
   }
 }

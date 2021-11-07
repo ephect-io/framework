@@ -5,7 +5,7 @@ namespace Ephect\Commands;
 use Ephect\Commands\Attributes\CommandDeclaration;
 use Ephect\Registry\Registry;
 
-#[CommandDeclaration(long: "ini", short: "i")]
+#[CommandDeclaration(verb: "show", subject: "ini")]
 #[CommandDeclaration(desc: "Display the ini file if exists")]
 class Ini extends AbstractCommand
 {

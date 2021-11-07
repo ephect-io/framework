@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "info-modules")]
+#[CommandDeclaration(verb: "show", subject: "modules")]
 #[CommandDeclaration(desc: "Display the module section of phpinfo() output.")]
 class InfoModules extends AbstractCommand
 {

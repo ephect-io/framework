@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "title")]
+#[CommandDeclaration(verb: "title")]
 #[CommandDeclaration(desc: "Display the running application title.")]
 class Title extends AbstractCommand
 {

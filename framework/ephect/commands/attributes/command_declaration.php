@@ -8,8 +8,8 @@ use Attribute;
 class CommandDeclaration
 {
     public function __construct(
-        public string $long = '',
-        public string $short = '',
+        public string $verb = '',
+        public string $subject = '',
         public string $desc = '',
         public bool $isPhar = false
     ) {

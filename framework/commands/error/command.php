@@ -4,7 +4,7 @@ namespace Ephect\Commands;
 
 use Ephect\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(long: "error")]
+#[CommandDeclaration(verb: "show", subject: "error")]
 #[CommandDeclaration(desc: "Display the php error log.")]
 class Error extends AbstractCommand
 {
