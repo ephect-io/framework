@@ -19,7 +19,7 @@ if (IS_WEB_APP) {
     define('SITE_ROOT', $document_root);
     define('SRC_ROOT', SITE_ROOT . 'src' . DIRECTORY_SEPARATOR);
 
-    define('CONFIG_DIR', SRC_ROOT . 'config' . DIRECTORY_SEPARATOR);
+    define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
 
     define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('FRAMEWORK_ROOT', SITE_ROOT .  FRAMEWORK . DIRECTORY_SEPARATOR);
@@ -94,8 +94,8 @@ if (!IS_WEB_APP) {
     $script_name = pathinfo($app_path, PATHINFO_BASENAME);
     $script_dir = pathinfo($app_path, PATHINFO_DIRNAME);
     $appName = pathinfo($script_name)['filename'];
-    $src_root = '';
-    $script_root = '';
+    $script_root = $script_dir . DIRECTORY_SEPARATOR;
+    $src_root = $script_root . 'src' . DIRECTORY_SEPARATOR;
 
     define('FRAMEWORK', 'framework');
 
@@ -128,12 +128,14 @@ if (!IS_WEB_APP) {
     define('SRC_ROOT', $src_root);
     define('SCRIPT_ROOT', $script_root);
     define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
-
+    
+    define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
+    define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('FRAMEWORK_ROOT', SITE_ROOT .  FRAMEWORK . DIRECTORY_SEPARATOR);
 
     $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
     $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
-    $lib = 'ephect_library.php';
+    $bootstrap = 'bootstrap.php';
 
     $framework_dir = $vendor_dir;
     $ephect_vendor_lib = '';
@@ -146,7 +148,7 @@ if (!IS_WEB_APP) {
     if (!IS_PHAR_APP) {
 
         if (IS_INNER_APP) {
-            if (file_exists(SITE_ROOT . $portable_dir . $lib)) {
+            if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
                 $framework_dir = $portable_dir;
             }
             $ephect_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
@@ -154,7 +156,7 @@ if (!IS_WEB_APP) {
 
             $ephect_root = SITE_ROOT . $ephect_vendor_lib;
         } else {
-            if (file_exists(SITE_ROOT . $portable_dir . $lib)) {
+            if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
                 $framework_dir = $portable_dir;
             }
             $ephect_vendor_lib = $framework_dir . 'ephect' . DIRECTORY_SEPARATOR;
