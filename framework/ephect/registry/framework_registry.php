@@ -67,6 +67,8 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function registerUserClasses(): void
     {
+        if(!file_exists(SRC_ROOT)) return;
+        
         $sourceFiles = Utils::walkTreeFiltered(SRC_ROOT, ['php']);
 
         foreach ($sourceFiles as $filename) {
