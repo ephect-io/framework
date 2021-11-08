@@ -57,7 +57,7 @@ where *myproject* is the name of your project.
 
 Move to *myproject* directory and type:
 
-    php ./bin/fcc.php -s
+    php egg make:sample
 
 You will see a **src** directory in which you will find the standard structure of an ephect application. Ephect doesn't really care of the actual structure provided that it is under **src** directory. It means you can organize your application tree as you wish.
 
@@ -65,7 +65,7 @@ You will see a **src** directory in which you will find the standard structure o
 
 If you setup PHP-ZTS, good choice, you can generate your application without browser by typing:
 
-    php ./bin/fcc.php -c
+    php egg compile
 
 You will find the generated application under the directory *cache*.
 
