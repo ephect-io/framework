@@ -6,7 +6,7 @@ In short, it's a ReactJS-like PHP framework. It allows you to create views by de
 
 ## Requirements
 
-Ephect can pre-compile the site using a CLI tool : *fcc*. This tool uses a thread-safe parallelism mechanism to compile pages that may contain the same components. The thread-safe feature ensures that there is no so called "*class* has already been declared" error. 
+Ephect can pre-compile the site using a CLI tool : *egg*. This tool uses a thread-safe parallelism mechanism to compile pages that may contain the same components. The thread-safe feature ensures that there is no so called "*class* has already been declared" error. 
 
 It is not mandatory but recommended to enable this mechanism. Otherwise you can compile pages dynamically by calling your application in the browser.
 
@@ -16,7 +16,7 @@ If you want to enable the parallelism feature, you must have a ZTS version of PH
 
 Here is a sample of PHP compilation statement for getting a thread-safe version of php-fpm : 
 
-    phpbrew install 8.0.9 +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +fpm +ipc +json +mbregex +mbstring +mhash +pcntl +pcre +pdo +pear +phar +posix +readline +sockets +tokenizer +xml +curl +openssl +zip +sqlite +zts
+    phpbrew install 8.0.9 +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +fpm +ipc +json +mbregex +mbstring +mhash +pcntl +pcre +pdo +pear +phar +posix +readline +sockets +tokenizer +xml +curl +openssl +zip +sqlite -- --enable-zts
 
 To install PhpBrew, please refer to the documentation at [https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew).
 
