@@ -9,11 +9,11 @@ trait IniLoaderTrait
     public function loadINI(string $path = ''): bool
     {
         $ini = null;
-        if (!file_exists($path . 'config/app.ini')) {
+        if (!file_exists($path . 'app.ini')) {
             return false;
         }
 
-        $ini = parse_ini_file($path  . 'config/app.ini', TRUE, INI_SCANNER_TYPED);
+        $ini = parse_ini_file($path  . 'app.ini', TRUE, INI_SCANNER_TYPED);
         if(isset($ini['application']['name'])) {
             Registry::write('application', 'name', $ini['application']['name']);
         }

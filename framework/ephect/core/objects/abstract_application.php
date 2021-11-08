@@ -84,7 +84,7 @@ abstract class AbstractApplication extends Element
     public function loadInFile(): void
     {
         try {
-            $exist = $this->loadINI(SRC_ROOT);
+            $exist = $this->loadINI(CONFIG_DIR);
             if (!$exist) {
                 return;
             }
