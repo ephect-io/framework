@@ -97,12 +97,12 @@ if (!IS_WEB_APP) {
     $script_root = $script_dir . DIRECTORY_SEPARATOR;
     $src_root = $script_root . 'src' . DIRECTORY_SEPARATOR;
 
-    define('FRAMEWORK', 'framework');
+    define('FRAMEWORK_DIR', 'framework');
 
     define('APP_CWD', IS_PHAR_APP ? getcwd() . DIRECTORY_SEPARATOR : str_replace($script_name, '', $app_path));
 
-    define('IS_INNER_APP', false !== strpos(APP_CWD, 'ephect' . DIRECTORY_SEPARATOR . FRAMEWORK . DIRECTORY_SEPARATOR . 'apps'));
-    define('IS_TASK_APP', false !== strpos(APP_CWD . $script_name, 'ephect' . DIRECTORY_SEPARATOR . FRAMEWORK . DIRECTORY_SEPARATOR . 'bootstrap.php'));
+    define('IS_INNER_APP', false !== strpos(APP_CWD, 'ephect' . DIRECTORY_SEPARATOR . FRAMEWORK_DIR . DIRECTORY_SEPARATOR . 'apps'));
+    define('IS_TASK_APP', false !== strpos(APP_CWD . $script_name, 'ephect' . DIRECTORY_SEPARATOR . FRAMEWORK_DIR . DIRECTORY_SEPARATOR . 'bootstrap.php'));
     define('IS_BIN_APP', false !== strpos(APP_CWD . $script_name, 'bin' . DIRECTORY_SEPARATOR . $script_name));
 
     if (IS_INNER_APP) {
