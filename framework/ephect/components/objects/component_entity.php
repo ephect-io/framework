@@ -233,6 +233,13 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             return null;
         }
         $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
+
+        $p = strpos($t, $this->name);
+        $o = ($p > $s) ? $p - $s - 1 : -1;
+
+        $s = $o > -1 ? $s + $o : $s;
+        $e = $o > -1 ? $e + $o : $e;
+
         $contents = substr($t, $s, $e - $s + 1);
 
         return $contents;
