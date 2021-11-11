@@ -1,0 +1,64 @@
+<?php
+
+namespace Ephect\Plugins\Setup;
+
+use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useQueryArgument;
+
+define('SERVER_ERROR', 'Something went wrong, please check the server setup');
+
+function ProcessSetup($children)
+{
+
+    useEffect(function () use (/* bool */ &$hasResponse, /* string */ &$response) {
+
+        $action = useQueryArgument('action');
+        $setup = new SetupService;
+
+        if ($action === 'rewrite') {
+
+            $ok = $setup->findFramework();
+            $rewritebase = $setup->fixRewritBase();
+            $response = json_encode(
+                [
+                    'result' => ($rewritebase !== null) ? $rewritebase : SERVER_ERROR,
+                    'error' => ($rewritebase === null)
+                ]
+            );
+        }
+
+        if ($action === 'js') {
+            $ok = $setup->installPhinkJS();
+            $response = json_encode(
+                [
+                    'result' => ($ok) ? 'Javascript framework installation successful' : SERVER_ERROR,
+                    'error' => !$ok
+                ]
+            );       
+        }
+
+        if ($action === 'index') {
+
+            $ok = $setup->makeBootstrap();
+            $ok = $ok && $setup->makeIndex();
+            $response = json_encode(
+                [
+                    'result' => ($ok) ? 'Index created' : SERVER_ERROR,
+                    'error' => !$ok
+                ]
+            );        
+        }
+
+        $hasResponse = ($response !== '' );
+    });
+
+    return (<<< HTML
+    {? 
+        if ({hasResponse}) {
+            header('Content-Type: application/json');
+            return {response};
+        }
+    ?}
+    {{ children }}
+    HTML);
+}
