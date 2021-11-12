@@ -123,4 +123,69 @@ class EggLib extends Element
         $compiler->followRoutes();
         $compiler->purgeCopies();
     }
+
+    
+    public function requireMaster(): object
+    {
+        $result = [];
+
+        $libRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
+
+        if (!file_exists($libRoot)) {
+            mkdir($libRoot);
+        }
+
+        $master = $libRoot . 'master';
+        $filename = $master . '.zip';
+        $ephectDir = $master . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
+
+        $tree = [];
+
+        if (!file_exists($filename)) {
+            $this->parent->writeLine('Downloading ephect github master');
+            $curl = new Curl();
+            $result = $curl->request('https://codeload.github.com/CodePhoenixOrg/ephect/zip/master');
+            file_put_contents($filename, $result->content);
+        }
+
+        if (file_exists($filename)) {
+            $this->parent->writeLine('Inflating ephect master archive');
+            $zip = new Zip();
+            $zip->inflate($filename);
+        }
+
+        if (file_exists($master)) {
+            $tree = Utils::walkTree($ephectDir, ['php']);
+        }
+
+        $result = ['path' => $ephectDir, 'tree' => $tree];
+
+        return (object) $result;
+    }
+
+    public function requireTree(string $treePath): object
+    {
+        $result = [];
+
+        $tree = Utils::walkTreeFiltered($treePath, ['php']);
+
+        $result = ['path' => $treePath, 'tree' => $tree];
+
+        return (object) $result;
+    }
+
+    public function displayEphectTree(): void
+    {
+        // $tree = [];
+        // \ephect\Utils\TFileUtils::walkTree(EPHECT_ROOT, $tree);
+        $tree = Utils::walkTree(EPHECT_ROOT);
+
+        $this->parent->writeLine($tree);
+    }
+
+    public function displayTree($path): void
+    {
+        $tree = Utils::walkTree($path);
+        $this->parent->writeLine($tree);
+    }
 }
