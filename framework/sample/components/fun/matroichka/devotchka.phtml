@@ -1,0 +1,22 @@
+<?php
+
+namespace Fun;
+
+use function Ephect\Hooks\useEffect;
+
+function Devotchka($children)
+{
+    useEffect(function() use ($children, /* string */ &$id, /* string */ &$label) {
+        $id = $children->props()->id;
+        $label = $children->props()->label;
+    });
+
+    return (<<< HTML
+    <label for="{{ id }}">{{ label }}</label>
+    <ul id="{{ id }}">
+        <li>
+        {{ children }}
+        </li>
+    </ul>
+    HTML);
+}
