@@ -3,6 +3,7 @@
 namespace Ephect\Core;
 
 use Ephect\Cache\Cache;
+use Ephect\CLI\Console;
 use Ephect\Element;
 use Ephect\Registry\Registry;
 
@@ -49,7 +50,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All logs cleared';
         } catch (\Throwable $ex) {
-            self::writeException($ex);
+            Console::writeException($ex);
 
             $result = 'Impossible to clear logs';
         }
@@ -64,7 +65,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All runtime files deleted';
         } catch (\Throwable $ex) {
-            self::writeException($ex);
+            Console::writeException($ex);
 
             $result = 'Impossible to delete runtime files';
         }
@@ -93,29 +94,20 @@ abstract class AbstractApplication extends Element
             $this->appTitle = Registry::read('application', 'title');
 
         } catch (\Throwable $ex) {
-            $this->writeException($ex);
+            Console::writeException($ex);
         }
     }
-
-    public static function write($string, ...$params): void
-    {}
-
-    public static function writeLine($string, ...$params): void
-    {}
-
-    public static function writeException(\Throwable $ex, $file = null, $line = null): void
-    {}
 
     public function help(): void
     {
         $help = '';
-        $this->writeLine($this->getName());
-        $this->writeLine('Expected commands : ');
+        Console::writeLine($this->getName());
+        Console::writeLine('Expected commands : ');
         $usage = Registry::item('commands');
         foreach($usage as $long => $desc) {
             $help .= $desc;
         }
-        $this->writeLine($help);
+        Console::writeLine($help);
     }
 
     public function getName(): string
@@ -221,15 +213,4 @@ abstract class AbstractApplication extends Element
         return $token;
     }
 
-    protected static function _write($string, ...$params): string
-    {
-        if (is_array($string)) {
-            $string = print_r($string, true);
-        }
-        $result = $string;
-        if (count($params) > 0 && is_array($params[0])) {
-            $result = vsprintf($string, $params[0]);
-        }
-        return $result;
-    }
 }
