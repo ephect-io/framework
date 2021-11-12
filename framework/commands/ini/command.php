@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 use Ephect\Registry\Registry;
 
@@ -13,5 +14,5 @@ class Ini extends AbstractCommand
     {
         $this->application->loadInFile();
         $data = Registry::item('ini');
-        $this->application->writeLine($data);    }
+        Console::writeLine($data);    }
 }

@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 use Ephect\Registry\Registry;
 
@@ -12,6 +13,6 @@ class Connections extends AbstractCommand
     public function run(): void
     {
         $data = Registry::item('connections');
-        $this->application->writeLine($data);
+        Console::writeLine($data);
     }
 }

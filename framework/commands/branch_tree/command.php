@@ -12,6 +12,7 @@ class BranchTree extends AbstractCommand
     {
         $dir = 'master' . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect';
 
-        $this->application->displayTree($dir);
+        $egg = new EggLib($this->application);
+        $egg->displayTree($dir);
     }
 }

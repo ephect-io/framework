@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "show", subject: "history")]
@@ -11,6 +12,6 @@ class History extends AbstractCommand
     public function run(): void
     {
         $history = readline_list_history();
-        $this->application->writeLine($history);
+        Console::writeLine($history);
     }
 }

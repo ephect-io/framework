@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "show", subject: "error")]
@@ -11,6 +12,6 @@ class Error extends AbstractCommand
     public function run(): void
     {
         $data = $this->application->getPhpErrorLog();
-        $this->application->writeLine($data);
+        Console::writeLine($data);
     }
 }

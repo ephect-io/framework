@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "show", subject: "modules")]
@@ -12,6 +13,6 @@ class InfoModules extends AbstractCommand
     {
         $info = new PhpInfo();
         $data = $info->getModulesSection(true);
-        $this->application->writeLine($data);
+        Console::writeLine($data);
     }
 }

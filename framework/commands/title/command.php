@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "title")]
@@ -11,6 +12,6 @@ class Title extends AbstractCommand
     public function run(): void
     {
         $data = $this->application->getTitle();
-        $this->application->writeLine($data);
+        Console::writeLine($data);
     }
 }

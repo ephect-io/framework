@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "show", subject: "arguments")]
@@ -12,6 +13,6 @@ class Arguments extends AbstractCommand
     public function run(): void
     {
         $data = ['argv' => $this->application->getArgv(), 'argc' => $this->application->getArgc()];
-        $this->application->writeLine($data);
+        Console::writeLine($data);
     }
 }

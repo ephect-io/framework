@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\Apps\Egg\EggLib;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "show", subject: "tree")]
@@ -10,6 +11,7 @@ class ApplicationTree extends AbstractCommand
 {
     public function run(): void
     {
-        $this->application->displayTree($this->application->appDirectory);
+        $egg = new EggLib($this->application);
+        $egg->displayTree($this->application->appDirectory);
     }
 }

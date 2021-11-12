@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\Apps\Egg\PharLib;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "make", subject: "phar")]
@@ -11,6 +12,7 @@ class MakePhar extends AbstractCommand
 {
     public function run(): void
     {
-        $this->application->makeVendorPhar();
+        $phar = new PharLib($this->application);
+        $phar->makeVendorPhar();
     }
 }

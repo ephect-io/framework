@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "name")]
@@ -11,6 +12,6 @@ class Name extends AbstractCommand
     public function run(): void
     {
         $data = $this->application->getName();
-        $this->application->writeLine($data);
+        Console::writeLine($data);
     }
 }

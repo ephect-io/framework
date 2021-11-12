@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\Apps\Egg\EggLib;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "wget", subject: "master-branch")]
@@ -11,6 +12,7 @@ class RequireMaster extends AbstractCommand
 {
     public function run(): void
     {
-        $this->application->requireMaster();
+        $egg = new EggLib($this->application);
+        $egg->requireMaster();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\CLI\Console;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "show", subject: "debug")]
@@ -11,6 +12,6 @@ class Debug extends AbstractCommand
     public function run(): void
     {
         $data = $this->application->getDebugLog();
-        $this->application->writeLine($data);
+        Console::writeLine($data);
     }
 }

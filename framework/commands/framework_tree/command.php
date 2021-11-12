@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands;
 
+use Ephect\Apps\Egg\EggLib;
 use Ephect\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "list", subject: "framework")]
@@ -10,6 +11,7 @@ class FrameworkTree extends AbstractCommand
 {
     public function run(): void
     {
-        $this->application->displayTree(EPHECT_ROOT);
+        $egg = new EggLib($this->application);
+        $egg->displayTree(EPHECT_ROOT);
     }
 }
