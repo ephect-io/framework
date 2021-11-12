@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+li {
+    list-style-type: none;
+    text-decoration: none;
+}
+
+main {
+    text-align: center;
+}
+
+.border {
+    float: left;
+    position: relative;
+    width: 25%;
+}
+
+.subborder {
+    float: left;
+    position: relative;
+    width: 25%;
+}
+
+.content {
+    float: left;
+    position: relative;
+    width: 50%;
+    text-align: center;
+
+}
+
+ul {
+    float: left;
+    position: relative;
+    width: 50%;
+    text-align: left;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    padding-inline-start: 0px;
+}
+
+div.caption {
+    float: left;
+    position: relative;
+}
+
+div.step {
+    float: right;
+    position: relative;
+    text-align: right;
+}
+
+.clear {
+    clear: both;
+}

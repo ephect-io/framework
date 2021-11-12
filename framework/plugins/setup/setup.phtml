@@ -9,19 +9,19 @@ define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 function Setup()
 {
 
-    function sendResponse(array $response): void
+    function makeResponse(array $response): string
     {
         header('Content-Type: application/json');
-        echo json_encode($response);
+        return json_encode($response);
     };
 
-    function fixRewriteBase(): void
+    function fixRewriteBase(string &$response): void
     {
-        $setup = new SetupService;
+        $srv = new SetupService;
 
-        $ok = $setup->findFramework();
-        $rewritebase = $setup->fixRewritBase();
-        sendResponse(
+        $ok = $srv->findFramework();
+        $rewritebase = $srv->fixRewritBase();
+        $response = makeResponse(
             [
                 'result' => ($rewritebase !== null) ? $rewritebase : SERVER_ERROR,
                 'error' => ($rewritebase === null)
@@ -29,12 +29,12 @@ function Setup()
         );
     };
 
-    function installEphectJS(): void
+    function installEphectJS(string &$response): void
     {
-        $setup = new SetupService;
+        $srv = new SetupService;
 
-        $ok = $setup->installPhinkJS();
-        sendResponse(
+        $ok = $srv->installPhinkJS();
+        $response = makeResponse(
             [
                 'result' => ($ok) ? 'Javascript framework installation successful' : SERVER_ERROR,
                 'error' => !$ok
@@ -42,13 +42,13 @@ function Setup()
         );
     };
 
-    function makeIndex(): void
+    function makeIndex(string &$response): void
     {
-        $setup = new SetupService;
+        $srv = new SetupService;
 
-        $ok = $setup->makeBootstrap();
-        $ok = $ok && $setup->makeIndex();
-        sendResponse(
+        $ok = $srv->makeBootstrap();
+        $ok = $ok && $srv->makeIndex();
+        $response = makeResponse(
             [
                 'result' => ($ok) ? 'Index created' : SERVER_ERROR,
                 'error' => !$ok
@@ -56,92 +56,30 @@ function Setup()
         );
     };
 
-    useEffect(function () {
+    useEffect(function() use (/* string */ &$response) {
 
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
 
         if ($action === 'rewrite') {
-            fixRewriteBase();
+            fixRewriteBase($response);
         }
 
         if ($action === 'js') {
-            installEphectJS();
+            installEphectJS($response);
         }
 
         if ($action === 'index') {
-            makeIndex();
+            makeIndex($response);
         }
+
+
     });
 
     return (<<< HTML
-        <html>
 
-        <head>
-            <meta charset="utf-8" />
-            <title>Ephect Setup</title>
-            <!-- <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" > -->
-            <style>
-                body {
-                    font-family: Arial, Helvetica, sans-serif;
-                }
-
-                li {
-                    list-style-type: none;
-                    text-decoration: none;
-                }
-
-                main {
-                    text-align: center;
-                }
-
-                .border {
-                    float: left;
-                    position: relative;
-                    width: 25%;
-                }
-
-                .subborder {
-                    float: left;
-                    position: relative;
-                    width: 25%;
-                }
-
-                .content {
-                    float: left;
-                    position: relative;
-                    width: 50%;
-                    text-align: center;
-
-                }
-
-                ul {
-                    float: left;
-                    position: relative;
-                    width: 50%;
-                    text-align: left;
-                    margin-block-start: 0em;
-                    margin-block-end: 0em;
-                    padding-inline-start: 0px;
-                }
-
-                div.caption {
-                    float: left;
-                    position: relative;
-                }
-
-                div.step {
-                    float: right;
-                    position: relative;
-                    text-align: right;
-                }
-
-                .clear {
-                    clear: both;
-                }
-            </style>
-        </head>
-
-        <body>
+        {? if ({response} !== '') { ?}
+            {{ response }}
+        {? return ''; } ?}
             <header>
                 <h1>
                     Ephect Setup
@@ -187,134 +125,6 @@ function Setup()
             <footer>
 
             </footer>
-            <script>
-                EphectSetup = {};
-                EphectSetup.rewriteBase = '/';
-                EphectSetup.URL = window.location.href;
-                EphectSetup.isReady = false;
-                EphectSetup.stepsResult = [];
-                EphectSetup.stepsCount = document.querySelectorAll('div[data-step]').length;
-
-                EphectSetup.checkSteps = function(stepResult, callback) {
-                    EphectSetup.stepsResult.push(stepResult);
-                    if (EphectSetup.stepsResult.length !== EphectSetup.stepsCount) {
-                        return;
-                    }
-
-                    var finalResult = true;
-                    for (var key in EphectSetup.stepsResult) {
-                        var currentResult = EphectSetup.stepsResult[key];
-                        finalResult = finalResult && currentResult;
-                    }
-
-                    EphectSetup.isReady = finalResult;
-                    if (finalResult && 'function' == typeof callback) {
-                        callback.call(this);
-                    }
-                }
-
-                EphectSetup.callback = function() {
-                    if (EphectSetup.isReady) {
-                        setTimeout(function() {
-                            window.location = EphectSetup.rewriteBase;
-                        }, 1000);
-                    }
-                }
-
-                EphectSetup.process = function(callback) {
-                    EphectSetup.ajax(EphectSetup.URL, {
-                            "action": "rewrite"
-                        },
-                        function(data) {
-                            if (!data.error) {
-                                EphectSetup.rewriteBase = data.result;
-                            }
-                            var result = EphectSetup.operationState(1, data.error);
-                            EphectSetup.checkSteps(result, EphectSetup.callback);
-                        }
-                    );
-
-                    EphectSetup.ajax(EphectSetup.URL, {
-                            "action": "js"
-                        },
-                        function(data) {
-                            var result = EphectSetup.operationState(2, data.error);
-                            EphectSetup.checkSteps(result, EphectSetup.callback);
-                        }
-                    );
-
-                    EphectSetup.ajax(EphectSetup.URL, {
-                            "action": "index"
-                        },
-                        function(data) {
-                            var result = EphectSetup.operationState(3, data.error);
-                            EphectSetup.checkSteps(result, EphectSetup.callback);
-                        }
-                    );
-
-                }
-
-                EphectSetup.ajax = function(url, data, callback) {
-                    var params = [];
-
-                    for (var key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            params.push(key + '=' + encodeURI(data[key]));
-                        }
-                    }
-
-                    var queryString = params.join('&');
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', url);
-                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                    xhr.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
-                    xhr.onload = function() {
-                        if (xhr.status < 300 || xhr.status === 304) {
-                            console.log({'res': xhr.responseText});
-                            var data = (xhr.responseText !== '') ? JSON.parse(xhr.responseText) : [];
-
-                            if (typeof callback == 'function') {
-                                callback.call(this, data, xhr.statusText, xhr);
-                            }
-                        }
-
-                    }
-                    xhr.onerror = function() {
-                        xhr.abort();
-                    }
-                    xhr.onabort = function() {
-                        if (xhr.statusText === 'error') {
-                            errorLog("Satus : " + xhr.status + "\r\n" +
-                                "Options : " + xhr.statusText + "\r\n" +
-                                "Message : " + xhr.responseText);
-                        }
-                    }
-
-                    xhr.send(queryString);
-                }
-
-                EphectSetup.operationState = function(step, error) {
-                    var result = false;
-
-                    if (error) {
-                        document.querySelector('div[data-step="' + step + '"]').innerHTML = 'Error';
-                        document.querySelector('div[data-step="' + step + '"]').className = 'step error';
-                    }
-                    
-                    if (!error) {
-                        document.querySelector('div[data-step="' + step + '"]').innerHTML = 'OK!';
-                        document.querySelector('div[data-step="' + step + '"]').className = 'step ok';
-                        result = true;
-                    }
-
-                    return result;
-                }
-
-                EphectSetup.process();
-            </script>
-        </body>
-
-        </html>
 
     HTML);
 }
