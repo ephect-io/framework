@@ -36,7 +36,7 @@ class MotherSlotsParser extends AbstractTokenParser
 
         $functionName = $firstMatch->getName();
 
-        $parentComponent = new Component($functionName);
+        $parentComponent = new Component($functionName, $motherUID);
         if(!$parentComponent->load()) {
             $this->result = null;
             return;
