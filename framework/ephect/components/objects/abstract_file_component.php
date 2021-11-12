@@ -24,26 +24,24 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         if ($id !== null) {
             ComponentRegistry::uncache();
             $this->class = ComponentRegistry::read($id);
-            if($this->class !== null) {
+            if ($this->class !== null) {
                 $this->filename = ComponentRegistry::read($this->class);
                 $this->filename = $this->filename ?: '';
 
                 $this->uid = ComponentRegistry::read($this->filename);
                 $this->uid = $this->uid ?: '';
-
             }
 
-            if($this->uid !== $this->id) {
+            if ($this->uid !== $this->id) {
                 $this->function = $id;
             }
-            if($this->uid === $this->id) {
+            if ($this->uid === $this->id) {
                 $this->function = self::functionName($this->class);
             }
         }
 
         $this->getUID();
         $this->motherUID = $motherUID ?: $this->uid;
-
     }
 
     public function getSourceFilename(): string
@@ -81,7 +79,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $this->filename = ($filename !== '') ? $filename : $this->filename;
 
-        if($this->filename === '') {
+        if ($this->filename === '') {
             return false;
         }
 
@@ -166,22 +164,21 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         Utils::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
         $this->updateComponent($this);
 
-        if(!$didMotherSlots) {
+        if (!$didMotherSlots) {
             $parser->doChildSlots($this);
             $this->code = $parser->getHtml();
             $this->updateComponent($this);
         }
 
-        while($compz = $this->getDeclaration()->getComposition() !== null)
-        {
+        while ($compz = $this->getDeclaration()->getComposition() !== null) {
             $parser->doClosedComponents($this);
             $this->code = $parser->getHtml();
             $this->updateComponent($this);
-    
+
             $parser->doOpenComponents($this);
             $this->code = $parser->getHtml();
             $this->updateComponent($this);
-    
+
             $parser->doIncludes($this);
             $this->code = $parser->getHtml();
         }
@@ -205,9 +202,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         if ($motherUID === null) {
             $motherUID = $component->getUID();
-            if(!file_exists(CACHE_DIR . $motherUID)) {
+            if (!file_exists(CACHE_DIR . $motherUID)) {
                 mkdir(CACHE_DIR . $motherUID, 0775);
-            
+
                 $flatFilename = CodeRegistry::getFlatFilename();
                 copy(CACHE_DIR . $flatFilename, CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
             }
@@ -220,10 +217,12 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $copyFile = $component->getFlattenSourceFilename();
         $html = $component->getCode();
         $ns = $component->getNamespace();
-        $html = str_replace($ns , $ns . '\\' . $token, $html);
+        $html = str_replace($ns, $ns . '\\' . $token, $html);
 
         if ($componentList === null) {
-            copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
+            if (!file_exists($cachedir . $copyFile)) {
+                copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
+            }
 
             return $copyFile;
         }
@@ -251,12 +250,14 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             }
         }
 
-        copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
+        if (!file_exists($cachedir . $copyFile)) {
+            copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
+        }
 
         return $copyFile;
     }
 
-    public function updateFile():  void 
+    public function updateFile(): void
     {
 
         $cp = new ComponentParser($this);
@@ -269,7 +270,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         CodeRegistry::cache();
     }
 
-    public static function updateComponent(FileComponentInterface $component): string 
+    public static function updateComponent(FileComponentInterface $component): string
     {
         $uid = $component->getUID();
         $motherUID = $component->getMotherUID();

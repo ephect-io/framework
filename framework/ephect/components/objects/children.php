@@ -23,7 +23,7 @@ class Children extends Tree implements ChildrenInterface
         $this->onrender = $struct->onrender;
     }
 
-    public function props(): array
+    public function props(): array|object
     {
         return $this->props;
     }

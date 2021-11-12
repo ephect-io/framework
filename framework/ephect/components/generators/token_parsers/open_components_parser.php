@@ -34,7 +34,8 @@ final class OpenComponentsParser extends AbstractTokenParser
             $closer = ((object) $item->getCloser())->text;
             $componentName = $item->getName();
             $componentBody = $item->getContents($subject);
-            $componentArgs = $this->useVariables; //$item->props();
+            $componentArgs = $this->useVariables;
+            $componentArgs = $item->props() !== null ? array_merge($componentArgs, $item->props()) : $componentArgs;
 
             if($componentName === 'Fragment') {
                 return;
@@ -50,7 +51,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             $propsArgs = $componentArgs === null ? null : self::doArgumentsToString($componentArgs);
             $props = (($propsArgs === null) ? "[]" : $propsArgs);
 
-            $propsKeys = $this->argumentsKeys($componentArgs);
+            $propsKeys = $this->argumentsKeys($this->useVariables);
             
             $useChildren = $decl->hasArguments() ? $this->useArguments($propsKeys) : ' ';
     
@@ -67,7 +68,7 @@ final class OpenComponentsParser extends AbstractTokenParser
                 $preComponentBody .= "\t\t\t<?php } ?>\n";
             }
             
-            $componentRender = "<?php \$struct = new \\Ephect\\Components\\ChildrenStructure(['props' => $props, 'onrender' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
+            $componentRender = "<?php \$struct = new \\Ephect\\Components\\ChildrenStructure(['props' => (object) $props, 'onrender' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
             $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Components\\Children(\$struct); ?>\n";
             $componentRender .= "\t\t\t<?php \$fn = $fqComponentName(\$children); \$fn(); ?>\n";
 
