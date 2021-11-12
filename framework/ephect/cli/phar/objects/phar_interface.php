@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\CLI;
+namespace Ephect\CLI\Phar;
 
 interface PharInterface
 {
