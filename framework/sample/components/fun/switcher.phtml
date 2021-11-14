@@ -7,7 +7,7 @@ function Switcher()
     return (<<< HTML
     <Router>
         <Route method="GET" rule='^/$' redirect="Home" />
-        <Route method="GET" rule='^/hello\\?(.*)$' redirect="Hello" />
+        <Route method="GET" rule='/hello/(name)' redirect="Hello" />
         <Route method="GET" rule='^/info(/)?$' redirect="Info" />
         <Route method="GET" rule='^/second(/)?\\?(.*)?$' redirect="Second" />
         <Route method="GET" rule='^/second(/)?$' redirect="Second" />

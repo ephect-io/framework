@@ -2,16 +2,22 @@
 
 namespace Fun;
 
-use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useQueryArgument;
+function Hello($props) {
 
-function Hello() {
-
-    useEffect(function() use (/* string */ &$name) {
-        $name = useQueryArgument('name');
-    });
-    
     return (<<< HTML
-        Hello {{ name }}
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>
+                Hello
+            </title>
+        </head>
+        <body>
+        
+            Hello {{ props->name }}
+
+        </body>
+    </html>
     HTML);
 }
