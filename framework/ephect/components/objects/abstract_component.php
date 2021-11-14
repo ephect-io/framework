@@ -9,6 +9,7 @@ use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Tree\Tree;
 use Exception;
+use ReflectionFunction;
 use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
@@ -155,15 +156,18 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         include_once CACHE_DIR . $cacheFilename;
 
+        $funcReflection = new ReflectionFunction($fqFunctionName);
+        $funcParams = $funcReflection->getParameters();
+
         $html = '';
-        if ($functionArgs === null) {
+        if ($funcParams === []) {
             ob_start();
             $fn = call_user_func($fqFunctionName);
             $fn();
             $html = ob_get_clean();
         }
 
-        if ($functionArgs !== null) {
+        if ($funcParams !== []) {
 
             $json = json_encode($functionArgs);
             $props = json_decode($json);
