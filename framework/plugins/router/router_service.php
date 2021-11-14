@@ -3,7 +3,7 @@
 namespace Ephect\Plugins\Router;
 
 use Ephect\Plugins\Route\RouteEntity;
-use Ephect\Registry\Registry;
+use Ephect\Plugins\Route\RouteInterface;
 use Ephect\Registry\RouteRegistry;
 
 class RouterService
@@ -21,9 +21,9 @@ class RouterService
         return $result;
     }
 
-    public function doRouting(): ?array 
+    public function doRouting(): ?array
     {
-        if(!IS_WEB_APP) {
+        if (!IS_WEB_APP) {
             return null;
         }
 
@@ -32,43 +32,67 @@ class RouterService
         $method = REQUEST_METHOD;
         $methodRoutes = !isset($routes->$method) ? null : $routes->$method;
 
-        if(null === $methodRoutes) {
+        if (null === $methodRoutes) {
             return null;
         }
 
-        $path = '';
         $parameters = [];
 
-        foreach($methodRoutes as $rule => $redirect) {
+        foreach ($methodRoutes as $rule => $stuff) {
 
-            $matches = \preg_replace('@' . $rule . '@', $redirect, REQUEST_URI);
+            $redirect = $stuff->redirect;
+            $translation = $stuff->translate;
 
-            if ($matches === REQUEST_URI) {
+            $match = $this->matchRouteEx($method, $rule, $redirect, $translation);
+
+            if(null === $match) {
                 continue;
             }
 
-            $baseurl = parse_url($matches);
-            $path = $baseurl['path'];
-    
-            $parameters = [];
-    
-            if (isset($baseurl['query'])) {
-                parse_str($baseurl['query'], $parameters);
-            }
+            [$redirect, $parameters] = $match;
 
-        break;
+            break;
         }
 
-        return [$path, $parameters];
+        return [$redirect, $parameters];
     }
 
-    public function addRoute(string $method, string $rule, string $redirect): void
+    private function matchRouteEx(string $method, string $rule, string $redirect, string $translation): ?array
     {
-        $methodRegistry = RouteRegistry::read($method) ?: [];
+        if ($method !== REQUEST_METHOD) {
+            return null;
+        }
 
-        if (!array_key_exists($rule, $methodRegistry)) {
-            $methodRegistry[$rule] = $redirect;
-            RouteRegistry::write($method, $methodRegistry);
+        $request_uri = \preg_replace('@' . $rule. '@', $redirect, REQUEST_URI);
+
+        if ($request_uri === REQUEST_URI) {
+            return null;
+        }
+
+        if($translation !== '') {
+            $query = preg_replace('@' . $rule . '@', $translation, REQUEST_URI);
+
+            $request_uri = SERVER_HOST . $query;
+        }
+
+        $baseurl = parse_url($request_uri);
+
+        $parameters = [];
+
+        if (isset($baseurl['query'])) {
+            parse_str($baseurl['query'], $parameters);
+        }
+
+        return [$redirect, $parameters];
+    }
+   
+    public function addRoute(RouteInterface $route): void
+    {
+        $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
+
+        if (!array_key_exists($route->getRule(), $methodRegistry)) {
+            $methodRegistry[$route->getRule()] = ['redirect' => $route->getRedirect(), 'translate' => $route->getTranslation()];
+            RouteRegistry::write($route->getMethod(), $methodRegistry);
         }
     }
 
@@ -79,37 +103,11 @@ class RouterService
 
     public function matchRoute(RouteEntity $route): ?array
     {
-        if($route->getMethod() !== REQUEST_METHOD) {
-            return null;
-        }
-
-        $matches = \preg_replace('@' . $route->getRule() . '@', $route->getRedirect(), REQUEST_URI);
-
-        if ($matches === REQUEST_URI) {
-            return null;
-        }
-
-        $baseurl = parse_url($matches);
-        $path = $baseurl['path'];
-
-        $parameters = [];
-
-        if (isset($baseurl['query'])) {
-            parse_str($baseurl['query'], $parameters);
-        }
-
-        return [$path, $parameters];
-    }
-
-    public function shiftRegistry(): void
-    {
-        $routes = Registry::item('router')['node'];
-        array_shift($routes);
-        Registry::write('router', 'node', $routes);
-        
-        if(count($routes) === 0) {
-            rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
-        }
-
+        return $this->matchRouteEx(
+            $route->getMethod(), 
+            $route->getRule(), 
+            $route->getRedirect(), 
+            $route->getTranslation()
+        );
     }
 }

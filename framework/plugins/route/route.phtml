@@ -14,7 +14,7 @@ function Route($props)
         $route = $routeBuilder->build();
 
         $router = new RouterService();
-        $router->addRoute($route->getMethod(), $route->getRule(), $route->getRedirect());
+        $router->addRoute($route);
         $router->saveRoutes();
 
         /**
@@ -29,7 +29,7 @@ function Route($props)
         if($match !== null) {
             list($path, $query) = $match;
             $comp = new Component($path);
-            $comp->render();
+            $comp->render($query);
         }
         /**
          * END code to remove if CLI build is mandatory

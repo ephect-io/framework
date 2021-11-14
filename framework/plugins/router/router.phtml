@@ -19,7 +19,7 @@ function Router($children)
             if ($route !== null) {
                 list($path, $query) = $route;
                 $comp = new Component($path);
-                $comp->render();
+                $comp->render($query);
             }
             $hasRouted = true;
         }

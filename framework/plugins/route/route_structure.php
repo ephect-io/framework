@@ -6,7 +6,8 @@ use Ephect\Core\Structure;
 
 class RouteStructure extends Structure
 {
-    public $method;
-    public $rule;
-    public $redirect;
+    public string $method = '';
+    public string $rule = '';
+    public string $redirect = '';
+    public string $translation = '';
 }
