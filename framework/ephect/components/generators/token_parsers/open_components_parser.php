@@ -106,8 +106,13 @@ final class OpenComponentsParser extends AbstractTokenParser
     {
         $result = '';
 
-        $result = " use (" . implode(', ', $argumentsKeys) . ")";
+        $args = implode(', ', $argumentsKeys);
+        if($args === '') {
+            return ' ';
+        }
 
+        $result = " use (" . $args . ")";
+     
         return $result;
 
     }

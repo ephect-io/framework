@@ -160,7 +160,7 @@ if(\$is127 || \$isIndex) {
     header('Location: //' . \$hostname . \$port . \$requestUri);
     exit(302);
 }
-define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
+define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
 define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
 include '../../framework/bootstrap.php';
 
@@ -168,7 +168,7 @@ BOOTSTRAP1;
 
         $bootstrap2 = <<<BOOTSTRAP2
 <?php
-define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
+define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
 define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
 include '../../framework/bootstrap.php';
 

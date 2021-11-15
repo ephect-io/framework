@@ -3,83 +3,67 @@
 namespace Ephect\Plugins\Setup;
 
 use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useQueryArgument;
+use function Ephect\Hooks\useState;
 
 define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 
 function Setup()
 {
 
-    function makeResponse(array $response): string
-    {
-        header('Content-Type: application/json');
-        return json_encode($response);
-    };
+    useEffect(function () use (/* bool */ &$hasResponse, /* string */ &$response) {
 
-    function fixRewriteBase(string &$response): void
-    {
-        $srv = new SetupService;
+        [$props, $setProps] = useState();
 
-        $ok = $srv->findFramework();
-        $rewritebase = $srv->fixRewritBase();
-        $response = makeResponse(
-            [
-                'result' => ($rewritebase !== null) ? $rewritebase : SERVER_ERROR,
-                'error' => ($rewritebase === null)
-            ]
-        );
-    };
-
-    function installEphectJS(string &$response): void
-    {
-        $srv = new SetupService;
-
-        $ok = $srv->installPhinkJS();
-        $response = makeResponse(
-            [
-                'result' => ($ok) ? 'Javascript framework installation successful' : SERVER_ERROR,
-                'error' => !$ok
-            ]
-        );
-    };
-
-    function makeIndex(string &$response): void
-    {
-        $srv = new SetupService;
-
-        $ok = $srv->makeBootstrap();
-        $ok = $ok && $srv->makeIndex();
-        $response = makeResponse(
-            [
-                'result' => ($ok) ? 'Index created' : SERVER_ERROR,
-                'error' => !$ok
-            ]
-        );
-    };
-
-    useEffect(function() use (/* string */ &$response) {
-
-        $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
+        $action = $props->action;
+        // $action = useQueryArgument('action');
+        $setup = new SetupService;
 
         if ($action === 'rewrite') {
-            fixRewriteBase($response);
+
+            $ok = $setup->findFramework();
+            $rewritebase = $setup->fixRewritBase();
+            $response = json_encode(
+                [
+                    'result' => ($rewritebase !== null) ? $rewritebase : SERVER_ERROR,
+                    'error' => ($rewritebase === null)
+                ]
+            );
         }
 
         if ($action === 'js') {
-            installEphectJS($response);
+            $ok = $setup->installPhinkJS();
+            $response = json_encode(
+                [
+                    'result' => ($ok) ? 'Javascript framework installation successful' : SERVER_ERROR,
+                    'error' => !$ok
+                ]
+            );       
         }
 
         if ($action === 'index') {
-            makeIndex($response);
+
+            $ok = $setup->makeBootstrap();
+            $ok = $ok && $setup->makeIndex();
+            $response = json_encode(
+                [
+                    'result' => ($ok) ? 'Index created' : SERVER_ERROR,
+                    'error' => !$ok
+                ]
+            );        
         }
 
-
+        $hasResponse = ($response !== '');
     });
 
     return (<<< HTML
-
-        {? if ({response} !== '') { ?}
-            {{ response }}
-        {? return ''; } ?}
+    {? 
+        if ({hasResponse}) {
+            header('Content-Type: application/json');
+            return {response};
+        }
+    ?}
+        <>
             <header>
                 <h1>
                     Ephect Setup
@@ -125,6 +109,6 @@ function Setup()
             <footer>
 
             </footer>
-
+        </>
     HTML);
 }

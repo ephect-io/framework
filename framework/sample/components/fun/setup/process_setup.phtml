@@ -7,12 +7,13 @@ use function Ephect\Hooks\useQueryArgument;
 
 define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 
-function ProcessSetup($children)
+function ProcessSetup($props)
 {
 
-    useEffect(function () use (/* bool */ &$hasResponse, /* string */ &$response) {
+    useEffect(function () use ($props, /* bool */ &$hasResponse, /* string */ &$response) {
 
         $action = useQueryArgument('action');
+        $action = $props->action;
         $setup = new SetupService;
 
         if ($action === 'rewrite') {
@@ -59,6 +60,5 @@ function ProcessSetup($children)
             return {response};
         }
     ?}
-    {{ children }}
     HTML);
 }

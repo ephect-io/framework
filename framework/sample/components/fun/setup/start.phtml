@@ -2,8 +2,15 @@
 
 namespace Fun;
 
-function Start()
+use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useState;
+
+function Start($props)
 {
+    useEffect(function() use ($props) {
+        useState($props);
+    });
+
     return (<<< HTML
     <Mother>
         <Slot name="title">Ephect setup !</Slot>

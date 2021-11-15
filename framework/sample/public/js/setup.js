@@ -33,10 +33,7 @@ EphectSetup.callback = function () {
 
 EphectSetup.process = function (callback) {
   EphectSetup.ajax(
-    EphectSetup.URL,
-    {
-      action: "rewrite",
-    },
+    EphectSetup.URL + 'rewrite', null,
     function (data) {
       if (!data.error) {
         EphectSetup.rewriteBase = data.result;
@@ -47,10 +44,7 @@ EphectSetup.process = function (callback) {
   );
 
   EphectSetup.ajax(
-    EphectSetup.URL,
-    {
-      action: "js",
-    },
+    EphectSetup.URL + 'js', null,
     function (data) {
       var result = EphectSetup.operationState(2, data.error);
       EphectSetup.checkSteps(result, EphectSetup.callback);
@@ -58,10 +52,7 @@ EphectSetup.process = function (callback) {
   );
 
   EphectSetup.ajax(
-    EphectSetup.URL,
-    {
-      action: "index",
-    },
+    EphectSetup.URL + 'index', null,
     function (data) {
       var result = EphectSetup.operationState(3, data.error);
       EphectSetup.checkSteps(result, EphectSetup.callback);

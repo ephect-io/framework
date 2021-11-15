@@ -4,9 +4,9 @@ namespace Ephect\Hooks;
 
 use Ephect\Registry\Registry;
 
-function useState(?array $state = null): array
+function useState(array|object $state = null): array
 {
-    $setState = function (array $state) {
+    $setState = function (array|object $state) {
         Registry::write('state', $state);
     };
 
@@ -23,8 +23,6 @@ function useState(?array $state = null): array
         $json = json_encode($state);
         $state = json_decode($json);
     }
-
-
 
     return [$state, $setState];
 }
