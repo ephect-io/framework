@@ -31,7 +31,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
     public function getDeclaration(): ?ComponentDeclaration
     {
-        if($this->declaration === null) {
+        if ($this->declaration === null) {
             $this->setDeclaration();
         }
 
@@ -47,9 +47,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         $fqName = ComponentRegistry::read($this->uid);
 
-        if($fqName === null ) {
+        if ($fqName === null) {
             $fqName = $this->getFullyQualifiedFunction();
-            if($fqName === null ) {
+            if ($fqName === null) {
                 throw new Exception('Please the component is defined in the registry before asking for its entity');
             }
         }
@@ -64,14 +64,15 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
     public function getEntity(): ?ComponentEntity
     {
-        if($this->entity === null) {
+        if ($this->entity === null) {
             $this->setEntity();
         }
 
         return $this->entity;
     }
 
-    protected function setEntity() {
+    protected function setEntity()
+    {
         $decl = $this->getDeclaration();
         $this->entity = $decl->getComposition();
     }
@@ -88,7 +89,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
     public function getFullyQualifiedFunction(): ?string
     {
-        if($this->function === null) return null;
+        if ($this->function === null) return null;
         return $this->namespace  . '\\' . $this->function;
     }
 
@@ -118,11 +119,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $names;
     }
 
-    public function composedOfUnique():?array
+    public function composedOfUnique(): ?array
     {
         $result = $this->composedOf();
 
-        if($result === null) return null;
+        if ($result === null) return null;
 
         $result = array_unique($result);
 
@@ -130,7 +131,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     }
 
     public function findComponent(string $componentName, string $motherUID): array
-    {        
+    {
         ComponentRegistry::uncache();
         $uses = ComponentRegistry::items();
         $fqFuncName = isset($uses[$componentName]) ? $uses[$componentName] : null;
@@ -165,14 +166,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $fn = call_user_func($fqFunctionName);
             $fn();
             $html = ob_get_clean();
-        }
-
-        if ($funcParams !== []) {
-
-            $json = json_encode($functionArgs);
-            $props = json_decode($json);
-            foreach ($props as $key => $value) {
-                $props->{$key} = urldecode($value);
+        } else {
+            if (null !== $props = json_decode(json_encode($functionArgs))) {
+                foreach ($props as $key => $value) {
+                    $props->{$key} = urldecode($value);
+                }
             }
             ob_start();
             $fn = call_user_func($fqFunctionName, $props);
