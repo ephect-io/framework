@@ -8,12 +8,12 @@ function Switcher()
     <Router>
         <Route method="GET" rule='^/$' redirect="Home" />
         <Route method="GET" rule='/hello/(name)' redirect="Hello" />
-        <Route method="GET" rule='^/start(/)?$' redirect="Start" />
-        <Route method="POST" rule='/start/(action)' redirect="Start" />
-        <Route method="GET" rule='^/info(/)?$' redirect="Info" />
-        <Route method="GET" rule='^/second(/)?\\?(.*)?$' redirect="Second" />
-        <Route method="GET" rule='^/second(/)?$' redirect="Second" />
-        <Route method="GET" rule='^/matroichka(/)?$' redirect="Matroichka0" />
+        <Route method="GET" rule='^/start/?$' redirect="Start" />
+        <Route method="POST" rule='/start/(action)' redirect="Install" />
+        <Route method="GET" rule='^/info/?$' redirect="Info" />
+        <Route method="GET" rule='^/second/?\\?(.*)?$' redirect="Second" />
+        <Route method="GET" rule='^/second/?$' redirect="Second" />
+        <Route method="GET" rule='^/matroichka/?$' redirect="Matroichka0" />
     </Router>
     HTML);
 }
