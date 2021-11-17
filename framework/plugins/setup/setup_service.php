@@ -20,12 +20,12 @@ class SetupService
     {
         $rewriteBase = dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR;
         $rewriteBase = str_replace("//", "/", $rewriteBase);
-        define('SETUP_REWRITE_BASE', $rewriteBase);
+        // define('REWRITE_BASE', $rewriteBase);
     }
 
     public function getRewriteBase(): string
     {
-        return SETUP_REWRITE_BASE;
+        return REWRITE_BASE;
     }
 
     public function installPhinkJS(): bool
@@ -38,7 +38,7 @@ class SetupService
             $tarfilename = 'phinkjs.tar';
             $phinkjs_dirname = 'phinkjs' . DIRECTORY_SEPARATOR;
 
-            $filepath = SETUP_SITE_ROOT . SETUP_FRAMEWORK;
+            $filepath = SITE_ROOT . FRAMEWORK;
 
             if (file_exists($filepath . $phinkjs_dirname)) {
                 chdir($filepath . $phinkjs_dirname);
@@ -99,7 +99,7 @@ class SetupService
 
         if ($ok = file_exists('bootstrap.php')) {
 
-            $ok = $ok && false !== file_put_contents(SETUP_CONFIG_DIR . 'rewrite_base', SETUP_REWRITE_BASE);
+            $ok = $ok && false !== file_put_contents(CONFIG_DIR . 'rewrite_base', REWRITE_BASE);
 
             if (file_exists('.htaccess') && ($htaccess = file_get_contents('.htaccess'))) {
                 $htaccess = str_replace(PHP_EOL, ';', $htaccess);
@@ -112,7 +112,7 @@ class SetupService
                     $pe = strpos($htaccess, ';', $ps);
                     $rewriteBaseEntry = substr($htaccess, $ps, $pe - $ps);
 
-                    $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . SETUP_REWRITE_BASE, $htaccess);
+                    $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . REWRITE_BASE, $htaccess);
                     $htaccess = str_replace(';', PHP_EOL, $htaccess);
 
                     $ok = $ok && false !== file_put_contents('.htaccess', $htaccess);
@@ -120,7 +120,7 @@ class SetupService
             }
         }
 
-        $result = ($ok) ? SETUP_REWRITE_BASE : null;
+        $result = ($ok) ? REWRITE_BASE : null;
 
         return $result;
     }
@@ -129,19 +129,19 @@ class SetupService
     {
         $ok = false;
 
-        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'codephoenixorg' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
         $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
-        $lib = 'ephect' . DIRECTORY_SEPARATOR . 'phink_library.php';
+        $lib = 'ephect' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
-        $framework_dir = '';
-        if (file_exists(SETUP_SITE_ROOT . $vendor_dir . $lib)) {
+        $framework_dir = 'framework';
+        if (file_exists(SITE_ROOT . $vendor_dir . $lib)) {
             $framework_dir = $vendor_dir;
         }
 
-        if (file_exists(SETUP_SITE_ROOT . $portable_dir . $lib)) {
+        if (file_exists(SITE_ROOT . $portable_dir . $lib)) {
             $framework_dir = $portable_dir;
         }
-        $ok = false !== file_put_contents(SETUP_CONFIG_DIR . 'framework', $framework_dir);
+        $ok = false !== file_put_contents(CONFIG_DIR . 'framework', $framework_dir);
 
         return $ok;
     }
@@ -160,16 +160,16 @@ if(\$is127 || \$isIndex) {
     header('Location: //' . \$hostname . \$port . \$requestUri);
     exit(302);
 }
-define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
-define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+// define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
+// define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
 include '../../framework/bootstrap.php';
 
 BOOTSTRAP1;
 
         $bootstrap2 = <<<BOOTSTRAP2
 <?php
-define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
-define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+// define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
+// define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
 include '../../framework/bootstrap.php';
 
 BOOTSTRAP2;
