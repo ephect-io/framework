@@ -72,6 +72,22 @@ abstract class AbstractApplication extends Element
         return $result;
     }
 
+
+    public function clearCache(): string
+    {
+        $result = '';
+        try {
+            Cache::clearCache();
+
+            $result = 'All cache files deleted';
+        } catch (\Throwable $ex) {
+            Console::writeException($ex);
+
+            $result = 'Impossible to delete cache files';
+        }
+        return $result;
+    }
+
     public function getDebugLog(): string
     {
         return self::getLogger()->getDebugLog();

@@ -111,6 +111,22 @@ class Cache extends StaticElement
         return $result;
     }
 
+
+    public static function clearCache(): bool
+    {
+        $result = false;
+        try {
+            $result = $result || self::deleteCacheDir();
+            $result = $result || self::createCacheDir();
+
+        } catch (\Throwable $ex) {
+            self::getLogger()->error($ex);
+
+            $result = false;
+        }
+        return $result;
+    }
+
     public static function createCacheDir(): bool
     {
         $result = false;
