@@ -2,7 +2,15 @@
 
 namespace Fun;
 
+use function Ephect\Hooks\useProps;
+
 function Hello($props) {
+
+    [$name] = useProps($props, function($props, /* string */ $name) {
+        $name = $props->name;
+
+        return [$name];
+    });
 
     return (<<< HTML
     <!DOCTYPE html>
@@ -15,7 +23,7 @@ function Hello($props) {
         </head>
         <body>
         
-            Hello {{ props->name }}
+            Hello {{ name }}
 
         </body>
     </html>
