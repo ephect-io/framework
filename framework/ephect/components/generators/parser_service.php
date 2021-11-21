@@ -10,6 +10,7 @@ use Ephect\Components\Generators\TokenParsers\ChildSlotsParser;
 use Ephect\Components\Generators\TokenParsers\ClosedComponentsParser;
 use Ephect\Components\Generators\TokenParsers\EchoParser;
 use Ephect\Components\Generators\TokenParsers\FragmentsParser;
+use Ephect\Components\Generators\TokenParsers\HeredocParser;
 use Ephect\Components\Generators\TokenParsers\MotherSlotsParser;
 use Ephect\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Components\Generators\TokenParsers\OpenComponentsParser;
@@ -95,6 +96,13 @@ class ParserService implements ParserServiceInterface
         $p = new UsesAsParser($component);
         $p->do();
         $this->useTypes = array_merge($this->useTypes, $p->getUses());
+    }
+
+    public function doHeredoc(FileComponentinterface $component): void
+    {
+        $p = new HeredocParser($component);
+        $p->do();
+        $this->html = $p->getHtml();
     }
 
     public function doPhpTags(FileComponentinterface $component): void

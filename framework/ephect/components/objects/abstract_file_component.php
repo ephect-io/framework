@@ -134,6 +134,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $didMotherSlots = $res !== "" && $res !== null;
         $this->code = $parser->getHtml();
 
+        $parser->doHeredoc($this);
+        $this->code = $parser->getHtml();
+
         $parser->doPhpTags($this);
         $this->code = $parser->getHtml();
 

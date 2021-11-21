@@ -6,7 +6,7 @@ final class UseEffectParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/useEffect\(function ?\(\) use \(((\s|.*?)+)\) {/m';
+        $re = '/useEffect\(function[ ]+\(\)[ ]+use[ ]+\(((\s|.*?)+)\)[ ]+{/m';
 
         $str = $this->html;
 

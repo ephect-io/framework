@@ -6,7 +6,7 @@ final class UseSlotParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/useSlot\(function ?\(\) use \(((\s|.*?)+)\) {((\s|.*?)+)}\);/m';
+        $re = '/useSlot\(function[ ]+\(\)[ ]+use[ ]+\(((\s|.*?)+)\)[ ]+{((\s|.*?)+)}\);/m';
 
         $str = $this->html;
 
@@ -71,7 +71,7 @@ final class UseSlotParser extends AbstractTokenParser
         $decl2 = "";
 
         $useEffect = <<< USEFFECT
-        \Ephect\Hooks\useEffect(function () use ($match1) { $match2 });
+        \Ephect\Hooks\useEffect(function() use ($match1) { $match2 });
         USEFFECT;
 
         $this->result = [

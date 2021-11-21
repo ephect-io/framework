@@ -59,7 +59,7 @@ class ComponentParser extends Parser
     public function doFunctionDeclaration(): ?array
     {
         $result = [];
-        $re = '/(function) *?([\w]+)\(((\s|.*?)*)\)/m';
+        $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
 
         $str = $this->html;
 
