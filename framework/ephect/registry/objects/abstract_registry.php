@@ -68,9 +68,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
     public function _uncache(): bool
     {
-        if ($this->isLoaded) {
-            return false;
-        }
+        $this->isLoaded = false;
 
         $registryFilename = $this->_getCacheFileName();
         $json = Utils::safeRead($registryFilename);
