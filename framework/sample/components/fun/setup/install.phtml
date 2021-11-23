@@ -4,7 +4,6 @@ namespace Ephect\Plugins\Setup;
 
 use function Ephect\Hooks\useEffect;
 use function Ephect\Hooks\useProps;
-use function Ephect\Hooks\useState;
 
 define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 
@@ -59,10 +58,14 @@ function Install($props)
         $hasResponse = ($response !== '');
     });
 
-    return (<<< HTML
+    return (<<<HTML
     {? 
-        if ({hasResponse}) {
-            header('Content-Type: application/json');
+        if ({hasResponse}) { ?}
+            <ResponseHeader 
+                directive[]="Content-Type: application/json"
+                directive[]="Content-Encoding: utf-8"
+            />
+        {?
             echo {response};
         }
     ?}
