@@ -1,0 +1,28 @@
+<?php
+
+namespace Ephect\Plugins;
+
+use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useProps;
+
+function ResponseHeader($props)
+{
+
+    [$directive] = useProps($props, function($props, /* string */ $directive) {
+        $directive = $props->directive;
+
+        return [$directive];
+    });
+
+    useEffect(function () use (/* bool */ &$hasDirective, /* string */ &$directive) {
+        $hasDirective = ($directive !== '');
+    });
+
+    return (<<< HTML
+    {? 
+        if ({hasDirective}) {
+            header("{directive}");
+        }
+    ?}
+    HTML);
+}
