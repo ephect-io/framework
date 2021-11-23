@@ -2,13 +2,13 @@
 
 ## What is Ephect ?
 
-In short, it's a ReactJS-like PHP framework. It allows you to create views by declaring components just like ReactJS does *today* <sup>1</sup>.
+In short, it's a ReactJS-like PHP framework. It allows you to create views by declaring components just like ReactJS does.
 
 ## Requirements
 
-Ephect can pre-compile the site using a CLI tool : *fcc*. This tool uses a thread-safe parallelism mechanism to compile pages that may contain the same components. The thread-safe feature ensures that there is no so called "*class* has already been declared" error. 
+Ephect can pre-compile the site using a CLI tool : *egg*. This tool uses a thread-safe parallelism mechanism to compile pages that may contain the same components. The thread-safe feature ensures that there is no so called "*class* has already been declared" error. 
 
-It is not mandatory but recommended to enable this mechanism. Otherwise you can compile pages dynamically by calling your application in the browser.
+It is not mandatory but recommended to enable this feature. Otherwise you can compile pages dynamically by calling your application in the browser.
 
 ### PHP thread-safe
 
@@ -16,7 +16,7 @@ If you want to enable the parallelism feature, you must have a ZTS version of PH
 
 Here is a sample of PHP compilation statement for getting a thread-safe version of php-fpm : 
 
-    phpbrew install 8.0.9 +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +fpm +ipc +json +mbregex +mbstring +mhash +pcntl +pcre +pdo +pear +phar +posix +readline +sockets +tokenizer +xml +curl +openssl +zip +sqlite +zts
+    phpbrew install 8.0.9 +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +fpm +ipc +json +mbregex +mbstring +mhash +pcntl +pcre +pdo +pear +phar +posix +readline +sockets +tokenizer +xml +curl +openssl +zip +sqlite -- --enable-zts
 
 To install PhpBrew, please refer to the documentation at [https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew).
 
@@ -57,7 +57,7 @@ where *myproject* is the name of your project.
 
 Move to *myproject* directory and type:
 
-    php ./bin/fcc.php -s
+    php egg make:sample
 
 You will see a **src** directory in which you will find the standard structure of an ephect application. Ephect doesn't really care of the actual structure provided that it is under **src** directory. It means you can organize your application tree as you wish.
 
@@ -65,7 +65,7 @@ You will see a **src** directory in which you will find the standard structure o
 
 If you setup PHP-ZTS, good choice, you can generate your application without browser by typing:
 
-    php ./bin/fcc.php -c
+    php egg compile
 
 You will find the generated application under the directory *cache*.
 
@@ -87,14 +87,12 @@ The main route shows how to use useEffect and useState hooks all in nesting seve
 
 The Hello route shows a classic query string parameter binding.
 
-The Second route shows how to use useSlot hook to bind a variable nested inside the parent context.
+The Second route shows how to use useSlot Hook to bind a variable nested inside the parent context.
 
 The Info route shows how to make the most simple component without hooks.
 
 ## Notes
 
 **Ephect framework** is in work in progress stage. This means that there's a lot to do. Breaking changes are yet to come.
-
-<sup>1</sup> by *today* it's meant that Ephect follows the ReactJS paradigm as it is in 2021. Future ReactJS changes may not be taken in account in **Ephect framework**.
 
 Happy coding again! :)
