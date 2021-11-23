@@ -27,11 +27,9 @@ if (IS_WEB_APP) {
     $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
 
-
     define('EPHECT_VENDOR_SRC', FRAMEWORK_ROOT);
     define('EPHECT_VENDOR_LIB', EPHECT_VENDOR_SRC . 'ephect' . DIRECTORY_SEPARATOR);
     define('EPHECT_VENDOR_APPS', EPHECT_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
-
 
     $rewrite_base = '/';
 
@@ -97,11 +95,9 @@ if (!IS_WEB_APP) {
     $script_root = $script_dir . DIRECTORY_SEPARATOR;
     $src_root = $script_root . 'src' . DIRECTORY_SEPARATOR;
 
-    define('FRAMEWORK_DIR', 'framework');
-
     define('APP_CWD', IS_PHAR_APP ? getcwd() . DIRECTORY_SEPARATOR : str_replace($script_name, '', $app_path));
 
-    define('IS_INNER_APP', false !== strpos(APP_CWD, 'ephect' . DIRECTORY_SEPARATOR . FRAMEWORK_DIR . DIRECTORY_SEPARATOR . 'apps'));
+    define('IS_INNER_APP', false !== strpos(APP_CWD, 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'apps'));
     define('IS_TASK_APP', false !== strpos(APP_CWD . $script_name, $script_dir . DIRECTORY_SEPARATOR . 'bootstrap.php'));
     define('IS_BIN_APP', false !== strpos(APP_CWD . $script_name, 'bin' . DIRECTORY_SEPARATOR . $script_name));
 
@@ -115,10 +111,10 @@ if (!IS_WEB_APP) {
         $appName = array_pop($path);
     } elseif (IS_TASK_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = dirname(APP_CWD) . DIRECTORY_SEPARATOR  . 'src' . DIRECTORY_SEPARATOR;
+        $src_root = $document_root . DIRECTORY_SEPARATOR  . 'src' . DIRECTORY_SEPARATOR;
     } elseif (IS_BIN_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = dirname(APP_CWD) . DIRECTORY_SEPARATOR  . 'src' . DIRECTORY_SEPARATOR;
+        $src_root = $document_root . DIRECTORY_SEPARATOR  . 'src' . DIRECTORY_SEPARATOR;
     } 
     elseif (IS_PHAR_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
