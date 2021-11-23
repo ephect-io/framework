@@ -1,7 +1,7 @@
 {
-    "name": "codephoenixorg/ephect",
+    "name": "ephect-io/framework",
     "type": "library",
-    "description": "PHP made great again",
+    "description": "Make PHP effective again!",
     "homepage": "https://ephect.io",
     "license": "GPL-3.0+",
     "authors": [
