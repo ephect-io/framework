@@ -201,6 +201,7 @@ define('STATIC_DIR', CACHE_DIR . REL_STATIC_DIR);
 define('REL_COPY_DIR', 'copy' . DIRECTORY_SEPARATOR);
 define('COPY_DIR', CACHE_DIR . REL_COPY_DIR);
 define('LOG_PATH', SITE_ROOT . 'logs' . DIRECTORY_SEPARATOR);
+define('INFO_LOG', LOG_PATH . 'info.log');
 define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');

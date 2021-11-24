@@ -2,6 +2,8 @@
 
 namespace Ephect\Logger;
 
+use Ephect\Utils\TextUtils;
+
 class Logger
 {
     private static $_logger = null;
@@ -24,17 +26,24 @@ class Logger
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);
     }
 
-    public function debug($message, $filename = null, $line = null)
+    public function info($string, ...$params): void
+    {
+        $message = TextUtils::format($string, $params);
+        $this->_log(INFO_LOG, $message);
+    }
+
+
+    public function debug($message, $filename = null, $line = null): void
     {
         $this->_log(DEBUG_LOG, $message, $filename, $line);
     }
 
-    public function sql($message, $filename = null, $line = null)
+    public function sql($message, $filename = null, $line = null): void
     {
         $this->_log(SQL_LOG, $message, $filename, $line);
     }
 
-    public function error(\Throwable $ex, $filename = null, $line = null)
+    public function error(\Throwable $ex, $filename = null, $line = null): void
     {
         $message = '';
 
@@ -49,7 +58,7 @@ class Logger
         $this->_log(ERROR_LOG, $message, $filename, $line);
     }
 
-    private function _log($filepath, $message, $filename = null, $line = null)
+    private function _log($filepath, $message, $filename = '', $line = ''): void
     {
         $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
 
@@ -65,6 +74,14 @@ class Logger
         $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
         fwrite($handle, $message . PHP_EOL);
         fclose($handle);
+    }
+
+    public function getInfoLog(): string
+    {
+        if (!\file_exists(INFO_LOG)) {
+            return '';
+        }
+        return \file_get_contents(INFO_LOG);
     }
 
     public function getDebugLog(): string
@@ -101,12 +118,22 @@ class Logger
 
     public function clearAll(): void
     {
+        if (file_exists(INFO_LOG)) {
+            unlink(INFO_LOG);
+        }
+        
         if (file_exists(DEBUG_LOG)) {
             unlink(DEBUG_LOG);
+        }      
+        
+        if (file_exists(ERROR_LOG)) {
+            unlink(ERROR_LOG);
         }
+
         if (file_exists(SQL_LOG)) {
             unlink(SQL_LOG);
         }
+
         if (file_exists(DOCUMENT_ROOT . 'php_error_log')) {
             unlink(DOCUMENT_ROOT . 'php_error_log');
         }
