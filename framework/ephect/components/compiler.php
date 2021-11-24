@@ -2,10 +2,11 @@
 
 namespace Ephect\Components;
 
-use Ephect\Cache\Cache;
+use Ephect\CLI\Console;
+use Ephect\CLI\ConsoleColors;
 use Ephect\Components\Generators\ComponentParser;
-use Ephect\Components\Generators\ParserService;
 use Ephect\IO\Utils as IOUtils;
+use Ephect\Logger\Logger;
 use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
@@ -107,6 +108,9 @@ class Compiler
                 include $framework_root . 'bootstrap.php';
 
                 PluginRegistry::uncache();
+
+                Console::writeLine("Compiling %s ...", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+                Console::getLogger()->info("Compiling %s ...", $route);
 
                 $comp = new Component($route);
                 $filename = $comp->getFlattenSourceFilename();

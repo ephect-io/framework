@@ -2,6 +2,8 @@
 
 namespace Ephect\Components;
 
+use Ephect\CLI\Console;
+use Ephect\CLI\ConsoleColors;
 use Ephect\Components\Generators\ComponentParser;
 use Ephect\Components\Generators\ParserService;
 use Ephect\ElementUtils;
@@ -96,6 +98,8 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
     {
+        Console::getLogger()->info("Start rendering %s ...", $functionName);
+
         [$fqFunctionName, $cacheFilename, $isCached] = $this->findComponent($functionName, $motherUID);
         if (!$isCached) {
             ComponentRegistry::uncache();
@@ -109,6 +113,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getFlattenFilename();
         }
 
+        Console::getLogger()->info("Finish rendering %s ...", $functionName);
+
+
         return [$fqFunctionName, $cacheFilename];
     }
 
@@ -121,6 +128,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function parse(): void
     {
+        Console::writeLine("Parsing %s ...", ConsoleColors::getColoredString($this->getFunction(), ConsoleColors::CYAN));
+        Console::getLogger()->info("Parsing %s ...", $this->getFunction());
+
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
         CodeRegistry::uncache();
 
