@@ -16,7 +16,7 @@ class Console extends Element
             return;
         }
 
-        $value = TextUtils::concat($string, $params);
+        $value = TextUtils::format($string, $params);
 
         echo $value;
     }
@@ -27,7 +27,7 @@ class Console extends Element
             return;
         }
         
-        $value = TextUtils::concat($string, $params);
+        $value = TextUtils::format($string, $params);
 
         echo $value . PHP_EOL;
     }

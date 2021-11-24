@@ -32,7 +32,7 @@ class TextUtils
         return $text;
     }
 
-    public static function concat($string, ...$params): string 
+    public static function format($string, ...$params): string 
     {
 
         if(is_object($string)) {
