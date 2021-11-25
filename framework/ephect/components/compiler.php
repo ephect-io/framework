@@ -157,7 +157,7 @@ class Compiler
 
             if($error !== '') {
                 // Console::writeLine($error);
-                Console::write("%s", ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
+                Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
 
                 break;
             }
