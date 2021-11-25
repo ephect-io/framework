@@ -36,6 +36,7 @@ class ConsoleColors
     public static function getColoredString($string, $foreground_color = null, $background_color = null): string
     {
         $colored_string = "";
+        $suffix = "\033[0m";
 
         // Check if given foreground color found
         if (isset($foreground_color)) {
@@ -43,11 +44,12 @@ class ConsoleColors
         }
         // Check if given background color found
         if (isset($background_color)) {
-            $colored_string .= "\033[" . $background_color . "m";
+            $colored_string = "\033[" . $background_color . "m" . $colored_string;
+            $suffix .= $suffix;
         }
 
         // Add string and end coloring
-        $colored_string .=  $string . "\033[0m";
+        $colored_string .=  $string . $suffix;
 
         return $colored_string;
     }
