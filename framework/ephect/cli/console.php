@@ -46,19 +46,26 @@ class Console extends Element
     public static function writeException(\Throwable $ex, $file = null, $line = null): void
     {
         if (!IS_WEB_APP) {
-            $message = '';
-
-            if ($ex instanceof \ErrorException) {
-                $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
-            }
-            $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
-            $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
-            $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
-            $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
+            $message =  self::formatException($ex);
 
             print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
         } else {
-            self::getLogger()->error($ex, $file, $line);
+            self::getLogger()->error($ex, $ex->getFile(), $ex->getLine());
         }
+    }
+
+    public static function formatException(\Throwable $ex): string
+    {
+        $message = '';
+
+        if ($ex instanceof \ErrorException) {
+            $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
+        }
+        $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
+        $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
+        $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
+        $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
+
+        return $message;
     }
 }
