@@ -2,6 +2,7 @@
 
 namespace Ephect\Components;
 
+use DateTime;
 use Ephect\CLI\Console;
 use Ephect\CLI\ConsoleColors;
 use Ephect\Components\Generators\ComponentParser;
@@ -15,6 +16,7 @@ use Ephect\Tasks\Task;
 use Ephect\Tasks\TaskRunner;
 use Ephect\Tasks\TaskStructure;
 use parallel\{channel};
+use Throwable;
 
 class Compiler
 {
@@ -59,7 +61,6 @@ class Compiler
 
             CodeRegistry::cache();
             ComponentRegistry::cache();
-
         }
 
         if (!PluginRegistry::uncache()) {
@@ -71,7 +72,6 @@ class Compiler
 
                 PluginRegistry::write($pluginFile, $plugin->getUID());
                 PluginRegistry::write($plugin->getUID(), $plugin->getFullyQualifiedFunction());
-
             }
             PluginRegistry::cache();
             ComponentRegistry::cache();
@@ -90,7 +90,6 @@ class Compiler
             $comp = $this->list[$fqRoute];
 
             $comp->copyComponents($this->list);
-
         }
 
         $this->routes = $routes;
@@ -109,28 +108,59 @@ class Compiler
 
                 PluginRegistry::uncache();
 
-                Console::writeLine("Compiling %s ...", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+                Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
                 Console::getLogger()->info("Compiling %s ...", $route);
 
                 $comp = new Component($route);
                 $filename = $comp->getFlattenSourceFilename();
 
-                ob_start();
-                $comp->render();
-                $html = ob_get_clean();
+                $html = '';
+                $error = '';
+                
+                try {
 
-                $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html]);
+                    $time_start = microtime(true);
+
+                    ob_start();
+                    $comp->render();
+                    $html = ob_get_clean();
+
+                    $time_end = microtime(true);
+
+                    $duration = $time_end - $time_start;
+
+                    $utime = sprintf('%.3f', $duration);
+                    $raw_time = DateTime::createFromFormat('u.u', $utime);
+                    $duration = substr($raw_time->format('u'), 0, 3);
+
+
+                    Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::LIGHT_CYAN));
+                } catch (Throwable $ex) {
+                    $error = Console::formatException($ex);
+                    // Console::writeException($ex);
+
+                }
+
+                $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html, 'error' => $error]);
             });
 
             $runner = new TaskRunner($task);
             $runner->run();
-            
+
             $result = $runner->getResult();
 
             $runner->close();
 
             $filename = $result['filename'];
             $html = $result['html'];
+            $error = $result['error'];
+
+            if($error !== '') {
+                // Console::writeLine($error);
+                Console::write("%s", ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
+
+                break;
+            }
 
             if ($route === 'App') {
                 continue;
@@ -138,7 +168,6 @@ class Compiler
 
             IOUtils::safeWrite(STATIC_DIR . $filename, $html);
         }
-
     }
 
     public function searchForRoutes(): array
