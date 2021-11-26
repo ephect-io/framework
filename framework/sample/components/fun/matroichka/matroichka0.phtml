@@ -13,18 +13,15 @@ function Matroichka0()
             <link rel="stylesheet" href="/css/app.css" />
         </Slot>
         <div class="App-content" >
-            <label for="zero">Zero</label>
-            <ul id="zero">
-                <li>
-                    inside 0<br>
-                    <Matroichka1>
-                        inside 1<br>
-                        <Matroichka2>
-                            inside 2<br>
-                        </Matroichka2>
-                    </Matroichka1>
-                </li>
-            </ul>
+            <Devotchka id="zero" label="Zero">
+                inside 0<br>
+                <Matroichka1>
+                    inside 1<br>
+                    <Matroichka2>
+                        inside 2<br>
+                    </Matroichka2>
+                </Matroichka1>
+            </Devotchka>
         </div>
         <Slot name="javascripts">
             <script src="js/ephect.js"></script>
