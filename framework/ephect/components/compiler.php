@@ -7,7 +7,6 @@ use Ephect\CLI\Console;
 use Ephect\CLI\ConsoleColors;
 use Ephect\Components\Generators\ComponentParser;
 use Ephect\IO\Utils as IOUtils;
-use Ephect\Logger\Logger;
 use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
@@ -116,7 +115,7 @@ class Compiler
 
                 $html = '';
                 $error = '';
-                
+
                 try {
 
                     $time_start = microtime(true);
@@ -133,12 +132,9 @@ class Compiler
                     $raw_time = DateTime::createFromFormat('u.u', $utime);
                     $duration = substr($raw_time->format('u'), 0, 3);
 
-
                     Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::LIGHT_CYAN));
                 } catch (Throwable $ex) {
                     $error = Console::formatException($ex);
-                    // Console::writeException($ex);
-
                 }
 
                 $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html, 'error' => $error]);
@@ -155,8 +151,7 @@ class Compiler
             $html = $result['html'];
             $error = $result['error'];
 
-            if($error !== '') {
-                // Console::writeLine($error);
+            if ($error !== '') {
                 Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
 
                 break;
