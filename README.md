@@ -1,4 +1,4 @@
-![Ephect](docs/salamandra.png)
+![Ephect](assets/images/salamandra.png)
 
 ## What is Ephect ?
 
@@ -10,11 +10,11 @@ Ephect is a fucntional components based framework with template syntax. It gathe
 
 The components can be declared in cascade and the same component can be reused in each cascading component.
 
-A parent componenet with predefined slots can be *inherited* to change the content of its slots. A special component called *Slot* is dedicated to replace parent contents.
+A parent component with named placeholders can be inherited to change the content of its placeholders. The component in charge of managing placeholders is called *Slot*.
 
 ### Hooks
 
-**Ephect** introduces *hooks* to manage the data workflow. Additionally to well-known useEffect and useState in the **ReactJS** realm, **Ephect** comes with 3 new basic hooks:
+**Ephect** introduces *hooks* to manage the data workflow. Additionally to well-known useEffect and useState hooks in the **ReactJS** realm, **Ephect** comes with 3 new basic hooks:
 
 - useProps: to ensure a property can be used,
 - useQueryArgument: to filter the value passed as parameter to the query,
@@ -22,27 +22,27 @@ A parent componenet with predefined slots can be *inherited* to change the conte
 
 ## CLI tool *egg*
 
-Ephect comes with a CLI tool called *egg*. The premier feature of egg is to pre-compile the code of the whole application at once. This is done in one command: php egg compile. The benefits of this approach are the errors managment and the ease of integration in a CI/CD system.
+**Ephect** comes with a CLI tool called *egg*. The main feature of **egg** is to pre-compile the code of the whole application at once. This is done in one command: *php egg compile*. The benefits of this approach are the error managment and the increase of velocity of the application.
 
-### Fatal error handling
+### Error handling
 
-Every syntax error is handled as a fatal error which stops the compilation process. An explicit message is displayed on the console output to help you fixing it quickly. You have no hidden error ready to break to stability of your application in a page that you don't browse. The compilation process successfully ends only when all errors are fixed.
+Every syntax error is handled as a fatal error which stops the compilation process. An explicit message is displayed on the console output to help you fixing it quickly.
 
 ### Headless page generator
 
-The compiler parses the templates of every components owned by a page comprising the cascading components. Each component is translated from *Ephect* template code to *pure functional PHP code*. The code of each component is light and fast to run. 
+The compiler parses the templates of every components owned by a page comprising the cascading components. Each component is translated from **Ephect** template code to pure functional **PHP** code and cached. The code of each component is light and fast to run. 
 
 Once the pages are prepared in cache, browsing them is as fast as possible. The only bottleneck that you should be aware of is the data resources calls.
 
 ## Requirements
 
-To take benefits of all the CLI features you need a thread-safe version of PHP also called ZTS with Parallel extension. It is not mandatory but recommended to enable ZTS in PHP engine. Otherwise you can compile pages dynamically by calling your application in the browser just as other frameworks do.
+To take adavantage of all the CLI features you need a thread-safe version of **PHP** also called **ZTS** with **Parallel** extension. It is not mandatory but recommended to enable **ZTS** in the **PHP** engine. Otherwise you can compile pages dynamically by calling your application in the browser.
 
-To eneble ZTS see this [section](docs/enable-zts)
+To eneble ZTS see this [section](enable-zts).
 
 ## Install the framework
 
-There's a dedicated project named ephect-io/create-app that helps you installing all you need for a quick start. 
+There's a dedicated project you can find here **[ephect-io/create-app](https://github.com/ephect-io/create-app)** that helps you installing all you need for a quick start. 
 
 Using Composer just do:
 
@@ -60,7 +60,7 @@ You will see a **src** directory in which you will find the standard structure o
 
 ## Pre-compile the application
 
-If you setup PHP-ZTS, good choice, you can generate your application without browser by typing:
+If you setup **PHP-ZTS**, good choice, you can generate your application without browser by typing:
 
     php egg compile
 
@@ -93,7 +93,7 @@ The Info route shows how to make the most simple component without hooks.
 
 ### Yarn support
 
-If you're used to using yarn, Ephect comes with yarn support.
+If you're used to using yarn, **Ephect** comes with yarn support.
 
 ## Installation
 
@@ -118,9 +118,10 @@ but yarn has some shortcuts too:
 
 ## Notes
 
-**Ephect framework** is in work in progress stage. This means that there's a lot to do. Breaking changes are yet to come.
+**Ephect** framework is in work in progress stage. This means that there's a lot to do. Breaking changes are yet to come.
 
-<sup>1</sup> to better understand the concept of hooks you should have a look at [ReactJS hooks reference](https://reactjs.org/docs/hooks-reference.html)
+<sup>1</sup> The concept of hooks in **ReactJS** is explained at [ReactJS hooks reference](https://reactjs.org/docs/hooks-reference.html)
 
-<sup>2</sup> 
+<sup>2</sup> The concept of slots in **WebComponents** is explained at [MDN -  The Web Component Slot element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot)
+
 Happy coding again! :)
