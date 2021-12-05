@@ -207,6 +207,118 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         echo $html;
     }
 
+    public function identifyComponents(array &$list, ?string $motherUID = null, ?FileComponentInterface $component = null): void
+    {
+
+        $isRoute = false;
+        if ($component === null) {
+            $isRoute = true;
+            $component = $this;
+
+            $motherUID = $component->getMotherUID();
+
+            if (!file_exists(UNIQUE_DIR . $motherUID)) {
+                mkdir(UNIQUE_DIR . $motherUID, 0775);
+
+                $flatFilename = CodeRegistry::getFlatFilename();
+                copy(CACHE_DIR . $flatFilename, UNIQUE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
+            }
+        }
+
+        $uid = $component->getUID();
+
+        $cachedir = UNIQUE_DIR . $motherUID . DIRECTORY_SEPARATOR;
+        $copyFile = $component->getFlattenSourceFilename();
+        $funcName = $component->getFunction();
+        $fqFuncName = $component->getFullyQualifiedFunction();
+        $parentHtml = $component->getCode();
+        $token = '_' . str_replace('-', '', $uid);
+        
+        $cacheFile = $isRoute ? $cachedir . $funcName . $token . PREHTML_EXTENSION : $cachedir . $copyFile;
+
+        if (file_exists($cacheFile)) {
+            $parentHtml = file_get_contents($cacheFile);
+        }
+
+        $componentList = $component->composedOf();
+
+        if ($componentList === null) {
+            copy(COPY_DIR . $copyFile, $cacheFile);
+        }
+
+        if(!$isRoute)
+        {
+            $copyFile = str_replace(PREHTML_EXTENSION, $token . PREHTML_EXTENSION, $copyFile);
+
+        
+            $re = '/(function )(' . $funcName . ')([ ]*\(.*\))/m';
+            $subst = '$1$2' . $token . '$3';
+    
+            $parentHtml = preg_replace($re, $subst, $parentHtml);
+        }
+
+
+        foreach ($componentList as $entity) {
+
+            $funcName = $entity->getName();
+            $fqFuncName = ComponentRegistry::read($funcName);
+
+            $nextComponent = $list[$fqFuncName];
+
+            if ($nextComponent === null) {
+                continue;
+            }
+
+            $uid = $entity->getUID();
+            $nextComponent->uid = $uid;
+
+            $token = '_' . str_replace('-', '', $uid);
+
+            $isPlugin = null !== $nextCopyFile = PluginRegistry::read($fqFuncName);
+
+            if (!$isPlugin) {
+                $nextCopyFile = $nextComponent->getSourceFilename();
+                $nextCopyFile = str_replace(PREHTML_EXTENSION, $token . PREHTML_EXTENSION, $nextCopyFile);
+            }
+
+            $re = '/(<)(' . $funcName . ')(((?!_[A-F0-9]{32}).)*)(>)/';
+            $subst = '$1$2' . $token . '$3$5';
+
+            $parentHtml = preg_replace($re, $subst, $parentHtml, 1);
+
+            $re = '/(.*)(<\/)(' . $funcName . ')(>)/su';
+            $subst = '$1$2$3' . $token . '$4';
+
+            $parentHtml = preg_replace($re, $subst, $parentHtml, 1);
+
+            // if (!$isPlugin) {
+            //     $cacheFile = $cachedir . $nextCopyFile;
+            //     $funcHtml = $nextComponent->getCode();
+            //     if (file_exists($cacheFile)) {
+            //         $funcHtml = file_get_contents($cacheFile);
+            //     }
+
+            //     $re = '/(<)(' . $funcName . ')(((?!_[A-F0-9]{32}).)*)(>)/';
+            //     $subst = '$1$2' . $token . '$3$5';
+    
+            //     $funcName = preg_replace($re, $subst, $funcName, 1);
+
+            //     Utils::safeWrite($cachedir . $nextCopyFile, $funcHtml);
+            // }
+
+            if ($nextComponent !== null) {
+                $component->identifyComponents($list, $motherUID, $nextComponent);
+            }
+        }
+
+        if ($isPlugin) {
+            copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
+        } else {
+            Utils::safeWrite($cachedir . $copyFile, $parentHtml);
+        }
+
+    }
+
     public function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string
     {
         if ($component === null) {
@@ -226,11 +338,8 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $token = 'N' . str_replace('-', '', $motherUID);
 
         $cachedir = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
-        $componentList = $component->composedOfUnique();
+        $componentList = $component->composedOf();
         $copyFile = $component->getFlattenSourceFilename();
-        $html = $component->getCode();
-        $ns = $component->getNamespace();
-        $html = str_replace($ns, $ns . '\\' . $token, $html);
 
         if ($componentList === null) {
             if (!file_exists($cachedir . $copyFile)) {
@@ -241,10 +350,14 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         }
 
         $fqFuncName = $component->getFullyQualifiedFunction();
+        foreach ($componentList as $entity) {
 
-        foreach ($componentList as $funcName => $fqFuncName) {
+            $funcName = $entity->getName();
+            $fqFuncName = ComponentRegistry::read($funcName);
 
-            $nextComponent = !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
+            $nextComponent = $list[$fqFuncName];
+
+            // $nextComponent = !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
 
             $nextCopyFile = '';
             if ($nextComponent !== null) {

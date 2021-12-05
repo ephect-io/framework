@@ -7,6 +7,7 @@ use Ephect\Core\Structure;
 class ComponentStructure extends Structure
 {
     public $uid;
+    public $motherUID;
     public $id;
     public $class;
     public $component;

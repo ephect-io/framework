@@ -8,12 +8,13 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
 {
     protected $type = '';
     protected $name = '';
-    protected $entity = null;
+    protected $entities = null;
     protected $arguments = [];
     protected $flatComposition = [];
 
     function __construct(ComponentDeclarationStructure $struct)
     {
+        $this->uid = $struct->uid;
         $this->type = $struct->type;
         $this->arguments = $struct->arguments;
         $this->flatComposition = $struct->composition;

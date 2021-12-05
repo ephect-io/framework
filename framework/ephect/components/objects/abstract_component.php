@@ -102,10 +102,15 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         $names = [];
 
+        // $this->forEach(function (ComponentEntityInterface $item, $key) use (&$names) {
+        //     $funcName = $item->getName();
+        //     $uid = $item->getUID();
+        //     $fqFuncName = ComponentRegistry::read($funcName);
+        //     $names[$funcName] = [$uid, $fqFuncName];
+        // }, $this);
+
         $this->forEach(function (ComponentEntityInterface $item, $key) use (&$names) {
-            $funcName = $item->getName();
-            $fqFuncName = ComponentRegistry::read($funcName);
-            $names[$funcName] = $fqFuncName;
+            $names[] = $item;
         }, $this);
 
         $names = array_filter($names, function ($item) {

@@ -14,6 +14,7 @@ interface ComponentInterface extends ElementInterface
     public function getEntity(): ?ComponentEntity;
     public function getBodyStart(): int;
     public function resetDeclaration(): void;
+    public function composedOf(): ?array;
     public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string;
     public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array;
 

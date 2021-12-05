@@ -117,9 +117,12 @@ class EggLib extends Element
         if (file_exists(CACHE_DIR)) {
             Utils::delTree(CACHE_DIR);
         }
+
         $compiler = new Compiler;
         $compiler->perform();
         $compiler->postPerform();
+        
+        // $compiler->performAgain();
         $compiler->followRoutes();
         $compiler->purgeCopies();
     }

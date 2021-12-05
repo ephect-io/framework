@@ -8,6 +8,7 @@ use Ephect\CLI\ConsoleColors;
 use Ephect\Components\Generators\ComponentParser;
 use Ephect\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
+use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\CodeRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
@@ -23,39 +24,58 @@ class Compiler
     protected $list = [];
     protected $routes = [];
 
-    /** @return void  */
+
+    private function describeCustomComponents(string $sourceDir, string $filename): void
+    {
+        $cachedSourceViewFile = Component::getFlatFilename($filename);
+        copy($sourceDir . $filename, COPY_DIR . $cachedSourceViewFile);
+
+        $comp = new Component();
+        $comp->load($cachedSourceViewFile);
+        $comp->analyse();
+
+        $parser = new ComponentParser($comp);
+        $struct = $parser->doDeclaration();
+        $decl = $struct->toArray();
+
+        CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
+        ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+        ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
+
+        $entity = ComponentEntity::buildFromArray($struct->composition);
+        $comp->add($entity);
+
+        $this->list[$comp->getFullyQualifiedFunction()] = $comp;
+    }
+
+    private function describePlugins(string $sourceDir, string $filename): void
+    {
+        $plugin = new Plugin();
+        $plugin->load($filename);
+        $plugin->analyse();
+
+        PluginRegistry::write($filename, $plugin->getUID());
+        PluginRegistry::write($plugin->getUID(), $plugin->getFullyQualifiedFunction());
+    }
+
+    /**
+     * Register all components of the application
+     *
+     * @return void
+     */
     public function perform(): void
     {
         if (!ComponentRegistry::uncache()) {
             IOUtils::safeMkDir(CACHE_DIR);
             IOUtils::safeMkDir(COPY_DIR);
+            IOUtils::safeMkDir(UNIQUE_DIR);
             IOUtils::safeMkDir(STATIC_DIR);
 
             CodeRegistry::uncache();
 
-            $compList = [];
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($templateList as $key => $compFile) {
-
-                $cachedSourceViewFile = Component::getFlatFilename($compFile);
-                copy(SRC_ROOT . $compFile, COPY_DIR . $cachedSourceViewFile);
-
-                $comp = new Component();
-                $comp->load($cachedSourceViewFile);
-                $comp->analyse();
-
-                $parser = new ComponentParser($comp);
-                $struct = $parser->doDeclaration();
-                $decl = $struct->toArray();
-
-                CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-                ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
-                ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
-
-                $entity = ComponentEntity::buildFromArray($struct->composition);
-                $comp->add($entity);
-
-                $this->list[$comp->getFullyQualifiedFunction()] = $comp;
+                $this->describeCustomComponents(SRC_ROOT, $compFile);
             }
 
             CodeRegistry::cache();
@@ -65,20 +85,42 @@ class Compiler
         if (!PluginRegistry::uncache()) {
             $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
             foreach ($pluginList as $key => $pluginFile) {
-                $plugin = new Plugin();
-                $plugin->load($pluginFile);
-                $plugin->analyse();
-
-                PluginRegistry::write($pluginFile, $plugin->getUID());
-                PluginRegistry::write($plugin->getUID(), $plugin->getFullyQualifiedFunction());
+                $this->describePlugins(PLUGINS_ROOT, $pluginFile);
             }
             PluginRegistry::cache();
             ComponentRegistry::cache();
         }
     }
 
+    public function performAgain(): void
+    {
+        $this->list = [];
+
+        ComponentRegistry::reset();
+        PluginRegistry::reset();
+        CodeRegistry::reset();
+        CacheRegistry::reset();
+
+        $templateList = IOUtils::walkTreeFiltered(UNIQUE_DIR, ['phtml']);
+        foreach ($templateList as $key => $compFile) {
+            $this->describeCustomComponents(UNIQUE_DIR, $compFile);
+        }
+
+        $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
+        foreach ($pluginList as $key => $pluginFile) {
+            $this->describePlugins(PLUGINS_ROOT, $pluginFile);
+        }
+
+        CodeRegistry::cache();
+        PluginRegistry::cache();
+        ComponentRegistry::cache();
+    }
+
     public function postPerform(): void
     {
+
+        CodeRegistry::uncache();
+        ComponentRegistry::uncache();
 
         $routes = $this->searchForRoutes();
 
@@ -88,11 +130,13 @@ class Compiler
             $fqRoute = ComponentRegistry::read($route);
             $comp = $this->list[$fqRoute];
 
+            // $comp->identifyComponents($this->list);
             $comp->copyComponents($this->list);
         }
 
         $this->routes = $routes;
     }
+
 
     public function followRoutes(): void
     {
@@ -153,7 +197,6 @@ class Compiler
 
             if ($error !== '') {
                 Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
-
                 break;
             }
 
@@ -218,6 +261,8 @@ class Compiler
             $name = $child['name'];
             if ($name == 'Router') {
                 $router = ComponentEntity::buildFromArray($composition);
+
+                $router = $router;
                 break;
             }
 
