@@ -8,13 +8,17 @@ class PharRegistry extends AbstractStaticRegistry
 {
     private static $instance = null;
 
+    public static function reset(): void { 
+        self::$instance = new PharRegistry;
+        self::$instance->_setCacheDirectory(RUNTIME_DIR);
+        unlink(self::$instance->getCacheFilename());
+    }
+
     public static function getInstance(): AbstractRegistryInterface
     {
         if (self::$instance === null) {
-            self::$instance = new PharRegistry();
-            // $runtime_dir = IS_PHAR_APP ? '' : RUNTIME_DIR;
-            $runtime_dir = RUNTIME_DIR;
-            self::$instance->_setCacheDirectory($runtime_dir);
+            self::$instance = new PharRegistry;
+            self::$instance->_setCacheDirectory(RUNTIME_DIR);
         }
 
         return self::$instance;

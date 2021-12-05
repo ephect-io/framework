@@ -5,6 +5,7 @@ namespace Ephect\Registry;
 abstract class AbstractStaticRegistry extends AbstractRegistry implements StaticRegistryInterface, AbstractRegistryInterface
 {    
     public abstract static function getInstance(): AbstractRegistryInterface;
+    public abstract static function reset(): void;
 
     public static function write(string $key, $item): void
     {
@@ -65,8 +66,4 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
         return static::getInstance()->_getFlatFilename();
     }
 
-    public static function clear(): void
-    {
-        static::getInstance()->_clear();
-    }
 }

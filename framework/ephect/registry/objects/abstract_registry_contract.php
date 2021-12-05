@@ -24,6 +24,4 @@ abstract class AbstractRegistryContract
     abstract protected function _getCacheFileName(): string;
 
     abstract protected function _setCacheDirectory(string $directory): void;
-
-    abstract protected function _clear(): void;
 }

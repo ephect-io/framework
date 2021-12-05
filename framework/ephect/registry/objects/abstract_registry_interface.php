@@ -14,5 +14,4 @@ interface AbstractRegistryInterface
     function _setCacheDirectory(string $directory): void;
     function _getCacheFilename(): string;
     function _getFlatFilename(): string;
-    function _clear(): void;
 }

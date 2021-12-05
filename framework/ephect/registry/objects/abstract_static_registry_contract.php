@@ -24,6 +24,7 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract
     }
 
     abstract public static function getInstance(): AbstractRegistryInterface;
+    abstract public static function reset(): void;
 
     protected function _items(): array
     {
@@ -173,8 +174,4 @@ abstract class AbstractStaticRegistryContract extends AbstractRegistryContract
         return static::getInstance()->_getFlatFilename();
     }
 
-    public static function clear(): void
-    {
-        static::getInstance()->_clear();
-    }
 }
