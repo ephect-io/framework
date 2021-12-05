@@ -42,6 +42,8 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             return null;
         }
 
+        $this->uid = $attributes->uid;
+        $this->motherUID = $attributes->motherUID;
         $this->id = $attributes->id;
         $this->className = $attributes->class;
         $this->componentName = $attributes->component;
@@ -62,6 +64,66 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
 
         $this->bindNode();
+    }
+
+    public function getParentId(): int
+    {
+        return $this->parentId;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getDepth(): int
+    {
+        return $this->depth;
+    }
+
+    public function hasProps(): bool
+    {
+        return count($this->properties) > 0;
+    }
+
+    public function getChildName(): string
+    {
+        return $this->childName;
+    }
+
+    public function hasCloser(): bool
+    {
+        return $this->hasCloser;
+    }
+
+    public function isSibling(): bool
+    {
+        return $this->isSibling;
+    }
+
+    public function getCloser(): array
+    {
+        return $this->closer;
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    public function getStart(): int
+    {
+        return $this->start;
+    }
+
+    public function getEnd(): int
+    {
+        return $this->end;
     }
 
     private static function listIdsByDepth(?array $list): ?array
@@ -98,7 +160,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     {
         $result = null;
 
-        if($list === null) {
+        if ($list === null) {
             return null;
         }
 
@@ -120,8 +182,15 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             unset($list[$i]);
         }
 
-        if (count($list) > 0) {
+        if (count($list) === 1) {
             $result = new ComponentEntity(new ComponentStructure($list[0]));
+        } 
+        elseif (count($list) > 1) {
+            $result = self::_makeFragment();
+            foreach ($list as $item) {
+                $entity = new ComponentEntity(new ComponentStructure($item));
+                $result->add($entity);
+            }
         }
 
         return $result;
@@ -137,16 +206,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         }, $this);
 
         return $names;
-    }
-
-    public function composedOfUnique(): array
-    {
-        $result = $this->composedOf();
-
-
-        $result = array_unique($result);
-
-        return $result;
     }
 
     public function bindNode(): void
@@ -165,35 +224,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $this->attributes->toArray();
     }
 
-    public function getParentId(): int
-    {
-        return $this->parentId;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
-    public function getDepth(): int
-    {
-        return $this->depth;
-    }
-
-    public function hasProps(): bool
-    {
-        return count($this->properties) > 0;
-    }
-    
     public function props(?string $key = null): string|array|null
     {
-        if($key === null) {
-            if(count($this->properties) === 0) {
+        if ($key === null) {
+            if (count($this->properties) === 0) {
                 return null;
             }
             return $this->properties;
@@ -202,16 +236,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             $result = $this->properties[$key];
         }
         return $result;
-    }
-
-    public function getStart(): int
-    {
-        return $this->start;
-    }
-
-    public function getEnd(): int
-    {
-        return $this->end;
     }
 
     public function getContents(?string $html = null): ?string
@@ -234,7 +258,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         }
         $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
 
-        if(($p = strpos($t, $this->name)) > $s) {
+        if (($p = strpos($t, $this->name)) > $s) {
             $o =  $p - $s - 1;
 
             $s += $o;
@@ -246,28 +270,45 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $contents;
     }
 
-    public function getChildName(): string
-    {
-        return $this->childName;
-    }
 
-    public function hasCloser(): bool
+    private static function _makeFragment(): ComponentEntityInterface
     {
-        return $this->hasCloser;
-    }
+        $json = <<<JSON
+            {
+                "closer": {
+                    "id": 1,
+                    "parentId": 0,
+                    "text": "<\/>",
+                    "startsAt": 0,
+                    "endsAt": 0,
+                    "contents": {
+                        "startsAt": 0,
+                        "endsAt": 0
+                    }
+                },
+                "uid": "00000000-0000-0000-0000-000000000000",
+                "id": 0,
+                "name": "FakeFragment",
+                "class": null,
+                "component": "Ephect",
+                "text": "<>",
+                "method": "echo",
+                "startsAt": 0,
+                "endsAt": 0,
+                "props": [],
+                "node": false,
+                "hasCloser": true,
+                "isSibling": false,
+                "parentId": -1,
+                "depth": 0
+            }
+        JSON;
 
-    public function isSibling(): bool
-    {
-        return $this->isSibling;
-    }
+        $fragment = json_decode($json, JSON_OBJECT_AS_ARRAY);
 
-    public function getCloser(): array
-    {
-        return $this->closer;
-    }
+        $entity = new ComponentEntity(new ComponentStructure($fragment));
 
-    public function getMethod(): string
-    {
-        return $this->method;
+        return $entity;
+
     }
 }

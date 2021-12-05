@@ -36,6 +36,10 @@ final class OpenComponentsParser extends AbstractTokenParser
             $componentBody = $item->getContents($subject);
             $componentArgs = $this->useVariables;
             $componentArgs = $item->props() !== null ? array_merge($componentArgs, $item->props()) : $componentArgs;
+            
+            if($componentName === 'FakeFragment') {
+                return;
+            }
 
             if($componentName === 'Fragment') {
                 return;
