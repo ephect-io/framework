@@ -45,6 +45,16 @@ class Tree implements TreeInterface
         return $index;
     }
 
+    public function addArray($array): int
+    { 
+        $result = 0;
+        foreach($array as $item) {
+            $result = $this->add($item);
+        }
+
+        return $result;
+    }
+
     public function insert($object, $index): bool
     {
         $current = [];
@@ -86,7 +96,7 @@ class Tree implements TreeInterface
         }
     }
 
-    public function forEach(callable $callback, TreeInterface $tree)
+    public function forEach(callable $callback, TreeInterface $tree): void
     {
         foreach ($tree as $key => $item) {
             call_user_func($callback, $item, $key);
