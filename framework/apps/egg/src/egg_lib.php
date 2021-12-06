@@ -6,6 +6,8 @@ use Ephect\CLI\Application;
 use Ephect\Components\Compiler;
 use Ephect\Element;
 use Ephect\IO\Utils;
+use Ephect\Utils\Zip;
+use Ephect\Web\Curl;
 
 class EggLib extends Element
 {
