@@ -233,7 +233,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $fqFuncName = $component->getFullyQualifiedFunction();
         $parentHtml = $component->getCode();
         $token = '_' . str_replace('-', '', $uid);
-        
+
         $cacheFile = $isRoute ? $cachedir . $funcName . $token . PREHTML_EXTENSION : $cachedir . $copyFile;
 
         if (file_exists($cacheFile)) {
@@ -246,14 +246,13 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             copy(COPY_DIR . $copyFile, $cacheFile);
         }
 
-        if(!$isRoute)
-        {
+        if (!$isRoute) {
             $copyFile = str_replace(PREHTML_EXTENSION, $token . PREHTML_EXTENSION, $copyFile);
 
-        
+
             $re = '/(function )(' . $funcName . ')([ ]*\(.*\))/m';
             $subst = '$1$2' . $token . '$3';
-    
+
             $parentHtml = preg_replace($re, $subst, $parentHtml);
         }
 
@@ -261,13 +260,13 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         foreach ($componentList as $entity) {
 
             $funcName = $entity->getName();
+
             $fqFuncName = ComponentRegistry::read($funcName);
 
-            $nextComponent = $list[$fqFuncName];
-
-            if ($nextComponent === null) {
+            if ($fqFuncName === null) {
                 continue;
             }
+            $nextComponent = $list[$fqFuncName];
 
             $uid = $entity->getUID();
             $nextComponent->uid = $uid;
@@ -300,7 +299,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
             //     $re = '/(<)(' . $funcName . ')(((?!_[A-F0-9]{32}).)*)(>)/';
             //     $subst = '$1$2' . $token . '$3$5';
-    
+
             //     $funcName = preg_replace($re, $subst, $funcName, 1);
 
             //     Utils::safeWrite($cachedir . $nextCopyFile, $funcHtml);
@@ -316,16 +315,12 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         } else {
             Utils::safeWrite($cachedir . $copyFile, $parentHtml);
         }
-
     }
 
     public function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string
     {
         if ($component === null) {
             $component = $this;
-        }
-
-        if ($motherUID === null) {
             $motherUID = $component->getUID();
             if (!file_exists(CACHE_DIR . $motherUID)) {
                 mkdir(CACHE_DIR . $motherUID, 0775);
@@ -334,8 +329,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
                 copy(CACHE_DIR . $flatFilename, CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
             }
         }
-
-        $token = 'N' . str_replace('-', '', $motherUID);
 
         $cachedir = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
         $componentList = $component->composedOf();
@@ -355,9 +348,10 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             $funcName = $entity->getName();
             $fqFuncName = ComponentRegistry::read($funcName);
 
-            $nextComponent = $list[$fqFuncName];
-
-            // $nextComponent = !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
+            if ($fqFuncName === null) {
+                continue;
+            }
+            $nextComponent =  !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
 
             $nextCopyFile = '';
             if ($nextComponent !== null) {
@@ -371,9 +365,13 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
                 continue;
             }
 
-            if ($nextComponent !== null) {
-                $component->copyComponents($list, $motherUID, $nextComponent);
+            // $nextComponent = !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
+            if ($nextComponent === null) {
+                continue;
             }
+            // if ($nextComponent !== null) {
+            $component->copyComponents($list, $motherUID, $nextComponent);
+            // }
         }
 
         if (!file_exists($cachedir . $copyFile)) {

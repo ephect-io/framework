@@ -2,6 +2,7 @@
 
 namespace Ephect\Components\Generators;
 
+use Ephect\CLI\Console;
 use Ephect\Components\ComponentDeclarationStructure;
 use Ephect\Components\ComponentInterface;
 use Ephect\Crypto\Crypto;
@@ -111,14 +112,70 @@ class ComponentParser extends Parser
         $l = count($list);
 
         // Re-structure the list recursively
-        for ($i = 0; $i < $l; $i++) {
 
-            if (!isset($list[$i])) {
-                break;
+        for ($i = $l - 1; $i > -1; $i--) {
+
+            $name = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
+
+            Console::getLogger()->info('%s', $name);
+
+            if(!in_array($name, ['Slot', 'Fragment'])) {
+                continue;
             }
 
             $list[$i]['uid'] = Crypto::createUID();
+            $list[$i]['id'] = $i;
+            $list[$i]['name'] = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
+            $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
+            $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
+            $list[$i]['text'] = $list[$i][0][0];
+            $list[$i]['method'] = 'echo';
+            $list[$i]['startsAt'] = $list[$i][0][1];
+            $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
+            $list[$i]['props'] = ($list[$i]['name'] === 'Fragment') ? [] : $this->doArguments($list[$i][2][0]);
+            $list[$i]['node'] = false;
+            $list[$i]['hasCloser'] = false;
+            $list[$i]['isCloser'] = false;
 
+            if ($list[$i][0][0][1] === '/') {
+                for ($j = $i - 1; $j > -1; $j--) {
+                    if (
+                        ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
+                        || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
+                    ) {
+                        $list[$j]['closer'] = [
+                            'id' => $i,
+                            'parentId' => $j,
+                            'text' => $list[$i][0][0],
+                            'startsAt' => $list[$i][0][1],
+                            'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
+                            'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
+                        ];
+                        $list[$i]['isCloser'] = true;
+                        $list[$i]['method'] = 'render';
+
+                        break;
+                    }
+                }
+            }
+
+            if (isset($list[$i]['closer'])) {
+                $list[$i]['isCloser'] = false;
+                $list[$i]['hasCloser'] = true;
+            }
+        }
+
+
+        for ($i = 0; $i < $l; $i++) {
+            $name = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
+
+            Console::getLogger()->info(' %s', $name);
+
+            if(in_array($name, ['Slot', 'Fragment'])) {
+                continue;
+            } 
+
+            $list[$i]['uid'] = Crypto::createUID();
             $list[$i]['id'] = $i;
             $list[$i]['name'] = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
             $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
@@ -134,30 +191,26 @@ class ComponentParser extends Parser
 
             for ($j = $l - $i - 1; $j > -1; $j--) {
                 if (
-                    ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
-                    || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
-                    || ($list[$j][0][0][1] === '/')
+                    (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
+                    && (isset($list[$j][0][0][1]) && $list[$j][0][0][1] === '/')
                 ) {
                     $list[$i]['closer'] = [
                         'id' => $j,
                         'parentId' => $i,
                         'text' => $list[$j][0][0],
                         'startsAt' => $list[$j][0][1],
-                        'endsAt' => $list[$j][0][1] + strlen($list[$j][0][0]),
-                        'contents' => ['startsAt' => $list[$i][0][1], 'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0])],
+                        'endsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 
+                        'contents' => [
+                            'startsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
+                            'endsAt' => $list[$j][0][1] - 1
+                        ],
+
                     ];
                     $list[$i]['isCloser'] = true;
                     $list[$i]['method'] = 'render';
 
                     break;
                 }
-            }
-
-            if (isset($list[$i])) {
-                unset($list[$i][0]);
-                unset($list[$i][1]);
-                unset($list[$i][2]);
-                unset($list[$i][3]);
             }
 
             if (isset($list[$i]['closer'])) {
@@ -221,8 +274,17 @@ class ComponentParser extends Parser
             }
         }
 
+
         for ($i = $l - 1; $i > -1; $i--) {
             // Remove useless data
+
+            if (isset($list[$i])) {
+                unset($list[$i][0]);
+                unset($list[$i][1]);
+                unset($list[$i][2]);
+                unset($list[$i][3]);
+            }
+
             if ($list[$i]['isCloser']) {
                 unset($list[$i]);
             } else {
