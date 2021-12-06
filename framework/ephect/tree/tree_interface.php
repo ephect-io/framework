@@ -16,6 +16,7 @@ interface TreeInterface extends IteratorAggregate
     public function count(): int;
     public function hasChildren(): bool;
     public function forEach(callable $callback, TreeInterface $tree): void;
+    public function forEachRecursive(callable $callback, TreeInterface $tree): void;
     public function clear(): void;
 
 

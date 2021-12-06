@@ -106,4 +106,15 @@ class Tree implements TreeInterface
             }
         }
     }
+
+    public function forEachRecursive(callable $callback, TreeInterface $tree): void
+    {
+        foreach ($tree as $key => $item) {
+            if ($item->hasChildren()) {
+                $this->forEach($callback, $item, $key);
+            }
+
+            call_user_func($callback, $item, $key);
+        }
+    }
 }
