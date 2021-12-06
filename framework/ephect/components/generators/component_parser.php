@@ -84,7 +84,7 @@ class ComponentParser extends Parser
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-                array_push($result, $match[1]);
+            array_push($result, $match[1]);
         }
 
         return $result;
@@ -111,7 +111,11 @@ class ComponentParser extends Parser
         $l = count($list);
 
         // Re-structure the list recursively
-        for ($i = $l - 1; $i > -1; $i--) {
+        for ($i = 0; $i < $l; $i++) {
+
+            if (!isset($list[$i])) {
+                break;
+            }
 
             $list[$i]['uid'] = Crypto::createUID();
 
@@ -128,25 +132,24 @@ class ComponentParser extends Parser
             $list[$i]['hasCloser'] = false;
             $list[$i]['isCloser'] = false;
 
-            if ($list[$i][0][0][1] === '/') {
-                for ($j = $i - 1; $j > -1; $j--) {
-                    if (
-                        ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
-                        || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
-                    ) {
-                        $list[$j]['closer'] = [
-                            'id' => $i,
-                            'parentId' => $j,
-                            'text' => $list[$i][0][0],
-                            'startsAt' => $list[$i][0][1],
-                            'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
-                            'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
-                        ];
-                        $list[$i]['isCloser'] = true;
-                        $list[$i]['method'] = 'render';
+            for ($j = $l - $i - 1; $j > -1; $j--) {
+                if (
+                    ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
+                    || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
+                    || ($list[$j][0][0][1] === '/')
+                ) {
+                    $list[$i]['closer'] = [
+                        'id' => $j,
+                        'parentId' => $i,
+                        'text' => $list[$j][0][0],
+                        'startsAt' => $list[$j][0][1],
+                        'endsAt' => $list[$j][0][1] + strlen($list[$j][0][0]),
+                        'contents' => ['startsAt' => $list[$i][0][1], 'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0])],
+                    ];
+                    $list[$i]['isCloser'] = true;
+                    $list[$i]['method'] = 'render';
 
-                        break;
-                    }
+                    break;
                 }
             }
 

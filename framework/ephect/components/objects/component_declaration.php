@@ -8,7 +8,7 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
 {
     protected $type = '';
     protected $name = '';
-    protected $entities = null;
+    protected $entity = null;
     protected $arguments = [];
     protected $flatComposition = [];
 
