@@ -110,9 +110,8 @@ class ComponentParser extends Parser
         preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
         $l = count($list);
-
+        $closers = [];
         // Re-structure the list recursively
-
         for ($i = $l - 1; $i > -1; $i--) {
 
             $name = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
@@ -135,33 +134,54 @@ class ComponentParser extends Parser
 
             if ($list[$i][0][0][1] === '/') {
                 for ($j = $i - 1; $j > -1; $j--) {
+
                     if (
                         ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
                         || (
                             isset($list[$i][1]) 
                             && $list[$i][1][0] === $list[$j][1][0]
-                            && $list[$i][1][0][1] !== '/'
                         )
 
                     ) {
-                        $list[$j]['closer'] = [
+                       array_unshift($closers, [
                             'id' => $i,
                             'parentId' => $j,
                             'text' => $list[$i][0][0],
                             'startsAt' => $list[$i][0][1],
                             'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
-                        ];
-                        $list[$i]['isCloser'] = true;
-                        $list[$i]['method'] = 'render';
+                        ]);
+                        // $list[$i]['isCloser'] = true;
+                        // $list[$i]['method'] = 'render';
 
+                        unset($list[$i]);
                         break;
                     }
                 }
             }
 
-            if (isset($list[$i]['closer'])) {
-                $list[$i]['isCloser'] = false;
+            if (isset($list[$i])) {
+                unset($list[$i][0]);
+                unset($list[$i][1]);
+                unset($list[$i][2]);
+                unset($list[$i][3]);
+            }
+
+            // if (isset($list[$i]['closer'])) {
+                // $list[$i]['isCloser'] = false;
+                // $list[$i]['hasCloser'] = false;
+            // }
+        }
+        $l = count($list);
+
+        for ($i = 0; $i < $l; $i++) {
+            $component = $list[$i]['text'];
+
+            if ($component[strlen($component) - 2] !== '/') {
+                $closer = array_pop($closers);
+                $closer['parentId'] = $i;
+                $closer['contents']['startsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
+                $list[$i]['closer'] = $closer;
                 $list[$i]['hasCloser'] = true;
             }
         }
@@ -221,17 +241,8 @@ class ComponentParser extends Parser
             }
         }
 
-
         for ($i = $l - 1; $i > -1; $i--) {
             // Remove useless data
-
-            if (isset($list[$i])) {
-                unset($list[$i][0]);
-                unset($list[$i][1]);
-                unset($list[$i][2]);
-                unset($list[$i][3]);
-            }
-
             if ($list[$i]['isCloser']) {
                 unset($list[$i]);
             } else {
