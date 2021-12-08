@@ -114,13 +114,10 @@ class ComponentParser extends Parser
         // Re-structure the list recursively
         for ($i = $l - 1; $i > -1; $i--) {
 
-            $name = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
-
-            Console::getLogger()->info('%s', $name);
-
             $list[$i]['uid'] = Crypto::createUID();
+
             $list[$i]['id'] = $i;
-            $list[$i]['name'] = $name;
+            $list[$i]['name'] = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
             $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
             $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
             $list[$i]['text'] = $list[$i][0][0];
@@ -134,16 +131,11 @@ class ComponentParser extends Parser
 
             if ($list[$i][0][0][1] === '/') {
                 for ($j = $i - 1; $j > -1; $j--) {
-
                     if (
                         ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
-                        || (
-                            isset($list[$i][1]) 
-                            && $list[$i][1][0] === $list[$j][1][0]
-                        )
-
+                        || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
                     ) {
-                       array_unshift($closers, [
+                        array_unshift($closers, [
                             'id' => $i,
                             'parentId' => $j,
                             'text' => $list[$i][0][0],
@@ -151,10 +143,10 @@ class ComponentParser extends Parser
                             'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
                         ]);
-                        // $list[$i]['isCloser'] = true;
-                        // $list[$i]['method'] = 'render';
+                        $list[$i]['isCloser'] = true;
+                        $list[$i]['method'] = 'render';
 
-                        unset($list[$i]);
+                        // unset($list[$i]);
                         break;
                     }
                 }
@@ -168,21 +160,39 @@ class ComponentParser extends Parser
             }
 
             // if (isset($list[$i]['closer'])) {
-                // $list[$i]['isCloser'] = false;
-                // $list[$i]['hasCloser'] = false;
+            //     $list[$i]['isCloser'] = false;
+            //     $list[$i]['hasCloser'] = true;
             // }
         }
+
         $l = count($list);
 
         for ($i = 0; $i < $l; $i++) {
-            $component = $list[$i]['text'];
+        // foreach($list as $i => $item) {
 
-            if ($component[strlen($component) - 2] !== '/') {
-                $closer = array_pop($closers);
-                $closer['parentId'] = $i;
-                $closer['contents']['startsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
-                $list[$i]['closer'] = $closer;
-                $list[$i]['hasCloser'] = true;
+            $component = $list[$i]['text'];
+            $compCloserText = '</' . ($list[$i]['name']  == 'Fragment' ? '' : $list[$i]['name']) . '>';
+
+            if ($component[strlen($component) - 2] !== '/' && $component[1] !== '/') {
+                $n = count($closers);
+
+                for ($j = 0; $j < $n; $j++) {
+
+                    $curCloserText = $closers[$j]['text'];
+                    if ($curCloserText == $compCloserText) {
+                        $closer = $closers[$j];
+                        $closer['parentId'] = $i;
+                        $closer['contents']['startsAt'] = $list[$i]['startsAt'] + strlen($list[$i]['name']);
+                        $list[$i]['closer'] = $closer;
+                        $list[$i]['hasCloser'] = true;
+                        $list[$i]['isCloser'] = false;
+
+                        unset($closers[$j]);
+                        $closers = array_values($closers);
+
+                        break;
+                    }
+                }
             }
         }
 
@@ -194,7 +204,8 @@ class ComponentParser extends Parser
 
         // Add useful information in list like depth and parentId
         for ($i = 0; $i < $l; $i++) {
-
+        // foreach($list as $i => $item) {
+ 
             $siblingId = $i - 1;
 
             $isSibling = isset($list[$siblingId]) && $list[$siblingId]['hasCloser'];
