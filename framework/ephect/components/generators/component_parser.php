@@ -182,7 +182,7 @@ class ComponentParser extends Parser
                     if ($curCloserText == $compCloserText) {
                         $closer = $closers[$j];
                         $closer['parentId'] = $i;
-                        $closer['contents']['startsAt'] = $list[$i]['startsAt'] + strlen($list[$i]['name']);
+                        $closer['contents']['startsAt'] = $list[$i]['startsAt'] + strlen($list[$i]['text']);
                         $list[$i]['closer'] = $closer;
                         $list[$i]['hasCloser'] = true;
                         $list[$i]['isCloser'] = false;
