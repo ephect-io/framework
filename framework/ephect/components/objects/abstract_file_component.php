@@ -107,6 +107,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName, $motherUID);
             $component->parse();
+            $component->cacheHtml();
 
             $motherUID = $component->getMotherUID();
 
@@ -414,6 +415,23 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     protected function cacheHtml(): ?string
     {
+
+        // CacheRegistry::uncache();
+        // $cache = ($cache = (CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
+
+        // $isCached = isset($cache[$this->getFullyQualifiedFunction()]);
+        // if($isCached) {
+        //     return $cache[$this->getFullyQualifiedFunction()];
+        // }
+
+        // $cache_file = static::getFlatFilename($this->filename);
+        // Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
+
+        // $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
+        // CacheRegistry::write($this->motherUID, $cache);
+        // CacheRegistry::cache();
+
+        // return $cache_file;
         $cache_file = static::getFlatFilename($this->filename);
         $result = Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
 
