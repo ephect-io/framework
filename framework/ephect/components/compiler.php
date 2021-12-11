@@ -228,7 +228,7 @@ class Compiler
 
         if ($root === null) {
             $root = $this->findFirstComponent($items, 'App');
-            array_push($result, $root->getName());
+            // array_push($result, $root->getName());
         }
 
         return $result;
