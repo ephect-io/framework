@@ -2,15 +2,205 @@
 
 ## What is Ephect ?
 
-Ephect is a fucntional components based framework with template syntax. It gathers some features from **ReactJS<sup>1</sup>** and **WebComponents<sup>2</sup>** like hooks and slots.
+Ephect is a backend components based framework with template syntax. It gathers some features from *ReactJS<sup>1</sup>* and *WebComponents<sup>2</sup>* like hooks and slots.
 
 ## Featured concepts
 
+### The components
+
+Basically, components are custom HTML tags. All concepts of HTML tags on backend side are applicable to components except the naming convention: a component name must begin with a capital letter. 
+
+The logic of the component is coded in a simple funcion returning a template.
+
+#### Example 1
+
+Here is an open component that can surround children components or just HTML code.
+
+```html
+<MyComponent>
+    Hello World!
+</MyComponent>
+```
+
+The code would look like this:
+
+```php
+<?php
+
+namespace QuickStart;
+
+function MyComponent($children) {
+
+    return (<<< HTML
+    <h1>My component</h1>
+    <p>
+    {{ children }}
+    </p>
+    HTML);
+}
+```
+
+It will render:
+
+```html
+    <h1>My component</h1>
+    <p>
+    Hello World!
+    </p>
+```
+
+#### Example 2
+
+A closed component to which we pass arguments:
+
+```html
+<AnotherComponent with="Some argument" />
+```
+
+The code would look like this:
+
+```php
+<?php
+
+namespace QuickStart;
+
+function AnotherComponent($props) {
+
+    return (<<<HTML
+    <h2 id="with">
+        {{ props->with }}
+    </h2>
+    HTML);
+}
+```
+
+It will render:
+
+```html
+    <h2 id="with">
+    Some argument
+    </h2>
+```
 ### Cascading and reusing components
 
 The components can be declared in cascade and the same component can be reused in each cascading component.
 
+If we combine examples 1 and 2:
+
+```html
+<MyComponent>
+    <AnotherComponent with="Some argument" />
+</MyComponent>
+```
+
+It will render:
+
+```html
+    <h1>My component</h1>
+    <p>
+    <h2 id="with">
+        Some argument
+    </h2>
+    </p>
+```
+
+## The component Slot
+
 A parent component with named placeholders can be inherited to change the content of its placeholders. The component in charge of managing placeholders is called *Slot*.
+
+Here is a Mother component containing slots to be overriden:
+
+```php
+<?php
+
+namespace QuickStart;
+
+function Mother($children)
+{
+
+    return (<<< HTML
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>
+            <Slot name="title">
+                Mother!
+            </Slot>
+            </title>
+
+            <Slot name="stylesheets">
+            </Slot>
+        </head>
+
+        <body>
+            <div class="App" >
+                {{ children }}
+            </div>
+            <Slot name="javascripts">
+            </Slot>
+        </body>
+    </html>
+    HTML);
+}
+```
+
+And here is a component inheriting from Mother component:
+
+```php
+<?php
+
+namespace QuickStart;
+
+function Home()
+{
+    return (<<< HTML
+    <Mother>
+        <Slot name="title">Ephect in action !</Slot>
+        <Slot name="stylesheets">
+            <link rel="stylesheet" href="/css/app.css" />
+        </Slot>
+        <!-- 
+            The children container of the parent component
+            is filled with all that is not nested in slots
+        -->
+        <div class="App-content" >
+            <h1>Welcome Home!</h1>
+        </div>
+        <!-- end of children code -->
+        <Slot name="javascripts">
+            <script src="/js/ephect.js"></script>
+        </Slot>
+    </Mother>
+    HTML);
+}
+```
+
+It will render: 
+
+```html
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>
+                Ephect in action !
+            </title>
+
+            <link rel="stylesheet" href="/css/app.css" />
+        </head>
+
+        <body>
+            <div class="App">
+                <div class="App-content">
+                    <h1>Welcome Home!</h1>
+                </div>
+            </div>
+            <script src="/js/ephect.js"></script>
+        </body>
+    </html>
+```
+
 
 ### Hooks
 
@@ -18,7 +208,7 @@ A parent component with named placeholders can be inherited to change the conten
 
 - useProps: to ensure a property can be used,
 - useQueryArgument: to filter the value passed as parameter to the query,
-- useSlot: to bind variables embedded in slots to the parent component.
+- useSlot: to bind variables nested in slots to the parent component.
 
 ## CLI tool *egg*
 
@@ -38,7 +228,7 @@ Once the pages are prepared in cache, browsing them is as fast as possible. The 
 
 To take adavantage of all the CLI features you need a thread-safe version of **PHP** also called **ZTS** with **Parallel** extension. It is not mandatory but recommended to enable **ZTS** in the **PHP** engine. Otherwise you can compile pages dynamically by calling your application in the browser.
 
-To eneble ZTS see this [section](enable-zts).
+To enable ZTS see [enable-zts section](https://ephect.io/enable-zts) on *ephect.io*.
 
 ## Install the framework
 
@@ -85,7 +275,7 @@ The main route shows how to use useEffect and useState hooks all in nesting seve
 
 The Second route shows how to use useSlot Hook to bind a variable nested inside the parent context. You can also see how to manage arguments of the query string using the hook useQueryArgument.
 
-The Hello route shows how to manage named arguments in the pathnname, ideal for dealing with API.
+The Hello route shows how to manage named arguments in the pathname, ideal for dealing with API.
 
 The Matroichka route shows how to embed components in cascade.
 
@@ -120,8 +310,8 @@ but yarn has some shortcuts too:
 
 **Ephect** framework is in work in progress stage. This means that there's a lot to do. Breaking changes are yet to come.
 
-<sup>1</sup> The concept of hooks in **ReactJS** is explained at [ReactJS hooks reference](https://reactjs.org/docs/hooks-reference.html)
+<sup>1</sup>. The concept of hooks in **ReactJS** is explained at [ReactJS hooks reference](https://reactjs.org/docs/hooks-reference.html).
 
-<sup>2</sup> The concept of slots in **WebComponents** is explained at [MDN -  The Web Component Slot element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot)
+<sup>2</sup>. The concept of slots in **WebComponents** is explained at [MDN -  The Web Component Slot element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot).
 
 Happy coding again! :)
