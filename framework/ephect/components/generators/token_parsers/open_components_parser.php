@@ -77,8 +77,15 @@ final class OpenComponentsParser extends AbstractTokenParser
             $componentRender .= "\t\t\t<?php \$fn = $fqComponentName(\$children); \$fn(); ?>\n";
 
             $subject = str_replace($componentBody, $componentRender, $subject);
-            $subject = str_replace($opener, '', $subject);
-            $subject = str_replace($closer, '', $subject);
+
+            $opener = preg_quote($opener, '/');
+            $subject = preg_replace('/(' . $opener . ')/su', '', $subject, 1);
+
+            $filename = $this->component->getFlattenSourceFilename();
+            Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+
+            $closer = preg_quote($closer, '/');
+            $subject = preg_replace('/' . $closer . '(?!.*' . $closer . ')/su', '', $subject, 1);
 
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);

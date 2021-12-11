@@ -135,14 +135,22 @@ class ComponentParser extends Parser
                         ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
                         || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
                     ) {
-                        array_unshift($closers, [
+
+                        $currentClorer = [
                             'id' => $i,
                             'parentId' => $j,
                             'text' => $list[$i][0][0],
                             'startsAt' => $list[$i][0][1],
                             'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
-                        ]);
+                        ];
+
+                        if ($list[$i][1][0] == 'Slot') {
+                            array_unshift($closers, $currentClorer);
+                        } else {
+                            array_push($closers, $currentClorer);
+                        }
+                        
                         $list[$i]['isCloser'] = true;
                         $list[$i]['method'] = 'render';
 
@@ -168,7 +176,7 @@ class ComponentParser extends Parser
         $l = count($list);
 
         for ($i = 0; $i < $l; $i++) {
-        // foreach($list as $i => $item) {
+            // foreach($list as $i => $item) {
 
             $component = $list[$i]['text'];
             $compCloserText = '</' . ($list[$i]['name']  == 'Fragment' ? '' : $list[$i]['name']) . '>';
@@ -204,8 +212,8 @@ class ComponentParser extends Parser
 
         // Add useful information in list like depth and parentId
         for ($i = 0; $i < $l; $i++) {
-        // foreach($list as $i => $item) {
- 
+            // foreach($list as $i => $item) {
+
             $siblingId = $i - 1;
 
             $isSibling = isset($list[$siblingId]) && $list[$siblingId]['hasCloser'];
