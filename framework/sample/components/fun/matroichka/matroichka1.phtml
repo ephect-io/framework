@@ -2,11 +2,21 @@
 
 namespace Fun;
 
+use function Ephect\Hooks\useEffect;
+
 function Matroichka1($children)
 {
+    useEffect(function() use ($children, /* string */ &$id, /* string */ &$label) {
+        $id = $children->props()->id;
+        $label = $children->props()->label;
+    });
+
     return (<<< HTML
-    <Devotchka id="one" label="One">
+    <label for="{{ id }}">{{ label }}</label>
+    <ul id="{{ id }}">
+        <li>
         {{ children }}
-    </Devotchka>
+        </li>
+    </ul>
     HTML);
 }
