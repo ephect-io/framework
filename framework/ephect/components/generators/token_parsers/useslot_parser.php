@@ -6,7 +6,7 @@ final class UseSlotParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/useSlot\(function[ ]+\(\)[ ]+use[ ]+\(((\s|.*?)+)\)[ ]+{((\s|.*?)+)}\);/m';
+        $re = '/useSlot\(function[ ]*\(\)[ ]+use[ ]*\(((\s|.*?)+)\)[ ]*{((\s|.*?)+)}\);/m';
 
         $str = $this->html;
 
