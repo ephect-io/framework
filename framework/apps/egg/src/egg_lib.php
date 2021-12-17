@@ -95,9 +95,9 @@ class EggLib extends Element
         }
     }
 
-    public function sample(): void
+    public function createQuickstart(): void
     {
-        $sample = FRAMEWORK_ROOT . 'sample';
+        $sample = FRAMEWORK_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'quickstart';
 
         Utils::safeMkDir(SRC_ROOT);
         $destDir = realpath(SRC_ROOT);
@@ -111,6 +111,53 @@ class EggLib extends Element
         foreach ($tree as $filePath) {
             Utils::safeWrite($destDir . $filePath, '');
             copy($sample . $filePath, $destDir . $filePath);
+        }
+    }
+
+    public function createSkeleton(): void
+    {
+        $sample = FRAMEWORK_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'skeleton';
+
+        Utils::safeMkDir(SRC_ROOT);
+        $destDir = realpath(SRC_ROOT);
+
+        if (!file_exists($sample) || !file_exists($destDir)) {
+            return;
+        }
+
+        $tree = Utils::walkTreeFiltered($sample);
+
+        foreach ($tree as $filePath) {
+            Utils::safeWrite($destDir . $filePath, '');
+            copy($sample . $filePath, $destDir . $filePath);
+        }
+    }
+    
+    public function createCommonTrees(): void
+    {
+        $common = FRAMEWORK_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'common';
+        $src_dir = $common . DIRECTORY_SEPARATOR . 'config';
+
+        Utils::safeMkDir(CONFIG_DIR);
+        $destDir = realpath(CONFIG_DIR);
+
+        $tree = Utils::walkTreeFiltered($src_dir);
+
+        foreach ($tree as $filePath) {
+            Utils::safeWrite($destDir . $filePath, '');
+            copy($src_dir . $filePath, $destDir . $filePath);
+        }
+
+        $src_dir = $common . DIRECTORY_SEPARATOR . 'public';
+
+        Utils::safeMkDir(PUBLIC_DIR);
+        $destDir = realpath(PUBLIC_DIR);
+
+        $tree = Utils::walkTreeFiltered($src_dir);
+
+        foreach ($tree as $filePath) {
+            Utils::safeWrite($destDir . $filePath, '');
+            copy($src_dir . $filePath, $destDir . $filePath);
         }
     }
 
