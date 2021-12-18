@@ -24,12 +24,18 @@ function Route($props)
             return;
         }
         
-        $match = $router->matchRoute($route);
+        [$path, $query, $code] = $router->matchRoute($route);
+        http_response_code($code);
 
-        if($match !== null) {
-            list($path, $query) = $match;
+        if($code === 200) {
             $comp = new Component($path);
             $comp->render($query);
+        } else {
+            $errorComp = ComponentRegistry::read($path);
+            if($errorComp !== null) {
+                $comp = new Component($path);
+                $comp->render(); 
+            }
         }
         /**
          * END code to remove if CLI build is mandatory

@@ -3,7 +3,7 @@
 namespace Ephect\Plugins\Router;
 
 use Ephect\Components\Component;
-use Ephect\Registry\RouteRegistry;
+use Ephect\Registry\ComponentRegistry;
 
 use function Ephect\Hooks\useEffect;
 
@@ -15,12 +15,20 @@ function Router($children)
 
         if ($service->routesAreCached()) {
 
-            $route = $service->doRouting();
-            if ($route !== null) {
-                list($path, $query) = $route;
+            [$path, $query, $code] = $service->doRouting();
+            http_response_code($code);
+
+            if($code === 200) {
                 $comp = new Component($path);
                 $comp->render($query);
+            } else {
+                $errorComp = ComponentRegistry::read($path);
+                if($errorComp !== null) {
+                    $comp = new Component($path);
+                    $comp->render(); 
+                }
             }
+
             $hasRouted = true;
         }
 

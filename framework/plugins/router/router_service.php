@@ -36,6 +36,7 @@ class RouterService
             return null;
         }
 
+        $redirect = '';
         $parameters = [];
 
         foreach ($methodRoutes as $rule => $stuff) {
@@ -43,33 +44,31 @@ class RouterService
             $redirect = $stuff->redirect;
             $translation = $stuff->translate;
 
-            $match = $this->matchRouteEx($method, $rule, $redirect, $translation);
+            [$redirect, $parameters, $code] = $this->matchRouteEx($method, $rule, $redirect, $translation);
 
-            if(null === $match) {
+            if ($code !== 200) {
                 continue;
             }
-
-            [$redirect, $parameters] = $match;
 
             break;
         }
 
-        return [$redirect, $parameters];
+        return [$redirect, $parameters, $code];
     }
 
     private function matchRouteEx(string $method, string $rule, string $redirect, string $translation): ?array
     {
         if ($method !== REQUEST_METHOD) {
-            return null;
+            return ['Error401', [], 401];
         }
 
-        $request_uri = \preg_replace('@' . $rule. '@', $redirect, REQUEST_URI);
+        $request_uri = \preg_replace('@' . $rule . '@', $redirect, REQUEST_URI);
 
         if ($request_uri === REQUEST_URI) {
-            return null;
+            return ['Error404', [], 404];
         }
 
-        if($translation !== '') {
+        if ($translation !== '') {
             $query = preg_replace('@' . $rule . '@', $translation, REQUEST_URI);
 
             $request_uri = SERVER_HOST . $query;
@@ -83,15 +82,15 @@ class RouterService
             parse_str($baseurl['query'], $parameters);
         }
 
-        return [$redirect, $parameters];
+        return [$redirect, $parameters, 200];
     }
-   
+
     public function addRoute(RouteInterface $route): void
     {
         $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
 
         if (!array_key_exists($route->getRule(), $methodRegistry)) {
-            $methodRegistry[$route->getRule()] = ['redirect' => $route->getRedirect(), 'translate' => $route->getTranslation()];
+            $methodRegistry[$route->getRule()] = ['redirect' => $route->getRedirect(), 'translate' => $route->getTranslation(), 'error' => $route->getError()];
             RouteRegistry::write($route->getMethod(), $methodRegistry);
         }
     }
@@ -104,9 +103,9 @@ class RouterService
     public function matchRoute(RouteEntity $route): ?array
     {
         return $this->matchRouteEx(
-            $route->getMethod(), 
-            $route->getRule(), 
-            $route->getRedirect(), 
+            $route->getMethod(),
+            $route->getRule(),
+            $route->getRedirect(),
             $route->getTranslation()
         );
     }
