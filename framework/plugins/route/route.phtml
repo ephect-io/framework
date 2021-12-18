@@ -4,6 +4,7 @@ namespace Ephect\Plugins\Route;
 
 use Ephect\Components\Component;
 use Ephect\Plugins\Router\RouterService;
+use Ephect\Registry\ComponentRegistry;
 
 use function Ephect\Hooks\useEffect;
 
@@ -23,8 +24,13 @@ function Route($props)
         if(!IS_WEB_APP) {
             return;
         }
+
+        $error = $route->getError();
         
         [$path, $query, $code] = $router->matchRoute($route);
+
+        $code = $error ?: $code;
+
         http_response_code($code);
 
         if($code === 200) {

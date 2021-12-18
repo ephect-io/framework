@@ -38,11 +38,13 @@ class RouterService
 
         $redirect = '';
         $parameters = [];
+        $error = null;
 
         foreach ($methodRoutes as $rule => $stuff) {
 
             $redirect = $stuff->redirect;
             $translation = $stuff->translate;
+            $error = $error === '' ?: $stuff->error;
 
             [$redirect, $parameters, $code] = $this->matchRouteEx($method, $rule, $redirect, $translation);
 
@@ -53,7 +55,7 @@ class RouterService
             break;
         }
 
-        return [$redirect, $parameters, $code];
+        return [$redirect, $parameters, $code, $error];
     }
 
     private function matchRouteEx(string $method, string $rule, string $redirect, string $translation): ?array
