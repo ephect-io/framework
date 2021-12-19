@@ -5,6 +5,7 @@ namespace Ephect\Plugins\Route;
 use Ephect\Components\Component;
 use Ephect\Plugins\Router\RouterService;
 use Ephect\Registry\ComponentRegistry;
+use Ephect\Registry\HttpErrorRegistry;
 
 use function Ephect\Hooks\useEffect;
 
@@ -31,18 +32,19 @@ function Route($props)
 
         $code = $error ?: $code;
 
-        http_response_code($code);
+        if ($code !== 200) {
+            http_response_code($code);
+            $errorPath = HttpErrorRegistry::read($code);
 
-        if($code === 200) {
-            $comp = new Component($path);
-            $comp->render($query);
-        } else {
-            $errorComp = ComponentRegistry::read($path);
-            if($errorComp !== null) {
-                $comp = new Component($path);
-                $comp->render(); 
+            if (ComponentRegistry::read($errorPath) === null) {
+                $html = 'Page not found';
+                $html = ($code === 401) ? 'Bad request' : $html;
+                return;
             }
         }
+
+        $comp = new Component($path);
+        $comp->render($query);
         /**
          * END code to remove if CLI build is mandatory
          */
