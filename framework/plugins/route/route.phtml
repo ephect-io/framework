@@ -34,9 +34,9 @@ function Route($props)
 
         if ($code !== 200) {
             http_response_code($code);
-            $errorPath = HttpErrorRegistry::read($code);
+            $path = HttpErrorRegistry::read($code);
 
-            if (ComponentRegistry::read($errorPath) === null) {
+            if (ComponentRegistry::read($path) === null) {
                 $html = 'Page not found';
                 $html = ($code === 401) ? 'Bad request' : $html;
                 return;
