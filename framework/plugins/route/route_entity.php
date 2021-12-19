@@ -6,11 +6,13 @@ use Ephect\Element;
 
 class RouteEntity extends Element implements RouteInterface
 {
+
     private string $method = '';
     private string $rule = '';
     private string $redirect = '';
     private string $translation = '';
     private int $error = 0;
+    private bool $exact = false;
 
     public function __construct(RouteStructure $struct)
     {
@@ -19,6 +21,7 @@ class RouteEntity extends Element implements RouteInterface
         $this->redirect = $struct->redirect;
         $this->translation = $struct->translation;
         $this->error = (int) $struct->error;
+        $this->exact = $struct->isExact !== 'true' ?: true;
 
     }
 
@@ -45,5 +48,10 @@ class RouteEntity extends Element implements RouteInterface
     public function getError(): int
     {
         return $this->error;
+    }
+
+    public function isExact(): bool
+    {
+        return $this->exact;
     }
  }

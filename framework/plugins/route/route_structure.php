@@ -11,4 +11,5 @@ class RouteStructure extends Structure
     public string $redirect = '';
     public string $translation = '';
     public string $error = '';
+    public string $exact = '';
 }
