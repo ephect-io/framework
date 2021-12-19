@@ -10,7 +10,7 @@ class RouteEntity extends Element implements RouteInterface
     private string $rule = '';
     private string $redirect = '';
     private string $translation = '';
-    private int $error = 200;
+    private int $error = 0;
 
     public function __construct(RouteStructure $struct)
     {

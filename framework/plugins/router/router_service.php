@@ -4,6 +4,7 @@ namespace Ephect\Plugins\Router;
 
 use Ephect\Plugins\Route\RouteEntity;
 use Ephect\Plugins\Route\RouteInterface;
+use Ephect\Registry\HttpErrorRegistry;
 use Ephect\Registry\RouteRegistry;
 
 class RouterService
@@ -12,6 +13,7 @@ class RouterService
     public function __construct()
     {
         RouteRegistry::uncache();
+        HttpErrorRegistry::uncache();
     }
 
     public function routesAreCached(): bool
@@ -38,13 +40,11 @@ class RouterService
 
         $redirect = '';
         $parameters = [];
-        $error = null;
 
         foreach ($methodRoutes as $rule => $stuff) {
 
             $redirect = $stuff->redirect;
             $translation = $stuff->translate;
-            $error = $error === '' ?: $stuff->error;
 
             [$redirect, $parameters, $code] = $this->matchRouteEx($method, $rule, $redirect, $translation);
 
@@ -55,7 +55,7 @@ class RouterService
             break;
         }
 
-        return [$redirect, $parameters, $code, $error];
+        return [$redirect, $parameters, $code];
     }
 
     private function matchRouteEx(string $method, string $rule, string $redirect, string $translation): ?array
@@ -95,11 +95,15 @@ class RouterService
             $methodRegistry[$route->getRule()] = ['redirect' => $route->getRedirect(), 'translate' => $route->getTranslation(), 'error' => $route->getError()];
             RouteRegistry::write($route->getMethod(), $methodRegistry);
         }
+
+        if(($error = $route->getError()) !== 0) {
+            HttpErrorRegistry::write($error, $route->getRedirect());
+        }
     }
 
     public function saveRoutes(): bool
     {
-        return RouteRegistry::cache();
+        return RouteRegistry::cache() && HttpErrorRegistry::cache();
     }
 
     public function matchRoute(RouteEntity $route): ?array

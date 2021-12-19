@@ -4,28 +4,28 @@ namespace Ephect\Plugins\Router;
 
 use Ephect\Components\Component;
 use Ephect\Registry\ComponentRegistry;
+use Ephect\Registry\HttpErrorRegistry;
 use Ephect\Registry\RouteRegistry;
 
 use function Ephect\Hooks\useEffect;
 
 function Router($children)
 {
-    useEffect(function () use (/* bool */ &$hasRouted, /* string */ &$html) {
+    useEffect(function () use (/* bool */&$hasRouted, /* string */ &$html) {
 
         $service = new RouterService;
 
         if ($service->routesAreCached()) {
 
-            [$path, $query, $code, $error] = $service->doRouting();
-
-            $code = $error ?: $code;
-
-            http_response_code($code);
+            [$path, $query, $code] = $service->doRouting();
 
             $hasRouted = true;
 
             if ($code !== 200) {
-                if (ComponentRegistry::read($path) === null) {
+                http_response_code($code);
+                $errorPath = HttpErrorRegistry::read($code);
+
+                if (ComponentRegistry::read($errorPath) === null) {
                     $html = 'Page not found';
                     $html = ($code === 401) ? 'Bad request' : $html;
                     return;
@@ -34,9 +34,7 @@ function Router($children)
 
             $comp = new Component($path);
             $comp->render($query);
-
         }
-
     });
 
     return (<<< HTML
