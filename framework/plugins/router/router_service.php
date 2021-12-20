@@ -2,10 +2,14 @@
 
 namespace Ephect\Plugins\Router;
 
+use Ephect\Components\Component;
 use Ephect\Plugins\Route\RouteEntity;
 use Ephect\Plugins\Route\RouteInterface;
+use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\HttpErrorRegistry;
 use Ephect\Registry\RouteRegistry;
+
+use function Ephect\Hooks\useState;
 
 class RouterService
 {
@@ -14,6 +18,63 @@ class RouterService
     {
         RouteRegistry::uncache();
         HttpErrorRegistry::uncache();
+    }
+
+    public function renderRoute(string &$html): void
+    {
+        $html = '';
+
+        [$state, $setState] = useState();
+
+        $pageFound = false;
+        $responseCode = 404;
+        $query = [];
+        $routes = [];
+
+        if (isset($state->pageState)) {
+            $route = $state->pageState;
+            $path = $route->path;
+            $query = $route->query;
+            $error = $route->error;
+            $responseCode = $route->code;
+
+            if ($responseCode === 200) {
+                $pageFound = true;
+            }
+    
+        }
+
+        if (isset($state->routes)) {
+            $routes = $state->routes;
+            $c = count($routes);
+
+            for ($i = 0; $i < $c; $i++) {
+                $route = $routes[$i];
+                $path = $route->path;
+                $query = $route->query;
+                $error = $route->error;
+                $responseCode = $route->code;
+
+                if ($responseCode === 200) {
+                    $pageFound = true;
+                    $i = $c;
+                }
+            }
+        }
+
+        if (!$pageFound) {
+            http_response_code($responseCode);
+            $path = HttpErrorRegistry::read($responseCode);
+
+            if (ComponentRegistry::read($path) === null) {
+                $html = 'Page not found';
+                $html = ($responseCode === 401) ? 'Bad request' : $html;
+                return;
+            }
+        }
+
+        $comp = new Component($path);
+        $comp->render($query);
     }
 
     public function routesAreCached(): bool
@@ -46,6 +107,7 @@ class RouterService
             $redirect = $stuff->redirect;
             $translation = $stuff->translate;
             $isExact = $stuff->exact;
+            $error = $stuff->error;
 
             [$redirect, $parameters, $code] = $this->matchRouteEx($method, $rule, $redirect, $translation, $isExact);
 
@@ -56,19 +118,19 @@ class RouterService
             break;
         }
 
-        return [$redirect, $parameters, $code];
+        return [$redirect, $parameters, $error, $code];
     }
 
     private function matchRouteEx(string $method, string $rule, string $redirect, string $translation, bool $isExact): ?array
     {
         if ($method !== REQUEST_METHOD) {
-            return ['Error401', [], 401];
+            return [$redirect, [], 401];
         }
 
         $prefix = '@';
         $suffix = '@su';
 
-        if($isExact) {
+        if ($isExact) {
             $prefix = $prefix . '^';
             $suffix = '$' . $suffix;
         }
@@ -76,10 +138,10 @@ class RouterService
         // $request_uri = \preg_replace('@' . $rule . '@', $redirect, REQUEST_URI);
         preg_match($prefix . $rule  . $suffix, REQUEST_URI, $matches);
         $request_uri = !isset($matches[0]) ? '' : $matches[0][0];
-        
+
 
         if ($request_uri === '') {
-            return ['Error404', [], 404];
+            return [$redirect, [], 404];
         }
 
         if ($translation !== '') {
@@ -103,15 +165,15 @@ class RouterService
 
         if (!array_key_exists($route->getRule(), $methodRegistry)) {
             $methodRegistry[$route->getRule()] = [
-                'redirect' => $route->getRedirect(), 
-                'translate' => $route->getTranslation(), 
+                'redirect' => $route->getRedirect(),
+                'translate' => $route->getTranslation(),
                 'error' => $route->getError(),
                 'exact' => $route->isExact(),
             ];
             RouteRegistry::write($route->getMethod(), $methodRegistry);
         }
 
-        if(($error = $route->getError()) !== 0) {
+        if (($error = $route->getError()) !== 0) {
             HttpErrorRegistry::write($error, $route->getRedirect());
         }
     }

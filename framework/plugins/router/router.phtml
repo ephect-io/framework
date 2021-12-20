@@ -2,44 +2,46 @@
 
 namespace Ephect\Plugins\Router;
 
+use Ephect\Components\Compiler;
 use Ephect\Components\Component;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\HttpErrorRegistry;
 use Ephect\Registry\RouteRegistry;
 
 use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useState;
 
 function Router($children)
 {
-    useEffect(function () use (/* bool */&$hasRouted, /* string */ &$html) {
+    useEffect(function () use (/* bool */&$hasRouted, /* object */ &$service, /* string */ &$path, /* string */ &$html) {
 
         $service = new RouterService;
 
         if ($service->routesAreCached()) {
 
-            [$path, $query, $code] = $service->doRouting();
+            [$path, $query, $error, $code] = $service->doRouting();
+
+            useState(["pageState" => ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code, ]]);
+
+            $service->renderRoute($html);
 
             $hasRouted = true;
-
-            if ($code !== 200) {
-                http_response_code($code);
-                $path = HttpErrorRegistry::read($code);
-
-                if (ComponentRegistry::read($path) === null) {
-                    $html = 'Page not found';
-                    $html = ($code === 401) ? 'Bad request' : $html;
-                    return;
-                }
-            }
-
-            $comp = new Component($path);
-            $comp->render($query);
         }
     });
 
     return (<<< HTML
-        {? if({hasRouted}) { echo {html}; return; } ?}
+        {? 
+            if({hasRouted}) { 
+                echo {html};
+                return;
+            } 
+        ?}
         {{ children }}
-        {? rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json'); ?}
+        {? 
+            {service}->renderRoute({path}, {html});
+
+            rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
+            Compiler::purgeCopies();
+        ?}
     HTML);
 }

@@ -173,7 +173,7 @@ class EggLib extends Element
         
         // $compiler->performAgain();
         $compiler->followRoutes();
-        $compiler->purgeCopies();
+        // Compiler::purgeCopies();
     }
 
     

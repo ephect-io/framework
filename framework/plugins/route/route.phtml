@@ -8,10 +8,11 @@ use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\HttpErrorRegistry;
 
 use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useState;
 
 function Route($props)
 {
-    useEffect(function () use($props) {
+    useEffect(function () use ($props, /* bool */ &$onError, /* string */ &$html) {
         $routeBuilder = new RouteBuilder($props);
         $route = $routeBuilder->build();
 
@@ -19,39 +20,34 @@ function Route($props)
         $router->addRoute($route);
         $router->saveRoutes();
 
-        /**
-         * BEGIN code to remove if CLI build is mandatory
-         */
-        if(!IS_WEB_APP) {
+        if (!IS_WEB_APP) {
             return;
         }
 
         $error = $route->getError();
-        
+
         [$path, $query, $code] = $router->matchRoute($route);
 
-        $code = $error ?: $code;
+        [$state, $setState] = useState();
+        $routes = isset($state->routes) ? $state->routes : [];
 
-        if ($code !== 200) {
-            http_response_code($code);
-            $path = HttpErrorRegistry::read($code);
+        array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code, ]);
+        useState(['routes' => $routes]);
 
-            if (ComponentRegistry::read($path) === null) {
-                $html = 'Page not found';
-                $html = ($code === 401) ? 'Bad request' : $html;
-                return;
-            }
-        }
+        // if ($code !== 200) {
+        //     http_response_code($code);
 
-        $comp = new Component($path);
-        $comp->render($query);
-        /**
-         * END code to remove if CLI build is mandatory
-         */
+        //     $onError = true;
+        //     $html = 'Page not found';
+        //     $html = ($code === 401) ? 'Bad request' : $html;
+        //     return;
+        // }
 
+        // $comp = new Component($path);
+        // $comp->render($query);
     });
 
     return (<<< HTML
-        
+
     HTML);
 }
