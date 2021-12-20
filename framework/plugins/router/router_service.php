@@ -20,48 +20,37 @@ class RouterService
         HttpErrorRegistry::uncache();
     }
 
-    public function renderRoute(string &$html): void
+    public function findRoute(string &$html): void
     {
         $html = '';
-
         [$state, $setState] = useState();
 
-        $pageFound = false;
+        if(!isset($state->routes)) {
+            return;
+        }
+
         $responseCode = 404;
         $query = [];
-        $routes = [];
 
-        if (isset($state->pageState)) {
-            $route = $state->pageState;
+        $c = count($state->routes);
+
+        for ($i = 0; $i < $c; $i++) {
+            $route = $state->routes[$i];
             $path = $route->path;
             $query = $route->query;
             $error = $route->error;
             $responseCode = $route->code;
 
             if ($responseCode === 200) {
-                $pageFound = true;
-            }
-    
-        }
-
-        if (isset($state->routes)) {
-            $routes = $state->routes;
-            $c = count($routes);
-
-            for ($i = 0; $i < $c; $i++) {
-                $route = $routes[$i];
-                $path = $route->path;
-                $query = $route->query;
-                $error = $route->error;
-                $responseCode = $route->code;
-
-                if ($responseCode === 200) {
-                    $pageFound = true;
-                    $i = $c;
-                }
+                $i = $c;
             }
         }
 
+        $this->renderRoute($responseCode === 200, $path, $query, $error, $responseCode, $html);
+    }
+
+    public function renderRoute(bool $pageFound, string $path, array $query, int $error, int $responseCode, string &$html): void
+    {
         if (!$pageFound) {
             http_response_code($responseCode);
             $path = HttpErrorRegistry::read($responseCode);

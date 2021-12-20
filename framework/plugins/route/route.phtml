@@ -34,17 +34,6 @@ function Route($props)
         array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code, ]);
         useState(['routes' => $routes]);
 
-        // if ($code !== 200) {
-        //     http_response_code($code);
-
-        //     $onError = true;
-        //     $html = 'Page not found';
-        //     $html = ($code === 401) ? 'Bad request' : $html;
-        //     return;
-        // }
-
-        // $comp = new Component($path);
-        // $comp->render($query);
     });
 
     return (<<< HTML

@@ -20,10 +20,7 @@ function Router($children)
         if ($service->routesAreCached()) {
 
             [$path, $query, $error, $code] = $service->doRouting();
-
-            useState(["pageState" => ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code, ]]);
-
-            $service->renderRoute($html);
+            $service->renderRoute($code === 200, $path, $query, $error, $code, $html);
 
             $hasRouted = true;
         }
@@ -38,10 +35,14 @@ function Router($children)
         ?}
         {{ children }}
         {? 
-            {service}->renderRoute({path}, {html});
-
             rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
             Compiler::purgeCopies();
+
+            {service}->findRoute({html});
+            if({html} !== '') { 
+                echo {html};
+            } 
+
         ?}
     HTML);
 }
