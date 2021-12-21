@@ -4,12 +4,15 @@ namespace Ephect\Plugins\Route;
 
 use Ephect\Components\Component;
 use Ephect\Plugins\Router\RouterService;
+use Ephect\Registry\ComponentRegistry;
+use Ephect\Registry\HttpErrorRegistry;
 
 use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useState;
 
 function Route($props)
 {
-    useEffect(function () use($props) {
+    useEffect(function () use ($props, /* bool */ &$onError, /* string */ &$html) {
         $routeBuilder = new RouteBuilder($props);
         $route = $routeBuilder->build();
 
@@ -17,27 +20,23 @@ function Route($props)
         $router->addRoute($route);
         $router->saveRoutes();
 
-        /**
-         * BEGIN code to remove if CLI build is mandatory
-         */
-        if(!IS_WEB_APP) {
+        if (!IS_WEB_APP) {
             return;
         }
-        
-        $match = $router->matchRoute($route);
 
-        if($match !== null) {
-            list($path, $query) = $match;
-            $comp = new Component($path);
-            $comp->render($query);
-        }
-        /**
-         * END code to remove if CLI build is mandatory
-         */
+        $error = $route->getError();
+
+        [$path, $query, $code] = $router->matchRoute($route);
+
+        [$state, $setState] = useState();
+        $routes = isset($state->routes) ? $state->routes : [];
+
+        array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code, ]);
+        useState(['routes' => $routes]);
 
     });
 
     return (<<< HTML
-        
+
     HTML);
 }

@@ -2,9 +2,14 @@
 
 namespace Ephect\Plugins\Router;
 
+use Ephect\Components\Component;
 use Ephect\Plugins\Route\RouteEntity;
 use Ephect\Plugins\Route\RouteInterface;
+use Ephect\Registry\ComponentRegistry;
+use Ephect\Registry\HttpErrorRegistry;
 use Ephect\Registry\RouteRegistry;
+
+use function Ephect\Hooks\useState;
 
 class RouterService
 {
@@ -12,6 +17,53 @@ class RouterService
     public function __construct()
     {
         RouteRegistry::uncache();
+        HttpErrorRegistry::uncache();
+    }
+
+    public function findRoute(string &$html): void
+    {
+        $html = '';
+        [$state, $setState] = useState();
+
+        if(!isset($state->routes)) {
+            return;
+        }
+
+        $responseCode = 404;
+        $query = [];
+
+        $c = count($state->routes);
+
+        for ($i = 0; $i < $c; $i++) {
+            $route = $state->routes[$i];
+            $path = $route->path;
+            $query = $route->query;
+            $error = $route->error;
+            $responseCode = $route->code;
+
+            if ($responseCode === 200) {
+                $i = $c;
+            }
+        }
+
+        $this->renderRoute($responseCode === 200, $path, $query, $error, $responseCode, $html);
+    }
+
+    public function renderRoute(bool $pageFound, string $path, array $query, int $error, int $responseCode, string &$html): void
+    {
+        if (!$pageFound) {
+            http_response_code($responseCode);
+            $path = HttpErrorRegistry::read($responseCode);
+
+            if (ComponentRegistry::read($path) === null) {
+                $html = 'Page not found';
+                $html = ($responseCode === 401) ? 'Bad request' : $html;
+                return;
+            }
+        }
+
+        $comp = new Component($path);
+        $comp->render($query);
     }
 
     public function routesAreCached(): bool
@@ -36,46 +88,56 @@ class RouterService
             return null;
         }
 
+        $redirect = '';
         $parameters = [];
 
         foreach ($methodRoutes as $rule => $stuff) {
 
             $redirect = $stuff->redirect;
             $translation = $stuff->translate;
+            $isExact = $stuff->exact;
+            $error = $stuff->error;
 
-            $match = $this->matchRouteEx($method, $rule, $redirect, $translation);
+            [$redirect, $parameters, $code] = $this->matchRouteEx($method, $rule, $redirect, $translation, $isExact);
 
-            if(null === $match) {
+            if ($code !== 200) {
                 continue;
             }
-
-            [$redirect, $parameters] = $match;
 
             break;
         }
 
-        return [$redirect, $parameters];
+        return [$redirect, $parameters, $error, $code];
     }
 
-    private function matchRouteEx(string $method, string $rule, string $redirect, string $translation): ?array
+    private function matchRouteEx(string $method, string $rule, string $redirect, string $translation, bool $isExact): ?array
     {
         if ($method !== REQUEST_METHOD) {
-            return null;
+            return [$redirect, [], 401];
         }
 
-        $request_uri = \preg_replace('@' . $rule. '@', $redirect, REQUEST_URI);
+        $prefix = '@';
+        $suffix = '@su';
 
-        if ($request_uri === REQUEST_URI) {
-            return null;
+        if ($isExact) {
+            $prefix = $prefix . '^';
+            $suffix = '$' . $suffix;
         }
 
-        if($translation !== '') {
-            $query = preg_replace('@' . $rule . '@', $translation, REQUEST_URI);
+        // $request_uri = \preg_replace('@' . $rule . '@', $redirect, REQUEST_URI);
+        preg_match($prefix . $rule  . $suffix, REQUEST_URI, $matches);
+        $request_uri = !isset($matches[0]) ? '' : $matches[0][0];
 
-            $request_uri = SERVER_HOST . $query;
+
+        if ($request_uri === '') {
+            return [$redirect, [], 404];
         }
 
-        $baseurl = parse_url($request_uri);
+        if ($translation !== '') {
+            $request_uri = preg_replace($prefix . $rule . $suffix, $translation, REQUEST_URI);
+        }
+
+        $baseurl = parse_url(SERVER_HOST . $request_uri);
 
         $parameters = [];
 
@@ -83,31 +145,41 @@ class RouterService
             parse_str($baseurl['query'], $parameters);
         }
 
-        return [$redirect, $parameters];
+        return [$redirect, $parameters, 200];
     }
-   
+
     public function addRoute(RouteInterface $route): void
     {
         $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
 
         if (!array_key_exists($route->getRule(), $methodRegistry)) {
-            $methodRegistry[$route->getRule()] = ['redirect' => $route->getRedirect(), 'translate' => $route->getTranslation()];
+            $methodRegistry[$route->getRule()] = [
+                'redirect' => $route->getRedirect(),
+                'translate' => $route->getTranslation(),
+                'error' => $route->getError(),
+                'exact' => $route->isExact(),
+            ];
             RouteRegistry::write($route->getMethod(), $methodRegistry);
+        }
+
+        if (($error = $route->getError()) !== 0) {
+            HttpErrorRegistry::write($error, $route->getRedirect());
         }
     }
 
     public function saveRoutes(): bool
     {
-        return RouteRegistry::cache();
+        return RouteRegistry::cache() && HttpErrorRegistry::cache();
     }
 
     public function matchRoute(RouteEntity $route): ?array
     {
         return $this->matchRouteEx(
-            $route->getMethod(), 
-            $route->getRule(), 
-            $route->getRedirect(), 
-            $route->getTranslation()
+            $route->getMethod(),
+            $route->getRule(),
+            $route->getRedirect(),
+            $route->getTranslation(),
+            $route->isExact()
         );
     }
 }

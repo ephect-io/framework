@@ -2,7 +2,7 @@
 
 namespace Ephect\Core;
 
-use Ephect\Registry\Registry;
+use Ephect\Registry\StateRegistry;
 use stdClass;
 
 final class PhpInfo
@@ -52,8 +52,8 @@ final class PhpInfo
     public static function getSection(int $section, bool $asArray = false)
     {
 
-        if(Registry::exists('ini', $section)) {
-            return Registry::read('ini', $section);
+        if(StateRegistry::exists('ini', $section)) {
+            return StateRegistry::read('ini', $section);
         }
 
         $root = [];
@@ -134,7 +134,7 @@ final class PhpInfo
                 }
             }
         }
-        Registry::write('ini', $section, $root);
+        StateRegistry::write('ini', $section, $root);
 
         return $root;
     }

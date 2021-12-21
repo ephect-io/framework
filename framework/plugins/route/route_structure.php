@@ -10,4 +10,6 @@ class RouteStructure extends Structure
     public string $rule = '';
     public string $redirect = '';
     public string $translation = '';
+    public string $error = '';
+    public string $exact = '';
 }

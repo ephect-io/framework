@@ -2,33 +2,47 @@
 
 namespace Ephect\Plugins\Router;
 
+use Ephect\Components\Compiler;
 use Ephect\Components\Component;
+use Ephect\Registry\ComponentRegistry;
+use Ephect\Registry\HttpErrorRegistry;
 use Ephect\Registry\RouteRegistry;
 
 use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useState;
 
 function Router($children)
 {
-    useEffect(function () use (/* bool */ &$hasRouted) {
+    useEffect(function () use (/* bool */&$hasRouted, /* object */ &$service, /* string */ &$path, /* string */ &$html) {
 
         $service = new RouterService;
 
         if ($service->routesAreCached()) {
 
-            $route = $service->doRouting();
-            if ($route !== null) {
-                list($path, $query) = $route;
-                $comp = new Component($path);
-                $comp->render($query);
-            }
+            [$path, $query, $error, $code] = $service->doRouting();
+            $service->renderRoute($code === 200, $path, $query, $error, $code, $html);
+
             $hasRouted = true;
         }
-
     });
 
     return (<<< HTML
-        {? if({hasRouted}) { return ''; } ?}
+        {? 
+            if({hasRouted}) { 
+                echo {html};
+                return;
+            } 
+        ?}
         {{ children }}
-        {? rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json'); ?}
+        {? 
+            rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
+            Compiler::purgeCopies();
+
+            {service}->findRoute({html});
+            if({html} !== '') { 
+                echo {html};
+            } 
+
+        ?}
     HTML);
 }

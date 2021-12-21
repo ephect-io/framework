@@ -275,7 +275,7 @@ class Compiler
         return $router;
     }
 
-    public function purgeCopies(): void
+    public static function purgeCopies(): void
     {
         IOUtils::delTree(COPY_DIR);
     }

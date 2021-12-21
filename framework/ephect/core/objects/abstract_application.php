@@ -5,7 +5,7 @@ namespace Ephect\Core;
 use Ephect\Cache\Cache;
 use Ephect\CLI\Console;
 use Ephect\Element;
-use Ephect\Registry\Registry;
+use Ephect\Registry\StateRegistry;
 
 abstract class AbstractApplication extends Element
 {
@@ -106,8 +106,8 @@ abstract class AbstractApplication extends Element
                 return;
             }
 
-            $this->appName = Registry::read('application', 'name');
-            $this->appTitle = Registry::read('application', 'title');
+            $this->appName = StateRegistry::read('application', 'name');
+            $this->appTitle = StateRegistry::read('application', 'title');
 
         } catch (\Throwable $ex) {
             Console::writeException($ex);
@@ -119,7 +119,7 @@ abstract class AbstractApplication extends Element
         $help = '';
         Console::writeLine($this->getName());
         Console::writeLine('Expected commands : ');
-        $usage = Registry::item('commands');
+        $usage = StateRegistry::item('commands');
         foreach($usage as $long => $desc) {
             $help .= $desc;
         }
@@ -129,7 +129,7 @@ abstract class AbstractApplication extends Element
     public function getName(): string
     {
         if(empty($this->appName) || $this->appName == 'app') {
-            $this->appName = Registry::ini('application', 'name');
+            $this->appName = StateRegistry::ini('application', 'name');
         }
 
         return $this->appName;

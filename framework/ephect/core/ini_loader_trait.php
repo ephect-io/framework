@@ -2,7 +2,7 @@
 
 namespace Ephect\Core;
 
-use Ephect\Registry\Registry;
+use Ephect\Registry\StateRegistry;
 
 trait IniLoaderTrait
 {
@@ -15,14 +15,14 @@ trait IniLoaderTrait
 
         $ini = parse_ini_file($path  . 'app.ini', TRUE, INI_SCANNER_TYPED);
         if(isset($ini['application']['name'])) {
-            Registry::write('application', 'name', $ini['application']['name']);
+            StateRegistry::write('application', 'name', $ini['application']['name']);
         }
         if(isset($ini['application']['title'])) {
-            Registry::write('application', 'title', $ini['application']['title']);
+            StateRegistry::write('application', 'title', $ini['application']['title']);
         }
         
         foreach($ini as $key=>$values) {
-            Registry::write('ini', $key, $values);
+            StateRegistry::write('ini', $key, $values);
         }
         unset($ini);
 
@@ -37,7 +37,7 @@ trait IniLoaderTrait
                 if ($info->extension == 'json') {
                     $conf = file_get_contents($dataPath . DIRECTORY_SEPARATOR . $entry);
                     $conf = json_decode($conf, true);
-                    Registry::write('connections', $info->filename, $conf);
+                    StateRegistry::write('connections', $info->filename, $conf);
                 }
             }
             $dataDir->close();

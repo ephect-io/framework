@@ -39,7 +39,14 @@ class RouteBuilder extends AbstractBuilder
 
         $translated = preg_replace($re, $subst, $rule);
 
-        $struct = new RouteStructure(['method' => $route->getMethod(), 'rule' => $normalized, 'redirect' => $route->getRedirect(), 'translation' => $translated]);
+        $struct = new RouteStructure([
+            'method' => $route->getMethod(), 
+            'rule' => $normalized, 
+            'redirect' => $route->getRedirect(), 
+            'translation' => $translated, 
+            'error' => $route->getError(),
+            'exact' => $route->isExact()
+        ]);
 
         $newRoute = new RouteEntity($struct);
 
