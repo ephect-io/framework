@@ -6,7 +6,7 @@ use Ephect\Core\AbstractApplication;
 use Ephect\Element;
 use Ephect\ElementUtils;
 use Ephect\IO\Utils;
-use Ephect\Registry\Registry;
+use Ephect\Registry\StateRegistry;
 
 class ApplicationCommands extends Element implements CommandCollectionInterface
 {
@@ -59,6 +59,6 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 
         ksort($usage);
 
-        Registry::write('commands', $usage);
+        StateRegistry::write('commands', $usage);
     }
 }

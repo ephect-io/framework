@@ -2,14 +2,14 @@
 
 namespace Ephect\Web;
 
-use Ephect\CLI\Application as CLIApplication;
+use Ephect\CLI\Console;
 use Ephect\Components\Compiler;
 use Ephect\Components\Component;
 use Ephect\Core\AbstractApplication;
 use Ephect\Registry\CacheRegistry;
 use Ephect\Registry\ComponentRegistry;
 use Ephect\Registry\PluginRegistry;
-use Ephect\Registry\Registry;
+use Ephect\Registry\StateRegistry;
 
 class Application extends AbstractApplication
 {
@@ -81,11 +81,11 @@ class Application extends AbstractApplication
         $constants['ROOT_NAMESPACE'] = ROOT_NAMESPACE;
         $constants['ROOT_PATH'] = ROOT_PATH;
 
-        Registry::write('console', 'buffer', $constants);
+        StateRegistry::write('console', 'buffer', $constants);
 
-        CLIApplication::writeLine('Application constants are :');
+        Console::writeLine('Application constants are :');
         foreach ($constants as $key => $value) {
-            CLIApplication::writeLine($key . ' => ' . $value);
+            Console::writeLine($key . ' => ' . $value);
         }
 
         return $constants;
