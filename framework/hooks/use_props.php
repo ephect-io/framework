@@ -27,6 +27,9 @@ function useProps(array|object|null $props, Closure $callback): array
             $newProps->$prop = '';
             $newArgs[] = '';
         } else {
+            if(!isset($newProps->$prop)) {
+                $newProps->$prop = '';
+            }
             $newArgs[] = $newProps->$prop;
         }
     }
