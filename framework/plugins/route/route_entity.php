@@ -21,7 +21,7 @@ class RouteEntity extends Element implements RouteInterface
         $this->redirect = $struct->redirect;
         $this->translation = $struct->translation;
         $this->error = (int) $struct->error;
-        $this->exact = $struct->isExact !== 'true' ?: true;
+        $this->exact = $struct->exact !== 'true' ?: true;
 
     }
 
