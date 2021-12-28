@@ -2,8 +2,12 @@
 
 namespace Ephect\Components\Generators\TokenParsers;
 
+use Ephect\Components\Generators\TypesParserTrait;
+
 final class UseSlotParser extends AbstractTokenParser
 {
+    use TypesParserTrait;
+
     public function do(null|string|array $parameter = null): void
     {
         $re = '/useSlot\(function[ ]*\(\)[ ]+use[ ]*\(((\s|.*?)+)\)[ ]*{((\s|.*?)+)}\);/m';
@@ -27,37 +31,7 @@ final class UseSlotParser extends AbstractTokenParser
         });
 
         $declVars = count($declVars) === 0 ?: array_map(function ($item) {
-            $item = trim($item);
-            $item = str_replace('&', '', $item);
-
-            $isset = false;
-            if (strpos($item, '* bool *') > -1) {
-                $isset = true;
-                return $item . ' = false; ';
-            }
-            if (strpos($item, '* int *') > -1) {
-                $isset = true;
-                return $item . ' = 0; ';
-            }
-            if (strpos($item, '* float *') > -1) {
-                $isset = true;
-                return $item . ' = 0.0; ';
-            }
-            if (strpos($item, '* real *') > -1) {
-                $isset = true;
-                return $item . ' = 0.0; ';
-            }
-            if (strpos($item, '* string *') > -1) {
-                $isset = true;
-                return $item . ' = \'\'; ';
-            }
-            if (strpos($item, '* array *') > -1) {
-                $isset = true;
-                return $item . ' = []; ';
-            }
-            if (!$isset) {
-                return $item . ' = null; ';
-            }
+            return $this->declareTypedVariables($item);
         }, $declVars);
 
         if ($declVars === true) {
