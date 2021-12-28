@@ -6,37 +6,45 @@ use Closure;
 use ReflectionFunction;
 use stdClass;
 
-function useProps(array|object|null $props, Closure $callback): array
+// function useProps(Closure $callback, ?array $defaults = null, ?object $props = null): void
+function useProps(Closure $callback, ?object $props = null): void
 {
-    
+    // $defaults = $defaults;
+
     $ref = new ReflectionFunction($callback);
-    $params = $ref->getParameters();
+    $params = $ref->getStaticVariables();
+    $defaults = $params;
+    // $params = $ref->getParameters();
 
-    $isNull = $props === null || (is_array($props) && count($props) === 0);
+    $hasProps = $props !== null || (is_array($props) && count($props) > 0);
 
-    $newProps = $isNull ? new stdClass : $props;
+    $newProps = !$hasProps ? new stdClass : $props;
     $newArgs = [];
 
-    foreach($params as $param) {
-        if($param->getName() == 'props') {
+    foreach ($params as $name => $param) {
+
+        if ($name == 'props') {
             continue;
         }
-        $prop = $param->getName();
+        $prop = $name;
+        // $prop = $param->getName();
 
-        if($isNull) {
-            $newProps->$prop = '';
-            $newArgs[] = '';
+        if ($hasProps) {
+
+            if (!isset($newProps->$prop)) {
+                $newProps->$prop = $defaults[$prop];
+                $newArgs[] =  $defaults[$prop];
+            } else {
+                $newProps->$prop = $props->$prop;
+                $newArgs[] = $props->$prop;
+            }
         } else {
-            if(!isset($newProps->$prop)) {
-                $newProps->$prop = '';
+            if (!isset($newProps->$prop)) {
+                $newProps->$prop = $defaults[$prop];
             }
             $newArgs[] = $newProps->$prop;
         }
     }
 
-    array_unshift($newArgs, $newProps);
-
-    $result = call_user_func($callback, ...$newArgs);
-
-    return $result;
+    call_user_func_array($callback, $newArgs);
 }

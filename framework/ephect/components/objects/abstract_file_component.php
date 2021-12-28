@@ -163,6 +163,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $parser->doArrays($this);
         $this->code = $parser->getHtml();
 
+        $parser->doUseProps($this);
+        $this->code = $parser->getHtml();
+        
         $parser->doUseEffect($this);
         $this->code = $parser->getHtml();
 
