@@ -11,6 +11,10 @@ final class UsePropsParser extends AbstractTokenParser
 
     public function do(null|string|array $parameter = null): void
     {
+        if(!strpos($this->html, 'useProps')) {
+            return;
+        }
+        
         // $re = '/useProps\(function[ ]*\(\$(props|children), ((\s|.*?)+)\)[ ]*{/m';
         // $re = '/useProps\(function[ ]*\((\$(props|children),[ ]*)?((\s|.*?)+)\)[ ]+use[ ]*\(((\s|.*?)+)\)[ ]*{((\s|.*?)+)}\);/m';
         $re = '/useProps\(function[ ]*\(((\$props|\$children),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
