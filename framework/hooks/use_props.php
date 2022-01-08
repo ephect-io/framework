@@ -32,7 +32,7 @@ function useProps(Closure $callback, ?object $props = null): void
         if ($hasProps) {
 
             if (!isset($newProps->$prop)) {
-                $newProps->$prop = $defaults[$prop];
+                // $newProps->$prop = $defaults[$prop];
                 $newArgs[] =  $defaults[$prop];
             } else {
                 $newProps->$prop = $props->$prop;
