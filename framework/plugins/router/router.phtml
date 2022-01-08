@@ -13,7 +13,7 @@ use function Ephect\Hooks\useState;
 
 function Router($children)
 {
-    useEffect(function () use (/* bool */&$hasRouted, /* object */ &$service, /* string */ &$path, /* string */ &$html) {
+    useEffect(function (/* bool */ $hasRouted, /* object */ $service, /* string */ $path, /* string */ $html) {
 
         $service = new RouterService;
 
