@@ -2,9 +2,45 @@
 
 namespace Ephect\Components\Generators\TokenParsers;
 
+use Ephect\Components\Generators\TypesParserTrait;
+
 final class UseEffectParser extends AbstractTokenParser
 {
+
+    use TypesParserTrait;
+
     public function do(null|string|array $parameter = null): void
+    {
+        if(!strpos($this->html, 'useEffect')) {
+            return;
+        }
+        
+        $this->doTranslation($parameter);
+        $this->doDeclaration($parameter);
+    }
+
+    private function doTranslation(null|string|array $parameter = null): void
+    {
+        $re = '/useEffect\(function[ ]*\(((\$props|\$children),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
+            
+        $str = $this->html;
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+     
+        $params = count($matches) === 0 ?: !isset($matches[0][3]) ?: $matches[0][3];
+        $uses = count($matches) === 0 ?: !isset($matches[0][6]) ?: $matches[0][6];
+
+        if ($params === true) {
+            $this->result = '';
+            return;
+        } elseif ($params !== '') {
+            $params = str_replace('$', '&$', $params) . ', ';
+        }
+
+        $this->html = preg_replace($re, 'useEffect(function() use ($1' . $params . $uses . ') {$8}, $2);', $this->html, 1);
+
+    }
+
+    private function doDeclaration(null|string|array $parameter = null): void
     {
         $re = '/useEffect\(function[ ]*\(\)[ ]+use[ ]*\(((\s|.*?)+)\)[ ]*{/m';
 
@@ -20,41 +56,11 @@ final class UseEffectParser extends AbstractTokenParser
 
         $useVars = explode(',', $match);
         $declVars = array_filter($useVars, function ($item) {
-            return $item !== '$props' && $item !== '$children';
+            return $item !== '$props' && $item !== '$children' && trim($item) !== '';
         });
 
-        $declVars = count($declVars) === 0 ?: array_map(function ($item) {
-            $item = trim($item);
-            $item = str_replace('&', '', $item);
-
-            $isset = false;
-            if (strpos($item, '* bool *') > -1) {
-                $isset = true;
-                return $item . ' = false; ';
-            }
-            if (strpos($item, '* int *') > -1) {
-                $isset = true;
-                return $item . ' = 0; ';
-            }
-            if (strpos($item, '* float *') > -1) {
-                $isset = true;
-                return $item . ' = 0.0; ';
-            }
-            if (strpos($item, '* real *') > -1) {
-                $isset = true;
-                return $item . ' = 0.0; ';
-            }
-            if (strpos($item, '* string *') > -1) {
-                $isset = true;
-                return $item . ' = \'\'; ';
-            }
-            if (strpos($item, '* array *') > -1) {
-                $isset = true;
-                return $item . ' = []; ';
-            }
-            if (!$isset) {
-                return $item . ' = null; ';
-            }
+        $declVars = count($declVars) === 0 ?: array_map(function($item) {
+            return $this->declareTypedVariables($item);
         }, $declVars);
 
         if ($declVars === true) {

@@ -12,7 +12,7 @@ use function Ephect\Hooks\useState;
 
 function Route($props)
 {
-    useEffect(function () use ($props, /* bool */ &$onError, /* string */ &$html) {
+    useEffect(function ($props, /* bool */ $onError, /* string */ $html) {
         $routeBuilder = new RouteBuilder($props);
         $route = $routeBuilder->build();
 
