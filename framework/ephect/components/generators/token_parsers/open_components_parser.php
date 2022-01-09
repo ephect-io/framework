@@ -52,12 +52,12 @@ final class OpenComponentsParser extends AbstractTokenParser
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
     
-            $propsArgs = $componentArgs === null ? null : self::doArgumentsToString($componentArgs);
+            $propsArgs = $componentArgs === null ?: self::doArgumentsToString($componentArgs);
             $props = (($propsArgs === null) ? "[]" : $propsArgs);
 
             $propsKeys = $this->argumentsKeys($this->useVariables);
             
-            $useChildren = $decl->hasArguments() ? $this->useArguments($propsKeys) : ' ';
+            $useChildren = $decl->hasArguments() || count($propsKeys) ? $this->useArguments($propsKeys) : ' ';
     
             $className = $this->component->getFunction() ?: $componentName;
             $classArgs = '[]';
