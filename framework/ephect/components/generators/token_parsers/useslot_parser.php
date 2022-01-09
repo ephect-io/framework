@@ -8,7 +8,41 @@ final class UseSlotParser extends AbstractTokenParser
 {
     use TypesParserTrait;
 
+    private string $text = '';
+
     public function do(null|string|array $parameter = null): void
+    {
+        if (!strpos($this->html, 'useSlot')) {
+            return;
+        }
+
+        $this->doTranslation($parameter);
+        $this->doDeclaration($parameter);
+    }
+    
+    private function doTranslation(null|string|array $parameter = null): void
+    {
+        $re = '/useSlot\(function[ ]*\(((\$props|\$children),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
+            
+        $str = $this->html;
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        $params = count($matches) === 0 ?: !isset($matches[0][3]) ?: $matches[0][3];
+        $uses = count($matches) === 0 ?: !isset($matches[0][6]) ?: $matches[0][6];
+
+        if ($params === true) {
+            $this->result = '';
+            return;
+        } elseif ($params !== '') {
+            $this->text = $matches[0][0];
+            $params = str_replace('$', '&$', $params) . ', ';
+        }
+
+        $this->html = preg_replace($re, 'useSlot(function() use ($1' . $params . $uses . ') {$8});', $this->html, 1);
+
+    }
+
+    private function doDeclaration(null|string|array $parameter = null): void
     {
         $re = '/useSlot\(function[ ]*\(\)[ ]+use[ ]*\(((\s|.*?)+)\)[ ]*{((\s|.*?)+)}\);/m';
 
@@ -23,11 +57,12 @@ final class UseSlotParser extends AbstractTokenParser
             return;
         }
 
-        $text = $matches[0][0];
+        // $text = $matches[0][0];
 
         $useVars = explode(',', $match1);
         $declVars = array_filter($useVars, function ($item) {
-            return $item !== '$props' && $item !== '$children';
+            return $item !== '$props' && $item !== '$children' && trim($item) !== '';
+
         });
 
         $declVars = count($declVars) === 0 ?: array_map(function ($item) {
@@ -49,7 +84,7 @@ final class UseSlotParser extends AbstractTokenParser
         USEFFECT;
 
         $this->result = [
-            $text,
+            $this->text,
             "\n\t" . $decl2 . "\n" . $useEffect,
         ];
 

@@ -35,7 +35,7 @@ final class UsePropsParser extends AbstractTokenParser
         $paramVars = explode(',', $params);
         $useslVars = $uses !== '' ? explode(',', $uses) : [];
         $declVarTypes = array_filter($paramVars, function ($item) {
-            return $item !== '$props' && $item !== '$children';
+            return $item !== '$props' && $item !== '$children' && trim($item) !== '';
         });
 
         if(count($useslVars) > 0) {
