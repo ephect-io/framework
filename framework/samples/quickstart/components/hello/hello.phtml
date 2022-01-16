@@ -6,11 +6,9 @@ use function Ephect\Hooks\useProps;
 
 function Hello($props) {
 
-    [$name] = useProps($props, function($props, /* string */ $name) {
+    useProps(function($props, /* string */ $name) {
         $name = $props->name;
-
-        return [$name];
-    });
+    }, $props);
 
     return (<<< HTML
     <!DOCTYPE html>

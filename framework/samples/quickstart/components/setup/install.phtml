@@ -10,13 +10,11 @@ define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 function Install($props)
 {
 
-    [$action] = useProps($props, function($props, /* string */ $action) {
+    useProps(function($props, /* string */ $action) {
         $action = $props->action;
-
-        return [$action];
     });
 
-    useEffect(function () use (/* bool */ &$hasResponse, /* string */ &$response, /* string */ &$action) {
+    useEffect(function (/* bool */ $hasResponse, /* string */ $response, /* string */ $action) {
 
         // $action = useQueryArgument('action');
         $setup = new SetupService;

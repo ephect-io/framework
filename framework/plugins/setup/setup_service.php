@@ -129,7 +129,7 @@ class SetupService
     {
         $ok = false;
 
-        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'codephoenixorg' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
         $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
         $lib = 'ephect' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
@@ -162,7 +162,7 @@ if(\$is127 || \$isIndex) {
 }
 // define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
 // define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
-include '../../framework/bootstrap.php';
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 BOOTSTRAP1;
 
@@ -170,7 +170,7 @@ BOOTSTRAP1;
 <?php
 // define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
 // define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
-include '../../framework/bootstrap.php';
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 BOOTSTRAP2;
 
