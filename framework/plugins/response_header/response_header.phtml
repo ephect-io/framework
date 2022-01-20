@@ -8,10 +8,8 @@ use function Ephect\Hooks\useProps;
 function ResponseHeader($props)
 {
 
-    [$directive] = useProps($props, function($props, /* string */ $directive) {
+    useProps(function($props, /* string */ $directive) {
         $directive = $props->directive;
-
-        return [$directive];
     });
 
     useEffect(function () use (/* bool */ &$hasDirective, /* string */ &$directive) {

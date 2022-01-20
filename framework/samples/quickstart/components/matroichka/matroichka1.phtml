@@ -6,7 +6,7 @@ use function Ephect\Hooks\useEffect;
 
 function Matroichka1($children)
 {
-    useEffect(function() use ($children, /* string */ &$id, /* string */ &$label) {
+    useEffect(function($children, /* string */ $id, /* string */ $label) {
         $id = $children->props()->id;
         $label = $children->props()->label;
     });
