@@ -1,6 +1,6 @@
 <?php
 
-namespace Fun;
+namespace QuickStart;
 
 use function Ephect\Hooks\useProps;
 
@@ -8,7 +8,7 @@ function Hello($props) {
 
     useProps(function($props, /* string */ $name) {
         $name = $props->name;
-    }, $props);
+    });
 
     return (<<< HTML
     <!DOCTYPE html>
