@@ -97,7 +97,7 @@ class EggLib extends Element
 
     public function createQuickstart(): void
     {
-        $sample = FRAMEWORK_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'quickstart';
+        $sample = EPHECT_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'quickstart';
 
         Utils::safeMkDir(SRC_ROOT);
         $destDir = realpath(SRC_ROOT);
@@ -116,7 +116,7 @@ class EggLib extends Element
 
     public function createSkeleton(): void
     {
-        $sample = FRAMEWORK_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'skeleton';
+        $sample = EPHECT_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'skeleton';
 
         Utils::safeMkDir(SRC_ROOT);
         $destDir = realpath(SRC_ROOT);
@@ -135,7 +135,7 @@ class EggLib extends Element
     
     public function createCommonTrees(): void
     {
-        $common = FRAMEWORK_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'common';
+        $common = EPHECT_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'common';
         $src_dir = $common . DIRECTORY_SEPARATOR . 'config';
 
         Utils::safeMkDir(CONFIG_DIR);
