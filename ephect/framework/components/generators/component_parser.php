@@ -145,7 +145,7 @@ class ComponentParser extends Parser
                             'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
                         ];
 
-                        if ($list[$i][1][0] == 'Slot') {
+                        if (isset($list[$i][1]) && $list[$i][1][0] == 'Slot') {
                             array_unshift($closers, $currentClorer);
                         } else {
                             array_push($closers, $currentClorer);
