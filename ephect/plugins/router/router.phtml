@@ -1,0 +1,48 @@
+<?php
+
+namespace Ephect\Plugins\Router;
+
+use Ephect\Framework\Components\Compiler;
+use Ephect\Framework\Components\Component;
+use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\HttpErrorRegistry;
+use Ephect\Framework\Registry\RouteRegistry;
+
+use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useState;
+
+function Router($children)
+{
+    useEffect(function (/* bool */ $hasRouted, /* object */ $service, /* string */ $path, /* string */ $html) {
+
+        $service = new RouterService;
+
+        if ($service->routesAreCached()) {
+
+            [$path, $query, $error, $code] = $service->doRouting();
+            $service->renderRoute($code === 200, $path, $query, $error, $code, $html);
+
+            $hasRouted = true;
+        }
+    });
+
+    return (<<< HTML
+        {? 
+            if({hasRouted}) { 
+                echo {html};
+                return;
+            } 
+        ?}
+        {{ children }}
+        {? 
+            rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
+            Compiler::purgeCopies();
+
+            {service}->findRoute({html});
+            if({html} !== '') { 
+                echo {html};
+            } 
+
+        ?}
+    HTML);
+}
