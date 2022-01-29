@@ -14,7 +14,7 @@
     ],
     "autoload": {
         "classmap": [
-            "framework/ephect/"
+            "ephect/framework/"
         ],
         "exclude-from-classmap": [
         ],
@@ -22,12 +22,12 @@
             "Ephect\\": ""
         },
         "files": [
-            "framework/ephect/core/constants.php",
-            "framework/ephect/core/autoloader.php"
+            "ephect/framework/core/constants.php",
+            "ephect/framework/core/autoloader.php"
         ]
     },
     "include-path": [
-        "framework"
+        "ephect"
     ],
     "require": {
     }
