@@ -97,7 +97,7 @@ if (!IS_WEB_APP) {
 
     define('APP_CWD', IS_PHAR_APP ? getcwd() . DIRECTORY_SEPARATOR : str_replace($script_name, '', $app_path));
 
-    define('IS_INNER_APP', false !== strpos(APP_CWD, 'framework' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'apps'));
+    define('IS_INNER_APP', false !== strpos(APP_CWD, 'Framework' . DIRECTORY_SEPARATOR . 'Ephect' . DIRECTORY_SEPARATOR . 'Apps'));
     define('IS_TASK_APP', false !== strpos(APP_CWD . $script_name, $script_dir . DIRECTORY_SEPARATOR . 'bootstrap.php'));
     define('IS_BIN_APP', false !== strpos(APP_CWD . $script_name, 'bin' . DIRECTORY_SEPARATOR . $script_name));
 
@@ -130,8 +130,8 @@ if (!IS_WEB_APP) {
     define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('EPHECT_ROOT', SITE_ROOT .  EPHECT . DIRECTORY_SEPARATOR);
 
-    $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
-    $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
+    $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
+    $portable_dir = 'Epehct' . DIRECTORY_SEPARATOR;
     $bootstrap = 'bootstrap.php';
 
     $ephect_dir = $vendor_dir;
@@ -175,8 +175,8 @@ if (!IS_WEB_APP) {
 }
 
 
-define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'widgets' . DIRECTORY_SEPARATOR);
-define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'plugins' . DIRECTORY_SEPARATOR);
+define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARATOR);
+define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);
 define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
 define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
 define('EPHECTJS_VENDOR', EPHECT_VENDOR_SRC . 'phinkjs' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);

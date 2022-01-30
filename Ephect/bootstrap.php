@@ -3,20 +3,20 @@
 use Ephect\Framework\IO\Utils;
 
 define('LIBDIR_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
-define('FRAMEWORK_PATH',  dirname(__FILE__) . LIBDIR_SEPARATOR . 'framework' . LIBDIR_SEPARATOR);
-define('HOOKS_PATH', 'hooks' . LIBDIR_SEPARATOR);
-define('PLUGINS_PATH', 'plugins' . LIBDIR_SEPARATOR);
+define('FRAMEWORK_PATH',  dirname(__FILE__) . LIBDIR_SEPARATOR . 'Framework' . LIBDIR_SEPARATOR);
+define('HOOKS_PATH', 'Hooks' . LIBDIR_SEPARATOR);
+define('PLUGINS_PATH', 'Plugins' . LIBDIR_SEPARATOR);
 
-include FRAMEWORK_PATH . 'core' . LIBDIR_SEPARATOR . 'constants.php';
-include FRAMEWORK_PATH . 'core' . LIBDIR_SEPARATOR . 'autoloader.php';
-include FRAMEWORK_PATH . 'io' . LIBDIR_SEPARATOR . 'utils.php';
-include FRAMEWORK_PATH . 'objects' . LIBDIR_SEPARATOR . 'element_trait.php';
-include FRAMEWORK_PATH . 'objects' . LIBDIR_SEPARATOR . 'element_utils.php';
-include FRAMEWORK_PATH . 'registry' . LIBDIR_SEPARATOR  . 'objects' . LIBDIR_SEPARATOR . 'abstract_registry_interface.php';
-include FRAMEWORK_PATH . 'registry' . LIBDIR_SEPARATOR  . 'objects' . LIBDIR_SEPARATOR . 'static_registry_interface.php';
-include FRAMEWORK_PATH . 'registry' . LIBDIR_SEPARATOR  . 'objects' . LIBDIR_SEPARATOR . 'abstract_registry.php';
-include FRAMEWORK_PATH . 'registry' . LIBDIR_SEPARATOR  . 'objects' . LIBDIR_SEPARATOR . 'abstract_static_registry.php';
-include FRAMEWORK_PATH . 'registry' . LIBDIR_SEPARATOR . 'framework_registry.php';
+include FRAMEWORK_PATH . 'Core' . LIBDIR_SEPARATOR . 'constants.php';
+include FRAMEWORK_PATH . 'Core' . LIBDIR_SEPARATOR . 'Autoloader.php';
+include FRAMEWORK_PATH . 'Io' . LIBDIR_SEPARATOR . 'Utils.php';
+include FRAMEWORK_PATH . 'Element_trait.php';
+include FRAMEWORK_PATH . 'Element_utils.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractRegistryInterface.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StaticRegistryInterface.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractRegistry.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractStaticRegistry.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'FrameworkRegistry.php';
 
 if (!IS_PHAR_APP) {
 
@@ -33,15 +33,15 @@ if (!IS_PHAR_APP) {
         include HOOKS_PATH . $filename;
     }
 
-    $hooks_registry = ['hooks' => $hooks];
+    $hooksRegistry = ['Hooks' => $hooks];
 
-    Utils::safeWrite(RUNTIME_DIR . 'hooks_registry.json',  json_encode($hooks_registry));
+    Utils::safeWrite(RUNTIME_DIR . 'HooksRegistry.json',  json_encode($hooksRegistry));
 }
 
 if (IS_PHAR_APP) {
-    $hooks_registry = Utils::safeRead(RUNTIME_DIR . 'hooks_registry.json');
+    $hooksRegistry = Utils::safeRead(RUNTIME_DIR . 'HooksRegistry.json');
 
-    $hooks = json_decode($hooks_registry);
+    $hooks = json_decode($hooksRegistry);
     $hooks = $hooks->hooks;
     
     foreach($hooks as $hook) {
@@ -55,7 +55,7 @@ use Ephect\Framework\Registry\PharRegistry;
 
 FrameworkRegistry::register();
 if(IS_PHAR_APP) {
-    include FRAMEWORK_PATH . 'registry' . LIBDIR_SEPARATOR . 'phar_registry.php';
+    include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'PharRegistry.php';
     PharRegistry::register();
 }
 

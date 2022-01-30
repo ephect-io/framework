@@ -35,19 +35,19 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 if (
                     $filename === 'bootstrap.php'
                     || false !== strpos($filename, 'constants.php')
-                    || false !== strpos($filename, 'autoloader.php')
+                    || false !== strpos($filename, 'Autoloader.php')
                 ) {
                     continue;
                 }
 
-                if (false !== strpos($filename, 'interface')) {
+                if (false !== strpos($filename, 'Interface')) {
                     list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
-                if (false !== strpos($filename, 'trait')) {
+                if (false !== strpos($filename, 'Trait')) {
                     list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
@@ -78,14 +78,14 @@ class FrameworkRegistry extends AbstractStaticRegistry
         $sourceFiles = Utils::walkTreeFiltered(SRC_ROOT, ['php']);
 
         foreach ($sourceFiles as $filename) {
-            if (false !== strpos($filename, 'interface')) {
+            if (false !== strpos($filename, 'Interface')) {
                 list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $interface;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
-            if (false !== strpos($filename, 'trait')) {
+            if (false !== strpos($filename, 'Trait')) {
                 list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $trait;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
