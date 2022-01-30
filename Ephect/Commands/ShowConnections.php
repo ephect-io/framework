@@ -9,7 +9,7 @@ use Ephect\Framework\Registry\StateRegistry;
 
 #[CommandDeclaration(verb: "show", subject: "connections")]
 #[CommandDeclaration(desc: "Display the data connections registered.")]
-class Connections extends AbstractCommand
+class ShowConnections extends AbstractCommand
 {
     public function run(): void
     {
