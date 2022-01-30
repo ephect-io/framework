@@ -3,9 +3,11 @@
 namespace Ephect\Plugins\Route;
 
 use Ephect\Framework\Element;
+use Ephect\Framework\ElementTrait;
 
 class RouteEntity extends Element implements RouteInterface
 {
+    use ElementTrait;
 
     private string $method = '';
     private string $rule = '';
