@@ -4,7 +4,7 @@
     "description": "Make PHP effective again!",
     "homepage": "https://ephect.io",
     "license": "GPL-3.0+",
-    "version": "v0.3",
+    "version": "v0.3.2-alpha",
     "authors": [
         {
             "name": "David Blanchard",
