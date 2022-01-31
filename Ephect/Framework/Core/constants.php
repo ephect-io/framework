@@ -210,10 +210,10 @@ define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
 define('ROUTES_JSON', RUNTIME_DIR . 'routes.json');
 
-define('FRAMEWORK_ROOT', EPHECT_ROOT . 'framework' . DIRECTORY_SEPARATOR);
-define('HOOKS_ROOT', EPHECT_ROOT . 'hooks' . DIRECTORY_SEPARATOR);
-define('PLUGINS_ROOT', EPHECT_ROOT . 'plugins' . DIRECTORY_SEPARATOR);
-define('COMMANDS_ROOT', EPHECT_ROOT . 'commands' . DIRECTORY_SEPARATOR);
+define('FRAMEWORK_ROOT', EPHECT_ROOT . 'Framework' . DIRECTORY_SEPARATOR);
+define('HOOKS_ROOT', EPHECT_ROOT . 'Hooks' . DIRECTORY_SEPARATOR);
+define('PLUGINS_ROOT', EPHECT_ROOT . 'Plugins' . DIRECTORY_SEPARATOR);
+define('COMMANDS_ROOT', EPHECT_ROOT . 'Commands' . DIRECTORY_SEPARATOR);
 
 define('CLASS_EXTENSION', '.class.php');
 define('PREHTML_EXTENSION', '.phtml');
