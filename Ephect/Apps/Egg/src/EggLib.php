@@ -97,7 +97,7 @@ class EggLib extends Element
 
     public function createQuickstart(): void
     {
-        $sample = EPHECT_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'quickstart';
+        $sample = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'QuickStart';
 
         Utils::safeMkDir(SRC_ROOT);
         $destDir = realpath(SRC_ROOT);
@@ -116,7 +116,7 @@ class EggLib extends Element
 
     public function createSkeleton(): void
     {
-        $sample = EPHECT_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'skeleton';
+        $sample = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'Skeleton';
 
         Utils::safeMkDir(SRC_ROOT);
         $destDir = realpath(SRC_ROOT);
@@ -135,7 +135,7 @@ class EggLib extends Element
     
     public function createCommonTrees(): void
     {
-        $common = EPHECT_ROOT . 'samples' . DIRECTORY_SEPARATOR . 'common';
+        $common = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'Common';
         $src_dir = $common . DIRECTORY_SEPARATOR . 'config';
 
         Utils::safeMkDir(CONFIG_DIR);
@@ -189,14 +189,14 @@ class EggLib extends Element
 
         $master = $libRoot . 'master';
         $filename = $master . '.zip';
-        $ephectDir = $master . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
+        $ephectDir = $master . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
 
         $tree = [];
 
         if (!file_exists($filename)) {
-            $this->parent->writeLine('Downloading ephect github master');
+            $this->parent->writeLine('Downloading ephect github main');
             $curl = new Curl();
-            $result = $curl->request('https://codeload.github.com/CodePhoenixOrg/ephect/zip/master');
+            $result = $curl->request('https://codeload.github.com/ephect-io/framework/zip/main');
             file_put_contents($filename, $result->content);
         }
 
