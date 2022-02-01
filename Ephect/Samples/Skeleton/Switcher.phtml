@@ -6,7 +6,7 @@ function Switcher()
 {
     return (<<< HTML
     <Router>
-        <Route method="GET" rule='^/$' redirect="Home" />
+        <Route method="GET" rule='/' exact="true" redirect="Home" />
     </Router>
     HTML);
 }
