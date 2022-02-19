@@ -4,33 +4,30 @@
     "description": "Make PHP effective again!",
     "homepage": "https://ephect.io",
     "license": "GPL-3.0+",
-    "authors": [
-        {
-            "name": "David Blanchard",
-            "email": "dpjb@hotmail.fr",
-            "homepage": "https://code-phoenix.org",
-            "role": "Creator"
-        }
-    ],
+    "version": "v0.3.2-alpha",
+    "authors": [{
+        "name": "David Blanchard",
+        "email": "dpjb@hotmail.fr",
+        "homepage": "https://code-phoenix.org",
+        "role": "Creator"
+    }],
     "autoload": {
         "classmap": [
-            "ephect/framework/"
+            "Ephect/"
         ],
-        "exclude-from-classmap": [
-        ],
+        "exclude-from-classmap": [],
         "psr-4": {
-            "Ephect\\": ""
+            "Ephect\\": "Ephect/"
         },
         "files": [
-            "ephect/framework/core/constants.php",
-            "ephect/framework/core/autoloader.php"
+            "Ephect/Framework/Core/constants.php",
+            "Ephect/Framework/Core/Autoloader.php"
         ]
     },
     "include-path": [
-        "ephect"
+        "Ephect"
     ],
-    "require": {
-    }
+    "require": {}
 
 
 }
