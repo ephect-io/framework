@@ -51,6 +51,7 @@ if (IS_PHAR_APP) {
 
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Core\Autoloader;
+use Ephect\Framework\JavaScripts\AjilBuilder;
 use Ephect\Framework\Registry\PharRegistry;
 
 FrameworkRegistry::register();
@@ -60,3 +61,4 @@ if(IS_PHAR_APP) {
 }
 
 Autoloader::register();
+AjilBuilder::build();
