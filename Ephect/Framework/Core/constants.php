@@ -21,15 +21,18 @@ if (IS_WEB_APP) {
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
 
-    define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
-    define('EPHECT_ROOT', SITE_ROOT . EPHECT . DIRECTORY_SEPARATOR);
+    define('EPHECT_CONFIG', trim(file_get_contents(CONFIG_DIR . 'framework')));
+    define('AJIL_CONFIG', trim(file_get_contents(CONFIG_DIR . 'javascripts')));
+    define('EPHECT_ROOT', SITE_ROOT . EPHECT_CONFIG . DIRECTORY_SEPARATOR);
+    define('AJIL_ROOT', SITE_ROOT . AJIL_CONFIG . DIRECTORY_SEPARATOR);
 
     $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
 
+    define('AJIL_VENDOR_SRC', AJIL_ROOT);
     define('EPHECT_VENDOR_SRC', EPHECT_ROOT);
-    define('EPHECT_VENDOR_LIB', EPHECT_VENDOR_SRC . 'framework' . DIRECTORY_SEPARATOR);
-    define('EPHECT_VENDOR_APPS', EPHECT_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
+    define('EPHECT_VENDOR_LIB', EPHECT_VENDOR_SRC . 'Framework' . DIRECTORY_SEPARATOR);
+    define('EPHECT_VENDOR_APPS', EPHECT_VENDOR_SRC . 'Apps' . DIRECTORY_SEPARATOR);
 
     $rewrite_base = '/';
 
@@ -130,11 +133,12 @@ if (!IS_WEB_APP) {
     define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('EPHECT_ROOT', SITE_ROOT .  EPHECT . DIRECTORY_SEPARATOR);
 
-    $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
+    $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR;
     $portable_dir = 'Epehct' . DIRECTORY_SEPARATOR;
     $bootstrap = 'bootstrap.php';
 
-    $ephect_dir = $vendor_dir;
+    $ephect_dir = $vendor_dir . 'framework' . DIRECTORY_SEPARATOR . 'Ephect' . DIRECTORY_SEPARATOR;
+    $ajil_dir = $vendor_dir . 'javascripts' . DIRECTORY_SEPARATOR . 'Ajil' . DIRECTORY_SEPARATOR;
     $ephect_vendor_lib = '';
     $ephect_vendor_apps = '';
 
@@ -148,22 +152,23 @@ if (!IS_WEB_APP) {
             if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
                 $ephect_dir = $portable_dir;
             }
-            $ephect_vendor_lib = $ephect_dir . 'framework' . DIRECTORY_SEPARATOR;
-            $ephect_vendor_apps = $ephect_dir . 'apps' . DIRECTORY_SEPARATOR;
+            $ephect_vendor_lib = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
+            $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
 
             $ephect_root = SITE_ROOT . $ephect_vendor_lib;
         } else {
             if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
                 $ephect_dir = $portable_dir;
             }
-            $ephect_vendor_lib = $ephect_dir . 'framework' . DIRECTORY_SEPARATOR;
-            $ephect_vendor_apps = $ephect_dir . 'apps' . DIRECTORY_SEPARATOR;
+            $ephect_vendor_lib = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
+            $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
 
             $ephect_root = SITE_ROOT . $ephect_vendor_lib;
         }
     }
 
     define('EPHECT_VENDOR_SRC', $ephect_dir);
+    define('AJIL_VENDOR_SRC', $ajil_dir);
     define('EPHECT_VENDOR_LIB', $ephect_vendor_lib);
     define('EPHECT_VENDOR_APPS', $ephect_vendor_apps);
 
@@ -179,8 +184,7 @@ define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARA
 define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);
 define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
 define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
-define('EPHECTJS_VENDOR', EPHECT_VENDOR_SRC . 'phinkjs' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
-define('EPHECTJS_ROOT', SITE_ROOT . EPHECTJS_VENDOR);
+define('AJIL_ROOT', SITE_ROOT . AJIL_VENDOR_SRC);
 
 define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
 define('APP_ROOT', SRC_ROOT . APP_DIR);
