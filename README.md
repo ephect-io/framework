@@ -1,8 +1,15 @@
 ![Ephect](assets/images/salamandra.png)
 
-## What is Ephect ?
+## What does Ephect stand for ?
 
-Ephect is a backend components based framework with template syntax. It gathers some features from *ReactJS<sup>1</sup>* and *WebComponents<sup>2</sup>* like hooks and slots.
+_Ephect is a_
+_Php_
+_High_
+_Efficiency_
+_Components_
+_Templating system_
+
+In other words, Ephect is a backend components templating system. It gathers some features from *ReactJS<sup>1</sup>* and *WebComponents<sup>2</sup>* like hooks and slots.
 
 ## Featured concepts
 
@@ -10,7 +17,7 @@ Ephect is a backend components based framework with template syntax. It gathers 
 
 Basically, components are custom HTML tags. All concepts of HTML tags on backend side are applicable to components except the naming convention: a component name must begin with a capital letter. 
 
-The logic of the component is coded in a simple funcion returning a template.
+The logic of the component is coded in a simple function returning a template.
 
 #### Example 1
 
