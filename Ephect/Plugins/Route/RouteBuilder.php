@@ -26,7 +26,7 @@ class RouteBuilder extends AbstractBuilder
         $rule = $route->getRule();
 
         $re = '/(\([\w]+\))/m';
-        $subst = '([\\\\W\\\\w]+)';
+        $subst = '([\\\\w\\\\-]+)';
 
         $normalized = preg_replace($re, $subst, $rule);
 
