@@ -1,22 +1,24 @@
 <?php
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
+$site_root = '';
 
 define('IS_WEB_APP', $document_root !== '');
 define('IS_PHAR_APP', (\Phar::running() !== ''));
 define('IS_CLI_APP', (\Phar::running() === '') && !IS_WEB_APP);
 
 if (!IS_WEB_APP) {
-    $document_root = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
+    $site_root = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
+    $document_root = $site_root . 'public' . DIRECTORY_SEPARATOR;
 }
 
 define('DOCUMENT_ROOT', $document_root);
 
 if (IS_WEB_APP) {
 
-    $document_root = dirname($document_root) . DIRECTORY_SEPARATOR;
+    $site_root = dirname($document_root) . DIRECTORY_SEPARATOR;
 
-    define('SITE_ROOT', $document_root);
+    define('SITE_ROOT', $site_root);
     define('SRC_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
@@ -114,10 +116,10 @@ if (!IS_WEB_APP) {
         $appName = array_pop($path);
     } elseif (IS_TASK_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = $document_root . DIRECTORY_SEPARATOR  . 'app' . DIRECTORY_SEPARATOR;
+        $src_root = $site_root . DIRECTORY_SEPARATOR  . 'app' . DIRECTORY_SEPARATOR;
     } elseif (IS_BIN_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = $document_root . DIRECTORY_SEPARATOR  . 'app' . DIRECTORY_SEPARATOR;
+        $src_root = $site_root . DIRECTORY_SEPARATOR  . 'app' . DIRECTORY_SEPARATOR;
     } 
     elseif (IS_PHAR_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
@@ -177,6 +179,9 @@ if (!IS_WEB_APP) {
     define('REQUEST_URI', 'https://localhost/');
     define('REQUEST_METHOD', 'GET');
     define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
+
+    define('AJIL_ROOT', SITE_ROOT . AJIL_VENDOR_SRC);
+    
 }
 
 
@@ -184,7 +189,6 @@ define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARA
 define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);
 define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
 define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
-define('AJIL_ROOT', SITE_ROOT . AJIL_VENDOR_SRC);
 
 define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
 define('APP_ROOT', SRC_ROOT . APP_DIR);

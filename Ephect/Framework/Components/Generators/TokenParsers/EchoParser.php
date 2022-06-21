@@ -8,7 +8,7 @@ final class EchoParser extends AbstractTokenParser
     {
         $this->useVariables = $parameter;
 
-        $re = '/\{\{ ([A-Za-z0-9_@\-\>]*) \}\}/m';
+        $re = '/\{ ([A-Za-z0-9_@\-\>]*) \}/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -38,7 +38,8 @@ final class EchoParser extends AbstractTokenParser
                 continue;
             }
 
-            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $translate . '; ?>', $this->html);
+            $this->html = str_replace('{ ' . $variable . ' }', 'echo $' . $translate . '', $this->html);
+            $this->html = str_replace('{echo $' . $variable . '}', '<?php echo $' . $translate . '; ?>', $this->html);
         }
     }
     
