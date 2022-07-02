@@ -2,6 +2,8 @@
 
 namespace Ephect\Framework\JavaScripts;
 
+use Ephect\Framework\IO\Utils;
+
 class AjilBuilder
 {
 
@@ -40,6 +42,6 @@ class AjilBuilder
             $js_content .= file_get_contents($srcdir . $filename);
         }
 
-        file_put_contents($js_filename, $js_content);
+        Utils::safeWrite($js_filename, $js_content);
     }
 }
