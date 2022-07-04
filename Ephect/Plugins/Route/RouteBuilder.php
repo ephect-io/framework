@@ -15,12 +15,50 @@ class RouteBuilder extends AbstractBuilder
     public function build(): RouteInterface
     {
         $route = parent::buildEx(RouteEntity::class);
-        $route = $this->translateRoute($route);
+        $route = $this->translateNamedArgumentsRoute($route);
+        $route = $this->translateQueryStringRoute($route);
 
         return $route;
     }
 
-    private function translateRoute(RouteInterface $route): RouteInterface
+    private function translateQueryStringRoute(RouteInterface $route): RouteInterface
+    {
+
+        $rule = $route->getRule();
+
+        $re = '/[a-z]+=(\(\.\*\)|\(\.\+\)|\(\\\\w\+\))/m';
+        $re = '/(\(\.\*\)|\(\.\+\)|\(\\\\w\+\))/m';
+
+        preg_match_all($re, $rule, $matches, PREG_SET_ORDER, 0);
+
+        $translated = $rule;
+
+        $c = count($matches);
+        for($i = 0; $i < $c; $i++) {
+            $match = preg_quote($matches[$i][0]);
+            $argn = $i+1;
+            $translated = preg_replace('/' . $match . '/m', '\\$' . $argn, $translated, 1);
+        }
+
+        if ($translated === $rule) {
+            return $route;
+        }
+
+        $struct = new RouteStructure([
+            'method' => $route->getMethod(), 
+            'rule' => $rule, 
+            'redirect' => $route->getRedirect(), 
+            'translation' => $translated, 
+            'error' => $route->getError(),
+            'exact' => $route->isExact()
+        ]);
+
+        $newRoute = new RouteEntity($struct);
+
+        return $newRoute;
+    }
+
+    private function translateNamedArgumentsRoute(RouteInterface $route): RouteInterface
     {
 
         $rule = $route->getRule();
@@ -34,10 +72,18 @@ class RouteBuilder extends AbstractBuilder
             return $route;
         }
 
-        $re = '/(.*)(\/\(([\w]+)\))(\/([\w]+))?/m';
-        $subst = '$1?$3=\\$1&verb=$5';
+        $re = '/([^\(]+)?(\/\(([\w\-]+)\))/m';
+        preg_match_all($re, $rule, $matches, PREG_SET_ORDER, 0);
 
-        $translated = preg_replace($re, $subst, $rule);
+        $translated = $rule;
+
+        $c = count($matches);
+        for($i = 0; $i < $c; $i++) {
+            $argn = $i+1;
+            $match = preg_quote($matches[$i][2]);
+            $subst = ($i === 0 ? '?':'&') . $matches[$i][3] . '=\\$' . $argn;
+            $translated = preg_replace('@' . $match . '@m', $subst, $translated, 1);
+        }
 
         $struct = new RouteStructure([
             'method' => $route->getMethod(), 
@@ -52,4 +98,5 @@ class RouteBuilder extends AbstractBuilder
 
         return $newRoute;
     }
+
 }
