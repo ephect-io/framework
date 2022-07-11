@@ -15,6 +15,7 @@ use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Tasks\Task;
 use Ephect\Framework\Tasks\TaskRunner;
 use Ephect\Framework\Tasks\TaskStructure;
+use Ephect\Plugins\Router\RouterService;
 use parallel\{channel};
 use Throwable;
 
@@ -130,7 +131,6 @@ class Compiler
             $fqRoute = ComponentRegistry::read($route);
             $comp = $this->list[$fqRoute];
 
-            // $comp->identifyComponents($this->list);
             $comp->copyComponents($this->list);
         }
 
@@ -165,7 +165,10 @@ class Compiler
                     $time_start = microtime(true);
 
                     ob_start();
-                    $comp->render();
+
+                    $functionArgs = RouterService::findRouteArguments($route);
+
+                    $comp->render($functionArgs);
                     $html = ob_get_clean();
 
                     $time_end = microtime(true);

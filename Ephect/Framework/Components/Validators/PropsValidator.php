@@ -27,7 +27,7 @@ class PropsValidator
         try {
             $result = new $structClass($this->props);
         } catch (Exception $ex) {
-            throw new ErrorException("Invalid route.", 1, 3, __FILE__, __LINE__, $ex);
+            throw new ErrorException("Invalid structure.", 1, 3, __FILE__, __LINE__, $ex);
         }
 
         return $result;

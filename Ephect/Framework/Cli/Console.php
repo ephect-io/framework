@@ -31,7 +31,6 @@ class Console extends Element
 
         echo $value . PHP_EOL;
     }
-
     
     public static function readLine(?string $prompt = null): string
     {

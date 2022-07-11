@@ -3,6 +3,7 @@
 namespace Ephect\Plugins\Router;
 
 use Ephect\Framework\Components\Component;
+use Ephect\Framework\IO\Utils;
 use Ephect\Plugins\Route\RouteEntity;
 use Ephect\Plugins\Route\RouteInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
@@ -16,8 +17,9 @@ class RouterService
 
     public function __construct()
     {
-        RouteRegistry::uncache();
-        HttpErrorRegistry::uncache();
+        if(RouteRegistry::uncache()) {
+            HttpErrorRegistry::uncache();
+        }
     }
 
     public function findRoute(string &$html): void
@@ -25,7 +27,7 @@ class RouterService
         $html = '';
         [$state, $setState] = useState();
 
-        if(!isset($state->routes)) {
+        if (!isset($state->routes)) {
             return;
         }
 
@@ -64,6 +66,24 @@ class RouterService
 
         $comp = new Component($path);
         $comp->render($query);
+    }
+
+
+    public static function uncacheRoutes(bool $asArray = false)
+    {
+        $result = file_get_contents(CACHE_DIR . 'routes.json');
+
+        if ($result === false) {
+            return null;
+        }
+
+        if ($asArray) {
+            $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
+        } else {
+            $result = json_decode($result);
+        }
+
+        return $result;
     }
 
     public function routesAreCached(): bool
@@ -171,6 +191,54 @@ class RouterService
     {
         return RouteRegistry::cache() && HttpErrorRegistry::cache();
     }
+
+    public static function findRouteArguments($route): ?array
+    {
+        $result = null;
+
+        if(!file_exists(CACHE_DIR . 'routes.json')) {
+            return $result;
+        }
+
+        $routes = file_get_contents(CACHE_DIR . 'routes.json');
+
+        if ($routes === false) {
+            return $result;
+        }
+
+        $routes = json_decode($routes, JSON_OBJECT_AS_ARRAY);
+
+        if($routes === null) {
+            return $result;
+        }
+
+        $allroutes = [];
+
+        foreach($routes as $method => $rules) {
+            $allroutes = array_merge($allroutes, $rules);
+        }
+
+        $allroutes = array_filter($allroutes, function ($item) use ($route) {
+            return $item['redirect'] == $route && $item['translate'] != '';
+        });
+
+        if(count($allroutes) === 0) {
+            return $result;
+        }
+
+        sort($allroutes);
+
+        $query = parse_url('https://localhost' . $allroutes[0]['translate'], PHP_URL_QUERY);
+
+        if($query === null || $query === false) {
+            return $result;
+        }
+
+        parse_str($query, $result);
+
+        return $result;
+    }
+
 
     public function matchRoute(RouteEntity $route): ?array
     {
