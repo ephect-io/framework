@@ -10,6 +10,7 @@ use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Tree\Tree;
 use Exception;
 use ReflectionFunction;
+use stdClass;
 use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
@@ -165,8 +166,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $fn();
             $html = ob_get_clean();
         } else {
-            if (null !== $props = json_decode(json_encode($functionArgs))) {
-                foreach ($props as $key => $value) {
+            $props = new stdClass;
+            if (null !== $args = json_decode(json_encode($functionArgs))) {
+                foreach ($args as $key => $value) {
                     $props->{$key} = urldecode($value);
                 }
             }
