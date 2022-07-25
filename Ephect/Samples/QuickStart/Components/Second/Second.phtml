@@ -2,14 +2,14 @@
 
 namespace QuickStart;
 
-use function Ephect\Hooks\useQueryArgument;
-use function Ephect\Hooks\useSlot;
+use function Ephect\Hooks\useEffect;
 
-function Second()
+function Second($props)
 {
 
-    useSlot(function(/* string */ $firstname, /* string */ $adjective) {
-        $firstname = useQueryArgument('name', "David");
+    useEffect(function($props, /* string */ $firstname, /* string */ $lastname, /* string */ $adjective) {
+        $firstname = $props->name;
+        $lastname = $props->lname;
         $adjective = "stunning";
     });
 
@@ -24,7 +24,7 @@ function Second()
             <section>
             <h2>Main</h2>
                 <p>
-                    Hello&nbsp;{{ firstname }}!
+                    Hello&nbsp;{{ firstname }} {{ lastname }}!
                 </p>
             </section>
         </Slot>

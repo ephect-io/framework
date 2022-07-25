@@ -2,12 +2,13 @@
 
 namespace QuickStart;
 
-use function Ephect\Hooks\useProps;
+use function Ephect\Hooks\useEffect;
 
 function Hello($props) {
 
-    useProps(function($props, /* string */ $name) {
+    useEffect(function($props, /* string */ $name, /* string */ $lname) {
         $name = $props->name;
+        $lname = $props->lname;
     });
 
     return (<<< HTML
@@ -21,7 +22,7 @@ function Hello($props) {
         </head>
         <body>
         
-            Hello {{ name }}
+            Hello {{ name }} {{ lname }}
 
         </body>
     </html>
