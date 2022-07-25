@@ -136,7 +136,7 @@ class ComponentParser extends Parser
                         || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
                     ) {
 
-                        $currentClorer = [
+                        $currentCloser = [
                             'id' => $i,
                             'parentId' => $j,
                             'text' => $list[$i][0][0],
@@ -146,15 +146,14 @@ class ComponentParser extends Parser
                         ];
 
                         if (isset($list[$i][1]) && $list[$i][1][0] == 'Slot') {
-                            array_unshift($closers, $currentClorer);
+                            array_unshift($closers, $currentCloser);
                         } else {
-                            array_push($closers, $currentClorer);
+                            array_push($closers, $currentCloser);
                         }
                         
                         $list[$i]['isCloser'] = true;
                         $list[$i]['method'] = 'render';
 
-                        // unset($list[$i]);
                         break;
                     }
                 }
@@ -167,16 +166,11 @@ class ComponentParser extends Parser
                 unset($list[$i][3]);
             }
 
-            // if (isset($list[$i]['closer'])) {
-            //     $list[$i]['isCloser'] = false;
-            //     $list[$i]['hasCloser'] = true;
-            // }
         }
 
         $l = count($list);
 
         for ($i = 0; $i < $l; $i++) {
-            // foreach($list as $i => $item) {
 
             $component = $list[$i]['text'];
             $compCloserText = '</' . ($list[$i]['name']  == 'Fragment' ? '' : $list[$i]['name']) . '>';
@@ -212,7 +206,6 @@ class ComponentParser extends Parser
 
         // Add useful information in list like depth and parentId
         for ($i = 0; $i < $l; $i++) {
-            // foreach($list as $i => $item) {
 
             $siblingId = $i - 1;
 
