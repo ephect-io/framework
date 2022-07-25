@@ -26,23 +26,35 @@ final class UseEffectParser extends AbstractTokenParser
         $str = $this->html;
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
      
+        $props = count($matches) === 0 ?: !isset($matches[0][2]) ?: $matches[0][2];
         $params = count($matches) === 0 ?: !isset($matches[0][3]) ?: $matches[0][3];
         $uses = count($matches) === 0 ?: !isset($matches[0][6]) ?: $matches[0][6];
 
+        if($props !== '') {
+            $props .= ', ';
+        }
+
+        $byref = '';
         if ($params === true) {
             $this->result = '';
             return;
         } elseif ($params !== '') {
-            $params = str_replace('$', '&$', $params) . ', ';
+            $byref = str_replace('$', '&$', $params) . ', ';
         }
 
-        $this->html = preg_replace($re, 'useEffect(function() use ($1' . $params . $uses . ') {$8}, $2);', $this->html, 1);
+        $use = '';
+        if($uses !== '') {
+            $use = " use ($uses) ";
+        }
+
+        $this->html = preg_replace($re, 'useEffect(function($1' . $byref . ')' . $use . ' {$8}, ' . $props . $params . ');', $this->html, 1);
 
     }
 
     private function doDeclaration(null|string|array $parameter = null): void
     {
         $re = '/useEffect\(function[ ]*\(\)[ ]+use[ ]*\(((\s|.*?)+)\)[ ]*{/m';
+        $re = '/useEffect\(function[ ]*\(((\s|.*?)+)\)[ ]*{/m';
 
         $str = $this->html;
 

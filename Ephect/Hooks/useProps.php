@@ -7,7 +7,7 @@ use ReflectionFunction;
 use stdClass;
 
 // function useProps(Closure $callback, ?array $defaults = null, ?object $props = null): void
-function useProps(Closure $callback, ?object $props = null): void
+function useProps(Closure $callback, ?object $args = null): void
 {
     // $defaults = $defaults;
 
@@ -15,6 +15,7 @@ function useProps(Closure $callback, ?object $props = null): void
     $params = $ref->getStaticVariables();
     $defaults = $params;
     // $params = $ref->getParameters();
+    $props = $params['props'];
 
     $hasProps = $props !== null || (is_array($props) && count($props) > 0);
 
