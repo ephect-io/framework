@@ -3,19 +3,15 @@
 namespace Ephect\Plugins\Setup;
 
 use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useProps;
 
 define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 
 function Install($props)
 {
 
-    useEffect(function($props, /* string */ $action) {
+    useEffect(function ($props, /* bool */ $hasResponse, /* string */ $response, /* string */ $action) {
         $action = $props->action;
-    });
-
-    useEffect(function (/* bool */ $hasResponse, /* string */ $response, /* string */ $action) {
-
-        // $action = useQueryArgument('action');
         $setup = new SetupService;
 
         if ($action === 'rewrite') {

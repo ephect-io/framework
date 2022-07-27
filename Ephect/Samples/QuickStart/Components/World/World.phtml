@@ -1,0 +1,30 @@
+<?php
+
+namespace QuickStart;
+
+use function Ephect\Hooks\useEffect;
+
+function World($props) {
+
+    useEffect(function($props, /* string */ $name, /* string */ $lname) {
+        $name = $props->name;
+        $lname = $props->lname;
+    });
+
+    return (<<< HTML
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>
+                Hello
+            </title>
+        </head>
+        <body>
+        
+            Hello {{ name }} {{ lname }}
+
+        </body>
+    </html>
+    HTML);
+}

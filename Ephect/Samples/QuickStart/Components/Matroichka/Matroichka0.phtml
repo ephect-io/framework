@@ -2,17 +2,27 @@
 
 namespace QuickStart;
 
-function Matroichka0()
+use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useProps;
+
+function Matroichka0($props)
 {
 
+    useEffect(function($props, /* string */ $devochka) {
+        $devochka = $props->devochka;
+    });
+
     return (<<< HTML
-    <Mother>
+    <Mother >
         <Slot name="title">Ephect in action !</Slot>
         <Slot name="stylesheets">
             <link rel="stylesheet" href="/css/index.css" />
             <link rel="stylesheet" href="/css/app.css" />
         </Slot>
         <div class="App-content" >
+            <p>
+                {{ devochka }}
+            </p>
             <Matroichka1 id="zero" label="Zero">
                 inside 0<br>
                 <Matroichka1 id="one" label="One">

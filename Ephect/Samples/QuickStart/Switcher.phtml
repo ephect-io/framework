@@ -7,13 +7,14 @@ function Switcher()
     return (<<< HTML
     <Router>
         <Route method="GET" rule='/' exact="true" redirect="Home" />
-        <Route method="GET" rule='/hello\\?name=(.*)&lname=(.*)' exact="true" redirect="Hello" />
         <Route method="GET" rule='/hello/(name)/(lname)' exact="true" redirect="Hello" />
+        <Route method="GET" rule='/world\\?name=(.*)&lname=(.*)' exact="true" redirect="World" />
         <Route method="GET" rule='/start/?' exact="true" redirect="Start" />
         <Route method="POST" rule='/start/(action)' exact="true" redirect="Install" />
         <Route method="GET" rule='/info/?' exact="true" redirect="Info" />
         <Route method="GET" rule='/second\\?name=(.*)&lname=(.*)' exact="true" redirect="Second" />
         <Route method="GET" rule='/second/?' exact="true" redirect="Second" />
+        <Route method="GET" rule='/matroichka/(devochka)' exact="true" redirect="Matroichka0" />
         <Route method="GET" rule='/matroichka/?' exact="true" redirect="Matroichka0" />
     </Router>
     HTML);
