@@ -8,6 +8,7 @@ use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Tree\Tree;
+use Ephect\Plugins\Router\RouterService;
 use Exception;
 use ReflectionFunction;
 use stdClass;
@@ -156,27 +157,33 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         include_once CACHE_DIR . $cacheFilename;
 
-        $funcReflection = new ReflectionFunction($fqFunctionName);
-        $funcParams = $funcReflection->getParameters();
-
         $html = '';
-        if ($funcParams === []) {
-            ob_start();
-            $fn = call_user_func($fqFunctionName);
-            $fn();
-            $html = ob_get_clean();
-        } else {
+        $props = null;
+
+        if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
             $props = new stdClass;
-            if (null !== $args = json_decode(json_encode($functionArgs))) {
-                foreach ($args as $key => $value) {
-                    $props->{$key} = urldecode($value);
+            foreach ($args as $field => $value) {
+                $props->{$field} = urldecode($value);
+            }
+        } else {
+            $routeProps = RouterService::findRouteArguments($fqFunctionName);
+            if ($routeProps !== null) {
+                $props = new stdClass;
+                foreach ($routeProps as $field => $value) {
+                    $props->{$field} = null;
                 }
             }
-            ob_start();
-            $fn = call_user_func($fqFunctionName, $props);
-            $fn();
-            $html = ob_get_clean();
         }
+        ob_start();
+        if($props === null) {
+            $fn = call_user_func($fqFunctionName);
+
+        } else {
+            $fn = call_user_func($fqFunctionName, $props);
+        }
+        $fn();
+        $html = ob_get_clean();
+
 
         // $fqFunctionName = explode('\\', $functionName);
         // $function = array_pop($fqFunctionName);
