@@ -157,33 +157,38 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         include_once CACHE_DIR . $cacheFilename;
 
-        $html = '';
-        $props = null;
 
-        if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
-            $props = new stdClass;
-            foreach ($args as $field => $value) {
-                $props->{$field} = urldecode($value);
-            }
+        $funcReflection = new ReflectionFunction($fqFunctionName);
+        $funcParams = $funcReflection->getParameters();
+
+        $html = '';
+
+        if ($funcParams === []) {
+            ob_start();
+            $fn = call_user_func($fqFunctionName);
+            $fn();
+            $html = ob_get_clean();
         } else {
-            $routeProps = RouterService::findRouteArguments($fqFunctionName);
-            if ($routeProps !== null) {
+            $props = null;
+            if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
                 $props = new stdClass;
-                foreach ($routeProps as $field => $value) {
-                    $props->{$field} = null;
+                foreach ($args as $field => $value) {
+                    $props->{$field} = urldecode($value);
+                }
+            } else {
+                $routeProps = RouterService::findRouteArguments($fqFunctionName);
+                if ($routeProps !== null) {
+                    $props = new stdClass;
+                    foreach ($routeProps as $field => $value) {
+                        $props->{$field} = null;
+                    }
                 }
             }
-        }
-        ob_start();
-        if($props === null) {
-            $fn = call_user_func($fqFunctionName);
-
-        } else {
+            ob_start();
             $fn = call_user_func($fqFunctionName, $props);
+            $fn();
+            $html = ob_get_clean();
         }
-        $fn();
-        $html = ob_get_clean();
-
 
         // $fqFunctionName = explode('\\', $functionName);
         // $function = array_pop($fqFunctionName);
