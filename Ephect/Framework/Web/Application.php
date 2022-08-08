@@ -16,7 +16,6 @@ class Application extends AbstractApplication
 
     public static function create(...$params): void
     {
-        session_start();
         self::$instance = new Application();
         self::$instance->run(...$params);
     }
