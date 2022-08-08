@@ -26,8 +26,8 @@ class RouteBuilder extends AbstractBuilder
 
         $rule = $route->getRule();
 
-        $re = '/[a-z]+=(\(\.\*\)|\(\.\+\)|\(\\\\S\+\))/m';
-        $re = '/(\(\.\*\)|\(\.\+\)|\(\\\\S\+\))/m';
+        $re = '/[a-z]+=(\(\.\*\)|\(\.\+\)|\(\\\\w\+\))/m';
+        $re = '/(\(\.\*\)|\(\.\+\)|\(\\\\w\+\))/m';
 
         preg_match_all($re, $rule, $matches, PREG_SET_ORDER, 0);
 
@@ -63,8 +63,8 @@ class RouteBuilder extends AbstractBuilder
 
         $rule = $route->getRule();
 
-        $re = '/(\([\S]+\))/m';
-        $subst = '([\\\\S]+)';
+        $re = '/(\([\w]+\))/m';
+        $subst = '([\\\\w\\\\-]+)';
 
         $normalized = preg_replace($re, $subst, $rule);
 
@@ -72,7 +72,7 @@ class RouteBuilder extends AbstractBuilder
             return $route;
         }
 
-        $re = '/([^\(]+)?(\/\(([\S]+)\))/m';
+        $re = '/([^\(]+)?(\/\(([\w\-]+)\))/m';
         preg_match_all($re, $rule, $matches, PREG_SET_ORDER, 0);
 
         $translated = $rule;
