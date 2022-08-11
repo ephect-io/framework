@@ -16,7 +16,6 @@ class Application extends AbstractApplication
 
     public static function create(...$params): void
     {
-        session_start();
         self::$instance = new Application();
         self::$instance->run(...$params);
     }
@@ -63,7 +62,6 @@ class Application extends AbstractApplication
         $constants['ERROR_LOG'] = ERROR_LOG;
         $constants['APP_DATA'] = APP_DATA;
         $constants['APP_BUSINESS'] = APP_BUSINESS;
-        $constants['STARTER_FILE'] = STARTER_FILE;
         $constants['HTTP_USER_AGENT'] = HTTP_USER_AGENT;
         $constants['HTTP_HOST'] = HTTP_HOST;
         $constants['HTTP_ORIGIN'] = HTTP_ORIGIN;
@@ -78,8 +76,6 @@ class Application extends AbstractApplication
         $constants['BASE_URI'] = BASE_URI;
         $constants['FULL_URI'] = FULL_URI;
         $constants['FULL_SSL_URI'] = FULL_SSL_URI;
-        $constants['ROOT_NAMESPACE'] = ROOT_NAMESPACE;
-        $constants['ROOT_PATH'] = ROOT_PATH;
 
         StateRegistry::write('console', 'buffer', $constants);
 

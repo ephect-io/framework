@@ -38,8 +38,8 @@ final class EchoParser extends AbstractTokenParser
                 continue;
             }
 
+            $this->html = str_replace('{{ ' . $variable . ' }}', '<?php echo $' . $translate . '; ?>', $this->html);
             $this->html = str_replace('{ ' . $variable . ' }', 'echo $' . $translate . '', $this->html);
-            $this->html = str_replace('{echo $' . $variable . '}', '<?php echo $' . $translate . '; ?>', $this->html);
         }
     }
     

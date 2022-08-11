@@ -10,13 +10,8 @@ define('SERVER_ERROR', 'Something went wrong, please check the server setup');
 function Install($props)
 {
 
-    useProps(function($props, /* string */ $action) {
+    useEffect(function ($props, /* bool */ $hasResponse, /* string */ $response, /* string */ $action) {
         $action = $props->action;
-    });
-
-    useEffect(function (/* bool */ $hasResponse, /* string */ $response, /* string */ $action) {
-
-        // $action = useQueryArgument('action');
         $setup = new SetupService;
 
         if ($action === 'rewrite') {
@@ -64,7 +59,7 @@ function Install($props)
                 directive[]="Content-Encoding: utf-8"
             />
         {?
-            echo {response};
+            { response };
         }
     ?}
     HTML);

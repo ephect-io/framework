@@ -8,8 +8,10 @@ use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Tree\Tree;
+use Ephect\Plugins\Router\RouterService;
 use Exception;
 use ReflectionFunction;
+use stdClass;
 use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
@@ -155,19 +157,31 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         include_once CACHE_DIR . $cacheFilename;
 
+
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();
 
         $html = '';
+
         if ($funcParams === []) {
             ob_start();
             $fn = call_user_func($fqFunctionName);
             $fn();
             $html = ob_get_clean();
         } else {
-            if (null !== $props = json_decode(json_encode($functionArgs))) {
-                foreach ($props as $key => $value) {
-                    $props->{$key} = urldecode($value);
+            $props = null;
+            if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
+                $props = new stdClass;
+                foreach ($args as $field => $value) {
+                    $props->{$field} = urldecode($value);
+                }
+            } else {
+                $routeProps = RouterService::findRouteArguments($fqFunctionName);
+                if ($routeProps !== null) {
+                    $props = new stdClass;
+                    foreach ($routeProps as $field => $value) {
+                        $props->{$field} = null;
+                    }
                 }
             }
             ob_start();

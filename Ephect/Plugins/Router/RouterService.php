@@ -192,7 +192,7 @@ class RouterService
         return RouteRegistry::cache() && HttpErrorRegistry::cache();
     }
 
-    public static function findRouteArguments($route): ?array
+    public static function findRouteArguments(string $route): ?array
     {
         $result = null;
 
@@ -210,6 +210,11 @@ class RouterService
 
         if($routes === null) {
             return $result;
+        }
+
+        $routeParts = explode('\\', $route);
+        if(count($routeParts) > 0) {
+            $route = array_pop($routeParts);
         }
 
         $allroutes = [];
