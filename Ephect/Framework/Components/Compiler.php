@@ -15,6 +15,7 @@ use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Tasks\Task;
 use Ephect\Framework\Tasks\TaskRunner;
 use Ephect\Framework\Tasks\TaskStructure;
+use Ephect\Framework\Web\Curl;
 use Ephect\Plugins\Router\RouterService;
 use parallel\{channel};
 use Throwable;
@@ -138,7 +139,7 @@ class Compiler
     }
 
 
-    public function followRoutes(): void
+    public function followRoutesOld(): void
     {
 
         foreach ($this->routes as $route) {
@@ -210,6 +211,47 @@ class Compiler
             IOUtils::safeWrite(STATIC_DIR . $filename, $html);
         }
     }
+
+
+    public function followRoutes(): void
+    {
+
+        foreach ($this->routes as $route) {
+
+
+            Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+            Console::getLogger()->info("Compiling %s ...", $route);
+
+            $comp = new Component($route);
+            $filename = $comp->getFlattenSourceFilename();
+
+
+            $time_start = microtime(true);
+
+            $queryString = RouterService::findRouteQueryString($route);
+            
+            $curl = new Curl();
+
+            [$code, $header, $html] = $curl->request('http://localhost:8888' . $queryString);
+
+            $time_end = microtime(true);
+
+            $duration = $time_end - $time_start;
+
+            $utime = sprintf('%.3f', $duration);
+            $raw_time = DateTime::createFromFormat('u.u', $utime);
+            $duration = substr($raw_time->format('u'), 0, 3);
+
+            Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::LIGHT_CYAN));
+
+            if ($route === 'App') {
+                continue;
+            }
+
+            IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+        }
+    }
+
 
     public function searchForRoutes(): array
     {
