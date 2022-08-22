@@ -15,8 +15,8 @@ class RouteBuilder extends AbstractBuilder
     public function build(): RouteInterface
     {
         $route = parent::buildEx(RouteEntity::class);
-        $route = $this->translateNamedArgumentsRoute($route);
         $route = $this->translateQueryStringRoute($route);
+        $route = $this->translateNamedArgumentsRoute($route);
 
         return $route;
     }
@@ -41,14 +41,23 @@ class RouteBuilder extends AbstractBuilder
         }
 
         if ($translated === $rule) {
-            return $route;
+
+            $re = '/([^\w]*)(\w+)(.*)/m';
+            $subst = '\/$2\/';
+
+            $translated = preg_replace($re, $subst, $rule);
+
+            if ($translated === $rule) {
+                return $route;
+            }
         }
 
         $struct = new RouteStructure([
             'method' => $route->getMethod(), 
-            'rule' => $rule, 
+            'rule' => $rule,
+            'normalized' => $rule,
             'redirect' => $route->getRedirect(), 
-            'translation' => $translated, 
+            'translation' => $translated,
             'error' => $route->getError(),
             'exact' => $route->isExact()
         ]);
@@ -86,10 +95,11 @@ class RouteBuilder extends AbstractBuilder
         }
 
         $struct = new RouteStructure([
-            'method' => $route->getMethod(), 
-            'rule' => $normalized, 
-            'redirect' => $route->getRedirect(), 
-            'translation' => $translated, 
+            'method' => $route->getMethod(),
+            'rule' => $normalized,
+            'normalized' => $rule,
+            'redirect' => $route->getRedirect(),
+            'translation' => $translated,
             'error' => $route->getError(),
             'exact' => $route->isExact()
         ]);
