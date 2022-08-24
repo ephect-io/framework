@@ -12,7 +12,7 @@ use Ephect\Framework\Registry\RouteRegistry;
 
 use function Ephect\Hooks\useState;
 
-class RouterService
+class RouterService implements RouterServiceInterface
 {
 
     public function __construct()
@@ -246,9 +246,9 @@ class RouterService
         return $result;
     }
 
-    public static function findRouteQueryString(string $route): string
+    public static function findRouteQueryString(string $route): ?string
     {
-        $result = '';
+        $result = null;
 
         if (!file_exists(CACHE_DIR . 'routes.json')) {
             return $result;
@@ -272,7 +272,6 @@ class RouterService
         }
 
         $allroutes = $routes['GET'];
-
 
         $allroutes = array_filter($allroutes, function ($item) use ($route) {
             return $item['redirect'] == $route && $item['translate'] != '';

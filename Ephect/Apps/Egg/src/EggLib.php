@@ -98,6 +98,7 @@ class EggLib extends Element
         $compiler->postPerform();
         
         // $compiler->performAgain();
+        $compiler->compileApp();
         $compiler->followRoutes();
         // Compiler::purgeCopies();
     }

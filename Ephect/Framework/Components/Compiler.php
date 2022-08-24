@@ -139,7 +139,7 @@ class Compiler
     }
 
 
-    public function followRoutesOld(): void
+    public function followRoutesByTask(): void
     {
 
         foreach ($this->routes as $route) {
@@ -212,25 +212,75 @@ class Compiler
         }
     }
 
+    public function compileApp(): void
+    {
+        PluginRegistry::uncache();
+
+        Console::write("Compiling %s ... ", ConsoleColors::getColoredString('App', ConsoleColors::LIGHT_CYAN));
+        Console::getLogger()->info("Compiling %s ...", 'App');
+
+        $comp = new Component('App');
+        $filename = $comp->getFlattenSourceFilename();
+
+        $html = '';
+        $error = '';
+
+        try {
+
+            $time_start = microtime(true);
+
+            $functionArgs = RouterService::findRouteArguments('App');
+
+            ob_start();
+            $comp->render($functionArgs);
+            $html = ob_get_clean();
+
+            $time_end = microtime(true);
+
+            $duration = $time_end - $time_start;
+
+            $utime = sprintf('%.3f', $duration);
+            $raw_time = DateTime::createFromFormat('u.u', $utime);
+            $duration = substr($raw_time->format('u'), 0, 3);
+
+            Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::LIGHT_CYAN));
+        } catch (Throwable $ex) {
+            $error = Console::formatException($ex);
+        }
+
+        if ($error !== '') {
+            Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
+        }
+
+        IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+
+    } 
 
     public function followRoutes(): void
     {
 
+        if($this->routes[0] === 'App') {
+            // Remove App from routes
+            array_shift($this->routes);
+        }
+
         foreach ($this->routes as $route) {
 
+            $queryString = RouterService::findRouteQueryString($route);
+            if($queryString === null) {
+                continue;
+            }
 
-            Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+            Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
             Console::getLogger()->info("Compiling %s ...", $route);
 
             $comp = new Component($route);
             $filename = $comp->getFlattenSourceFilename();
 
+            Console::write("querying %s ... ", ConsoleColors::getColoredString('http://localhost:8888' . $queryString, ConsoleColors::LIGHT_GREEN));
 
-            $time_start = microtime(true);
-
-            $queryString = RouterService::findRouteQueryString($route);
-            
             $curl = new Curl();
+            $time_start = microtime(true);
 
             [$code, $header, $html] = $curl->request('http://localhost:8888' . $queryString);
 
@@ -242,7 +292,7 @@ class Compiler
             $raw_time = DateTime::createFromFormat('u.u', $utime);
             $duration = substr($raw_time->format('u'), 0, 3);
 
-            Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::LIGHT_CYAN));
+            Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
 
             if ($route === 'App') {
                 continue;
@@ -275,6 +325,8 @@ class Compiler
             $root = $this->findFirstComponent($items, 'App');
             // array_push($result, $root->getName());
         }
+
+        $result = array_unique($result);
 
         return $result;
     }
