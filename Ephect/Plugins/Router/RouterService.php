@@ -68,24 +68,6 @@ class RouterService implements RouterServiceInterface
         $comp->render($query);
     }
 
-
-    public static function uncacheRoutes(bool $asArray = false)
-    {
-        $result = file_get_contents(CACHE_DIR . 'routes.json');
-
-        if ($result === false) {
-            return null;
-        }
-
-        if ($asArray) {
-            $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
-        } else {
-            $result = json_decode($result);
-        }
-
-        return $result;
-    }
-
     public function routesAreCached(): bool
     {
         $result = file_exists(CACHE_DIR . 'routes.json');
@@ -194,31 +176,14 @@ class RouterService implements RouterServiceInterface
         return RouteRegistry::cache() && HttpErrorRegistry::cache();
     }
 
-    private static function getRoutes(): ?array 
-    {
-
-        if (!file_exists(CACHE_DIR . 'routes.json')) {
-            return null;
-        }
-
-        $result = file_get_contents(CACHE_DIR . 'routes.json');
-
-        if ($result === false) {
-            return null;
-        }
-
-        return json_decode($result, JSON_OBJECT_AS_ARRAY);
-
-    }
 
     public static function findRouteArguments(string $route): ?array
     {
         $result = null;
 
-        $routes = RouterService::getRoutes();
-
-        if($routes === null) {
-            return $result;
+        $routes = RouteRegistry::items();
+        if(count($routes) === 0) {
+            return null;
         }
 
         $routeParts = explode('\\', $route);
@@ -257,10 +222,9 @@ class RouterService implements RouterServiceInterface
     {
         $result = null;
 
-        $routes = RouterService::getRoutes();
- 
-        if ($routes === null) {
-            return $result;
+        $routes = RouteRegistry::items();
+        if(count($routes) === 0) {
+            return null;
         }
 
         $routeParts = explode('\\', $route);
