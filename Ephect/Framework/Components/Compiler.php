@@ -180,7 +180,7 @@ class Compiler
                     $raw_time = DateTime::createFromFormat('u.u', $utime);
                     $duration = substr($raw_time->format('u'), 0, 3);
 
-                    Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::LIGHT_CYAN));
+                    Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
                 } catch (Throwable $ex) {
                     $error = Console::formatException($ex);
                 }
@@ -217,7 +217,7 @@ class Compiler
         PluginRegistry::uncache();
 
         Console::write("Compiling %s ... ", ConsoleColors::getColoredString('App', ConsoleColors::LIGHT_CYAN));
-        Console::getLogger()->info("Compiling %s ...", 'App');
+        Console::getLogger()->info("Compiling %s ... ", 'App');
 
         $comp = new Component('App');
         $filename = $comp->getFlattenSourceFilename();
@@ -243,7 +243,7 @@ class Compiler
             $raw_time = DateTime::createFromFormat('u.u', $utime);
             $duration = substr($raw_time->format('u'), 0, 3);
 
-            Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::LIGHT_CYAN));
+            Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
         } catch (Throwable $ex) {
             $error = Console::formatException($ex);
         }
@@ -264,6 +264,8 @@ class Compiler
             array_shift($this->routes);
         }
 
+        $port = '80';
+
         foreach ($this->routes as $route) {
 
             $queryString = RouterService::findRouteQueryString($route);
@@ -271,18 +273,23 @@ class Compiler
                 continue;
             }
 
+            $filename = "$route.html";
+            $outputFilename = "$route.out";
+
             Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+            Console::write("querying %s ... ", ConsoleColors::getColoredString("http://localhost:$port" . $queryString, ConsoleColors::LIGHT_GREEN));
+
             Console::getLogger()->info("Compiling %s ...", $route);
 
-            $comp = new Component($route);
-            $filename = $comp->getFlattenSourceFilename();
-
-            Console::write("querying %s ... ", ConsoleColors::getColoredString('http://localhost:8888' . $queryString, ConsoleColors::LIGHT_GREEN));
 
             $curl = new Curl();
             $time_start = microtime(true);
 
-            [$code, $header, $html] = $curl->request('http://localhost:8888' . $queryString);
+            ob_start();
+            [$code, $header, $html] = $curl->request("http://localhost:$port" . $queryString);
+            IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+            $output = ob_get_clean();
+            IOUtils::safeWrite(LOG_PATH . $outputFilename, $output);
 
             $time_end = microtime(true);
 
@@ -292,13 +299,12 @@ class Compiler
             $raw_time = DateTime::createFromFormat('u.u', $utime);
             $duration = substr($raw_time->format('u'), 0, 3);
 
-            Console::writeLine(" %s ms", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
+            Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
 
             if ($route === 'App') {
                 continue;
             }
 
-            IOUtils::safeWrite(STATIC_DIR . $filename, $html);
         }
     }
 
