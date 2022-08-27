@@ -4,6 +4,7 @@ namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\IO\Utils;
+
 abstract class AbstractRegistry implements AbstractRegistryInterface
 {
     private $entries = [];
