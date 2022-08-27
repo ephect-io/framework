@@ -3,6 +3,9 @@
 namespace Ephect\Apps\Egg;
 
 use Ephect\Framework\CLI\Application;
+use Ephect\Framework\CLI\Console;
+use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\System\Command;
 use Ephect\Framework\Components\Compiler;
 use Ephect\Framework\Element;
 use Ephect\Framework\IO\Utils;
@@ -166,5 +169,29 @@ class EggLib extends Element
     {
         $tree = Utils::walkTree($path);
         $this->parent->writeLine($tree);
+    }
+
+    public function serve($port = '8000'): void
+    {
+
+        if($this->parent->getArgc() > 2) {
+            $customPort = $this->parent->getArgv()[2];
+
+            $cleanPort = preg_replace('/([\d]+)/', '$1', $customPort);
+
+            if($cleanPort !== $customPort) {
+                $customPort = $port;
+            }
+    
+            $port = $customPort;
+        }
+
+        $cmd = new Command();
+        $php = $cmd->which('php');
+
+        Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
+        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
+        $cmd->execute($php, '-S', "localhost:$port", '-t', 'public');
+        Console::writeLine("Serving the application locally ...");
     }
 }
