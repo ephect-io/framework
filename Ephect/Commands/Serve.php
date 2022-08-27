@@ -15,12 +15,26 @@ class Serve extends AbstractCommand
 
     public function run(): void
     {
-        // $data = ['argv' => $this->application->getArgv(), 'argc' => $this->application->getArgc()];
+        $port = '8000';
+
+        if($this->application->getArgc() > 2) {
+            $customPort = $this->application->getArgv()[2];
+
+            $cleanPort = preg_replace('/([\d]+)/', '$1', $customPort);
+
+            if($cleanPort !== $customPort) {
+                $customPort = $port;
+            }
+    
+            $port = $customPort;
+        }
+
         $cmd = new Command();
         $php = $cmd->which('php');
 
         Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
-        $cmd->execute($php, '-S', 'localhost:8000', '-t', 'public');
+        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
+        $cmd->execute($php, '-S', "localhost:$port", '-t', 'public');
         Console::writeLine("Serving the application locally ...");
     }
 }
