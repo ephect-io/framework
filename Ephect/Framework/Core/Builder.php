@@ -257,7 +257,7 @@ class Builder
     public function buildByHttpRequest($route): void
     {
 
-        $port = 8000;
+        $port = IOUtils::safeRead(CONFIG_DIR . 'dev_port') ?? '80';
 
         if ($route === 'App') {
             return;
@@ -298,10 +298,19 @@ class Builder
 
     }
 
-    public function buildAllRoutes(): void
+    public function asyncCliAllRoutes(): void
     {
         foreach ($this->routes as $route) {
             $this->asyncBuildByRoute($route);
+        }
+    }
+
+    public function watchAllRoutes(): void
+    {
+        $this->buildByRoute('App');
+
+        foreach ($this->routes as $route) {
+            $this->buildByHttpRequest($route);
         }
     }
 

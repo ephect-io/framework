@@ -90,9 +90,21 @@ class EggLib extends Element
         }
     }
 
+    public function watch(): void
+    {
+        if (file_exists(CACHE_DIR)) {
+            Utils::delTree(CACHE_DIR);
+        }
+
+        $compiler = new Builder;
+        $compiler->perform();
+        $compiler->postPerform();
+        
+        $compiler->watchAllRoutes();
+    }
+
     public function build(): void
     {
-        $port = $this->getPort();
 
         if (file_exists(CACHE_DIR)) {
             Utils::delTree(CACHE_DIR);
@@ -102,8 +114,7 @@ class EggLib extends Element
         $compiler->perform();
         $compiler->postPerform();
         
-        // $compiler->performAgain();
-        $compiler->buildAllRoutes();
+        $compiler->asyncCliAllRoutes();
     }
 
     
@@ -175,6 +186,8 @@ class EggLib extends Element
     {
 
         $port = $this->getPort();
+
+        Utils::safeWrite(CONFIG_DIR . 'dev_port', $port);
 
         $cmd = new Command();
         $php = $cmd->which('php');
