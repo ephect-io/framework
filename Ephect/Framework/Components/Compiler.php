@@ -256,15 +256,13 @@ class Compiler
 
     } 
 
-    public function followRoutes(): void
+    public function followRoutes($port = 8000): void
     {
 
         if($this->routes[0] === 'App') {
             // Remove App from routes
             array_shift($this->routes);
         }
-
-        $port = '80';
 
         foreach ($this->routes as $route) {
 
