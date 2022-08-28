@@ -6,7 +6,7 @@ use Ephect\Framework\CLI\Application;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\System\Command;
-use Ephect\Framework\Components\Compiler;
+use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Element;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Utils\Zip;
@@ -90,19 +90,22 @@ class EggLib extends Element
         }
     }
 
-    public function compile(): void
+    public function build(): void
     {
+        $port = $this->getPort();
+
         if (file_exists(CACHE_DIR)) {
             Utils::delTree(CACHE_DIR);
         }
 
-        $compiler = new Compiler;
+        $compiler = new Builder;
         $compiler->perform();
         $compiler->postPerform();
         
         // $compiler->performAgain();
-        $compiler->compileApp();
-        $compiler->followRoutes();
+        // $compiler->compileApp();
+        // $compiler->followRoutes($port);
+        $compiler->followRoutesByTask();
         // Compiler::purgeCopies();
     }
 
@@ -171,8 +174,24 @@ class EggLib extends Element
         $this->parent->writeLine($tree);
     }
 
-    public function serve($port = '8000'): void
+    public function serve(): void
     {
+
+        $port = $this->getPort();
+
+        $cmd = new Command();
+        $php = $cmd->which('php');
+
+        Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
+        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
+        $cmd->execute($php, '-S', "localhost:$port", '-t', 'public');
+        Console::writeLine("Serving the application locally ...");
+    }
+
+    private function getPort($default = 8000): int
+    {
+
+        $port = $default;
 
         if($this->parent->getArgc() > 2) {
             $customPort = $this->parent->getArgv()[2];
@@ -186,12 +205,7 @@ class EggLib extends Element
             $port = $customPort;
         }
 
-        $cmd = new Command();
-        $php = $cmd->which('php');
+        return $port;
 
-        Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
-        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
-        $cmd->execute($php, '-S', "localhost:$port", '-t', 'public');
-        Console::writeLine("Serving the application locally ...");
     }
 }

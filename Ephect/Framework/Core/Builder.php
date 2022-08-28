@@ -1,11 +1,16 @@
 <?php
 
-namespace Ephect\Framework\Components;
+namespace Ephect\Framework\Core;
 
 use DateTime;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\Components\Component;
+use Ephect\Framework\Components\ComponentDeclaration;
+use Ephect\Framework\Components\ComponentDeclarationStructure;
+use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
+use Ephect\Framework\Components\Plugin;
 use Ephect\Framework\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Framework\Registry\CacheRegistry;
@@ -20,7 +25,7 @@ use Ephect\Plugins\Router\RouterService;
 use parallel\{channel};
 use Throwable;
 
-class Compiler
+class Builder
 {
 
     protected $list = [];
