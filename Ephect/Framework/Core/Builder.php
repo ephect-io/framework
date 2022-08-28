@@ -144,87 +144,80 @@ class Builder
     }
 
 
-    public function followRoutesByTask(): void
+    public function asyncBuildByRoute($route): void
     {
 
-        foreach ($this->routes as $route) {
+        $struct = new TaskStructure(['name' => $route, 'arguments' => [$route]]);
+        $task = new Task($struct);
+        $task->setCallback(function (string $route, string $framework_root, Channel $channel) {
 
-            $struct = new TaskStructure(['name' => $route, 'arguments' => [$route]]);
-            $task = new Task($struct);
-            $task->setCallback(function (string $route, string $framework_root, Channel $channel) {
+            include $framework_root . 'bootstrap.php';
 
-                include $framework_root . 'bootstrap.php';
+            PluginRegistry::uncache();
 
-                PluginRegistry::uncache();
+            Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+            Console::getLogger()->info("Compiling %s ...", $route);
 
-                Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-                Console::getLogger()->info("Compiling %s ...", $route);
+            $comp = new Component($route);
+            $filename = $comp->getFlattenSourceFilename();
 
-                $comp = new Component($route);
-                $filename = $comp->getFlattenSourceFilename();
+            $html = '';
+            $error = '';
 
-                $html = '';
-                $error = '';
+            try {
 
-                try {
+                $time_start = microtime(true);
 
-                    $time_start = microtime(true);
+                ob_start();
 
-                    ob_start();
+                $functionArgs = RouterService::findRouteArguments($route);
 
-                    $functionArgs = RouterService::findRouteArguments($route);
+                $comp->render($functionArgs);
+                $html = ob_get_clean();
 
-                    $comp->render($functionArgs);
-                    $html = ob_get_clean();
+                $time_end = microtime(true);
 
-                    $time_end = microtime(true);
+                $duration = $time_end - $time_start;
 
-                    $duration = $time_end - $time_start;
+                $utime = sprintf('%.3f', $duration);
+                $raw_time = DateTime::createFromFormat('u.u', $utime);
+                $duration = substr($raw_time->format('u'), 0, 3);
 
-                    $utime = sprintf('%.3f', $duration);
-                    $raw_time = DateTime::createFromFormat('u.u', $utime);
-                    $duration = substr($raw_time->format('u'), 0, 3);
-
-                    Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
-                } catch (Throwable $ex) {
-                    $error = Console::formatException($ex);
-                }
-
-                $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html, 'error' => $error]);
-            });
-
-            $runner = new TaskRunner($task);
-            $runner->run();
-
-            $result = $runner->getResult();
-
-            $runner->close();
-
-            $filename = $result['filename'];
-            $html = $result['html'];
-            $error = $result['error'];
-
-            if ($error !== '') {
-                Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
-                break;
+                Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
+            } catch (Throwable $ex) {
+                $error = Console::formatException($ex);
             }
 
-            if ($route === 'App') {
-                continue;
-            }
+            $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html, 'error' => $error]);
+        });
 
-            IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+        $runner = new TaskRunner($task);
+        $runner->run();
+
+        $result = $runner->getResult();
+
+        $runner->close();
+
+        $filename = $result['filename'];
+        $html = $result['html'];
+        $error = $result['error'];
+
+        if ($error !== '') {
+            Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
         }
+
+        IOUtils::safeWrite(STATIC_DIR . $filename, $html);
     }
 
-    public function compileApp(): void
+
+    public function buildByRoute($route): void
     {
         PluginRegistry::uncache();
 
-        Console::write("Compiling %s ... ", ConsoleColors::getColoredString('App', ConsoleColors::LIGHT_CYAN));
-        Console::getLogger()->info("Compiling %s ... ", 'App');
+        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+        Console::getLogger()->info("Compiling %s ... ", $route);
 
-        $comp = new Component('App');
+        $comp = new Component($route);
         $filename = $comp->getFlattenSourceFilename();
 
         $html = '';
@@ -234,7 +227,7 @@ class Builder
 
             $time_start = microtime(true);
 
-            $functionArgs = RouterService::findRouteArguments('App');
+            $functionArgs = RouterService::findRouteArguments($route);
 
             ob_start();
             $comp->render($functionArgs);
@@ -258,59 +251,59 @@ class Builder
         }
 
         IOUtils::safeWrite(STATIC_DIR . $filename, $html);
-
-    } 
-
-    public function followRoutes($port = 8000): void
-    {
-
-        if($this->routes[0] === 'App') {
-            // Remove App from routes
-            array_shift($this->routes);
-        }
-
-        foreach ($this->routes as $route) {
-
-            $queryString = RouterService::findRouteQueryString($route);
-            if($queryString === null) {
-                continue;
-            }
-
-            $filename = "$route.html";
-            $outputFilename = "$route.out";
-
-            Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-            Console::write("querying %s ... ", ConsoleColors::getColoredString("http://localhost:$port" . $queryString, ConsoleColors::LIGHT_GREEN));
-
-            Console::getLogger()->info("Compiling %s ...", $route);
-
-
-            $curl = new Curl();
-            $time_start = microtime(true);
-
-            ob_start();
-            [$code, $header, $html] = $curl->request("http://localhost:$port" . $queryString);
-            IOUtils::safeWrite(STATIC_DIR . $filename, $html);
-            $output = ob_get_clean();
-            IOUtils::safeWrite(LOG_PATH . $outputFilename, $output);
-
-            $time_end = microtime(true);
-
-            $duration = $time_end - $time_start;
-
-            $utime = sprintf('%.3f', $duration);
-            $raw_time = DateTime::createFromFormat('u.u', $utime);
-            $duration = substr($raw_time->format('u'), 0, 3);
-
-            Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
-
-            if ($route === 'App') {
-                continue;
-            }
-
-        }
     }
 
+
+    public function buildByHttpRequest($route): void
+    {
+
+        $port = 8000;
+
+        if ($route === 'App') {
+            return;
+        }
+
+        $queryString = RouterService::findRouteQueryString($route);
+        if ($queryString === null) {
+            return;
+        }
+
+        $filename = "$route.html";
+        $outputFilename = "$route.out";
+
+        Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+        Console::write("querying %s ... ", ConsoleColors::getColoredString("http://localhost:$port" . $queryString, ConsoleColors::LIGHT_GREEN));
+
+        Console::getLogger()->info("Compiling %s ...", $route);
+
+
+        $curl = new Curl();
+        $time_start = microtime(true);
+
+        ob_start();
+        [$code, $header, $html] = $curl->request("http://localhost:$port" . $queryString);
+        IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+        $output = ob_get_clean();
+        IOUtils::safeWrite(LOG_PATH . $outputFilename, $output);
+
+        $time_end = microtime(true);
+
+        $duration = $time_end - $time_start;
+
+        $utime = sprintf('%.3f', $duration);
+        $raw_time = DateTime::createFromFormat('u.u', $utime);
+        $duration = substr($raw_time->format('u'), 0, 3);
+
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
+
+    }
+
+    public function buildAllRoutes(): void
+    {
+        foreach ($this->routes as $route) {
+            $this->asyncBuildByRoute($route);
+        }
+    }
 
     public function searchForRoutes(): array
     {
