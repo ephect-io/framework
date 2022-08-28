@@ -129,7 +129,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function parse(): void
     {
-        Console::writeLine("Parsing %s ...", ConsoleColors::getColoredString($this->getFunction(), ConsoleColors::CYAN));
         Console::getLogger()->info("Parsing %s ...", $this->getFunction());
 
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
