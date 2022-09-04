@@ -254,7 +254,7 @@ class Builder
     }
 
 
-    public function buildByHttpRequest($route): void
+    public function buildByHttpRequest($route = 'Default'): void
     {
 
         $port = IOUtils::safeRead(CONFIG_DIR . 'dev_port') ?? '80';
@@ -263,7 +263,7 @@ class Builder
             return;
         }
 
-        $queryString = RouterService::findRouteQueryString($route);
+        $queryString = $route === 'Default' ? '/' : RouterService::findRouteQueryString($route);
         if ($queryString === null) {
             return;
         }
@@ -307,6 +307,9 @@ class Builder
 
     public function watchAllRoutes(): void
     {
+        // $this->buildByHttpRequest();
+
+        // $this->routes = RouterService::findRouteNames();
         $this->buildByRoute('App');
 
         foreach ($this->routes as $route) {

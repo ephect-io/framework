@@ -21,7 +21,6 @@ class EggLib extends Element
     public function __construct(Application $parent)
     {
         parent::__construct($parent);
-
     }
 
     public function createQuickstart(): void
@@ -61,7 +60,7 @@ class EggLib extends Element
             copy($sample . $filePath, $destDir . $filePath);
         }
     }
-    
+
     public function createCommonTrees(): void
     {
         $common = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'Common';
@@ -99,7 +98,7 @@ class EggLib extends Element
         $compiler = new Builder;
         $compiler->perform();
         $compiler->postPerform();
-        
+
         $compiler->watchAllRoutes();
     }
 
@@ -113,11 +112,12 @@ class EggLib extends Element
         $compiler = new Builder;
         $compiler->perform();
         $compiler->postPerform();
-        
+        // $compiler->performAgain();
+
         $compiler->asyncCliAllRoutes();
     }
 
-    
+
     public function requireMaster(): object
     {
         $result = [];
@@ -203,19 +203,18 @@ class EggLib extends Element
 
         $port = $default;
 
-        if($this->parent->getArgc() > 2) {
+        if ($this->parent->getArgc() > 2) {
             $customPort = $this->parent->getArgv()[2];
 
             $cleanPort = preg_replace('/([\d]+)/', '$1', $customPort);
 
-            if($cleanPort !== $customPort) {
+            if ($cleanPort !== $customPort) {
                 $customPort = $port;
             }
-    
+
             $port = $customPort;
         }
 
         return $port;
-
     }
 }

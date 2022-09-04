@@ -182,8 +182,8 @@ class RouterService implements RouterServiceInterface
         $result = null;
 
         $routes = RouteRegistry::items();
-        if(count($routes) === 0) {
-            return null;
+        if (count($routes) === 0) {
+            $routes = RouteRegistry::getCachedRoutes();
         }
 
         $routeParts = explode('\\', $route);
@@ -218,13 +218,59 @@ class RouterService implements RouterServiceInterface
         return $result;
     }
 
+    public static function findRouteNames(): ?array
+    {
+        $result = null;
+
+        $routes = RouteRegistry::items();
+        if (count($routes) === 0) {
+            $routes = RouteRegistry::getCachedRoutes();
+        }
+
+        $allroutes = $routes['GET'];
+
+        $result = array_map(function ($item) {
+            return $item['redirect'];
+        }, $allroutes);
+
+        return $result;
+    }
+
+    public static function findRouteByQueryString(string $query): ?string
+    {
+        $result = null;
+
+        $routes = RouteRegistry::items();
+        if (count($routes) === 0) {
+            $routes = RouteRegistry::getCachedRoutes();
+        }
+
+        $allroutes = $routes['GET'];
+
+        $allroutes = array_filter($allroutes, function ($item) use ($query) {
+            return $item['translate'] == $query;
+        });
+
+        if (count($allroutes) === 0) {
+            return $result;
+        }
+
+        sort($allroutes);
+
+        $finalRoute = (object) $allroutes[0];
+
+        $result = $finalRoute->redirect;
+
+        return $result;
+    }
+
     public static function findRouteQueryString(string $route): ?string
     {
         $result = null;
 
         $routes = RouteRegistry::items();
-        if(count($routes) === 0) {
-            return null;
+        if (count($routes) === 0) {
+            $routes = RouteRegistry::getCachedRoutes();
         }
 
         $routeParts = explode('\\', $route);
@@ -245,7 +291,7 @@ class RouterService implements RouterServiceInterface
         sort($allroutes);
 
         $finalRoute = (object) $allroutes[0];
-        if($finalRoute->rule === $finalRoute->normal) {
+        if ($finalRoute->rule === $finalRoute->normal) {
             $queryString =  str_replace("\\", "", $finalRoute->translate);
 
             return $queryString;
@@ -253,10 +299,10 @@ class RouterService implements RouterServiceInterface
 
         $queryString = parse_url('http://localhost' . $finalRoute->translate, PHP_URL_QUERY);
         parse_str($queryString, $arguments);
-        
+
         $queryString = $finalRoute->normal;
-        foreach($arguments as $argument => $value)  {
-            $queryString = str_replace('('. $argument . ')', $value, $queryString);
+        foreach ($arguments as $argument => $value) {
+            $queryString = str_replace('(' . $argument . ')', $value, $queryString);
             $queryString = str_replace('$', '', $queryString);
         }
 

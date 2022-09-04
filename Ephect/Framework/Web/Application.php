@@ -28,10 +28,11 @@ class Application extends AbstractApplication
             $compiler = new Builder;
             $compiler->perform();
             $compiler->postPerform();
+        
         }
-        if (!CacheRegistry::uncache()) {
-            PluginRegistry::uncache();
-        }
+
+        CacheRegistry::uncache();
+        PluginRegistry::uncache();
 
         $app = new Component('App');
         $app->render();
