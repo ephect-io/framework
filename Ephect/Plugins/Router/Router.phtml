@@ -2,8 +2,8 @@
 
 namespace Ephect\Plugins\Router;
 
-use Ephect\Framework\Components\Compiler;
 use Ephect\Framework\Components\Component;
+use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\HttpErrorRegistry;
 use Ephect\Framework\Registry\RouteRegistry;
@@ -36,7 +36,7 @@ function Router($children)
         {{ children }}
         {? 
             rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
-            Compiler::purgeCopies();
+            Builder::purgeCopies();
 
             {service}->findRoute({html});
             if({html} !== '') { 

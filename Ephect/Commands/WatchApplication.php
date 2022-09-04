@@ -6,13 +6,13 @@ use Ephect\Apps\Egg\EggLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(verb: "compile")]
-#[CommandDeclaration(desc: "Compile the application.")]
-class CompileApplication extends AbstractCommand
+#[CommandDeclaration(verb: "watch")]
+#[CommandDeclaration(desc: "Watch the application.")]
+class WatchApplication extends AbstractCommand
 {
     public function run(): void
     {
         $egg = new EggLib($this->application);
-        $egg->compile();
+        $egg->watch();
     }
 }

@@ -3,9 +3,9 @@
 namespace Ephect\Framework\Web;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\Components\Compiler;
 use Ephect\Framework\Components\Component;
 use Ephect\Framework\Core\AbstractApplication;
+use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
@@ -25,13 +25,14 @@ class Application extends AbstractApplication
         $this->loadInFile();
 
         if (!ComponentRegistry::uncache()) {
-            $compiler = new Compiler;
+            $compiler = new Builder;
             $compiler->perform();
             $compiler->postPerform();
+        
         }
-        if (!CacheRegistry::uncache()) {
-            PluginRegistry::uncache();
-        }
+
+        CacheRegistry::uncache();
+        PluginRegistry::uncache();
 
         $app = new Component('App');
         $app->render();

@@ -56,10 +56,8 @@ class CommandRunner extends Element
             }
         }
 
-        if ($callback !== null && $isFound && $arguments === null) {
+        if ($callback !== null && $isFound) {
             $callback->run();
-        } elseif ($callback !== null && $isFound && $arguments !== null) {
-            call_user_func($callback, $arguments);
         }
 
         if ($isFound) return;
@@ -68,7 +66,7 @@ class CommandRunner extends Element
          ___________________________
         /       It looks like       \
         | you don't know what to do |
-        \       Use egg --help       /
+        \      Use php egg help     /
          ---------------------------
              \  ^__^
               \ (oo)\________

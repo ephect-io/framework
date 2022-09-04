@@ -3,7 +3,10 @@
 namespace Ephect\Apps\Egg;
 
 use Ephect\Framework\CLI\Application;
-use Ephect\Framework\Components\Compiler;
+use Ephect\Framework\CLI\Console;
+use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\System\Command;
+use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Element;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Utils\Zip;
@@ -18,7 +21,6 @@ class EggLib extends Element
     public function __construct(Application $parent)
     {
         parent::__construct($parent);
-
     }
 
     public function createQuickstart(): void
@@ -58,7 +60,7 @@ class EggLib extends Element
             copy($sample . $filePath, $destDir . $filePath);
         }
     }
-    
+
     public function createCommonTrees(): void
     {
         $common = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'Common';
@@ -87,22 +89,35 @@ class EggLib extends Element
         }
     }
 
-    public function compile(): void
+    public function watch(): void
     {
         if (file_exists(CACHE_DIR)) {
             Utils::delTree(CACHE_DIR);
         }
 
-        $compiler = new Compiler;
+        $compiler = new Builder;
         $compiler->perform();
         $compiler->postPerform();
-        
-        // $compiler->performAgain();
-        $compiler->followRoutes();
-        // Compiler::purgeCopies();
+
+        $compiler->watchAllRoutes();
     }
 
-    
+    public function build(): void
+    {
+
+        if (file_exists(CACHE_DIR)) {
+            Utils::delTree(CACHE_DIR);
+        }
+
+        $compiler = new Builder;
+        $compiler->perform();
+        $compiler->postPerform();
+        // $compiler->performAgain();
+
+        $compiler->asyncCliAllRoutes();
+    }
+
+
     public function requireMaster(): object
     {
         $result = [];
@@ -165,5 +180,41 @@ class EggLib extends Element
     {
         $tree = Utils::walkTree($path);
         $this->parent->writeLine($tree);
+    }
+
+    public function serve(): void
+    {
+
+        $port = $this->getPort();
+
+        Utils::safeWrite(CONFIG_DIR . 'dev_port', $port);
+
+        $cmd = new Command();
+        $php = $cmd->which('php');
+
+        Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
+        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
+        $cmd->execute($php, '-S', "localhost:$port", '-t', 'public');
+        Console::writeLine("Serving the application locally ...");
+    }
+
+    private function getPort($default = 8000): int
+    {
+
+        $port = $default;
+
+        if ($this->parent->getArgc() > 2) {
+            $customPort = $this->parent->getArgv()[2];
+
+            $cleanPort = preg_replace('/([\d]+)/', '$1', $customPort);
+
+            if ($cleanPort !== $customPort) {
+                $customPort = $port;
+            }
+
+            $port = $customPort;
+        }
+
+        return $port;
     }
 }
