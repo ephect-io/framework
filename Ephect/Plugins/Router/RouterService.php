@@ -233,6 +233,8 @@ class RouterService implements RouterServiceInterface
             return $item['redirect'];
         }, $allroutes);
 
+        $result = array_unique($result);
+
         return $result;
     }
 
