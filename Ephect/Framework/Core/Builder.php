@@ -144,7 +144,7 @@ class Builder
     }
 
 
-    public function asyncBuildByRoute($route): void
+    public function asyncBuildByName($route): void
     {
 
         $struct = new TaskStructure(['name' => $route, 'arguments' => [$route]]);
@@ -210,14 +210,14 @@ class Builder
     }
 
 
-    public function buildByRoute($route): void
+    public function buildByName($name): void
     {
         PluginRegistry::uncache();
 
-        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-        Console::getLogger()->info("Compiling %s ... ", $route);
+        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($name, ConsoleColors::LIGHT_CYAN));
+        Console::getLogger()->info("Compiling %s ... ", $name);
 
-        $comp = new Component($route);
+        $comp = new Component($name);
         $filename = $comp->getFlattenSourceFilename();
 
         $html = '';
@@ -227,7 +227,7 @@ class Builder
 
             $time_start = microtime(true);
 
-            $functionArgs = RouterService::findRouteArguments($route);
+            $functionArgs = $name === 'App' ? [] : RouterService::findRouteArguments($name);
 
             ob_start();
             $comp->render($functionArgs);
@@ -254,7 +254,7 @@ class Builder
     }
 
 
-    public function buildByHttpRequest($route = 'Default'): void
+    public function buildByRoute($route = 'Default'): void
     {
 
         $port = IOUtils::safeRead(CONFIG_DIR . 'dev_port') ?? '80';
@@ -300,20 +300,19 @@ class Builder
 
     public function asyncCliAllRoutes(): void
     {
-        foreach ($this->routes as $route) {
-            $this->asyncBuildByRoute($route);
+        foreach ($this->routes as $name) {
+            $this->asyncBuildByName($name);
         }
     }
 
     public function watchAllRoutes(): void
     {
-        // $this->buildByHttpRequest();
 
-        // $this->routes = RouterService::findRouteNames();
-        $this->buildByRoute('App');
+        $this->buildByName('App');
+        $this->routes = RouterService::findRouteNames();
 
         foreach ($this->routes as $route) {
-            $this->buildByHttpRequest($route);
+            $this->buildByRoute($route);
         }
     }
 
