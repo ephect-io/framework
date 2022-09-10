@@ -4,11 +4,11 @@
     "description": "Make PHP effective again!",
     "homepage": "https://ephect.io",
     "license": "GPL-3.0+",
-    "version": "v0.3.2-alpha",
+    "version": "v0.3.5-alpha",
     "authors": [{
         "name": "David Blanchard",
         "email": "dpjb@hotmail.fr",
-        "homepage": "https://code-phoenix.org",
+        "homepage": "https://ephect.io",
         "role": "Creator"
     }],
     "autoload": {
