@@ -251,7 +251,7 @@ where *myproject* is the name of your project.
 
 Move to *myproject* directory and type:
 
-    php egg make:sample
+    php egg make:quickstart
 
 You will see a **src** directory in which you will find the standard structure of an ephect application. Ephect doesn't really care of the actual structure provided that it is under **src** directory. It means you can organize your application tree as you wish.
 
@@ -259,7 +259,7 @@ You will see a **src** directory in which you will find the standard structure o
 
 If you setup **PHP-ZTS**, good choice, you can generate your application without browser by typing:
 
-    php egg compile
+    php egg build
 
 You will find the generated application under the directory *cache*.
 
@@ -267,7 +267,7 @@ You will find the generated application under the directory *cache*.
 
 You can test the sample application by using the PHP embedded web server:
 
-    php -S localhost:8888 -t src/public
+    php -S localhost:8000 -t public
 
 ## The sample pages 
 
