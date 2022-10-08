@@ -27,7 +27,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function register(): void
     {
-        if (!FrameworkRegistry::uncache()) {
+        if (!FrameworkRegistry::uncache(true)) {
 
             $frameworkFiles = Utils::walkTreeFiltered(EPHECT_ROOT, ['php']);
 
@@ -43,14 +43,14 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 if (false !== strpos($filename, 'Interface')) {
                     list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
-                    FrameworkRegistry::write($fqname, "EPHECT_ROOT$filename");
+                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
                 if (false !== strpos($filename, 'Trait')) {
                     list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
-                    FrameworkRegistry::write($fqname, "EPHECT_ROOT$filename");
+                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
@@ -61,23 +61,17 @@ class FrameworkRegistry extends AbstractStaticRegistry
                     $fqname = $namespace . '\\' . $function;
                 }
                 if ($fqname !== '\\') {
-                    FrameworkRegistry::write($fqname, "EPHECT_ROOT$filename");
+                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                 }
             }
 
             self::registerUserClasses();
 
-            FrameworkRegistry::cache();
-            $filename = FrameworkRegistry::getCacheFilename();
-            $flatRegistry = file_get_contents($filename);
-            $flatRegistry = str_replace('"EPHECT_ROOT', 'EPHECT_ROOT . "', $flatRegistry);
-            $flatRegistry = str_replace('"SRC_ROOT', 'SRC_ROOT . "', $flatRegistry);
-
-            file_put_contents($filename, $flatRegistry);
+            FrameworkRegistry::cache(true);
        
         }
     }
-
+    
     public static function registerUserClasses(): void
     {
         if(!file_exists(SRC_ROOT)) return;
@@ -88,14 +82,14 @@ class FrameworkRegistry extends AbstractStaticRegistry
             if (false !== strpos($filename, 'Interface')) {
                 list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $interface;
-                FrameworkRegistry::write($fqname, "SRC_ROOT$filename");
+                FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
             if (false !== strpos($filename, 'Trait')) {
                 list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $trait;
-                FrameworkRegistry::write($fqname, "SRC_ROOT$filename");
+                FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
@@ -106,7 +100,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 $fqname = $namespace . '\\' . $function;
             }
             if ($fqname !== '\\') {
-                FrameworkRegistry::write($fqname, "SRC_ROOT$filename");
+                FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
             }
         }
     }
