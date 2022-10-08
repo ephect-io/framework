@@ -89,7 +89,7 @@ class EggLib extends Element
         }
     }
 
-    public function watch(): void
+    public function build(): void
     {
         if (file_exists(CACHE_DIR)) {
             Utils::delTree(CACHE_DIR);
@@ -101,22 +101,6 @@ class EggLib extends Element
 
         $compiler->watchAllRoutes();
     }
-
-    public function build(): void
-    {
-
-        if (file_exists(CACHE_DIR)) {
-            Utils::delTree(CACHE_DIR);
-        }
-
-        $compiler = new Builder;
-        $compiler->perform();
-        $compiler->postPerform();
-        // $compiler->performAgain();
-
-        $compiler->asyncCliAllRoutes();
-    }
-
 
     public function requireMaster(): object
     {

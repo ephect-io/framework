@@ -17,12 +17,8 @@ use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
-use Ephect\Framework\Tasks\Task;
-use Ephect\Framework\Tasks\TaskRunner;
-use Ephect\Framework\Tasks\TaskStructure;
 use Ephect\Framework\Web\Curl;
 use Ephect\Plugins\Router\RouterService;
-use parallel\{channel};
 use Throwable;
 
 class Builder
@@ -143,73 +139,6 @@ class Builder
         $this->routes = $routes;
     }
 
-
-    public function asyncBuildByName($route): void
-    {
-
-        $struct = new TaskStructure(['name' => $route, 'arguments' => [$route]]);
-        $task = new Task($struct);
-        $task->setCallback(function (string $route, string $framework_root, Channel $channel) {
-
-            include $framework_root . 'bootstrap.php';
-
-            PluginRegistry::uncache();
-
-            Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-            Console::getLogger()->info("Compiling %s ...", $route);
-
-            $comp = new Component($route);
-            $filename = $comp->getFlattenSourceFilename();
-
-            $html = '';
-            $error = '';
-
-            try {
-
-                $time_start = microtime(true);
-
-                ob_start();
-
-                $functionArgs = RouterService::findRouteArguments($route);
-
-                $comp->render($functionArgs);
-                $html = ob_get_clean();
-
-                $time_end = microtime(true);
-
-                $duration = $time_end - $time_start;
-
-                $utime = sprintf('%.3f', $duration);
-                $raw_time = DateTime::createFromFormat('u.u', $utime);
-                $duration = substr($raw_time->format('u'), 0, 3);
-
-                Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
-            } catch (Throwable $ex) {
-                $error = Console::formatException($ex);
-            }
-
-            $channel->send(['name' => $route, 'filename' => $filename, 'html' => $html, 'error' => $error]);
-        });
-
-        $runner = new TaskRunner($task);
-        $runner->run();
-
-        $result = $runner->getResult();
-
-        $runner->close();
-
-        $filename = $result['filename'];
-        $html = $result['html'];
-        $error = $result['error'];
-
-        if ($error !== '') {
-            Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
-        }
-
-        IOUtils::safeWrite(STATIC_DIR . $filename, $html);
-    }
-
-
     public function buildByName($name): void
     {
         PluginRegistry::uncache();
@@ -296,13 +225,6 @@ class Builder
 
         Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
 
-    }
-
-    public function asyncCliAllRoutes(): void
-    {
-        foreach ($this->routes as $name) {
-            $this->asyncBuildByName($name);
-        }
     }
 
     public function watchAllRoutes(): void
