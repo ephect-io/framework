@@ -67,9 +67,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         $result = json_encode($entries, JSON_PRETTY_PRINT);
 
         if ($asArray) {
-
-
-            $result = TextUtils::jsonToPhpArray($this->_shortClassName(), $result);
+            $result = TextUtils::jsonToPhpArray($result);
             $result = str_replace('"' . EPHECT_ROOT, 'EPHECT_ROOT . "', $result);
             $result = str_replace('"' . SRC_ROOT, 'SRC_ROOT . "', $result);
         }
@@ -94,14 +92,11 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
         if ($this->isLoaded && $asArray) {
 
-            $exists = file_exists($registryFilename);
-            
-            $yes = $exists;
+            $fn = function() use($registryFilename) {
+               return include $registryFilename;
+            };
 
-            include $registryFilename;
-
-            $var = 'var_' . $this->_shortClassName();
-            $dictionary = $$var;
+            $dictionary = $fn();
 
             $this->entries = [];
             foreach($dictionary as $key => $value) {

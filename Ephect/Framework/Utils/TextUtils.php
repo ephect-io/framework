@@ -53,11 +53,10 @@ class TextUtils
         }
     }
 
-    public static function jsonToPhpArray(string $arrayName, string $json): string
+    public static function jsonToPhpArray(string $json): string
     {
         $result = '<?php' . PHP_EOL;
-        $result .= 'function func_' . $arrayName . '() {' . PHP_EOL;
-        $result .= "\t" . 'return ([' . PHP_EOL;
+        $result .= 'return [' . PHP_EOL;
 
         $l = mb_strlen($json, 'UTF-8');
         $text = mb_substr($json, 1, $l - 2);
@@ -71,10 +70,7 @@ class TextUtils
 
         $result .= $text . PHP_EOL;
 
-        $result .= ']);' . PHP_EOL;
-        $result .= '}' . PHP_EOL;
-        $result .= '$var_' . $arrayName . ' = func_' . $arrayName . '();' . PHP_EOL;
-        $result .= PHP_EOL;
+        $result .= '];' . PHP_EOL;
 
         return $result;
     }
