@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Framework\Globals;
+namespace Ephect\Hooks;
 
-function setInterval($callback, $ms, $max = 0)
+function useInterval($callback, $ms, $max = 0)
 {
   $last = microtime(true);
   $seconds = $ms / 1000;
