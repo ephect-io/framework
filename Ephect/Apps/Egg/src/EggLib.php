@@ -89,6 +89,11 @@ class EggLib extends Element
         }
     }
 
+    public function watch(): void
+    {
+       
+    }
+
     public function build(): void
     {
         if (file_exists(CACHE_DIR)) {
@@ -98,9 +103,11 @@ class EggLib extends Element
         $compiler = new Builder;
         $compiler->perform();
         $compiler->postPerform();
+        // $compiler->performAgain();
 
-        $compiler->watchAllRoutes();
+        $compiler->buildAllRoutes();
     }
+
 
     public function requireMaster(): object
     {

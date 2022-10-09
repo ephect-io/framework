@@ -227,7 +227,7 @@ class Builder
 
     }
 
-    public function watchAllRoutes(): void
+    public function buildAllRoutes(): void
     {
 
         $this->buildByName('App');
