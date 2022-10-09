@@ -6,6 +6,7 @@ use Ephect\Framework\CLI\Application;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\System\Command;
+use Ephect\Framework\Components\FileSystem\Watcher;
 use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Element;
 use Ephect\Framework\IO\Utils;
@@ -91,7 +92,10 @@ class EggLib extends Element
 
     public function watch(): void
     {
-       
+        $watcher = new Watcher;
+
+        $watcher->watch(SRC_ROOT, ['phtml', 'php']);
+        
     }
 
     public function build(): void
