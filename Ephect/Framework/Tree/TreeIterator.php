@@ -28,7 +28,7 @@ class TreeIterator implements RecursiveIterator
         return $this->count;
     }
 
-    public function current(): mixed
+    public function current()
     {
         if (!$this->valid()) {
             return null;

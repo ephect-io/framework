@@ -2,25 +2,24 @@
 
 namespace Ephect\Framework\Web;
 
-class Curl
-{
+class Curl {
     //put your code here
-
-    public function request($uri, $header = [], $data = []): array
+    
+    public function request($uri, $header = [], $data = []) : object
     {
-
+        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $uri);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        //            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
-        //            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
-        if (count($header) > 0) {
+//            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
+//            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
+        if(count($header) > 0) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         }
-        if (count($data) > 0) {
+        if(count($data) > 0) {
             $queryString = http_build_query($data);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
@@ -36,18 +35,18 @@ class Curl
 
         $header = (isset($info['request_header'])) ? $info['request_header'] : '';
 
-        if ($errno > 0) {
+        if($errno > 0) {
             throw new \Exception($error, $errno);
         }
-        if ($header == '') {
+        if($header == '') {
             throw new \Exception("Curl is not working fine for some reason. Are you using Android ?");
         }
 
-        $code = (int) $info['http_code'];
+        $code = $info['http_code'];
         curl_close($ch);
 
-        $result = [$code, $header, $content];
-
+        $result = (object) ['code' => (int)$code, 'header' => $header, 'content' => $content];
+        
         return $result;
     }
 }

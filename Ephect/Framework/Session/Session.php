@@ -1,6 +1,6 @@
 <?php
+namespace Ephect\Framework\Session
 
-namespace Ephect\Framework\Session;
 
 final class Session
 {

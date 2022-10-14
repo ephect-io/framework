@@ -129,6 +129,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function parse(): void
     {
+        Console::writeLine("Parsing %s ...", ConsoleColors::getColoredString($this->getFunction(), ConsoleColors::CYAN));
         Console::getLogger()->info("Parsing %s ...", $this->getFunction());
 
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
@@ -223,7 +224,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             if (!file_exists(UNIQUE_DIR . $motherUID)) {
                 mkdir(UNIQUE_DIR . $motherUID, 0775);
 
-                $flatFilename = CodeRegistry::getFlatFilename() . '.json';
+                $flatFilename = CodeRegistry::getFlatFilename();
                 copy(CACHE_DIR . $flatFilename, UNIQUE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
             }
         }
@@ -328,7 +329,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             if (!file_exists(CACHE_DIR . $motherUID)) {
                 mkdir(CACHE_DIR . $motherUID, 0775);
 
-                $flatFilename = CodeRegistry::getFlatFilename() . '.json';
+                $flatFilename = CodeRegistry::getFlatFilename();
                 copy(CACHE_DIR . $flatFilename, CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
             }
         }

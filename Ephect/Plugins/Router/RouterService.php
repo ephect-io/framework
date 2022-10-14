@@ -12,12 +12,12 @@ use Ephect\Framework\Registry\RouteRegistry;
 
 use function Ephect\Hooks\useState;
 
-class RouterService implements RouterServiceInterface
+class RouterService
 {
 
     public function __construct()
     {
-        if (RouteRegistry::uncache()) {
+        if(RouteRegistry::uncache()) {
             HttpErrorRegistry::uncache();
         }
     }
@@ -66,6 +66,24 @@ class RouterService implements RouterServiceInterface
 
         $comp = new Component($path);
         $comp->render($query);
+    }
+
+
+    public static function uncacheRoutes(bool $asArray = false)
+    {
+        $result = file_get_contents(CACHE_DIR . 'routes.json');
+
+        if ($result === false) {
+            return null;
+        }
+
+        if ($asArray) {
+            $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
+        } else {
+            $result = json_decode($result);
+        }
+
+        return $result;
     }
 
     public function routesAreCached(): bool
@@ -156,9 +174,7 @@ class RouterService implements RouterServiceInterface
 
         if (!array_key_exists($route->getRule(), $methodRegistry)) {
             $methodRegistry[$route->getRule()] = [
-                'rule' => $route->getRule(),
                 'redirect' => $route->getRedirect(),
-                'normal' => $route->getNormalized(),
                 'translate' => $route->getTranslation(),
                 'error' => $route->getError(),
                 'exact' => $route->isExact(),
@@ -176,24 +192,34 @@ class RouterService implements RouterServiceInterface
         return RouteRegistry::cache() && HttpErrorRegistry::cache();
     }
 
-
     public static function findRouteArguments(string $route): ?array
     {
         $result = null;
 
-        $routes = RouteRegistry::items();
-        if (count($routes) === 0) {
-            $routes = RouteRegistry::getCachedRoutes();
+        if(!file_exists(CACHE_DIR . 'routes.json')) {
+            return $result;
+        }
+
+        $routes = file_get_contents(CACHE_DIR . 'routes.json');
+
+        if ($routes === false) {
+            return $result;
+        }
+
+        $routes = json_decode($routes, JSON_OBJECT_AS_ARRAY);
+
+        if($routes === null) {
+            return $result;
         }
 
         $routeParts = explode('\\', $route);
-        if (count($routeParts) > 0) {
+        if(count($routeParts) > 0) {
             $route = array_pop($routeParts);
         }
 
         $allroutes = [];
 
-        foreach ($routes as $method => $rules) {
+        foreach($routes as $method => $rules) {
             $allroutes = array_merge($allroutes, $rules);
         }
 
@@ -201,7 +227,7 @@ class RouterService implements RouterServiceInterface
             return $item['redirect'] == $route && $item['translate'] != '';
         });
 
-        if (count($allroutes) === 0) {
+        if(count($allroutes) === 0) {
             return $result;
         }
 
@@ -209,106 +235,13 @@ class RouterService implements RouterServiceInterface
 
         $query = parse_url('https://localhost' . $allroutes[0]['translate'], PHP_URL_QUERY);
 
-        if ($query === null || $query === false) {
+        if($query === null || $query === false) {
             return $result;
         }
 
         parse_str($query, $result);
 
         return $result;
-    }
-
-    public static function findRouteNames(): ?array
-    {
-        $result = null;
-
-        $routes = RouteRegistry::items();
-        if (count($routes) === 0) {
-            $routes = RouteRegistry::getCachedRoutes();
-        }
-
-        $allroutes = $routes['GET'];
-
-        $result = array_map(function ($item) {
-            return $item['redirect'];
-        }, $allroutes);
-
-        $result = array_unique($result);
-
-        return $result;
-    }
-
-    public static function findRouteByQueryString(string $query): ?string
-    {
-        $result = null;
-
-        $routes = RouteRegistry::items();
-        if (count($routes) === 0) {
-            $routes = RouteRegistry::getCachedRoutes();
-        }
-
-        $allroutes = $routes['GET'];
-
-        $allroutes = array_filter($allroutes, function ($item) use ($query) {
-            return $item['translate'] == $query;
-        });
-
-        if (count($allroutes) === 0) {
-            return $result;
-        }
-
-        sort($allroutes);
-
-        $finalRoute = (object) $allroutes[0];
-
-        $result = $finalRoute->redirect;
-
-        return $result;
-    }
-
-    public static function findRouteQueryString(string $route): ?string
-    {
-        $result = null;
-
-        $routes = RouteRegistry::items();
-        if (count($routes) === 0) {
-            $routes = RouteRegistry::getCachedRoutes();
-        }
-
-        $routeParts = explode('\\', $route);
-        if (count($routeParts) > 0) {
-            $route = array_pop($routeParts);
-        }
-
-        $allroutes = $routes['GET'];
-
-        $allroutes = array_filter($allroutes, function ($item) use ($route) {
-            return $item['redirect'] == $route && $item['translate'] != '';
-        });
-
-        if (count($allroutes) === 0) {
-            return $result;
-        }
-
-        sort($allroutes);
-
-        $finalRoute = (object) $allroutes[0];
-        if ($finalRoute->rule === $finalRoute->normal) {
-            $queryString =  str_replace("\\", "", $finalRoute->translate);
-
-            return $queryString;
-        }
-
-        $queryString = parse_url('http://localhost' . $finalRoute->translate, PHP_URL_QUERY);
-        parse_str($queryString, $arguments);
-
-        $queryString = $finalRoute->normal;
-        foreach ($arguments as $argument => $value) {
-            $queryString = str_replace('(' . $argument . ')', $value, $queryString);
-            $queryString = str_replace('$', '', $queryString);
-        }
-
-        return $queryString;
     }
 
 

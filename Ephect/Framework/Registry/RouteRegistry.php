@@ -19,16 +19,4 @@ class RouteRegistry extends AbstractStaticRegistry
 
         return self::$instance;
     }
-
-    public static function getCachedRoutes(): ?array
-    {
-        $result = null;
-
-        if(file_exists(CACHE_DIR . 'routes.json')) {
-            $json = file_get_contents(CACHE_DIR . 'routes.json');
-            $result = json_decode($json, JSON_OBJECT_AS_ARRAY);
-        }
-
-        return $result;
-    }
 }

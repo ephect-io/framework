@@ -31,14 +31,14 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
         return static::getInstance()->_items();
     }
 
-    public static function cache(bool $asArray = false): bool
+    public static function cache(): bool
     {
-        return static::getInstance()->_cache($asArray);
+        return static::getInstance()->_cache();
     }
 
-    public static function uncache(bool $asArray = false): bool
+    public static function uncache(): bool
     {
-        return static::getInstance()->_uncache($asArray);
+        return static::getInstance()->_uncache();
     }
 
     public static function delete(string $key): void
@@ -56,9 +56,9 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
         static::getInstance()->_setCacheDirectory($directory);
     }
 
-    public static function getCacheFilename(bool $asArray = false): string
+    public static function getCacheFilename(): string
     {
-        return static::getInstance()->_getCacheFilename($asArray);
+        return static::getInstance()->_getCacheFilename();
     }
     
     public static function getFlatFilename(): string 
