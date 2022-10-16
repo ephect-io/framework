@@ -13,7 +13,7 @@ use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 
-define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';" . PHP_EOL);
+define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
 define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 
 class AbstractFileComponent extends AbstractComponent implements FileComponentInterface

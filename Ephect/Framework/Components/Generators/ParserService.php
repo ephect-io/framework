@@ -216,11 +216,18 @@ class ParserService implements ParserServiceInterface
 
             $include = str_replace('%s', $cacheFilename, INCLUDE_PLACEHOLDER);
 
-            $re = '/(namespace +\w+;)/m';
+            $re = '/(namespace +[\w\\\\]+;)/m';
             preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
 
-            $this->html = str_replace($matches[0][1], $matches[0][1] . PHP_EOL . '<includes />', $this->html);
-            $this->html = str_replace('<includes />', $include, $this->html);
+            if(!isset($matches[0])) {
+                $re = '/(<\?php)/m';
+            }
+
+            $subst = '$1' . PHP_EOL . PHP_EOL . '<Include />';
+            $this->html = preg_replace($re, $subst, $this->html);
+
+            $this->html = str_replace('<Include />', $include, $this->html);
+    
         }
     }
 }
