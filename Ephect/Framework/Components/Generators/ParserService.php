@@ -214,10 +214,13 @@ class ParserService implements ParserServiceInterface
         foreach ($componentList as $componentName) {
             [$fqFunctionName, $cacheFilename] = $component->renderComponent($motherUID, $componentName);
 
-            $moduleNs = "namespace " . $component->getNamespace() . ';' . PHP_EOL;
             $include = str_replace('%s', $cacheFilename, INCLUDE_PLACEHOLDER);
-            $this->html = str_replace($moduleNs, $moduleNs . PHP_EOL . $include, $this->html);
 
+            $re = '/(namespace +\w+;)/m';
+            preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
+
+            $this->html = str_replace($matches[0][1], $matches[0][1] . PHP_EOL . '<includes />', $this->html);
+            $this->html = str_replace('<includes />', $include, $this->html);
         }
     }
 }
