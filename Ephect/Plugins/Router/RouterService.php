@@ -17,9 +17,8 @@ class RouterService implements RouterServiceInterface
 
     public function __construct()
     {
-        if (RouteRegistry::uncache()) {
-            HttpErrorRegistry::uncache();
-        }
+        RouteRegistry::uncache();
+        HttpErrorRegistry::uncache();
     }
 
     public function findRoute(string &$html): void
@@ -66,13 +65,6 @@ class RouterService implements RouterServiceInterface
 
         $comp = new Component($path);
         $comp->render($query);
-    }
-
-    public function routesAreCached(): bool
-    {
-        $result = file_exists(CACHE_DIR . 'routes.json');
-
-        return $result;
     }
 
     public function doRouting(): ?array

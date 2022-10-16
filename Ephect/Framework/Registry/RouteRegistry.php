@@ -31,4 +31,16 @@ class RouteRegistry extends AbstractStaticRegistry
 
         return $result;
     }
+
+    public static function hasMoved(): bool
+    {
+        $result = file_exists(self::getMovedFilename());
+
+        return $result;
+    }
+
+    public static function getMovedFilename(): string
+    {
+        return CACHE_DIR . 'routes.json';
+    }
 }

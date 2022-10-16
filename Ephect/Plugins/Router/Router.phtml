@@ -17,7 +17,7 @@ function Router($children)
 
         $service = new RouterService;
 
-        if ($service->routesAreCached()) {
+        if (RouteRegistry::hasMoved()) {
 
             [$path, $query, $error, $code] = $service->doRouting();
             $service->renderRoute($code === 200, $path, $query, $error, $code, $html);
@@ -35,7 +35,7 @@ function Router($children)
         ?}
         {{ children }}
         {? 
-            rename(RouteRegistry::getCacheFilename(), CACHE_DIR . 'routes.json');
+            rename(RouteRegistry::getCacheFilename(), RouteRegistry::getMovedFilename());
             Builder::purgeCopies();
 
             {service}->findRoute({html});
