@@ -25,8 +25,6 @@ use Ephect\Framework\Registry\ComponentRegistry;
 
 class ParserService implements ParserServiceInterface
 {
-
-
     protected $component = null;
     protected $useVariables = [];
     protected $useTypes = [];
@@ -203,7 +201,6 @@ class ParserService implements ParserServiceInterface
         $this->html = $p->getHtml();
     }
 
-
     public function doIncludes(FileComponentInterface $component): void
     {
         $componentList = array_unique(array_merge($this->componentList, $this->openComponentList));
@@ -223,11 +220,10 @@ class ParserService implements ParserServiceInterface
                 $re = '/(<\?php)/m';
             }
 
-            $subst = '$1' . PHP_EOL . PHP_EOL . '<Include />';
-            $this->html = preg_replace($re, $subst, $this->html);
+            $subst = '$1' . PHP_EOL . '<Include />';
+            $this->html = preg_replace($re, $subst, $this->html, 1);
 
             $this->html = str_replace('<Include />', $include, $this->html);
-    
         }
     }
 }
