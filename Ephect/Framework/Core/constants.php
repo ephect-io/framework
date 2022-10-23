@@ -50,9 +50,9 @@ if (IS_WEB_APP) {
     }
 
     define('HTTP_PROTOCOL', $scheme);
-    define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
+    define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT'] ?? '');
     define('HTTP_HOST', $_SERVER['HTTP_HOST']);
-    define('HTTP_ORIGIN', isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '');
+    define('HTTP_ORIGIN', $_SERVER['HTTP_ORIGIN'] ?? '');
     define('HTTP_ACCEPT', $_SERVER['HTTP_ACCEPT'] ?: '');
     define('HTTP_PORT', $_SERVER['SERVER_PORT']);
     define('COOKIE', $_COOKIE);
@@ -129,6 +129,7 @@ if (!IS_WEB_APP) {
     
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
     define('PUBLIC_DIR', trim(file_get_contents(CONFIG_DIR . 'document_root')));
+    define('HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
     define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('EPHECT_ROOT', SITE_ROOT .  EPHECT . DIRECTORY_SEPARATOR);
 
