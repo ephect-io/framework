@@ -27,7 +27,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function register(): void
     {
-        if (!FrameworkRegistry::uncache()) {
+        if (!FrameworkRegistry::uncache(true)) {
 
             $frameworkFiles = Utils::walkTreeFiltered(EPHECT_ROOT, ['php']);
 
@@ -67,10 +67,11 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
             self::registerUserClasses();
 
-            FrameworkRegistry::cache();
+            FrameworkRegistry::cache(true);
+       
         }
     }
-
+    
     public static function registerUserClasses(): void
     {
         if(!file_exists(SRC_ROOT)) return;

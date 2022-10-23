@@ -26,7 +26,7 @@ class PharRegistry extends AbstractStaticRegistry
 
     public static function register(): void
     {
-        FrameworkRegistry::uncache();
+        FrameworkRegistry::uncache(true);
         $items = FrameworkRegistry::items();
 
         foreach($items as $key => $value) {

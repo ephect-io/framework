@@ -6,7 +6,12 @@ use Ephect\Framework\Components\Component;
 use Ephect\Framework\Components\Generators\ComponentDocument;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
+use JetBrains\PhpStorm\Deprecated;
 
+/**
+ * Deprecated
+ */
+#[Deprecated("It's useless for now", "useEffect", "0.3")]
 class MotherSlotsParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void

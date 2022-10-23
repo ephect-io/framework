@@ -4,6 +4,7 @@ namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\TextUtils;
 
 abstract class AbstractRegistry implements AbstractRegistryInterface
 {
@@ -57,26 +58,50 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         return $result;
     }
 
-    public function _cache(): bool
+    public function _cache(bool $asArray = false): bool
     {
+        $result = '';
+
         $entries = $this->_items();
-        $json = json_encode($entries, JSON_PRETTY_PRINT);
-        $registryFilename = $this->_getCacheFileName();
-        $len = Utils::safeWrite($registryFilename, $json);
+
+        $result = json_encode($entries, JSON_PRETTY_PRINT);
+
+        if ($asArray) {
+            $result = TextUtils::jsonToPhpArray($result);
+            $result = str_replace('"' . EPHECT_ROOT, 'EPHECT_ROOT . "', $result);
+            $result = str_replace('"' . SRC_ROOT, 'SRC_ROOT . "', $result);
+        }
+
+        $registryFilename = $this->_getCacheFileName($asArray);
+        $len = Utils::safeWrite($registryFilename, $result);
 
         return $len !== null;
     }
 
-    public function _uncache(): bool
+    public function _uncache(bool $asArray = false): bool
     {
         $this->isLoaded = false;
 
-        $registryFilename = $this->_getCacheFileName();
-        $json = Utils::safeRead($registryFilename);
-        $this->isLoaded = $json !== null;
+        $registryFilename = $this->_getCacheFileName($asArray);
+        $text = Utils::safeRead($registryFilename);
+        $this->isLoaded = $text !== null;
 
-        if ($this->isLoaded) {
-            $this->entries = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        if ($this->isLoaded && !$asArray) {
+            $this->entries = json_decode($text, JSON_OBJECT_AS_ARRAY);
+        }
+
+        if ($this->isLoaded && $asArray) {
+
+            $fn = function() use($registryFilename) {
+               return include $registryFilename;
+            };
+
+            $dictionary = $fn();
+
+            $this->entries = [];
+            foreach($dictionary as $key => $value) {
+                $this->entries[$key] = $value;
+            }
         }
 
         return $this->isLoaded;
@@ -84,22 +109,31 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
     public function _getFlatFilename(): string
     {
-        return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_',  get_class($this))) . '.json';
+        return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_',  get_class($this)));
     }
 
-    public function _getCacheFileName(): string
+    public function _getCacheFileName(bool $asArray = false): string
     {
         if ($this->cacheFilename === '') {
-            $this->cacheFilename = $this->baseDirectory . $this->_getFlatFilename();
+            $this->cacheFilename = $this->baseDirectory . $this->_getFlatFilename($asArray);
         }
 
-        return $this->cacheFilename;
+        return $this->cacheFilename . ($asArray ? '.php' : '.json');
     }
 
     public function _setCacheDirectory(string $directory): void
     {
-        $directory = substr($directory, 0, -1) !== DIRECTORY_SEPARATOR ? $directory . DIRECTORY_SEPARATOR : $directory;
+        $directory = substr($directory, -1) !== DIRECTORY_SEPARATOR ? $directory . DIRECTORY_SEPARATOR : $directory;
         $this->baseDirectory = $directory;
+    }
+
+    private function _shortClassName(): string
+    {
+        $fqname = get_class($this);
+        $nameParts = explode('\\', $fqname);
+        $basename = array_pop($nameParts);
+
+        return $basename;
     }
 
 }

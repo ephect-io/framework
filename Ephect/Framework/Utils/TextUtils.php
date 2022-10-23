@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Framework\Utils;
 
 class TextUtils
@@ -32,10 +33,10 @@ class TextUtils
         return $text;
     }
 
-    public static function format($string, ...$params): string 
+    public static function format($string, ...$params): string
     {
 
-        if(is_object($string)) {
+        if (is_object($string)) {
             $string = json_encode($string, JSON_PRETTY_PRINT);
         }
         if (is_array($string)) {
@@ -50,6 +51,27 @@ class TextUtils
             $result = vsprintf($string, $params);
             return $result;
         }
-        
+    }
+
+    public static function jsonToPhpArray(string $json): string
+    {
+        $result = '<?php' . PHP_EOL;
+        $result .= 'return [' . PHP_EOL;
+
+        $l = mb_strlen($json, 'UTF-8');
+        $text = mb_substr($json, 1, $l - 2);
+
+        $text = mb_ereg_replace(':', ' =>', $text);
+        $text = mb_ereg_replace('{', '[', $text);
+        $text = mb_ereg_replace('}', ']', $text);
+        $text = mb_ereg_replace('\\\/', '/', $text);
+        $text = "\t" . trim($text);
+
+
+        $result .= $text . PHP_EOL;
+
+        $result .= '];' . PHP_EOL;
+
+        return $result;
     }
 }

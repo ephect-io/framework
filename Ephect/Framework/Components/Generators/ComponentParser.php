@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Components\Generators;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ComponentDeclarationStructure;
 use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Crypto\Crypto;

@@ -6,6 +6,7 @@ use Ephect\Framework\CLI\Application;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\System\Command;
+use Ephect\Framework\Components\FileSystem\Watcher;
 use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Element;
 use Ephect\Framework\IO\Utils;
@@ -78,8 +79,8 @@ class EggLib extends Element
 
         $src_dir = $common . DIRECTORY_SEPARATOR . 'public';
 
-        Utils::safeMkDir(PUBLIC_DIR);
-        $destDir = realpath(PUBLIC_DIR);
+        Utils::safeMkDir(CONFIG_DOCROOT);
+        $destDir = realpath(CONFIG_DOCROOT);
 
         $tree = Utils::walkTreeFiltered($src_dir);
 
@@ -91,30 +92,24 @@ class EggLib extends Element
 
     public function watch(): void
     {
-        if (file_exists(CACHE_DIR)) {
-            Utils::delTree(CACHE_DIR);
-        }
+        $watcher = new Watcher;
 
-        $compiler = new Builder;
-        $compiler->perform();
-        $compiler->postPerform();
-
-        $compiler->watchAllRoutes();
+        $watcher->watch(SRC_ROOT, ['phtml', 'php']);
+        
     }
 
     public function build(): void
     {
-
         if (file_exists(CACHE_DIR)) {
             Utils::delTree(CACHE_DIR);
         }
 
-        $compiler = new Builder;
-        $compiler->perform();
-        $compiler->postPerform();
+        $builder = new Builder;
+        $builder->perform();
+        $builder->postPerform();
         // $compiler->performAgain();
 
-        $compiler->asyncCliAllRoutes();
+        $builder->buildAllRoutes();
     }
 
 

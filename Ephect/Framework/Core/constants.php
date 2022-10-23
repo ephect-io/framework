@@ -1,22 +1,16 @@
 <?php
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
-$site_root = '';
 
 define('IS_WEB_APP', $document_root !== '');
 define('IS_PHAR_APP', (\Phar::running() !== ''));
 define('IS_CLI_APP', (\Phar::running() === '') && !IS_WEB_APP);
 
-if (!IS_WEB_APP) {
-    $site_root = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
-    $document_root = $site_root . 'public' . DIRECTORY_SEPARATOR;
-}
-
-define('DOCUMENT_ROOT', $document_root);
-
 if (IS_WEB_APP) {
 
-    $site_root = dirname($document_root) . DIRECTORY_SEPARATOR;
+    define('DOCUMENT_ROOT', $document_root);
+
+    $site_root = dirname(DOCUMENT_ROOT) . DIRECTORY_SEPARATOR;
 
     define('SITE_ROOT', $site_root);
     define('SRC_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
@@ -55,9 +49,9 @@ if (IS_WEB_APP) {
     }
 
     define('HTTP_PROTOCOL', $scheme);
-    define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
+    define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT'] ?? '');
     define('HTTP_HOST', $_SERVER['HTTP_HOST']);
-    define('HTTP_ORIGIN', isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '');
+    define('HTTP_ORIGIN', $_SERVER['HTTP_ORIGIN'] ?? '');
     define('HTTP_ACCEPT', $_SERVER['HTTP_ACCEPT'] ?: '');
     define('HTTP_PORT', $_SERVER['SERVER_PORT']);
     define('COOKIE', $_COOKIE);
@@ -92,6 +86,8 @@ if (IS_WEB_APP) {
 }
 
 if (!IS_WEB_APP) {
+
+    $site_root = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
 
     [$app_path] = get_included_files();
     $script_name = pathinfo($app_path, PATHINFO_BASENAME);
@@ -131,7 +127,6 @@ if (!IS_WEB_APP) {
     define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
     
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
-    define('PUBLIC_DIR', SITE_ROOT . 'public' . DIRECTORY_SEPARATOR);
     define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('EPHECT_ROOT', SITE_ROOT .  EPHECT . DIRECTORY_SEPARATOR);
 
@@ -181,9 +176,11 @@ if (!IS_WEB_APP) {
     define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
 
     define('AJIL_ROOT', SITE_ROOT . AJIL_VENDOR_SRC);
-    
 }
 
+define('CONFIG_DOCROOT', trim(file_get_contents(CONFIG_DIR . 'document_root')));
+define('CONFIG_HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
+define('CONFIG_NAMESPACE', trim(file_get_contents(CONFIG_DIR . 'namespace')));
 
 define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARATOR);
 define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);

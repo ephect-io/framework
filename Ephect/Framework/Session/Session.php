@@ -28,9 +28,9 @@ final class Session
     public function delete(): void 
     {
         session_unset();
-        session_destroy()
-        session_gc()
-        session_abort()
+        session_destroy();
+        session_gc();
+        session_abort();
     }
 
 }
