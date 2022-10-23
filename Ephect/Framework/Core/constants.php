@@ -20,6 +20,7 @@ if (IS_WEB_APP) {
     define('EPHECT_CONFIG', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('AJIL_CONFIG', trim(file_get_contents(CONFIG_DIR . 'javascripts')));
     define('PUBLIC_DIR', trim(file_get_contents(CONFIG_DIR . 'document_root')));
+    define('HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
     define('EPHECT_ROOT', SITE_ROOT . EPHECT_CONFIG . DIRECTORY_SEPARATOR);
     define('AJIL_ROOT', SITE_ROOT . AJIL_CONFIG . DIRECTORY_SEPARATOR);
 

@@ -104,12 +104,12 @@ class EggLib extends Element
             Utils::delTree(CACHE_DIR);
         }
 
-        $compiler = new Builder;
-        $compiler->perform();
-        $compiler->postPerform();
+        $builder = new Builder;
+        $builder->perform();
+        $builder->postPerform();
         // $compiler->performAgain();
 
-        $compiler->buildAllRoutes();
+        $builder->buildAllRoutes();
     }
 
 
