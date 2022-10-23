@@ -32,4 +32,7 @@ if (IS_PHAR_APP) {
 }
 
 Autoloader::register();
-AjilBuilder::build();
+
+if(IS_WEB_APP) {
+    AjilBuilder::build();
+}
