@@ -7,6 +7,14 @@ use ReflectionFunction;
 use stdClass;
 
 // function useProps(Closure $callback, ?array $defaults = null, ?object $props = null): void
+/**
+ * Deprecated
+ *
+ * @param Closure $callback
+ * @param object|null $props
+ * @return void
+ */
+#[Deprecated("Useless function", "useEffect", "0.3")]
 function useProps(Closure $callback, ?object $props = null): void
 {
     // $defaults = $defaults;

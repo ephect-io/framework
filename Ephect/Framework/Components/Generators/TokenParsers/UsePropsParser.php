@@ -3,7 +3,12 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\Generators\TypesParserTrait;
+use JetBrains\PhpStorm\Deprecated;
 
+/**
+ * Deprecated
+ */
+#[Deprecated("it does not work", "useEffect", "0.3")]
 final class UsePropsParser extends AbstractTokenParser
 {
 
