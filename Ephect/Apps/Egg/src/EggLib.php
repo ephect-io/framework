@@ -79,8 +79,8 @@ class EggLib extends Element
 
         $src_dir = $common . DIRECTORY_SEPARATOR . 'public';
 
-        Utils::safeMkDir(PUBLIC_DIR);
-        $destDir = realpath(PUBLIC_DIR);
+        Utils::safeMkDir(CONFIG_DOCROOT);
+        $destDir = realpath(CONFIG_DOCROOT);
 
         $tree = Utils::walkTreeFiltered($src_dir);
 

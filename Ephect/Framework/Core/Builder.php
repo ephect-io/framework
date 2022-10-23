@@ -201,7 +201,7 @@ class Builder
         $outputFilename = "$route.out";
 
         Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-        Console::write("querying %s ... ", ConsoleColors::getColoredString(HOSTNAME . ":$port" . $queryString, ConsoleColors::LIGHT_GREEN));
+        Console::write("querying %s ... ", ConsoleColors::getColoredString(CONFIG_HOSTNAME . ":$port" . $queryString, ConsoleColors::LIGHT_GREEN));
 
         Console::getLogger()->info("Compiling %s ...", $route);
 
@@ -210,7 +210,7 @@ class Builder
         $time_start = microtime(true);
 
         ob_start();
-        [$code, $header, $html] = $curl->request(HOSTNAME . ":$port" . $queryString);
+        [$code, $header, $html] = $curl->request(CONFIG_HOSTNAME . ":$port" . $queryString);
         IOUtils::safeWrite(STATIC_DIR . $filename, $html);
         $output = ob_get_clean();
         IOUtils::safeWrite(LOG_PATH . $outputFilename, $output);

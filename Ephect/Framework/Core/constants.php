@@ -19,8 +19,6 @@ if (IS_WEB_APP) {
 
     define('EPHECT_CONFIG', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('AJIL_CONFIG', trim(file_get_contents(CONFIG_DIR . 'javascripts')));
-    define('PUBLIC_DIR', trim(file_get_contents(CONFIG_DIR . 'document_root')));
-    define('HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
     define('EPHECT_ROOT', SITE_ROOT . EPHECT_CONFIG . DIRECTORY_SEPARATOR);
     define('AJIL_ROOT', SITE_ROOT . AJIL_CONFIG . DIRECTORY_SEPARATOR);
 
@@ -129,8 +127,6 @@ if (!IS_WEB_APP) {
     define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
     
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
-    define('PUBLIC_DIR', trim(file_get_contents(CONFIG_DIR . 'document_root')));
-    define('HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
     define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('EPHECT_ROOT', SITE_ROOT .  EPHECT . DIRECTORY_SEPARATOR);
 
@@ -181,6 +177,10 @@ if (!IS_WEB_APP) {
 
     define('AJIL_ROOT', SITE_ROOT . AJIL_VENDOR_SRC);
 }
+
+define('CONFIG_DOCROOT', trim(file_get_contents(CONFIG_DIR . 'document_root')));
+define('CONFIG_HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
+define('CONFIG_NAMESPACE', trim(file_get_contents(CONFIG_DIR . 'namespace')));
 
 define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARATOR);
 define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);
