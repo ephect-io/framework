@@ -91,10 +91,39 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         }
 
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
+        if (!$this->bodyStartsAt) {
+            self::__makeComponent($this->filename, $this->code);
+            [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
+        }
         $result = $this->code !== null;
 
         return  $result;
     }
+
+
+    static private function __makeComponent(string $filename, string &$html): array
+    {
+        $info = (object) pathinfo($filename);
+        $namespace = CONFIG_NAMESPACE;
+        $function = $info->filename;
+
+        $html = <<< COMPONENT
+        <?php
+
+        namespace $namespace;
+
+        function $function() {
+        return (<<< HTML
+        $html
+        HTML);
+        }
+        COMPONENT;
+
+        Utils::safeWrite(COPY_DIR . $filename, $html);
+
+        return [$namespace, $function];
+    }
+
 
     public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
     {
@@ -139,10 +168,16 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $parser->doUses($this);
         $parser->doUsesAs($this);
 
-        $parser->doMotherSlots($this);
-        $res = $parser->getResult();
-        $didMotherSlots = $res !== "" && $res !== null;
-        $this->code = $parser->getHtml();
+        /**
+         * Deprecated
+         */
+        // $parser->doMotherSlots($this);
+        // $res = $parser->getResult();
+        // $didMotherSlots = $res !== "" && $res !== null;
+        // $this->code = $parser->getHtml();
+        /**
+         * end
+         */
 
         $parser->doHeredoc($this);
         $this->code = $parser->getHtml();
@@ -164,7 +199,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $parser->doUseProps($this);
         $this->code = $parser->getHtml();
-        
+
         $parser->doUseEffect($this);
         $this->code = $parser->getHtml();
 
@@ -180,11 +215,11 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         Utils::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
         $this->updateComponent($this);
 
-        if (!$didMotherSlots) {
-            $parser->doChildSlots($this);
-            $this->code = $parser->getHtml();
-            $this->updateComponent($this);
-        }
+        // if (!$didMotherSlots) { // Deprecated test
+        $parser->doChildSlots($this);
+        $this->code = $parser->getHtml();
+        $this->updateComponent($this);
+        // }
 
         while ($compz = $this->getDeclaration()->getComposition() !== null) {
             $parser->doClosedComponents($this);
