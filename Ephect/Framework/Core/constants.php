@@ -1,22 +1,16 @@
 <?php
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
-$site_root = '';
 
 define('IS_WEB_APP', $document_root !== '');
 define('IS_PHAR_APP', (\Phar::running() !== ''));
 define('IS_CLI_APP', (\Phar::running() === '') && !IS_WEB_APP);
 
-if (!IS_WEB_APP) {
-    $site_root = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
-    $document_root = $site_root . 'public' . DIRECTORY_SEPARATOR;
-}
-
-define('DOCUMENT_ROOT', $document_root);
-
 if (IS_WEB_APP) {
 
-    $site_root = dirname($document_root) . DIRECTORY_SEPARATOR;
+    define('DOCUMENT_ROOT', $document_root);
+
+    $site_root = dirname(DOCUMENT_ROOT) . DIRECTORY_SEPARATOR;
 
     define('SITE_ROOT', $site_root);
     define('SRC_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
@@ -25,6 +19,7 @@ if (IS_WEB_APP) {
 
     define('EPHECT_CONFIG', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('AJIL_CONFIG', trim(file_get_contents(CONFIG_DIR . 'javascripts')));
+    define('PUBLIC_DIR', trim(file_get_contents(CONFIG_DIR . 'document_root')));
     define('EPHECT_ROOT', SITE_ROOT . EPHECT_CONFIG . DIRECTORY_SEPARATOR);
     define('AJIL_ROOT', SITE_ROOT . AJIL_CONFIG . DIRECTORY_SEPARATOR);
 
@@ -93,6 +88,8 @@ if (IS_WEB_APP) {
 
 if (!IS_WEB_APP) {
 
+    $site_root = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
+
     [$app_path] = get_included_files();
     $script_name = pathinfo($app_path, PATHINFO_BASENAME);
     $script_dir = pathinfo($app_path, PATHINFO_DIRNAME);
@@ -131,7 +128,7 @@ if (!IS_WEB_APP) {
     define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
     
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
-    define('PUBLIC_DIR', SITE_ROOT . 'public' . DIRECTORY_SEPARATOR);
+    define('PUBLIC_DIR', trim(file_get_contents(CONFIG_DIR . 'document_root')));
     define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('EPHECT_ROOT', SITE_ROOT .  EPHECT . DIRECTORY_SEPARATOR);
 
@@ -181,9 +178,7 @@ if (!IS_WEB_APP) {
     define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
 
     define('AJIL_ROOT', SITE_ROOT . AJIL_VENDOR_SRC);
-    
 }
-
 
 define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARATOR);
 define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);
