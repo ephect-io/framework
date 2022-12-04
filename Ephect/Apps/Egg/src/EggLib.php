@@ -117,35 +117,39 @@ class EggLib extends Element
     {
         $result = [];
 
-        $libRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
+        $libRoot = CACHE_DIR . 'archive' . DIRECTORY_SEPARATOR;
+
+        Console::writeLine($libRoot);
 
         if (!file_exists($libRoot)) {
             mkdir($libRoot);
         }
 
-        $master = $libRoot . 'master';
+        $master = $libRoot . 'main';
         $filename = $master . '.zip';
-        $ephectDir = $master . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
+        $ephectDir = $master . DIRECTORY_SEPARATOR . 'framework-main' . DIRECTORY_SEPARATOR . 'Ephect' . DIRECTORY_SEPARATOR . 'Framework' . DIRECTORY_SEPARATOR;
 
         $tree = [];
 
         if (!file_exists($filename)) {
-            $this->parent->writeLine('Downloading ephect github main');
+            Console::writeLine('Downloading ephect github main');
             $curl = new Curl();
-            $result = $curl->request('https://codeload.github.com/ephect-io/framework/zip/main');
-            file_put_contents($filename, $result->content);
+            [$code, $header, $content] = $curl->request('https://codeload.github.com/ephect-io/framework/zip/main');
+
+            file_put_contents($filename, $content);
         }
 
         if (file_exists($filename)) {
-            $this->parent->writeLine('Inflating ephect master archive');
+            Console::writeLine('Inflating ephect master archive');
             $zip = new Zip();
             $zip->inflate($filename);
         }
 
-        if (file_exists($master)) {
-            $tree = Utils::walkTree($ephectDir, ['php']);
+        if (file_exists($filename)) {
+            $tree = Utils::walkTreeFiltered($ephectDir, ['php']);
         }
 
+        unlink($filename);
         $result = ['path' => $ephectDir, 'tree' => $tree];
 
         return (object) $result;
@@ -168,13 +172,13 @@ class EggLib extends Element
         // \ephect\Utils\TFileUtils::walkTree(EPHECT_ROOT, $tree);
         $tree = Utils::walkTree(EPHECT_ROOT);
 
-        $this->parent->writeLine($tree);
+        Console::writeLine($tree);
     }
 
     public function displayTree($path): void
     {
-        $tree = Utils::walkTree($path);
-        $this->parent->writeLine($tree);
+        $tree = Utils::walkTreeFiltered($path);
+        Console::writeLine($tree);
     }
 
     public function serve(): void

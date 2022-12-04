@@ -13,6 +13,6 @@ class ApplicationTree extends AbstractCommand
     public function run(): void
     {
         $egg = new EggLib($this->application);
-        $egg->displayTree($this->application->appDirectory);
+        $egg->displayTree(APP_DIR);
     }
 }

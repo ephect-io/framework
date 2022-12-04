@@ -3,6 +3,7 @@
 namespace Ephect\Commands;
 
 use Ephect\Apps\Egg\EggLib;
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
@@ -14,6 +15,8 @@ class RequireMaster extends AbstractCommand
     public function run(): void
     {
         $egg = new EggLib($this->application);
-        $egg->requireMaster();
+        $result = $egg->requireMaster();
+
+        Console::writeLine($result->tree);
     }
 }
