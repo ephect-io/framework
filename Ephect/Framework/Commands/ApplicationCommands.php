@@ -26,35 +26,43 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
     {
         $usage = [];
         $commandFiles = Utils::walkTreeFiltered(COMMANDS_ROOT, ['php']);
+        $customCommandFiles = Utils::walkTreeFiltered(CONFIG_COMMANDS, ['php']);
 
-        foreach ($commandFiles as $filename) {
+        $allFiles = [
+            (object) ["root" => COMMANDS_ROOT, "files" => $commandFiles],
+            (object) ["root" => CONFIG_COMMANDS, "files" => $customCommandFiles],
+        ];
 
-            [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(COMMANDS_ROOT . $filename);
-            $fqClass = "$namespace\\$class";
+        foreach ($allFiles as $entry) {
+            $root_dir = $entry->root;
+            foreach($entry->files as $filename) {
+                [$namespace, $class] = ElementUtils::getClassDefinitionFromFile($root_dir . $filename);
+                $fqClass = "$namespace\\$class";
 
-            include COMMANDS_ROOT . $filename;
-            $object = new $fqClass($this->_application);
+                include $root_dir . $filename;
+                $object = new $fqClass($this->_application);
 
-            $attr = Element::getAttributesData($object);
-            $commandArgs = $attr[0]['args'];
+                $attr = Element::getAttributesData($object);
+                $commandArgs = $attr[0]['args'];
 
-            $verb = $commandArgs['verb'];
-            $subject = isset($commandArgs['subject']) ? $commandArgs['subject'] : '';
-            $desc = $commandArgs['desc'];
-            $isPhar = isset($commandArgs['isPhar']) ? $commandArgs['isPhar'] : '';
+                $verb = $commandArgs['verb'];
+                $subject = isset($commandArgs['subject']) ? $commandArgs['subject'] : '';
+                $desc = $commandArgs['desc'];
+                $isPhar = isset($commandArgs['isPhar']) ? $commandArgs['isPhar'] : '';
 
-            if($isPhar) {
-                continue;
+                if($isPhar) {
+                    continue;
+                }
+
+                if ($subject !== '') {
+                    $usage[$verb . $subject] = "\t$verb:$subject => $desc" . PHP_EOL;
+                } else {
+                    $usage[$verb] = "\t$verb => $desc" . PHP_EOL;
+                }
+                $commandArgs['callback'] = $object;
+
+                $this->_commands[] = $commandArgs;
             }
-
-            if ($subject !== '') {
-                $usage[$verb . $subject] = "\t$verb:$subject => $desc" . PHP_EOL;
-            } else {
-                $usage[$verb] = "\t$verb => $desc" . PHP_EOL;
-            }
-            $commandArgs['callback'] = $object;
-
-            $this->_commands[] = $commandArgs;
         }
 
         ksort($usage);
