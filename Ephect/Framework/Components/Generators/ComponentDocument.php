@@ -89,13 +89,10 @@ class ComponentDocument
 
     public function matchAll(): bool
     {
-        // $parser = new ComponentParser($this->component);
 
-        $parser = new XmlDocument($this->component);
-        $parser->markupComponents();
-        $parser->matchAll();
+        $parser = new ComponentParser($this->component);
+        $parser->doComponents();
 
-        // $parser->doComponents();
         $this->list = $parser->getList();
         $this->depths = $parser->getDepths();
 

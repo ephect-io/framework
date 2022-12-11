@@ -10,6 +10,14 @@ use Ephect\Framework\Registry\ComponentRegistry;
 define('TERMINATOR', '/');
 define('SKIP_MARK', '!');
 define('QUEST_MARK', '?');
+define('QUOTE', '"');
+define('OPEN_TAG', '<');
+define('CLOSE_TAG', '>');
+define('TAB_MARK', "\t");
+define('LF_MARK', "\n");
+define('CR_MARK', "\r");
+define('STR_EMPTY', '');
+define('STR_SPACE', ' ');
 
 class ComponentParser extends Parser
 {
@@ -90,12 +98,67 @@ class ComponentParser extends Parser
         return $result;
     }
 
+    
+    public function isClosedTag(array $tag): bool
+    {
+        $result = false;
+
+        $text = $tag['text'];
+        $result = substr($text, -2) === TERMINATOR . CLOSE_TAG;
+
+        return $result;
+    }
+
+    public function isCloseTag(array $tag): bool
+    {
+        $result = false;
+
+        $text = $tag['text'];
+        $result = substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
+
+        return $result;
+    }
+
+    public function makeTag($tag, $parentIds, $depth, $isCloser = false): array
+    {
+        $text = $tag['text'];
+        $name =  $tag['name'];
+
+        $i = count($this->list);
+        $item = [];
+
+        $item['id'] = $tag['id'];
+        $item['name'] =  empty($name) ? 'Fragment' : $name;
+        $item['text'] = $text;
+        $item['startsAt'] = $tag[0][1];
+        $item['endsAt'] = $tag[0][1] + strlen($text) - 1;
+        if(!$isCloser) {
+            // $item['class'] = ''; ComponentRegistry::read($item['name']);
+            $item['method'] = 'echo';
+            // $item['component'] = $this->component->getFullyQualifiedFunction();
+            $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
+            $item['depth'] = $depth;
+        }
+        $item['hasCloser'] = !$isCloser && substr($text, -2) !== TERMINATOR . CLOSE_TAG;
+        $item['isCloser'] = $isCloser;
+        if (!isset($parentIds[$depth])) {
+            $parentIds[$depth] = $i - 1;
+        }
+        $item['parentId'] = $parentIds[$depth];
+        
+        return $item;
+    }
+
     public function doComponents(): void
     {
-        $result = [];
 
         $list = [];
-
+        $i = 0;
+        $text = $this->html;
+        $parentIds = [];
+        $depth = 0;
+        $parentIds[$depth] = -1;
+        $allTags = [];
         /**
          * parse only components as defined by JSX
          * $re = '/<\/?([A-Z]\w+)(.*?)>|<\/?>/m';
@@ -104,162 +167,110 @@ class ComponentParser extends Parser
 
         $re = '/<\/?([A-Z]\w+)((\s|.*?)+)>|<\/?>/m';
 
-        $str = $this->html;
+        $text = $this->html;
 
-        preg_match_all($re, $str, $list, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
+        preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
-        $l = count($list);
-        $closers = [];
-        // Re-structure the list recursively
-        for ($i = $l - 1; $i > -1; $i--) {
+        $i = 0;
+        
+        foreach ($matches as $match) {
+            $tag = $match;
+            $tag['id'] = $i;
+            $tag['text'] = $match[0][0];
+            $tag['name'] = $match[1][0];
+            $tag['startsAt'] = $match[0][1];
+            $tag['endsAt'] = $match[0][1] + strlen($tag['text']) - 1;
 
-            $list[$i]['uid'] = Crypto::createUID();
+            unset($match[0]);
+            unset($match[1]);
+            unset($match[2]);
+            unset($match[3]);
+            $i++;
 
-            $list[$i]['id'] = $i;
-            $list[$i]['name'] = (!isset($list[$i][1][0])) ? 'Fragment' : $list[$i][1][0];
-            $list[$i]['class'] = ComponentRegistry::read($list[$i]['name']);
-            $list[$i]['component'] = $this->component->getFullyQualifiedFunction();
-            $list[$i]['text'] = $list[$i][0][0];
-            $list[$i]['method'] = 'echo';
-            $list[$i]['startsAt'] = $list[$i][0][1];
-            $list[$i]['endsAt'] = $list[$i][0][1] + strlen($list[$i][0][0]);
-            $list[$i]['props'] = ($list[$i]['name'] === 'Fragment') ? [] : $this->doArguments($list[$i][2][0]);
-            $list[$i]['node'] = false;
-            $list[$i]['hasCloser'] = false;
-            $list[$i]['isCloser'] = false;
+            array_push($allTags, $tag); 
+        }
 
-            if ($list[$i][0][0][1] === '/') {
-                for ($j = $i - 1; $j > -1; $j--) {
-                    if (
-                        ($list[$i][0][0] === '</>' && $list[$j][0][0] === '<>')
-                        || (isset($list[$i][1]) && $list[$i][1][0] === $list[$j][1][0])
-                    ) {
+        $this->depths[$depth] = 1;
 
-                        $currentCloser = [
-                            'id' => $i,
-                            'parentId' => $j,
-                            'text' => $list[$i][0][0],
-                            'startsAt' => $list[$i][0][1],
-                            'endsAt' => $list[$i][0][1] + strlen($list[$i][0][0]),
-                            'contents' => ['startsAt' => $list[$j][0][1] + strlen($list[$j][0][0]), 'endsAt' => $list[$i][0][1] - 1],
-                        ];
+        $this->allTags = $allTags;
+        $l = count($allTags);
+        $i = 0;
+        while (count($allTags)) {
 
-                        if (isset($list[$i][1]) && $list[$i][1][0] == 'Slot') {
-                            array_unshift($closers, $currentCloser);
-                        } else {
-                            array_push($closers, $currentCloser);
-                        }
-                        
-                        $list[$i]['isCloser'] = true;
-                        $list[$i]['method'] = 'render';
 
-                        break;
-                    }
+            // $this->log($allTags, $i);
+
+            if ($i === $l) {
+                $i = 0;
+                $allTags = array_values($allTags);
+                $l = count($allTags);
+            }
+
+            $tag = $allTags[$i];
+
+            // $tag = array_shift($allTags);
+
+            if ($this->isClosedTag($tag)) {
+                $item  = $this->makeTag($tag, $parentIds, $depth);
+                $list[] = $item;
+                unset($allTags[$i]);
+
+                $i++;
+
+                continue;
+            }
+
+            if ($this->isCloseTag($tag) ) {
+                $depth--;
+            }
+
+            if ($i + 1 < $l) {
+                $nextMatch = $allTags[$i + 1];
+
+                if (!$this->isCloseTag($tag) && $this->isCloseTag($nextMatch)) {
+                    $item = $this->makeTag($tag, $parentIds, $depth);
+                    $closer = $this->makeTag($nextMatch, $parentIds, $depth, true);
+
+                    $closer['content'] = [];
+                    $closer['parentId'] = $item['id'];
+                    $closer['content']['startsAt'] = $item['endsAt'] + 1; // uniqid();
+                    $closer['content']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
+                    $contents = substr($this->html,  $closer['content']['startsAt'],  $closer['content']['endsAt'] - $closer['content']['startsAt'] + 1);
+                    $closer['content']['text'] = '!#base64#' . htmlentities(html_entity_decode($contents));
+
+                    $item['closer'] = $closer;
+
+                    $list[$item['id']] = $item;
+
+                    unset($allTags[$i]);
+                    unset($allTags[$i + 1]);
+
+                    $i += 2;
+
+                    continue;
+                }
+
+                if (!$this->isCloseTag($tag) && !$this->isCloseTag($nextMatch)) {
+                    $depth++;
+                    $parentIds[$depth] = $tag['id'];
+
                 }
             }
 
-            if (isset($list[$i])) {
-                unset($list[$i][0]);
-                unset($list[$i][1]);
-                unset($list[$i][2]);
-                unset($list[$i][3]);
-            }
+            $this->depths[$depth] = 1;
 
+            $i++;
         }
+  
 
-        $l = count($list);
-
-        for ($i = 0; $i < $l; $i++) {
-
-            $component = $list[$i]['text'];
-            $compCloserText = '</' . ($list[$i]['name']  == 'Fragment' ? '' : $list[$i]['name']) . '>';
-
-            if ($component[strlen($component) - 2] !== '/' && $component[1] !== '/') {
-                $n = count($closers);
-
-                for ($j = 0; $j < $n; $j++) {
-
-                    $curCloserText = $closers[$j]['text'];
-                    if ($curCloserText == $compCloserText) {
-                        $closer = $closers[$j];
-                        $closer['parentId'] = $i;
-                        $closer['contents']['startsAt'] = $list[$i]['startsAt'] + strlen($list[$i]['text']);
-                        $list[$i]['closer'] = $closer;
-                        $list[$i]['hasCloser'] = true;
-                        $list[$i]['isCloser'] = false;
-
-                        unset($closers[$j]);
-                        $closers = array_values($closers);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        $depth = 0;
-        $parentIds = [];
-        $parentIds[$depth] = -1;
-
-        $l = count($list);
-
-        // Add useful information in list like depth and parentId
-        for ($i = 0; $i < $l; $i++) {
-
-            $siblingId = $i - 1;
-
-            $isSibling = isset($list[$siblingId]) && $list[$siblingId]['hasCloser'];
-
-            $component = $list[$i]['text'];
-            $firstName = $list[$i]['name'];
-            $secondName = isset($list[$i + 1]) ? $list[$i + 1]['name'] : 'eof';
-
-            if (!isset($parentIds[$depth])) {
-                $parentIds[$depth] = $i - 1;
-            }
-
-            $list[$i]['isSibling'] = $isSibling;
-            $list[$i]['parentId'] = $parentIds[$depth];
-            $list[$i]['depth'] = $depth;
-
-            if (TERMINATOR . $firstName != $secondName) {
-                if ($list[$i]['isCloser']) {
-                    $list[$i]['isSibling'] = $isSibling;
-
-                    $pId = !$isSibling && isset($parentIds[$depth]) ? $parentIds[$depth] : $siblingId;
-                    $depth--;
-
-                    $list[$i]['parentId'] = $parentIds[$depth];
-                    $list[$i]['depth'] = $depth;
-
-                    if ($list[$pId]['isSibling']) {
-                        $list[$i]['depth'] = $list[$pId]['depth'];
-                    }
-                } elseif ($component[1] == QUEST_MARK) {
-                } elseif (false === $list[$i]['hasCloser']) {
-                } elseif ($component[1] == SKIP_MARK) {
-                } else {
-                    if ($list[$i]['hasCloser']) {
-                        $depth++;
-                    }
-
-                    $this->depths[$depth] = 1;
-
-                    if (isset($parentIds[$depth])) {
-                        unset($parentIds[$depth]);
-                    }
-                }
-            }
-        }
-
-        for ($i = $l - 1; $i > -1; $i--) {
-            // Remove useless data
-            if ($list[$i]['isCloser']) {
-                unset($list[$i]);
-            } else {
-                unset($list[$i]['isCloser']);
-            }
-        }
+        // for ($i = $l - 1; $i > -1; $i--) {
+        //     // Remove useless data
+        //     if ($list[$i]['isCloser']) {
+        //         unset($list[$i]);
+        //     } else {
+        //         unset($list[$i]['isCloser']);
+        //     }
+        // }
 
         $maxDepth = count($this->depths);
         for ($i = $maxDepth; $i > -1; $i--) {
