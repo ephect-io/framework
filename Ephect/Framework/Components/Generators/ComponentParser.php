@@ -128,21 +128,20 @@ class ComponentParser extends Parser
         $item = [];
 
         $item['id'] = $tag['id'];
-        $item['uid'] = Crypto::createUID();
         $item['name'] =  empty($name) ? 'Fragment' : $name;
         $item['text'] = $text;
-        $item['startsAt'] = $tag[0][1];
-        $item['endsAt'] = $tag[0][1] + strlen($text) - 1;
+        $item['startsAt'] = $tag['startsAt'];
+        $item['endsAt'] = $tag['endsAt'];
         if(!$isCloser) {
-            $item['class'] = ''; ComponentRegistry::read($item['name']);
+            $item['uid'] = Crypto::createUID();
+            $item['class'] = ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
             $item['component'] = $this->component->getFullyQualifiedFunction();
             $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
             $item['depth'] = $depth;
+            $item['hasCloser'] = !$isCloser && substr($text, -2) !== TERMINATOR . CLOSE_TAG;
             $item['node'] = false;
         }
-        $item['hasCloser'] = !$isCloser && substr($text, -2) !== TERMINATOR . CLOSE_TAG;
-        $item['isCloser'] = $isCloser;
         if (!isset($parentIds[$depth])) {
             $parentIds[$depth] = $i - 1;
         }
@@ -169,8 +168,6 @@ class ComponentParser extends Parser
 
         $re = '/<\/?([A-Z]\w+)(\s|.*?)+?>|<\/?>/m';
 
-        $text = $this->html;
-
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
         $i = 0;
@@ -179,17 +176,17 @@ class ComponentParser extends Parser
             $tag = $match;
             $tag['id'] = $i;
             $tag['text'] = $match[0][0];
-            $tag['name'] = $match[1][0];
+            $tag['name'] = !isset($match[1]) ? 'Fragment' : $match[1][0];
             $tag['startsAt'] = $match[0][1];
             $tag['endsAt'] = $match[0][1] + strlen($tag['text']) - 1;
 
-            unset($match[0]);
-            unset($match[1]);
-            unset($match[2]);
-            unset($match[3]);
-            $i++;
+            unset($tag[0]);
+            unset($tag[1]);
+            unset($tag[2]);
 
             array_push($allTags, $tag);
+            $i++;
+
         }
 
         $this->depths[$depth] = 1;
@@ -214,7 +211,7 @@ class ComponentParser extends Parser
 
             if ($this->isClosedTag($tag)) {
                 $item  = $this->makeTag($tag, $parentIds, $depth);
-                $list[] = $item;
+                $list[$item['id']] = $item;
                 unset($allTags[$i]);
 
                 $i++;
