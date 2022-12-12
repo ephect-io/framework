@@ -104,6 +104,9 @@ class ComponentParser extends Parser
         $result = false;
 
         $text = $tag['text'];
+        if(empty($text) || $tag['name'] === 'Fragment') {
+            return $result;
+        }
         $result = substr($text, -2) === TERMINATOR . CLOSE_TAG;
 
         return $result;
@@ -114,6 +117,9 @@ class ComponentParser extends Parser
         $result = false;
 
         $text = $tag['text'];
+        if(empty($text) || $text === '<>') {
+            return $result;
+        }
         $result = substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
 
         return $result;
@@ -160,11 +166,6 @@ class ComponentParser extends Parser
         $depth = 0;
         $parentIds[$depth] = -1;
         $allTags = [];
-        /**
-         * parse only components as defined by JSX
-         * $re = '/<\/?([A-Z]\w+)(.*?)>|<\/?>/m';
-         */
-        // parse all tags comprising HTML ones 
 
         $re = '/<\/?([A-Z]\w+)(\s|.*?)+?>|<\/?>/m';
 
@@ -196,9 +197,6 @@ class ComponentParser extends Parser
         $i = 0;
         while (count($allTags)) {
 
-
-            // $this->log($allTags, $i);
-
             if ($i === $l) {
                 $i = 0;
                 $allTags = array_values($allTags);
@@ -206,8 +204,6 @@ class ComponentParser extends Parser
             }
 
             $tag = $allTags[$i];
-
-            // $tag = array_shift($allTags);
 
             if ($this->isClosedTag($tag)) {
                 $item  = $this->makeTag($tag, $parentIds, $depth);
