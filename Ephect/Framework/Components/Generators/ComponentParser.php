@@ -167,7 +167,7 @@ class ComponentParser extends Parser
          */
         // parse all tags comprising HTML ones 
 
-        $re = '/<\/?([A-Z]\w+)((\s|.*?)+)>|<\/?>/m';
+        $re = '/<\/?([A-Z]\w+)(\s|.*?)+?>|<\/?>/m';
 
         $text = $this->html;
 
