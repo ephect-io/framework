@@ -98,7 +98,7 @@ class ComponentParser extends Parser
         return $result;
     }
 
-    
+
     public function isClosedTag(array $tag): bool
     {
         $result = false;
@@ -128,16 +128,18 @@ class ComponentParser extends Parser
         $item = [];
 
         $item['id'] = $tag['id'];
+        $item['uid'] = Crypto::createUID();
         $item['name'] =  empty($name) ? 'Fragment' : $name;
         $item['text'] = $text;
         $item['startsAt'] = $tag[0][1];
         $item['endsAt'] = $tag[0][1] + strlen($text) - 1;
         if(!$isCloser) {
-            // $item['class'] = ''; ComponentRegistry::read($item['name']);
+            $item['class'] = ''; ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
-            // $item['component'] = $this->component->getFullyQualifiedFunction();
+            $item['component'] = $this->component->getFullyQualifiedFunction();
             $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
             $item['depth'] = $depth;
+            $item['node'] = false;
         }
         $item['hasCloser'] = !$isCloser && substr($text, -2) !== TERMINATOR . CLOSE_TAG;
         $item['isCloser'] = $isCloser;
@@ -145,7 +147,7 @@ class ComponentParser extends Parser
             $parentIds[$depth] = $i - 1;
         }
         $item['parentId'] = $parentIds[$depth];
-        
+
         return $item;
     }
 
@@ -172,7 +174,7 @@ class ComponentParser extends Parser
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
         $i = 0;
-        
+
         foreach ($matches as $match) {
             $tag = $match;
             $tag['id'] = $i;
@@ -187,7 +189,7 @@ class ComponentParser extends Parser
             unset($match[3]);
             $i++;
 
-            array_push($allTags, $tag); 
+            array_push($allTags, $tag);
         }
 
         $this->depths[$depth] = 1;
@@ -231,12 +233,12 @@ class ComponentParser extends Parser
                     $item = $this->makeTag($tag, $parentIds, $depth);
                     $closer = $this->makeTag($nextMatch, $parentIds, $depth, true);
 
-                    $closer['content'] = [];
+                    $closer['contents'] = [];
                     $closer['parentId'] = $item['id'];
-                    $closer['content']['startsAt'] = $item['endsAt'] + 1; // uniqid();
-                    $closer['content']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
-                    $contents = substr($this->html,  $closer['content']['startsAt'],  $closer['content']['endsAt'] - $closer['content']['startsAt'] + 1);
-                    $closer['content']['text'] = '!#base64#' . htmlentities(html_entity_decode($contents));
+                    $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
+                    $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
+                    $contents = substr($this->html,  $closer['contents']['startsAt'],  $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
+                    $closer['contents']['text'] = '!#base64#' . htmlentities(html_entity_decode($contents));
 
                     $item['closer'] = $closer;
 
@@ -261,16 +263,8 @@ class ComponentParser extends Parser
 
             $i++;
         }
-  
 
-        // for ($i = $l - 1; $i > -1; $i--) {
-        //     // Remove useless data
-        //     if ($list[$i]['isCloser']) {
-        //         unset($list[$i]);
-        //     } else {
-        //         unset($list[$i]['isCloser']);
-        //     }
-        // }
+        ksort($list);
 
         $maxDepth = count($this->depths);
         for ($i = $maxDepth; $i > -1; $i--) {

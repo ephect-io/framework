@@ -19,7 +19,6 @@ class ComponentStructure extends Structure
     public $startsAt;
     public $endsAt;
     public $isSibling;
-    public $isCloser;
     public $hasCloser;
     public $closer;
     public $props;
