@@ -28,10 +28,7 @@ class Utils
                 continue;
             }
 
-            if (count($filter) > 0 && in_array($fi['extension'], $filter)) {
-                array_push($result, substr($file->getPathName(), $l));
-            }
-            if (count($filter) === 0) {
+            if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
                 array_push($result, substr($file->getPathName(), $l));
             }
         }

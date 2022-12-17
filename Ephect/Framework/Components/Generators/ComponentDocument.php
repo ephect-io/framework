@@ -5,6 +5,7 @@ namespace Ephect\Framework\Components\Generators;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Components\ComponentStructure;
+use Ephect\Framework\Xml\XmlDocument;
 
 class ComponentDocument
 {
@@ -88,9 +89,10 @@ class ComponentDocument
 
     public function matchAll(): bool
     {
-        $parser = new ComponentParser($this->component);
 
+        $parser = new ComponentParser($this->component);
         $parser->doComponents();
+
         $this->list = $parser->getList();
         $this->depths = $parser->getDepths();
 
@@ -317,4 +319,5 @@ class ComponentDocument
         }
         return $offset;
     }
+
 }
