@@ -11,8 +11,8 @@ use Phar;
 class PharLib extends Element
 {
 
-    private EggLib $_egg;
-    private Phar $_phar;
+    private EggLib $egg;
+    private Phar $phar;
     /**
      * Constructor
      */
@@ -65,7 +65,7 @@ class PharLib extends Element
     public function addFileToPhar($file, $name): void
     {
         Console::writeLine("Adding %s", $name);
-        $this->_phar->addFile($file, $name);
+        $this->phar->addFile($file, $name);
     }
 
     public function makeMasterPhar(): void
@@ -89,7 +89,7 @@ class PharLib extends Element
             ini_set('phar.readonly', 0);
 
             // the current directory must be src
-            $pharName = $this->appName . ".phar";
+            $pharName = APP_NAME . ".phar";
             $buildRoot = APP_CWD . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
 
             if (file_exists($buildRoot . $pharName)) {
@@ -100,21 +100,21 @@ class PharLib extends Element
                 mkdir($buildRoot);
             }
 
-            $this->_phar = new \Phar(
+            $this->phar = new \Phar(
                 $buildRoot . $pharName,
                 \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME,
                 $pharName
             );
             // start buffering. Mandatory to modify stub.
-            $this->_phar->startBuffering();
+            $this->phar->startBuffering();
 
             // Get the default stub. You can create your own if you have specific needs
-            $defaultStub = $this->_phar->createDefaultStub("app.php");
+            $defaultStub = $this->phar->createDefaultStub("app.php");
 
             Console::writeLine('APP_DIR::' . APP_CWD);
             $this->addPharFiles();
 
-            $ephectTree = $this->_egg->requireTree(EPHECT_ROOT);
+            $ephectTree = $this->egg->requireTree(EPHECT_ROOT);
 
             // $this->addFileToPhar(EPHECT_ROOT . 'ephect_library.php', "ephect_library.php");
 
@@ -154,17 +154,17 @@ class PharLib extends Element
 
             $stub = $execHeader . $defaultStub;
             // Add the stub
-            $this->_phar->setStub($stub);
+            $this->phar->setStub($stub);
 
-            $this->_phar->stopBuffering();
+            $this->phar->stopBuffering();
 
             $buildRoot = APP_CWD . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
-            $execname = $buildRoot . $this->appName;
+            $execname = $buildRoot . APP_NAME;
             if (PHP_OS == 'WINNT') {
                 $execname .= '.bat';
             }
 
-            rename($buildRoot . $this->appName . '.phar', $execname);
+            rename($buildRoot . APP_NAME . '.phar', $execname);
             chmod($execname, 0755);
         } catch (\Throwable $ex) {
             Console::writeException($ex);
@@ -176,9 +176,9 @@ class PharLib extends Element
         try {
             $tree = Utils::walkTreeFiltered(APP_CWD, ['php']);
 
-            if (isset($tree[APP_CWD . $this->scriptName])) {
-                unset($tree[APP_CWD . $this->scriptName]);
-                $this->addFileToPhar(APP_CWD . $this->scriptName, $this->scriptName);
+            if (isset($tree[APP_CWD . APP_NAME])) {
+                unset($tree[APP_CWD . APP_NAME]);
+                $this->addFileToPhar(APP_CWD . APP_NAME, SCRIPT_ROOT);
             }
             foreach ($tree as $filename) {
                 $this->addFileToPhar(APP_CWD . $filename, $filename);
