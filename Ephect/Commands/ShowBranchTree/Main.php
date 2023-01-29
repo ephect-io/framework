@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands\BranchTree;
 
+use Ephect\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
@@ -13,7 +14,7 @@ class Main extends AbstractCommand
     {
         $dir = 'master' . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect';
 
-        $egg = new EggLib($this->application);
+        $egg = new CommonLib($this->application);
         $egg->displayTree($dir);
     }
 }

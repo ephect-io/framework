@@ -2,7 +2,7 @@
 
 namespace Ephect\Commands\CreateQuickstart;
 
-use Ephect\Apps\Egg\EggLib;
+use Ephect\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
@@ -12,8 +12,10 @@ class Main extends AbstractCommand
 {
     public function run(): void
     {
-        $egg = new EggLib($this->application);
+        $egg = new CommonLib($this->application);
         $egg->createCommonTrees();
-        $egg->createQuickstart();
+
+        $lib = new Lib($this->application);
+        $lib->createQuickstart();
     }
 }

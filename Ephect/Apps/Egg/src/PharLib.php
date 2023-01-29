@@ -2,8 +2,8 @@
 
 namespace Ephect\Apps\Egg;
 
+use Ephect\Commands\CommonLib;
 use Ephect\Framework\CLI\Application;
-use Ephect\Framework\Components\Compiler;
 use Ephect\Framework\Element;
 use Ephect\Framework\IO\Utils;
 use Phar;
@@ -20,7 +20,7 @@ class PharLib extends Element
     {
         parent::__construct($parent);
 
-        $this->egg = new EggLib($parent);
+        $this->egg = new CommonLib($parent);
 
     }
 
@@ -28,7 +28,7 @@ class PharLib extends Element
     {
         $result = [];
 
-        $libRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
+        $libRoot = APP_CWD . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
 
         if (!file_exists($libRoot)) {
             mkdir($libRoot);
@@ -90,7 +90,7 @@ class PharLib extends Element
 
             // the current directory must be src
             $pharName = $this->appName . ".phar";
-            $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
+            $buildRoot = APP_CWD . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
 
             if (file_exists($buildRoot . $pharName)) {
                 unlink($buildRoot . $pharName);
@@ -111,7 +111,7 @@ class PharLib extends Element
             // Get the default stub. You can create your own if you have specific needs
             $defaultStub = $this->_phar->createDefaultStub("app.php");
 
-            Console::writeLine('APP_DIR::' . $this->appDirectory);
+            Console::writeLine('APP_DIR::' . APP_CWD);
             $this->addPharFiles();
 
             $ephectTree = $this->_egg->requireTree(EPHECT_ROOT);
@@ -158,7 +158,7 @@ class PharLib extends Element
 
             $this->_phar->stopBuffering();
 
-            $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
+            $buildRoot = APP_CWD . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
             $execname = $buildRoot . $this->appName;
             if (PHP_OS == 'WINNT') {
                 $execname .= '.bat';
@@ -174,14 +174,14 @@ class PharLib extends Element
     public function addPharFiles(): void
     {
         try {
-            $tree = Utils::walkTreeFiltered($this->appDirectory, ['php']);
+            $tree = Utils::walkTreeFiltered(APP_CWD, ['php']);
 
-            if (isset($tree[$this->appDirectory . $this->scriptName])) {
-                unset($tree[$this->appDirectory . $this->scriptName]);
-                $this->addFileToPhar($this->appDirectory . $this->scriptName, $this->scriptName);
+            if (isset($tree[APP_CWD . $this->scriptName])) {
+                unset($tree[APP_CWD . $this->scriptName]);
+                $this->addFileToPhar(APP_CWD . $this->scriptName, $this->scriptName);
             }
             foreach ($tree as $filename) {
-                $this->addFileToPhar($this->appDirectory . $filename, $filename);
+                $this->addFileToPhar(APP_CWD . $filename, $filename);
             }
         } catch (\Throwable $ex) {
             Console::writeException($ex);

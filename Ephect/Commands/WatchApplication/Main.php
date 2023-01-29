@@ -2,7 +2,6 @@
 
 namespace Ephect\Commands\WatchApplication;
 
-use Ephect\Apps\Egg\EggLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
@@ -12,7 +11,7 @@ class Main extends AbstractCommand
 {
     public function run(): void
     {
-        $egg = new EggLib($this->application);
+        $egg = new Lib($this->application);
         $egg->watch();
     }
 }

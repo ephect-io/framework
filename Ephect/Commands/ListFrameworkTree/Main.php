@@ -2,7 +2,7 @@
 
 namespace Ephect\Commands\FrameworkTree;
 
-use Ephect\Apps\Egg\EggLib;
+use Ephect\Commands\CommonLib;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
@@ -14,7 +14,7 @@ class Main extends AbstractCommand
     public function run(): void
     {
         Console::writeLine(EPHECT_ROOT);
-        $egg = new EggLib($this->application);
+        $egg = new CommonLib($this->application);
         $egg->displayTree(EPHECT_ROOT);
     }
 }

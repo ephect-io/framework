@@ -2,7 +2,7 @@
 
 namespace Ephect\Commands\Serve;
 
-use Ephect\Apps\Egg\EggLib;
+use Ephect\Commands\CommonLib;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\System\Command;
@@ -14,9 +14,8 @@ class Lib extends AbstractCommandLib
 
     public function Serve(): void
     {
-  
-        $egg = new EggLib($this->parent);
-        $port = $egg->getPort();
+        $egg = new CommonLib($this->parent);
+        $port = $this->getPort();
 
         Utils::safeWrite(CONFIG_DIR . 'dev_port', $port);
 
@@ -29,6 +28,23 @@ class Lib extends AbstractCommandLib
         Console::writeLine("Serving the application locally ...");
     }
 
+    public function getPort($default = 8000): int
+    {
+        $port = $default;
 
+        if ($this->parent->getArgc() > 2) {
+            $customPort = $this->parent->getArgi(2);
+
+            $cleanPort = preg_replace('/([\d]+)/', '$1', $customPort);
+
+            if ($cleanPort !== $customPort) {
+                $customPort = $port;
+            }
+
+            $port = $customPort;
+        }
+
+        return $port;
+    }
 }
 

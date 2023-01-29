@@ -2,7 +2,7 @@
 
 namespace Ephect\Commands\CreateSkeleton;
 
-use Ephect\Apps\Egg\EggLib;
+use Ephect\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
@@ -12,8 +12,9 @@ class Main extends AbstractCommand
 {
     public function run(): void
     {
-        $egg = new EggLib($this->application);
+        $egg = new CommonLib($this->application);
         $egg->createCommonTrees();
-        $egg->createSkeleton();
+        $lib = new Lib($this->application);
+        $lib->createSkeleton();
     }
 }
