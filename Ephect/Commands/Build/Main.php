@@ -1,19 +1,18 @@
 <?php
 
-namespace Ephect\Commands;
+namespace Ephect\Commands\Build;
 
-use Ephect\Apps\Egg\EggLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "build")]
 #[CommandDeclaration(desc: "Build the application.")]
-class BuildApplication extends AbstractCommand
+class Main extends AbstractCommand
 {
     public function run(): void
     {
 
-        $egg = new EggLib($this->application);
+        $egg = new Lib($this->application);
         $egg->build();
     }
 }

@@ -39,6 +39,10 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 [$namespace, $class] = ElementUtils::getClassDefinitionFromFile($root_dir . $filename);
                 $fqClass = "$namespace\\$class";
 
+                if($class !== 'Main') {
+                    continue;
+                }
+
                 include $root_dir . $filename;
                 $object = new $fqClass($this->_application);
 

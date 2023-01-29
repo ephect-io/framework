@@ -98,21 +98,6 @@ class EggLib extends Element
         
     }
 
-    public function build(): void
-    {
-        if (file_exists(CACHE_DIR)) {
-            Utils::delTree(CACHE_DIR);
-        }
-
-        $builder = new Builder;
-        $builder->perform();
-        $builder->postPerform();
-        // $compiler->performAgain();
-
-        $builder->buildAllRoutes();
-    }
-
-
     public function requireMaster(): object
     {
         $result = [];
@@ -181,23 +166,7 @@ class EggLib extends Element
         Console::writeLine($tree);
     }
 
-    public function serve(): void
-    {
-
-        $port = $this->getPort();
-
-        Utils::safeWrite(CONFIG_DIR . 'dev_port', $port);
-
-        $cmd = new Command();
-        $php = $cmd->which('php');
-
-        Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
-        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
-        $cmd->execute($php, '-S', "localhost:$port", '-t', 'public');
-        Console::writeLine("Serving the application locally ...");
-    }
-
-    private function getPort($default = 8000): int
+    public function getPort($default = 8000): int
     {
 
         $port = $default;
@@ -216,4 +185,5 @@ class EggLib extends Element
 
         return $port;
     }
+  
 }

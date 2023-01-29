@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands;
+namespace Ephect\Commands\Os;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;
@@ -8,7 +8,7 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
 #[CommandDeclaration(verb: "os")]
 #[CommandDeclaration(desc: "Display the running operating system name.")]
-class Os extends AbstractCommand
+class Main extends AbstractCommand
 {
     public function run(): void
     {
