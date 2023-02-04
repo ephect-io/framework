@@ -1,4 +1,4 @@
-import HelloWorld from "./HelloWorld.mjs"
+import HelloWorld from "./HelloWorld.class.mjs"
 
 /**
  * Rename the component
