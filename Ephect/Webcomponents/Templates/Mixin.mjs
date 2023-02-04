@@ -1,9 +1,9 @@
-import HelloEngine from "./HelloEngine.mjs"
+import HelloWorld from "./HelloWorld.mjs"
 
 /**
  * Rename the component
  */
-class Component extends HTMLElement {
+class HelloWorldComponent extends HTMLElement {
 
     instantiate() {
         /**
@@ -26,7 +26,7 @@ class Component extends HTMLElement {
        /**
         * The magic starts here
         */
-       const engine = new HelloEngine()
-       engine.sayHello(this.word)
+       const world = new HelloWorld()
+       world.sayHello(this.word)
     }
 }
