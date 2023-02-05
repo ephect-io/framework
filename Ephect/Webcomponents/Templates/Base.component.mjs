@@ -15,18 +15,18 @@ class BaseComponent extends HTMLElement {
         /**
          * Attributes passed inline to the component
          */
-        return ['word']
+        return ['foo']
     }
 
-    get word() {
-        return this.getAttribute('word') ?? null
+    get foo() {
+        return this.getAttribute('foo') ?? null
     }
 
     async connectedCallback() {
        /**
         * The magic starts here
         */
-       const world = new Base()
-       world.sayHello(this.word)
+       const base = new Base()
+       base.doSomething(this.foo)
     }
 }
