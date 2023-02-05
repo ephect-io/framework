@@ -6,7 +6,8 @@ use Ephect\Framework\Core\Structure;
 
 class ManifestStructure extends Structure
 {
-    public $file;
-    public $tag;
-    public $class;
+    public string $tag = '';
+    public string $class = '';
+    public string $entrypoint = '';
+    public array $arguments = [];
 }

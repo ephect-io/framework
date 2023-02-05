@@ -2,17 +2,21 @@
 
 namespace Ephect\Framework\Webcomponents;
 
-class Manifest
+use Ephect\Framework\Element;
+
+class Manifest extends Element
 {
-    private $tag;
-    private $class;
-    private $file;
+    private string $tag;
+    private string $class;
+    private string $entrypoint;
+    private array $arguments;
 
     public function __construct(ManifestStructure $structure)
     {
         $this->tag = $structure->tag;
         $this->class = $structure->class;
-        $this->file = $structure->file;
+        $this->entrypoint = $structure->entrypoint;
+        $this->arguments = $structure->arguments;
     }
 
 }
