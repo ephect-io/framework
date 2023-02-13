@@ -1,0 +1,48 @@
+<?php
+
+namespace QuickStart;
+
+function Base()
+{
+    $foo = '';
+
+    return (<<< HTML
+    <Webcomponent>
+        <h1>
+            <slot />
+            {{ foo }}
+        </h1>
+    </Webcomponent>
+    <Import export="Base" from="./Base.class.mjs">
+    <script>
+
+
+    /**
+     * Rename the component
+     */
+    class BaseComponent extends HTMLElement {
+
+        static get observeAttributes() {
+            /**
+             * Attributes passed inline to the component
+             */
+            return ['foo']
+        }
+
+        get foo() {
+            return this.getAttribute('foo') ?? null
+        }
+
+        async connectedCallback() {
+            /**
+             * The magic starts here
+             */
+            const base = new Base()
+            base.doSomething(this.foo)
+        }
+    }
+
+    customElements.define('<tag />', <class />);
+    </script>
+    HTML);
+}

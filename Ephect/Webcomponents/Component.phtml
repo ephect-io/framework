@@ -1,3 +1,9 @@
+<template id="Base">
+    <h1>
+        <slot />
+    </h1>
+</template>
+<script>
 class Component extends HTMLElement {
 
     constructor() {
@@ -5,9 +11,7 @@ class Component extends HTMLElement {
 
         <init />
         this.attachShadow({ mode: 'open' });
-        this.shadowRoot.innerHTML = `
-        <html />
-        `
+        this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
         const slots = this.shadowRoot.querySelectorAll('slot')
         if(slots.length) {
             slots[0].addEventListener('slotchange', event => {
@@ -29,3 +33,4 @@ class Component extends HTMLElement {
 }
 
 customElements.define('<tag />', <class />);
+</script>
