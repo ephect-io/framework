@@ -12,6 +12,7 @@ class Main extends AbstractCommand
 
     public function run(): void
     {
-        $this->application->displayConstants();
+        $lib = new Lib($this->application);
+        $lib->displayConstants();
     }
 }
