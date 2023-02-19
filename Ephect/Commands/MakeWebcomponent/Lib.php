@@ -89,11 +89,14 @@ class Lib
             $classText = str_replace('Base', $className, $classText);
             Utils::safeWrite($destDir . "$className.class.mjs", $classText);
 
-            $componentText = Utils::safeRead($srcDir . 'Base.component.mjs');
+            $componentText = Utils::safeRead($srcDir . 'Base.component.phtml');
             $componentText = str_replace('Base', $className, $componentText);
             Utils::safeWrite($destDir . "$className.component.mjs", $componentText);
 
             copy($srcDir . 'Base.tpl', $destDir . "$className.tpl");
+
+            Console::writeLine(ConsoleColors::getColoredString("Webcomponent ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
+            Console::writeLine("%s", $destDir);
             
         } catch (Exception $ex) {
             Console::writeException($ex);
