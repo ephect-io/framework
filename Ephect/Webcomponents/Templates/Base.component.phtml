@@ -4,17 +4,16 @@ namespace QuickStart;
 
 function Base()
 {
-    $foo = '';
 
     return (<<< HTML
-    <Webcomponent>
+    <template id="Base">
         <h1>
             <slot />
             {{ foo }}
         </h1>
-    </Webcomponent>
-    <Import export="Base" from="./Base.class.mjs">
+    </template>
     <script>
+    import Base from "./Base.class.mjs"
 
 
     /**
@@ -22,27 +21,35 @@ function Base()
      */
     class BaseComponent extends HTMLElement {
 
-        static get observeAttributes() {
-            /**
-             * Attributes passed inline to the component
-             */
-            return ['foo']
+        <Properties />
+        constructor() {
+            super();
+
+            this.attachShadow({ mode: 'open' });
+            this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
+
+            const slots = this.shadowRoot.querySelectorAll('slot')
+            if(slots.length) {
+                slots[0].addEventListener('slotchange', event => {
+                    console.dir(slots[0].assignedNodes())
+                })
+            }
+
         }
 
-        get foo() {
-            return this.getAttribute('foo') ?? null
-        }
+        <ObserveAttributes />
 
+        <GetAttributes />
         async connectedCallback() {
             /**
              * The magic starts here
              */
             const base = new Base()
-            base.doSomething(this.foo)
+            base.<Entrypoint />()
         }
     }
 
-    customElements.define('<tag />', <class />);
+    customElements.define('<TagName />', BaseComponent);
     </script>
     HTML);
 }
