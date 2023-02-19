@@ -54,9 +54,7 @@ class Utils
 
     public static function safeMkDir(string $directory): bool
     {
-        $result = false;
-
-        if (!file_exists($directory)) {
+        if (!$result = file_exists($directory)) {
             $result = mkdir($directory, 0775, true);
         }
 
