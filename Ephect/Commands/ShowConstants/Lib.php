@@ -47,7 +47,7 @@ class Lib
 
             return $constants;
         } catch (Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             return [];
         }

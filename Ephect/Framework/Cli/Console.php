@@ -42,15 +42,37 @@ class Console extends Element
         return $result;
     }
 
-    public static function writeException(\Throwable $ex, $file = null, $line = null): void
+    public static function info(string|array|object $string, ...$params): void 
     {
-        if (!IS_WEB_APP) {
-            $message =  self::formatException($ex);
-
-            print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
-        } else {
-            self::getLogger()->error($ex, $ex->getFile(), $ex->getLine());
+        if (IS_WEB_APP) {
+            self::getLogger()->info($string);
+            return;
         }
+
+        $value = TextUtils::format($string, $params);
+        echo $value . PHP_EOL;
+    }
+
+    public static function log(string|array|object $string, ...$params): void 
+    {
+        if (IS_WEB_APP) {
+            self::getLogger()->debug($string);
+            return;
+        }
+
+        $value = TextUtils::format($string, $params);
+        echo $value . PHP_EOL;
+    }
+
+    public static function error(\Throwable $ex, $file = null, $line = null): void
+    {
+        if (IS_WEB_APP) {
+            self::getLogger()->error($ex, $ex->getFile(), $ex->getLine());
+            return;
+        }
+        
+        $message =  self::formatException($ex);
+        print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
     }
 
     public static function formatException(\Throwable $ex): string
@@ -68,14 +90,4 @@ class Console extends Element
         return $message;
     }
 
-    public static function log(string|array|object $string, ...$params): void 
-    {
-        if (IS_WEB_APP) {
-            self::getLogger()->debug($string);
-        }
-
-        $value = TextUtils::format($string, $params);
-
-        echo $value . PHP_EOL;
-    }
 }

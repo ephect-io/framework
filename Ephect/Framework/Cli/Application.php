@@ -94,7 +94,7 @@ class Application extends AbstractApplication
             $command = new Lib($this);
             $command->displayConstants();
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             return [];
         }

@@ -32,7 +32,7 @@ class Lib
             Console::writeLine(ConsoleColors::getColoredString("Webcomponent ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
             Console::writeLine("%s", $destDir);
         } catch (Exception $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
         }
     }
 
@@ -153,9 +153,9 @@ class Lib
             $properties = '';
             foreach($arguments as $property) {
                 $properties .= <<< HTML
-                $property\n
+                    this.$property\n
                 HTML;
-                $properties .= '        ';
+                $properties .= '            ';
             }
 
             $componentText = str_replace('<Properties />', $properties, $componentText);

@@ -167,7 +167,7 @@ class PharLib extends Element
             rename($buildRoot . APP_NAME . '.phar', $execname);
             chmod($execname, 0755);
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
         }
     }
 
@@ -184,7 +184,7 @@ class PharLib extends Element
                 $this->addFileToPhar(APP_CWD . $filename, $filename);
             }
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
         }
     }
 
