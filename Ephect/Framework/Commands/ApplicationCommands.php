@@ -26,11 +26,11 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
     {
         $usage = [];
         $commandFiles = Utils::walkTreeFiltered(COMMANDS_ROOT, ['php']);
-        $customCommandFiles = Utils::walkTreeFiltered(CONFIG_COMMANDS, ['php']);
+        $customCommandFiles = Utils::walkTreeFiltered(CUSTOM_COMMANDS_ROOT, ['php']);
 
         $allFiles = [
             (object) ["root" => COMMANDS_ROOT, "files" => $commandFiles],
-            (object) ["root" => CONFIG_COMMANDS, "files" => $customCommandFiles],
+            (object) ["root" => CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles],
         ];
 
         foreach ($allFiles as $entry) {
