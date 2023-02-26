@@ -119,7 +119,7 @@ class Builder
         }
 
         if (!WebcomponentRegistry::uncache()) {
-            $webcomponentList = IOUtils::walkTreeFiltered(CONFIG_WEBCOMPONENTS, ['phtml']);
+            $webcomponentList = IOUtils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
             foreach ($webcomponentList as $key => $webcomponentFile) {
                 $this->describeWebcomponent(CONFIG_WEBCOMPONENTS, $webcomponentFile);
             }
