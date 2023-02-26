@@ -50,7 +50,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All logs cleared';
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             $result = 'Impossible to clear logs';
         }
@@ -65,7 +65,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All runtime files deleted';
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             $result = 'Impossible to delete runtime files';
         }
@@ -81,7 +81,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All cache files deleted';
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             $result = 'Impossible to delete cache files';
         }
@@ -110,7 +110,7 @@ abstract class AbstractApplication extends Element
             $this->appTitle = StateRegistry::read('application', 'title');
 
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
         }
     }
 

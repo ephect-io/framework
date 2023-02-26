@@ -182,6 +182,7 @@ define('CONFIG_DOCROOT', trim(file_get_contents(CONFIG_DIR . 'document_root')));
 define('CONFIG_HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
 define('CONFIG_NAMESPACE', trim(file_get_contents(CONFIG_DIR . 'namespace')));
 define('CONFIG_COMMANDS', trim(file_get_contents(CONFIG_DIR . 'commands')));
+define('CONFIG_WEBCOMPONENTS', trim(file_get_contents(CONFIG_DIR . 'webcomponents')));
 
 define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARATOR);
 define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);

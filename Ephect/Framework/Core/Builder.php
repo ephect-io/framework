@@ -17,6 +17,7 @@ use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
+use Ephect\Framework\Registry\WebcomponentRegistry;
 use Ephect\Framework\Web\Curl;
 use Ephect\Plugins\Router\RouterService;
 use Throwable;
@@ -28,7 +29,7 @@ class Builder
     protected $routes = [];
 
 
-    private function describeCustomComponents(string $sourceDir, string $filename): void
+    private function describeCustomComponent(string $sourceDir, string $filename): void
     {
         $cachedSourceViewFile = Component::getFlatFilename($filename);
         copy($sourceDir . $filename, COPY_DIR . $cachedSourceViewFile);
@@ -51,7 +52,7 @@ class Builder
         $this->list[$comp->getFullyQualifiedFunction()] = $comp;
     }
 
-    private function describePlugins(string $sourceDir, string $filename): void
+    private function describePlugin(string $sourceDir, string $filename): void
     {
         $plugin = new Plugin();
         $plugin->load($filename);
@@ -59,6 +60,29 @@ class Builder
 
         PluginRegistry::write($filename, $plugin->getUID());
         PluginRegistry::write($plugin->getUID(), $plugin->getFullyQualifiedFunction());
+    }
+
+    private function describeWebcomponent(string $sourceDir, string $filename): void
+    {
+        $cachedSourceViewFile = Component::getFlatFilename($filename);
+        copy($sourceDir . $filename, COPY_DIR . $cachedSourceViewFile);
+
+        $comp = new Component();
+        $comp->load($cachedSourceViewFile);
+        $comp->analyse();
+
+        $parser = new ComponentParser($comp);
+        $struct = $parser->doDeclaration();
+        $decl = $struct->toArray();
+
+        CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
+        WebcomponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+        WebcomponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
+
+        $entity = ComponentEntity::buildFromArray($struct->composition);
+        $comp->add($entity);
+
+        $this->list[$comp->getFullyQualifiedFunction()] = $comp;
     }
 
     /**
@@ -78,9 +102,9 @@ class Builder
 
             $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
             foreach ($templateList as $key => $compFile) {
-                $this->describeCustomComponents(SRC_ROOT, $compFile);
+                $this->describeCustomComponent(SRC_ROOT, $compFile);
             }
-
+            
             CodeRegistry::cache();
             ComponentRegistry::cache();
         }
@@ -88,9 +112,18 @@ class Builder
         if (!PluginRegistry::uncache()) {
             $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
             foreach ($pluginList as $key => $pluginFile) {
-                $this->describePlugins(PLUGINS_ROOT, $pluginFile);
+                $this->describePlugin(PLUGINS_ROOT, $pluginFile);
             }
             PluginRegistry::cache();
+            ComponentRegistry::cache();
+        }
+
+        if (!WebcomponentRegistry::uncache()) {
+            $webcomponentList = IOUtils::walkTreeFiltered(CONFIG_WEBCOMPONENTS, ['phtml']);
+            foreach ($webcomponentList as $key => $webcomponentFile) {
+                $this->describeWebcomponent(CONFIG_WEBCOMPONENTS, $webcomponentFile);
+            }
+            WebcomponentRegistry::cache();
             ComponentRegistry::cache();
         }
     }
@@ -106,12 +139,12 @@ class Builder
 
         $templateList = IOUtils::walkTreeFiltered(UNIQUE_DIR, ['phtml']);
         foreach ($templateList as $key => $compFile) {
-            $this->describeCustomComponents(UNIQUE_DIR, $compFile);
+            $this->describeCustomComponent(UNIQUE_DIR, $compFile);
         }
 
         $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
         foreach ($pluginList as $key => $pluginFile) {
-            $this->describePlugins(PLUGINS_ROOT, $pluginFile);
+            $this->describePlugin(PLUGINS_ROOT, $pluginFile);
         }
 
         CodeRegistry::cache();

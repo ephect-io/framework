@@ -21,10 +21,10 @@ function Base()
      */
     class BaseComponent extends HTMLElement {
 
-        <Properties />
         constructor() {
             super();
 
+            <Properties />
             this.attachShadow({ mode: 'open' });
             this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
 
@@ -38,7 +38,6 @@ function Base()
         }
 
         <ObserveAttributes />
-
         <GetAttributes />
         async connectedCallback() {
             /**
