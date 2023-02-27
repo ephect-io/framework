@@ -18,8 +18,7 @@ class Tree implements TreeInterface
 
     public function count(): int
     {
-        $this->count = count($this->elementList);
-        return $this->count;
+        return count($this->elementList);
     }
 
     public function getIterator(): TreeIterator

@@ -192,7 +192,6 @@ class ComponentParser extends Parser
 
         $this->depths[$depth] = 1;
 
-        $this->allTags = $allTags;
         $l = count($allTags);
         $i = 0;
         while (count($allTags)) {

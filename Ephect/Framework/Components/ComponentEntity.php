@@ -46,7 +46,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->motherUID = $attributes->motherUID;
         $this->id = $attributes->id;
         $this->className = $attributes->class;
-        $this->componentName = $attributes->component;
+        $this->compName = $attributes->component;
         $this->parentId = $attributes->parentId;
         $this->text = $attributes->text;
         $this->name = $attributes->name;
@@ -89,11 +89,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     public function hasProps(): bool
     {
         return count($this->properties) > 0;
-    }
-
-    public function getChildName(): string
-    {
-        return $this->childName;
     }
 
     public function hasCloser(): bool
@@ -252,7 +247,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         }
 
         ComponentRegistry::uncache();
-        $compFile = ComponentRegistry::read($this->componentName);
+        $compFile = ComponentRegistry::read($this->compName);
         if ($compFile === null) {
             return null;
         }
