@@ -39,7 +39,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
             }
 
             $funcName = ComponentRegistry::read($componentName);
-            $componentRender = "\t\t\t<?php \$fn = \\${funcName}($args); \$fn(); ?>\n";
+            $componentRender = "\t\t\t<?php \$fn = \\{$funcName}($args); \$fn(); ?>\n";
 
             $subject = str_replace($component, $componentRender, $subject);
 
