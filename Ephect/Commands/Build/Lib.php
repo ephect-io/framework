@@ -18,9 +18,11 @@ class Lib extends AbstractCommandLib
         $builder = new Builder;
         $builder->describeComponents();
         $builder->prepareRoutedComponents();
+
         // $compiler->performAgain();
 
-        $builder->buildAllRoutes();
+        $motherUID = $builder->buildAllRoutes();
+        $builder->buildWebcomponents($motherUID);
     }
 }
 

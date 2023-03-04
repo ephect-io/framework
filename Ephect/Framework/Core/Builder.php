@@ -184,7 +184,7 @@ class Builder
         ComponentRegistry::cache();
     }
 
-    public function buildByName($name): void
+    public function buildByName($name): string
     {
         PluginRegistry::uncache();
 
@@ -225,6 +225,8 @@ class Builder
         }
 
         IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+
+        return $comp->getMotherUID();
     }
 
     public function buildByRoute($route = 'Default'): void
@@ -270,15 +272,17 @@ class Builder
         Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
     }
 
-    public function buildAllRoutes(): void
+    public function buildAllRoutes(): string
     {
 
-        $this->buildByName('App');
+        $motherUID = $this->buildByName('App');
         $this->routes = RouterService::findRouteNames();
 
         foreach ($this->routes as $route) {
             $this->buildByRoute($route);
         }
+
+        return $motherUID;
     }
 
     public function searchForRoutes(): array
