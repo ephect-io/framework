@@ -90,7 +90,7 @@ class Builder
      *
      * @return void
      */
-    public function perform(): void
+    public function describeComponents(): void
     {
         if (!ComponentRegistry::uncache()) {
             IOUtils::safeMkDir(CACHE_DIR);
@@ -152,7 +152,7 @@ class Builder
         ComponentRegistry::cache();
     }
 
-    public function postPerform(): void
+    public function prepareRoutedComponents(): void
     {
 
         CodeRegistry::uncache();

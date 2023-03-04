@@ -26,9 +26,8 @@ class Application extends AbstractApplication
 
         if (!ComponentRegistry::uncache()) {
             $compiler = new Builder;
-            $compiler->perform();
-            $compiler->postPerform();
-        
+            $compiler->describeComponents();
+            $compiler->prepareRoutedComponents();
         }
 
         CacheRegistry::uncache();

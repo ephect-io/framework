@@ -60,7 +60,7 @@ class Tree implements TreeInterface
         $current[0] = $object;
         $current[1] = $this->elementList[$index];
 
-        array_splice($this->elementList, $index, $current);
+        array_splice($this->elementList, $index, null, $current);
 
         return true;
     }
@@ -90,9 +90,12 @@ class Tree implements TreeInterface
 
     public function clear(): void
     {
-        for ($i = 0; $i < $this->count; $i++) {
+        $c = count($this->elementList);
+        for ($i = 0; $i < $c; $i++) {
             unset($this->elementList[$i]);
         }
+
+        $this->elementList = [];
     }
 
     public function forEach(callable $callback, TreeInterface $tree): void

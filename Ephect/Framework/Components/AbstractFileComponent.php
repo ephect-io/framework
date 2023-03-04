@@ -3,7 +3,6 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Components\Generators\ParserService;
 use Ephect\Framework\ElementUtils;
@@ -92,7 +91,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if (!$this->bodyStartsAt) {
-            self::__makeComponent($this->filename, $this->code);
+            self::makeComponent($this->filename, $this->code);
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         }
         $result = $this->code !== null;
@@ -101,7 +100,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
     }
 
 
-    static private function __makeComponent(string $filename, string &$html): array
+    static private function makeComponent(string $filename, string &$html): array
     {
         $info = (object) pathinfo($filename);
         $namespace = CONFIG_NAMESPACE;
