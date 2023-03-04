@@ -11,6 +11,7 @@ use Ephect\Framework\Components\ComponentDeclarationStructure;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Components\Plugin;
+use Ephect\Framework\Components\Webcomponent;
 use Ephect\Framework\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Framework\Registry\CacheRegistry;
@@ -28,6 +29,68 @@ class Builder
     protected $list = [];
     protected $routes = [];
 
+    /**
+     * Register all components of the application
+     *
+     * @return void
+     */
+    public function describeComponents(): void
+    {
+        if (!ComponentRegistry::uncache()) {
+            IOUtils::safeMkDir(CACHE_DIR);
+            IOUtils::safeMkDir(COPY_DIR);
+            IOUtils::safeMkDir(UNIQUE_DIR);
+            IOUtils::safeMkDir(STATIC_DIR);
+
+            CodeRegistry::uncache();
+
+            $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
+            foreach ($templateList as $key => $compFile) {
+                $this->describeCustomComponent(SRC_ROOT, $compFile);
+            }
+
+            CodeRegistry::cache();
+            ComponentRegistry::cache();
+        }
+
+        if (!PluginRegistry::uncache()) {
+            $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
+            foreach ($pluginList as $key => $pluginFile) {
+                $this->describePlugin(PLUGINS_ROOT, $pluginFile);
+            }
+            PluginRegistry::cache();
+            ComponentRegistry::cache();
+        }
+
+        if (!WebcomponentRegistry::uncache()) {
+            $webcomponentList = IOUtils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
+            foreach ($webcomponentList as $key => $webcomponentFile) {
+                $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
+            }
+            WebcomponentRegistry::cache();
+            ComponentRegistry::cache();
+        }
+    }
+
+    public function prepareRoutedComponents(): void
+    {
+
+        CodeRegistry::uncache();
+        ComponentRegistry::uncache();
+
+        $routes = $this->searchForRoutes();
+
+        array_unshift($routes, 'App');
+
+        foreach ($routes as $route) {
+            $fqRoute = ComponentRegistry::read($route);
+            $comp = $this->list[$fqRoute];
+
+            $comp->copyComponents($this->list);
+        }
+
+        $this->routes = $routes;
+    }
 
     private function describeCustomComponent(string $sourceDir, string $filename): void
     {
@@ -85,46 +148,15 @@ class Builder
         $this->list[$comp->getFullyQualifiedFunction()] = $comp;
     }
 
-    /**
-     * Register all components of the application
-     *
-     * @return void
-     */
-    public function describeComponents(): void
+    public function buildWebcomponents(string $motherUID): void
     {
-        if (!ComponentRegistry::uncache()) {
-            IOUtils::safeMkDir(CACHE_DIR);
-            IOUtils::safeMkDir(COPY_DIR);
-            IOUtils::safeMkDir(UNIQUE_DIR);
-            IOUtils::safeMkDir(STATIC_DIR);
-
-            CodeRegistry::uncache();
-
-            $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
-            foreach ($templateList as $key => $compFile) {
-                $this->describeCustomComponent(SRC_ROOT, $compFile);
-            }
-            
-            CodeRegistry::cache();
-            ComponentRegistry::cache();
-        }
-
-        if (!PluginRegistry::uncache()) {
-            $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
-            foreach ($pluginList as $key => $pluginFile) {
-                $this->describePlugin(PLUGINS_ROOT, $pluginFile);
-            }
-            PluginRegistry::cache();
-            ComponentRegistry::cache();
-        }
-
-        if (!WebcomponentRegistry::uncache()) {
-            $webcomponentList = IOUtils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
-            foreach ($webcomponentList as $key => $webcomponentFile) {
-                $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
-            }
-            WebcomponentRegistry::cache();
-            ComponentRegistry::cache();
+        
+        $templateList = IOUtils::walkTreeFiltered(SITE_ROOT . CONFIG_WEBCOMPONENTS, ['phtml']);
+        foreach ($templateList as $key => $filename) {
+            $uid = ComponentRegistry::read($filename);
+            $comp = new Webcomponent($uid, $motherUID);
+            $comp->load($filename);
+            $comp->parse();
         }
     }
 
@@ -150,26 +182,6 @@ class Builder
         CodeRegistry::cache();
         PluginRegistry::cache();
         ComponentRegistry::cache();
-    }
-
-    public function prepareRoutedComponents(): void
-    {
-
-        CodeRegistry::uncache();
-        ComponentRegistry::uncache();
-
-        $routes = $this->searchForRoutes();
-
-        array_unshift($routes, 'App');
-
-        foreach ($routes as $route) {
-            $fqRoute = ComponentRegistry::read($route);
-            $comp = $this->list[$fqRoute];
-
-            $comp->copyComponents($this->list);
-        }
-
-        $this->routes = $routes;
     }
 
     public function buildByName($name): void
@@ -215,7 +227,6 @@ class Builder
         IOUtils::safeWrite(STATIC_DIR . $filename, $html);
     }
 
-
     public function buildByRoute($route = 'Default'): void
     {
 
@@ -257,7 +268,6 @@ class Builder
         $duration = substr($raw_time->format('u'), 0, 3);
 
         Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
-
     }
 
     public function buildAllRoutes(): void
