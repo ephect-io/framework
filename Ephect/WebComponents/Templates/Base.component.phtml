@@ -6,6 +6,7 @@ function Base()
 {
 
     return (<<< HTML
+    <WebComponent>
     <template id="Base">
         <h1>
             <slot />
@@ -50,5 +51,6 @@ function Base()
 
     customElements.define('<TagName />', BaseComponent);
     </script>
+    </WebComponent>
     HTML);
 }

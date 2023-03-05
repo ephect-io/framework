@@ -7,7 +7,7 @@ use Ephect\Framework\Element;
 class Manifest extends Element
 {
     private string $tag;
-    private ?string $className;
+    private string $className;
     private string $entrypoint;
     private array $arguments;
 
@@ -24,7 +24,7 @@ class Manifest extends Element
         return $this->tag;
     }
 
-    public function getClass(): string
+    public function getClassName(): string
     {
         return  $this->className;
     }
