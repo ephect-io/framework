@@ -34,7 +34,6 @@ class Console extends Element
     
     public static function readLine(string $prompt): string
     {
-        $result = '';
 
         $result = readline($prompt);
         readline_add_history($result);

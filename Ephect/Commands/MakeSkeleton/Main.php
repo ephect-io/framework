@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\CreateSkeleton;
+namespace Ephect\Commands\MakeSkeleton;
 
 use Ephect\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;
@@ -15,6 +15,6 @@ class Main extends AbstractCommand
         $egg = new CommonLib($this->application);
         $egg->createCommonTrees();
         $lib = new Lib($this->application);
-        $lib->createSkeleton();
+        $lib->makeSkeleton();
     }
 }

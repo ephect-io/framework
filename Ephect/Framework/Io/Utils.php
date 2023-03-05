@@ -93,9 +93,7 @@ class Utils
         if (!file_exists($dir)) {
             $result = mkdir($dir, 0775, true);
         }
-        $result = (false === $len = file_put_contents($filename, $contents)) ? null : $len;
-
-        return $result;
+        return (false === $len = file_put_contents($filename, $contents)) ? null : $len;
     }
 
     public static function safeRead(string $filename): ?string
@@ -103,20 +101,17 @@ class Utils
         if (!file_exists($filename)) {
             return null;
         }
-        $result = (false === $contents = file_get_contents($filename)) ? null : $contents;
-
-        return $result;
+        return (false === $contents = file_get_contents($filename)) ? null : $contents;
     }
 
     /**
      * Should be replaced by realpath()
      *
      * @param string $path
-     * @return void
+     * @return string
      */
-    public static function reducePath(string $path)
+    public static function reducePath(string $path): string
     {
-        $result = '';
         $array = explode(DIRECTORY_SEPARATOR, $path);
 
         $c = count($array);
@@ -130,8 +125,6 @@ class Utils
         }
 
 
-        $result = implode(DIRECTORY_SEPARATOR, $array);
-
-        return $result;
+        return implode(DIRECTORY_SEPARATOR, $array);
     }
 }

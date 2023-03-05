@@ -24,8 +24,6 @@ class Structure implements StructureInterface
 
     public function toArray() : array
     {
-        $result = get_object_vars($this);
-
-        return $result;
+        return get_object_vars($this);
     }
 }

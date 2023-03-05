@@ -70,10 +70,8 @@ final class ElementUtils
     public static function getNamespaceFromFQClassName($fqClassName): string
     {
         $classParts = explode('\\', $fqClassName);
-        $class = array_pop($classParts);
-        $namespace = implode('\\', $classParts);
-
-        return $namespace;
+        array_pop($classParts);
+        return implode('\\', $classParts);
     }
 
     public static function getFunctionDefinitionFromFile($filepath): ?array

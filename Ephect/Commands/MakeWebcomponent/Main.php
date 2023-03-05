@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\CreateWebcomponent;
+namespace Ephect\Commands\MakeWebComponent;
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
@@ -12,6 +12,6 @@ class Main extends AbstractCommand
     public function run(): void
     {
         $lib = new Lib($this->application);
-        $lib->createWebcomponentBase();
+        $lib->createWebComponentBase();
     }
 }

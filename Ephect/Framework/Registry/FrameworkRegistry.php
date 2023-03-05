@@ -34,8 +34,8 @@ class FrameworkRegistry extends AbstractStaticRegistry
             foreach ($frameworkFiles as $filename) {
                 if (
                     $filename === 'bootstrap.php'
-                    || false !== strpos($filename, 'constants.php')
-                    || false !== strpos($filename, 'Autoloader.php')
+                    || str_contains($filename, 'constants.php')
+                    || str_contains($filename, 'Autoloader.php')
                 ) {
                     continue;
                 }

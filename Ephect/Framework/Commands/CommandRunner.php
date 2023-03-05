@@ -17,8 +17,6 @@ class CommandRunner extends Element
 
     public function run(): void
     {
-        $isFound = false;
-        $arguments = null;
         $callback = null;
 
         $isFound = false;

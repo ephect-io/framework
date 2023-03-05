@@ -26,8 +26,8 @@ use Throwable;
 class Builder
 {
 
-    protected $list = [];
-    protected $routes = [];
+    protected array $list = [];
+    protected array $routes = [];
 
     /**
      * Register all components of the application
@@ -308,9 +308,7 @@ class Builder
             // array_push($result, $root->getName());
         }
 
-        $result = array_unique($result);
-
-        return $result;
+        return array_unique($result);
     }
 
     protected function findFirstComponent(array $items, string $name): ?ComponentEntity
@@ -321,9 +319,7 @@ class Builder
         $struct = new ComponentDeclarationStructure($list);
         $decl = new ComponentDeclaration($struct);
 
-        $first = $decl->getComposition();
-
-        return $first;
+        return $decl->getComposition();
     }
 
     protected function findRouter(array $items, string $name): ?ComponentEntity
@@ -341,7 +337,6 @@ class Builder
             if ($name == 'Router') {
                 $router = ComponentEntity::buildFromArray($composition);
 
-                $router = $router;
                 break;
             }
 

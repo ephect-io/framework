@@ -2,6 +2,7 @@
 
 namespace Ephect\Commands\Running;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 use Phar;

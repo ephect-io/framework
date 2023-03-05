@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\Components\ComponentStructure;
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
@@ -36,7 +35,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
     public function __construct(?ComponentStructure $attributes)
     {
-
         parent::__construct([]);
 
         if ($attributes === null) {
@@ -178,7 +176,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         if (count($list) === 1) {
             $result = new ComponentEntity(new ComponentStructure($list[0]));
-        } 
+        }
         elseif (count($list) > 1) {
             $result = self::_makeFragment();
             foreach ($list as $item) {
@@ -227,9 +225,9 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             return $this->properties;
         }
         if (isset($this->properties[$key])) {
-            $result = $this->properties[$key];
+            return $this->properties[$key];
         }
-        return $result;
+        return null;
     }
 
     public function getContents(?string $html = null): ?string

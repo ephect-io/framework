@@ -27,7 +27,6 @@ class MotherSlotsParser extends AbstractTokenParser
         }
 
         ComponentRegistry::uncache();
-        $functionFilename = null;
 
         $motherUID = $this->component->getMotherUID();
         $doc = new ComponentDocument($this->component);

@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
@@ -122,9 +123,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             return ' ';
         }
 
-        $result = " use (" . $args . ")";
-     
-        return $result;
+        return " use (" . $args . ")";
 
     }
 
