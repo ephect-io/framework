@@ -25,11 +25,11 @@ use Ephect\Framework\Registry\ComponentRegistry;
 
 class ParserService implements ParserServiceInterface
 {
-    protected $component = null;
-    protected $useVariables = [];
-    protected $useTypes = [];
-    protected $html = '';
-    protected $children = null;
+    protected ?object $component = null;
+    protected array $useVariables = [];
+    protected array $useTypes = [];
+    protected string $html = '';
+    protected ?object $children = null;
     protected $componentList = [];
     protected $openComponentList = [];
     protected $result = null;

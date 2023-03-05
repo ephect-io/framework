@@ -15,7 +15,7 @@ class Lib
     {
         try {
 
-            Console::writeLine(ConsoleColors::getColoredString("Creating a new webcomponent.", ConsoleColors::LIGHT_BLUE));
+            Console::writeLine(ConsoleColors::getColoredString("Creating a new webComponent.", ConsoleColors::LIGHT_BLUE));
             Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColors::BLUE));
             Console::writeLine(ConsoleColors::getColoredString("Leave the answer blank to pass to the next question or to abort the process.", ConsoleColors::BROWN));
 
@@ -37,7 +37,7 @@ class Lib
     }
 
     /**
-     * Ask some questions to get the properties of the webcomponent
+     * Ask some questions to get the properties of the webComponent
      *
      * @return void
      */
@@ -52,7 +52,7 @@ class Lib
             throw new Exception("Webcomponent tag name must not be empty");
         }
 
-        Console::writeLine(ConsoleColors::getColoredString("The code of the webcomponent will split into one JS module and one HTML template.", ConsoleColors::BLUE));
+        Console::writeLine(ConsoleColors::getColoredString("The code of the webComponent will split into one JS module and one HTML template.", ConsoleColors::BLUE));
 
         /**
          * Asking for the class name
@@ -91,7 +91,7 @@ class Lib
     }
 
     /**
-     * Second creation step of the webcomponent
+     * Second creation step of the WebComponent
      *
      * Create a manifest file include all details passed to the command line
      * 
@@ -125,7 +125,7 @@ class Lib
     }
 
     /**
-     * Third and last creation step of the webcomponent
+     * Third and last creation step of the WebComponent
      * 
      * Read templates text, replace the markups and save into user application directory
      *

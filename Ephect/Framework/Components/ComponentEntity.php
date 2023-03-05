@@ -17,27 +17,28 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 {
     use ElementTrait;
 
-    protected $parentId = 0;
-    protected $name = '';
-    protected $text = '';
-    protected $start = 0;
-    protected $end = 0;
-    protected $depth = 0;
-    protected $isSibling = false;
-    protected $closer = '';
-    protected $contents = null;
-    protected $hasCloser = '';
-    protected $hasProperties = false;
-    protected $properties = [];
-    protected $method = '';
-    protected $doc = null;
-    protected $compName = '';
-    protected $className = '';
-    protected $attributes = null;
-    protected $composedOf = null;
+    protected int $parentId = 0;
+    protected string $name = '';
+    protected string $text = '';
+    protected int $start = 0;
+    protected int $end = 0;
+    protected int $depth = 0;
+    protected bool $isSibling = false;
+    protected string $closer = '';
+    protected mixed $contents = null;
+    protected bool $hasCloser = false;
+    protected bool $hasProperties = false;
+    protected array $properties = [];
+    protected string $method = '';
+    protected string $compName = '';
+    protected string $className = '';
+    protected ?ComponentStructure $attributes = null;
 
     public function __construct(?ComponentStructure $attributes)
     {
+
+        parent::__construct([]);
+
         if ($attributes === null) {
             return null;
         }

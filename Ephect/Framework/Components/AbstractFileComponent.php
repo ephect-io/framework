@@ -18,10 +18,12 @@ define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
 {
 
-    protected $filename = '';
+    protected ?string $filename = '';
 
     public function __construct(?string $id = null, string $motherUID = '')
     {
+        parent::__construct([]);
+
         if ($id !== null) {
             ComponentRegistry::uncache();
             $this->class = ComponentRegistry::read($id);
@@ -52,30 +54,23 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function getFlattenSourceFilename(): string
     {
-        $cache_file = static::getFlatFilename($this->filename);
-
-        return $cache_file;
+        return static::getFlatFilename($this->filename);
     }
 
     public function getFlattenFilename(): string
     {
-        $cache_file = static::getFlatFilename($this->filename);
-
-        return $cache_file;
+        return static::getFlatFilename($this->filename);
     }
 
     public static function getFlatFilename(string $basename): string
     {
         $basename = pathinfo($basename, PATHINFO_BASENAME);
 
-        $cache_file = str_replace('/', '_', $basename);
-
-        return $cache_file;
+        return str_replace('/', '_', $basename);
     }
 
     public function load(?string $filename = null): bool
     {
-        $result = false;
         $filename = $filename ?: '';
 
         $this->filename = ($filename !== '') ? $filename : $this->filename;
@@ -94,13 +89,11 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             self::makeComponent($this->filename, $this->code);
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         }
-        $result = $this->code !== null;
-
-        return  $result;
+        return $this->code !== null;
     }
 
 
-    static private function makeComponent(string $filename, string &$html): array
+    static private function makeComponent(string $filename, string &$html): void
     {
         $info = (object) pathinfo($filename);
         $namespace = CONFIG_NAMESPACE;
@@ -120,7 +113,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         Utils::safeWrite(COPY_DIR . $filename, $html);
 
-        return [$namespace, $function];
     }
 
 
@@ -135,7 +127,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
             $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName, $motherUID);
             $component->parse();
-            $component->cacheHtml();
 
             $motherUID = $component->getMotherUID();
 

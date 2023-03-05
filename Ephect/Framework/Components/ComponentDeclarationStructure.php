@@ -6,10 +6,10 @@ use Ephect\Framework\Core\Structure;
 
 class ComponentDeclarationStructure extends Structure
 {
-    public $uid = '';
-    public $type = '';
-    public $name = '';
-    public $arguments = [];
-    public $composition = null;
+    public string $uid = '';
+    public string $type = '';
+    public string $name = '';
+    public array $arguments = [];
+    public ?array $composition = null;
 
 }

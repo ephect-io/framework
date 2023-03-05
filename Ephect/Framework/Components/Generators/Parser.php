@@ -7,8 +7,8 @@ use Ephect\Framework\Registry\CodeRegistry;
 
 class Parser
 {
-    protected $html = '';
-    protected $component = null;
+    protected ?string $html = '';
+    protected ?ComponentInterface $component = null;
 
     public function __construct(ComponentInterface $comp)
     {
@@ -17,7 +17,7 @@ class Parser
         $this->doUncache();
     }
 
-    public function getHtml()
+    public function getHtml(): ?string
     {
         return $this->html;
     }
@@ -69,8 +69,6 @@ class Parser
             }
             $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
         }
-        $result = ($result === '') ? null : '[' . $result . ']';
-
-        return $result;
+        return ($result === '') ? null : '[' . $result . ']';
     }
 }

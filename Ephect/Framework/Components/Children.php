@@ -9,9 +9,9 @@ class Children extends Tree implements ChildrenInterface
 {
     use ElementTrait;
 
-    protected $props = [];
-    protected $parentProps = [];
-    protected $onrender = null;
+    protected ?object $props = null;
+    protected array $parentProps = [];
+    protected ?object $onrender = null;
 
     public function __construct(ChildrenStructure $struct)
     {

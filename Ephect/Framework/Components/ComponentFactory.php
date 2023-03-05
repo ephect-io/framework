@@ -12,7 +12,7 @@ class ComponentFactory
     {
 
         $filename = ComponentRegistry::read($fullyQualifiedName);
-        $isPlugin = $filename === null ? ($filename = PluginRegistry::read($fullyQualifiedName)) !== null : false;
+        $isPlugin = $filename === null && ($filename = PluginRegistry::read($fullyQualifiedName)) !== null;
 
         if ($isPlugin) {
             $uid = PluginRegistry::read($filename);
@@ -22,7 +22,7 @@ class ComponentFactory
             return $plugin;
         }
 
-        $isWebcomponent = $filename === null ? ($filename = WebcomponentRegistry::read($fullyQualifiedName)) !== null : false;
+        $isWebcomponent = $filename === null && ($filename = WebcomponentRegistry::read($fullyQualifiedName)) !== null;
 
         if ($isWebcomponent) {
             $uid = WebcomponentRegistry::read($filename);
