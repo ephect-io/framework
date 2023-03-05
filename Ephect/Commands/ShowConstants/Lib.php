@@ -4,9 +4,10 @@ namespace Ephect\Commands\Constants;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\Commands\AbstractCommandLib;
 use Throwable;
 
-class Lib
+class Lib extends AbstractCommandLib
 {
 
     public function displayConstants(): array

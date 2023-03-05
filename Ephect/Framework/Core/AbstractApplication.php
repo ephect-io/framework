@@ -15,20 +15,20 @@ abstract class AbstractApplication extends Element
     const TEST_MODE = 'TEST';
     const PROD_MODE = 'PROD';
 
-    private static $_executionMode = self::PROD_MODE;
-    private static $_verboseMode = false;
-    private static $_useTransactions = true;
+    private static string $_executionMode = self::PROD_MODE;
+    private static bool $_verboseMode = false;
+    private static bool $_useTransactions = true;
 
-    protected $commands = [];
-    protected $callbacks = [];
-    protected $appName = 'app';
-    protected $appTitle = '';
-    protected $scriptName = 'app.php';
-    protected $appDirectory = '';
-    protected $canStop = false;
+    protected array $commands = [];
+    protected array $callbacks = [];
+    protected string $appName = 'app';
+    protected string $appTitle = '';
+    protected string $scriptName = 'app.php';
+    protected string $appDirectory = '';
+    protected bool $canStop = false;
     protected $dataConfName = '';
-    private $_usage = '';
-    private $_appini = [];
+    private string $_usage = '';
+    private array $_appini = [];
 
     public function __construct()
     {

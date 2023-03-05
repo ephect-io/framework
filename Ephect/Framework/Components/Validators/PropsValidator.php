@@ -9,8 +9,8 @@ use InvalidArgumentException;
 
 class PropsValidator
 {
-    protected $props;
-    protected $structClass;
+    protected object $props;
+    protected string $structClass;
 
     public function __construct(object $props, string $structClass)
     {

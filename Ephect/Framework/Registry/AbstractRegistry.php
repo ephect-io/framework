@@ -8,11 +8,11 @@ use Ephect\Framework\Utils\TextUtils;
 
 abstract class AbstractRegistry implements AbstractRegistryInterface
 {
-    private $entries = [];
-    private $isLoaded = false;
-    private $baseDirectory = CACHE_DIR;
-    private $cacheFilename = '';
-    private $flatFilename = '';
+    private array $entries = [];
+    private bool $isLoaded = false;
+    private string $baseDirectory = CACHE_DIR;
+    private string $cacheFilename = '';
+    private string $flatFilename = '';
 
     use ElementTrait;
 
@@ -53,9 +53,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
     public function _exists(string $key): bool
     {
-        $result =  isset($this->entries[$key]);
-
-        return $result;
+        return isset($this->entries[$key]);
     }
 
     public function _cache(bool $asArray = false): bool

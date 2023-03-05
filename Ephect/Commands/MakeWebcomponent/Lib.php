@@ -1,14 +1,15 @@
 <?php
 
-namespace Ephect\Commands\CreateWebcomponent;
+namespace Ephect\Commands\MakeWebComponent;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\WebComponents\ManifestStructure;
 use Exception;
 
-class Lib
+class Lib extends AbstractCommandLib
 {
 
     public function createWebcomponentBase(): void
@@ -39,9 +40,10 @@ class Lib
     /**
      * Ask some questions to get the properties of the webComponent
      *
-     * @return void
+     * @return array
+     * @throws Exception
      */
-    function readLine()
+    function readLine(): array
     {
         /**
          * Asking the tag name
@@ -83,7 +85,7 @@ class Lib
                 $next = false;
                 continue;
             }
-            array_push($arguments, $arg);
+            $arguments[] = $arg;
             $argIndex++;
         }
 
@@ -102,7 +104,8 @@ class Lib
      * @param string $destDir
      * @return void
      */
-    function saveManifest(string $tagName, string $className, string $entrypoint, array $arguments, string $destDir) {
+    function saveManifest(string $tagName, string $className, string $entrypoint, array $arguments, string $destDir): void
+    {
 
         if (!Utils::safeMkDir($destDir)) {
             throw new Exception("$destDir creation failed");
@@ -137,7 +140,7 @@ class Lib
      * @param string $destDir
      * @return void
      */
-    function copyTemplates(string $tagName, string $className, string $entrypoint, array $arguments, string $srcDir, string $destDir)
+    function copyTemplates(string $tagName, string $className, string $entrypoint, array $arguments, string $srcDir, string $destDir): void
     {
 
         $classText = Utils::safeRead($srcDir . 'Base.class.mjs');

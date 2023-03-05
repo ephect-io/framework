@@ -38,7 +38,7 @@ class StateRegistry extends StaticElement
             }
         }
 
-        if (is_array($params) && count($params) === 2) {
+        if (count($params) === 2) {
             $key = $params[0];
             $value = $params[1];
             self::$_items[$item][$key] = $value;
@@ -88,7 +88,7 @@ class StateRegistry extends StaticElement
         $result = null;
 
         if (self::$_items[$item] !== null) {
-            $result = isset(self::$_items[$item][$key]) ? self::$_items[$item][$key] : (($defaultValue !== null) ? $defaultValue : null);
+            $result = self::$_items[$item][$key] ?? (($defaultValue !== null) ? $defaultValue : null);
         }
 
         return $result;

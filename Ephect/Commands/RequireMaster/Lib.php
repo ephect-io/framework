@@ -3,15 +3,15 @@
 namespace Ephect\Commands\RequireMaster;
 
 use Ephect\Framework\CLI\Console;
+use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Web\Curl;
 
-class Lib
+class Lib extends AbstractCommandLib
 {
 
     public function requireMaster(): object
     {
-        $result = [];
 
         $libRoot = CACHE_DIR . 'archive' . DIRECTORY_SEPARATOR;
 

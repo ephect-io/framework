@@ -8,7 +8,6 @@ trait IniLoaderTrait
 {
     public function loadINI(string $path = ''): bool
     {
-        $ini = null;
         if (!file_exists($path . 'app.ini')) {
             return false;
         }
@@ -30,7 +29,6 @@ trait IniLoaderTrait
         if(file_exists($dataPath)) {
             $dataDir = dir($dataPath);
 
-            $entry = '';
             while (($entry = $dataDir->read()) !== false) {
                 $info = (object) \pathinfo($entry);
 

@@ -10,10 +10,10 @@ class TreeIterator implements RecursiveIterator
 
     use ElementTrait;
 
-    protected $count = 0;
-    protected $elementList = [];
-    protected $hasElements = false;
-    protected $index = 0;
+    protected int $count = 0;
+    protected array $elementList = [];
+    protected bool $hasElements = false;
+    protected int $index = 0;
     protected $innerChildren = null;
 
     public function __construct(array $list)

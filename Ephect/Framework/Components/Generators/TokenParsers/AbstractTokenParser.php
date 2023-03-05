@@ -9,12 +9,12 @@ use Ephect\Framework\Registry\CodeRegistry;
 abstract class AbstractTokenParser implements TokenParserInterface
 {
 
-    protected $html = '';
-    protected $component = null;
-    protected $result = null;
-    protected $useVariables = [];
-    protected $useTypes = [];
-    protected $parent = null;
+    protected ?string $html = '';
+    protected ?FileComponentInterface $component = null;
+    protected string|array|bool|null $result = null;
+    protected array $useVariables = [];
+    protected array $useTypes = [];
+    protected ?ParserServiceInterface $parent = null;
 
     public function __construct(FileComponentInterface $comp, ?ParserServiceInterface $parent = null)
     {
