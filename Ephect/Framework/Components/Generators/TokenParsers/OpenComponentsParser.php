@@ -90,7 +90,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
-            array_push($this->result, $componentName);
+            $this->result[] = $componentName;
 
         };
 
@@ -107,7 +107,7 @@ final class OpenComponentsParser extends AbstractTokenParser
         $result = [];
 
         foreach ($componentArgs as $key => $value) {
-            array_push($result, "\$" . $key);
+            $result[] = "\$" . $key;
         }
 
         return $result;
@@ -143,8 +143,6 @@ final class OpenComponentsParser extends AbstractTokenParser
             }
             $result .= $pair;
         }
-        $result = ($result === '') ? null : '[' . $result . ']';
-
-        return $result;
+        return ($result === '') ? null : '[' . $result . ']';
     }
 }

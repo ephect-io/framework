@@ -22,8 +22,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function __construct(?string $id = null, string $motherUID = '')
     {
-        parent::__construct([]);
-
         if ($id !== null) {
             ComponentRegistry::uncache();
             $this->class = ComponentRegistry::read($id);

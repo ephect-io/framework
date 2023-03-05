@@ -24,14 +24,14 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     protected int $end = 0;
     protected int $depth = 0;
     protected bool $isSibling = false;
-    protected string $closer = '';
+    protected ?array $closer = null;
     protected mixed $contents = null;
     protected bool $hasCloser = false;
     protected bool $hasProperties = false;
     protected array $properties = [];
     protected string $method = '';
     protected string $compName = '';
-    protected string $className = '';
+    protected ?string $className = '';
     protected ?ComponentStructure $attributes = null;
 
     public function __construct(?ComponentStructure $attributes)
@@ -130,13 +130,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         $result = [];
 
-        $structs = [];
         $depths = [];
 
         foreach ($list as $match) {
 
             $struct = new ComponentStructure($match);
-            array_push($structs, $struct);
             $depths[$struct->depth] = 1;
         }
 
@@ -144,7 +142,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         for ($i = $maxDepth; $i > -1; $i--) {
             foreach ($list as $match) {
                 if ($match["depth"] == $i) {
-                    array_push($result, $match['id']);
+                    $result[] = $match['id'];
                 }
             }
         }
@@ -174,7 +172,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             if (!is_array($list[$pId]['node'])) {
                 $list[$pId]['node'] = [];
             }
-            array_push($list[$pId]['node'], $list[$i]);
+            $list[$pId]['node'][] = $list[$i];
             unset($list[$i]);
         }
 
@@ -195,10 +193,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     public function composedOf(): array
     {
         $names = [];
-        array_push($names, $this->name);
+        $names[] = $this->name;
 
         $this->forEach(function (ComponentEntityInterface $item, $key) use (&$names) {
-            array_push($names, $item->getName());
+            $names[] = $item->getName();
         }, $this);
 
         return $names;
@@ -261,9 +259,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             $e += $o;
         }
 
-        $contents = substr($t, $s, $e - $s + 1);
-
-        return $contents;
+        return substr($t, $s, $e - $s + 1);
     }
 
 
@@ -302,9 +298,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         $fragment = json_decode($json, JSON_OBJECT_AS_ARRAY);
 
-        $entity = new ComponentEntity(new ComponentStructure($fragment));
-
-        return $entity;
+        return new ComponentEntity(new ComponentStructure($fragment));
 
     }
 }

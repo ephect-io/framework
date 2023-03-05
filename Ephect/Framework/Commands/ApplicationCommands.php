@@ -12,8 +12,10 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 {
     private array $_commands = [];
 
-    public function __construct(private AbstractApplication $_application)
+    public function __construct(private readonly AbstractApplication $_application)
     {
+        parent::__construct($this->_application);
+
         $this->collectCommands();
     }
 
@@ -50,9 +52,9 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 $commandArgs = $attr[0]['args'];
 
                 $verb = $commandArgs['verb'];
-                $subject = isset($commandArgs['subject']) ? $commandArgs['subject'] : '';
+                $subject = $commandArgs['subject'] ?? '';
                 $desc = $commandArgs['desc'];
-                $isPhar = isset($commandArgs['isPhar']) ? $commandArgs['isPhar'] : '';
+                $isPhar = $commandArgs['isPhar'] ?? '';
 
                 if($isPhar) {
                     continue;
