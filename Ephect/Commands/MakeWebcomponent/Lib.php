@@ -5,7 +5,7 @@ namespace Ephect\Commands\CreateWebcomponent;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\IO\Utils;
-use Ephect\Framework\Webcomponents\ManifestStructure;
+use Ephect\Framework\WebComponents\ManifestStructure;
 use Exception;
 
 class Lib
@@ -21,15 +21,15 @@ class Lib
 
             [$tagName, $className, $entrypoint, $arguments] = $this->readLine();
 
-            $destDir = SRC_ROOT . DIRECTORY_SEPARATOR . 'Webcomponents' . DIRECTORY_SEPARATOR . $className . DIRECTORY_SEPARATOR;
+            $destDir = SRC_ROOT . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR . $className . DIRECTORY_SEPARATOR;
 
             $this->saveManifest($tagName, $className, $entrypoint, $arguments, $destDir);
 
-            $srcDir = EPHECT_ROOT . DIRECTORY_SEPARATOR . 'Webcomponents' . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR;
+            $srcDir = EPHECT_ROOT . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR;
 
             $this->copyTemplates($tagName, $className, $entrypoint, $arguments, $srcDir, $destDir);
 
-            Console::writeLine(ConsoleColors::getColoredString("Webcomponent ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
+            Console::writeLine(ConsoleColors::getColoredString("WebComponent ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
             Console::writeLine("%s", $destDir);
         } catch (Exception $ex) {
             Console::error($ex);
@@ -49,7 +49,7 @@ class Lib
         $tagName = Console::readLine("Tag name (kebab-case):");
         $tagName =  strtolower($tagName);
         if (trim($tagName) == '') {
-            throw new Exception("Webcomponent tag name must not be empty");
+            throw new Exception("WebComponent tag name must not be empty");
         }
 
         Console::writeLine(ConsoleColors::getColoredString("The code of the webComponent will split into one JS module and one HTML template.", ConsoleColors::BLUE));
@@ -59,7 +59,7 @@ class Lib
          */
         $className = Console::readLine("Module class name (PascalCase):");
         if (trim($className) == '') {
-            throw new Exception("Webcomponent class name must not be empty");
+            throw new Exception("WebComponent class name must not be empty");
         }
 
         /**
@@ -67,7 +67,7 @@ class Lib
          */
         $entrypoint = Console::readLine("Entrypoint in class (camelCase):");
         if (trim($entrypoint) == '') {
-            throw new Exception("Webcomponent entrypoint must not be empty");
+            throw new Exception("WebComponent entrypoint must not be empty");
         }
 
         /**
@@ -79,7 +79,7 @@ class Lib
         while ($next) {
             $arg = Console::readLine("Argument $argIndex:");
             if (trim($arg) == '') {
-                Console::writeLine(ConsoleColors::getColoredString("Ending Webcomponent arguments list", ConsoleColors::LIGHT_BLUE));
+                Console::writeLine(ConsoleColors::getColoredString("Ending WebComponent arguments list", ConsoleColors::LIGHT_BLUE));
                 $next = false;
                 continue;
             }

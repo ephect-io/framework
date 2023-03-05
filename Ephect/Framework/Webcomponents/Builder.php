@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\Webcomponents;
+namespace Ephect\Framework\WebComponents;
 
 class Builder
 {

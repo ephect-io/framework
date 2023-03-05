@@ -11,14 +11,14 @@ use Ephect\Framework\Components\ComponentDeclarationStructure;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Components\Plugin;
-use Ephect\Framework\Components\Webcomponent;
+use Ephect\Framework\Components\WebComponent;
 use Ephect\Framework\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
-use Ephect\Framework\Registry\WebcomponentRegistry;
+use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Web\Curl;
 use Ephect\Plugins\Router\RouterService;
 use Throwable;
@@ -62,12 +62,12 @@ class Builder
             ComponentRegistry::cache();
         }
 
-        if (!WebcomponentRegistry::uncache()) {
+        if (!WebComponentRegistry::uncache()) {
             $webcomponentList = IOUtils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
             foreach ($webcomponentList as $key => $webcomponentFile) {
                 $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
             }
-            WebcomponentRegistry::cache();
+            WebComponentRegistry::cache();
             ComponentRegistry::cache();
         }
     }
@@ -139,8 +139,8 @@ class Builder
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        WebcomponentRegistry::write($cachedSourceViewFile, $comp->getUID());
-        WebcomponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
+        WebComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+        WebComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
         $comp->add($entity);
@@ -154,7 +154,7 @@ class Builder
         $templateList = IOUtils::walkTreeFiltered(SITE_ROOT . CONFIG_WEBCOMPONENTS, ['phtml']);
         foreach ($templateList as $key => $filename) {
             $uid = ComponentRegistry::read($filename);
-            $comp = new Webcomponent($uid, $motherUID);
+            $comp = new WebComponent($uid, $motherUID);
             $comp->load($filename);
             $comp->parse();
         }

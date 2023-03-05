@@ -7,7 +7,7 @@ use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 
-class Webcomponent extends AbstractFileComponent
+class WebComponent extends AbstractFileComponent
 {
     
     public function load(?string $filename = null): bool
