@@ -10,11 +10,8 @@ class Element extends StaticElement implements ElementInterface
 
     use ElementTrait;
 
-    private $_reflection = null;
-    protected $serialFilename = '';
-    protected $isSerialized = '';
-    protected $children = [];
-    protected $fqClassName = '';
+    private ?ReflectionClass $_reflection = null;
+    protected array $children = [];
 
     public function __construct(?ElementInterface $parent = null, ?string $id = null)
     {
@@ -24,7 +21,7 @@ class Element extends StaticElement implements ElementInterface
 
     public function getReflection(): ?ReflectionClass
     {
-        if ($this->_reflection == NULL) {
+        if ($this->_reflection == null) {
             $this->_reflection = new ReflectionClass(get_class($this));
         }
         return $this->_reflection;
@@ -37,7 +34,7 @@ class Element extends StaticElement implements ElementInterface
 
         $params = [];
         foreach ($met->getParameters() as $currentParam) {
-            array_push($params, $currentParam->name);
+            $params[] = $currentParam->name;
         }
 
         return $params;

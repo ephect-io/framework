@@ -4,8 +4,8 @@ namespace Ephect\Framework\Core;
 
 class Enumerator implements EnumeratorInterface
 {
-    protected $value = 0;
-    protected static $instance = null;
+    protected int $value = 0;
+    protected static Enumerator|null $instance = null;
 
     protected function __construct(int $value)
     {
@@ -21,7 +21,7 @@ class Enumerator implements EnumeratorInterface
         return static::$instance->getValue();
     }
 
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }

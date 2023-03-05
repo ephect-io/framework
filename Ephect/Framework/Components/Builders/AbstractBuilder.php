@@ -7,8 +7,8 @@ use Ephect\Framework\ElementInterface;
 
 abstract class AbstractBuilder
 {
-    protected $props;
-    protected $struct;
+    protected object $props;
+    protected string $struct;
 
     public function __construct(object $props, string $struct)
     {
@@ -18,13 +18,10 @@ abstract class AbstractBuilder
 
     protected function buildEx(string $class): ElementInterface
     {
-        $result = null;
-        
-        $struct  = (new PropsValidator($this->props, $this->struct))->validate();
-        
-        $result = new $class($struct);
 
-        return $result;
+        $struct  = (new PropsValidator($this->props, $this->struct))->validate();
+
+        return new $class($struct);
     }
     
 }

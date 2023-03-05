@@ -48,7 +48,6 @@ class CommonLib extends Element
 
     public function requireTree(string $treePath): object
     {
-        $result = [];
         $tree = Utils::walkTreeFiltered($treePath, ['php']);
         $result = ['path' => $treePath, 'tree' => $tree];
 

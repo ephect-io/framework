@@ -218,7 +218,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
     public function props(?string $key = null): string|array|null
     {
-        $result = null;
         if ($key === null) {
             if (count($this->properties) === 0) {
                 return null;
@@ -228,7 +227,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         if (isset($this->properties[$key])) {
             return $this->properties[$key];
         }
-        return $result;
+        return null;
     }
 
     public function getContents(?string $html = null): ?string

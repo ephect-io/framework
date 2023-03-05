@@ -12,7 +12,6 @@ class WebComponent extends AbstractFileComponent
     
     public function load(?string $filename = null): bool
     {
-        $result = false;
         $this->filename = $filename ?: '';
 
         $this->code = Utils::safeRead(CONFIG_WEBCOMPONENTS . $this->filename);
@@ -20,10 +19,8 @@ class WebComponent extends AbstractFileComponent
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if($this->function === null) {
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getClassDefinition($this->code);
-        } 
-        $result = $this->code !== null;
-
-        return  $result;
+        }
+        return $this->code !== null;
     }
 
     public function analyse(): void

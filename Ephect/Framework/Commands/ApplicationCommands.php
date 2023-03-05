@@ -50,9 +50,9 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 $commandArgs = $attr[0]['args'];
 
                 $verb = $commandArgs['verb'];
-                $subject = isset($commandArgs['subject']) ? $commandArgs['subject'] : '';
+                $subject = $commandArgs['subject'] ?? '';
                 $desc = $commandArgs['desc'];
-                $isPhar = isset($commandArgs['isPhar']) ? $commandArgs['isPhar'] : '';
+                $isPhar = $commandArgs['isPhar'] ?? '';
 
                 if($isPhar) {
                     continue;

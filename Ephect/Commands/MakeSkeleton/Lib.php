@@ -1,13 +1,14 @@
 <?php
 
-namespace Ephect\Commands\BuildWebcomponent;
+namespace Ephect\Commands\MakeSkeleton;
 
+use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\IO\Utils;
 
-class Lib
+class Lib extends AbstractCommandLib
 {
 
-    public function createSkeleton(): void
+    public function makeSkeleton(): void
     {
         $sample = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'Skeleton';
 

@@ -11,9 +11,7 @@ class Crypto
         } else {
             $token = uniqid(rand());
         }
-        $token = base64_encode($token);
-
-        return $token;
+        return base64_encode($token);
     }
 
     public static function createUID(): string

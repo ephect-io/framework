@@ -9,7 +9,6 @@ final class ArraysParser extends AbstractTokenParser
         $this->useVariables = $parameter;
         
         $re = '/\{\{ \.\.\.([a-z0-9_\-\>]*) \}\}/m';
-        $su = '<?php echo print_r($\1, true) ?>';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);

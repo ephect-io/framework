@@ -22,14 +22,14 @@ class ComponentFactory
             return $plugin;
         }
 
-        $isWebcomponent = $filename === null && ($filename = WebComponentRegistry::read($fullyQualifiedName)) !== null;
+        $isWebComponent = $filename === null && ($filename = WebComponentRegistry::read($fullyQualifiedName)) !== null;
 
-        if ($isWebcomponent) {
+        if ($isWebComponent) {
             $uid = WebComponentRegistry::read($filename);
-            $webcomponent = new WebComponent($uid, $motherUID);
-            $webcomponent->load($filename);
+            $webComponent = new WebComponent($uid, $motherUID);
+            $webComponent->load($filename);
 
-            return $webcomponent;
+            return $webComponent;
         }
 
         $uid = ComponentRegistry::read($filename);

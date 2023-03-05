@@ -6,7 +6,7 @@ use Ephect\Framework\Utils\TextUtils;
 
 class Logger
 {
-    private static $_logger = null;
+    private static Logger|null $_logger = null;
 
     private function __construct()
     {
@@ -20,7 +20,7 @@ class Logger
         return self::$_logger;
     }
 
-    public function dump(string $message, object|array $object)
+    public function dump(string $message, object|array $object): void
     {
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);
     }

@@ -43,12 +43,10 @@ class TextUtils
         }
         $result = $string;
         if (count($params) > 0 && is_array($params[0])) {
-            $result = vsprintf($string, $params[0]);
-            return $result;
+            return vsprintf($string, $params[0]);
         }
         if (count($params) > 0 && is_array($params)) {
-            $result = vsprintf($string, $params);
-            return $result;
+            return vsprintf($string, $params);
         }
     }
 
