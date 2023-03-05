@@ -21,7 +21,7 @@ class Lib extends AbstractCommandLib
 
         // $compiler->performAgain();
 
-        // $motherUID = $builder->buildAllRoutes();
+        $builder->buildAllRoutes();
         // $builder->buildWebcomponents($motherUID);
     }
 }
