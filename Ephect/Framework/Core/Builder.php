@@ -44,9 +44,14 @@ class Builder
 
             CodeRegistry::uncache();
 
-            $templateList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml']);
-            foreach ($templateList as $key => $compFile) {
+            $bootstrapList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml'], true);
+            foreach ($bootstrapList as $key => $compFile) {
                 $this->describeCustomComponent(SRC_ROOT, $compFile);
+            }
+
+            $componentsList = IOUtils::walkTreeFiltered(CUSTOM_COMPONENTS_ROOT, ['phtml']);
+            foreach ($componentsList as $key => $compFile) {
+                $this->describeCustomComponent(CUSTOM_COMPONENTS_ROOT, $compFile);
             }
 
             CodeRegistry::cache();

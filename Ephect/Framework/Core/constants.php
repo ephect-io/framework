@@ -182,6 +182,7 @@ define('CONFIG_DOCROOT', trim(file_get_contents(CONFIG_DIR . 'document_root')));
 define('CONFIG_HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
 define('CONFIG_NAMESPACE', trim(file_get_contents(CONFIG_DIR . 'namespace')));
 define('CONFIG_COMMANDS', trim(file_get_contents(CONFIG_DIR . 'commands')));
+define('CONFIG_COMPONENTS', false === file_exists(CONFIG_DIR . 'components') ? 'Components' : trim(file_get_contents(CONFIG_DIR . 'Components')));
 define('CONFIG_WEBCOMPONENTS', trim(file_get_contents(CONFIG_DIR . 'webcomponents')));
 
 define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARATOR);
@@ -223,6 +224,7 @@ define('HOOKS_ROOT', EPHECT_ROOT . 'Hooks' . DIRECTORY_SEPARATOR);
 define('PLUGINS_ROOT', EPHECT_ROOT . 'Plugins' . DIRECTORY_SEPARATOR);
 define('COMMANDS_ROOT', EPHECT_ROOT . 'Commands' . DIRECTORY_SEPARATOR);
 define('CUSTOM_COMMANDS_ROOT', SRC_ROOT . CONFIG_COMMANDS . DIRECTORY_SEPARATOR);
+define('CUSTOM_COMPONENTS_ROOT', SRC_ROOT . CONFIG_COMPONENTS . DIRECTORY_SEPARATOR);
 define('CUSTOM_WEBCOMPONENTS_ROOT', SRC_ROOT . CONFIG_WEBCOMPONENTS . DIRECTORY_SEPARATOR);
 
 define('CLASS_EXTENSION', '.class.php');

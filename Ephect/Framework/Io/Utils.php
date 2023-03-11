@@ -2,36 +2,63 @@
 
 namespace Ephect\Framework\IO;
 
+use Directory;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 class Utils
 {
-    public static function walkTreeFiltered($path, $filter = [])
+    public static function walkTreeFiltered($path, $filter = [], $noDepth = false)
     {
         $result = [];
 
         $l = strlen($path);
 
-        $dir_iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::FOLLOW_SYMLINKS);
-        $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::CHILD_FIRST);
+        $iterator = null;
 
-        foreach ($iterator as $file) {
-            $fi = pathinfo($file->getPathName());
+        if ($noDepth) {
+            $iterator = dir($path);
 
-            if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
-                continue;
+            while($file = $iterator->read()) {
+                $fi = pathinfo($file);
+
+                
+                if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
+                    continue;
+                }
+                
+                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                    continue;
+                }
+
+                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                    $result[] = $file;
+
+                }
             }
+        } else {
+            $dir_iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::FOLLOW_SYMLINKS);
+            $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
-            if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
-                continue;
-            }
 
-            if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
-                array_push($result, substr($file->getPathName(), $l));
+            foreach ($iterator as $file) {
+                $fi = pathinfo($file->getPathName());
+
+                if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
+                    continue;
+                }
+
+                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                    continue;
+                }
+
+                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                    $result[] = substr($file->getPathName(), $l);
+                }
             }
         }
+
 
         return $result;
     }
