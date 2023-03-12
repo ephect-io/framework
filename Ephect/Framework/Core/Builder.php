@@ -132,10 +132,10 @@ class Builder
 
     private function describeWebcomponent(string $sourceDir, string $filename): void
     {
-        $cachedSourceViewFile = Component::getFlatFilename($filename);
+        $cachedSourceViewFile = WebComponent::getFlatFilename($filename);
         copy($sourceDir . $filename, COPY_DIR . $cachedSourceViewFile);
 
-        $comp = new Component();
+        $comp = new WebComponent();
         $comp->load($cachedSourceViewFile);
         $comp->analyse();
 
