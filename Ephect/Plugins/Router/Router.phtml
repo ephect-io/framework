@@ -29,7 +29,7 @@ function Router($children)
     return (<<< HTML
         {? 
             if({hasRouted}) { 
-                echo {html};
+                { html };
                 return;
             } 
         ?}
@@ -40,7 +40,7 @@ function Router($children)
 
             {service}->findRoute({html});
             if({html} !== '') { 
-                echo {html};
+                { html };
             } 
 
         ?}

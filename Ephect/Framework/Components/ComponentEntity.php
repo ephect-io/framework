@@ -5,6 +5,7 @@ namespace Ephect\Framework\Components;
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Tree\Tree;
 
 /**
@@ -246,7 +247,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         ComponentRegistry::uncache();
         $compFile = ComponentRegistry::read($this->compName);
         if ($compFile === null) {
-            return null;
+            WebComponentRegistry::uncache();
+            $compFile = WebComponentRegistry::read($this->compName);
+            if ($compFile === null) {
+                return null;
+            }
         }
         $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
 

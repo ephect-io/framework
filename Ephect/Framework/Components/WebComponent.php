@@ -22,7 +22,7 @@ class WebComponent extends AbstractFileComponent
     {
         parent::parse();
 
-        $this->cacheJavascript();
+        $this->cacheHtml();
     }
 
 }

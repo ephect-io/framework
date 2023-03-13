@@ -2,9 +2,76 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use Ephect\Framework\Core\Builder;
+use Ephect\Framework\IO\Utils;
+
+use function Ephect\Hooks\useEffect;
+
 function WebComponent($children)
 {
+
+    useEffect(function($children, /* string */ $tag, /* string */ $props) {
+
+        if($children === null) {
+
+            $tag = "no-name";
+            $props = "";
+            
+            return;
+        }
+
+        $motherUID = $children->getMotherUID();
+        $name = $children->getClass();
+
+        $srcFilename = $motherUID . DIRECTORY_SEPARATOR . $name . ".component" . PREHTML_EXTENSION;
+        $destFilename = $motherUID . DIRECTORY_SEPARATOR . $name . ".php";
+        $phpCache = CACHE_DIR . $srcFilename;
+        $jsCache = DOCUMENT_ROOT . $destFilename;
+
+        $props = $children->props();
+
+        $props = isset($props->props) ? $props->props : $props;
+
+        $args = [];
+        foreach($props as $key => $value) {
+            $args[] =  $key . '="' . $value . '"';
+        }
+
+        $props = implode(" ", $args);
+
+        $motherUID = $children->getMotherUID();
+        $name = $children->getClass();
+
+        $manifestFilename = 'manifest.json';
+        $manifestCache = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $manifestFilename;
+
+        if(!file_exists($manifestCache)) {
+            copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $manifestFilename, $manifestCache);
+        }
+
+        $manifestJson = Utils::safeRead($manifestCache);
+        $manifest = json_decode($manifestJson);
+
+        $tag = $manifest->tag;
+
+        $finalJs = RUNTIME_JS_DIR . $name . JS_EXTENSION;
+
+        if(!file_exists($jsCache)) {
+            $php = Utils::safeRead($phpCache);
+            $php = Utils::safeWrite($jsCache, $php);
+        } else {
+            // if(!file_exists($finalJs)) {
+            //     $builder = new Builder;
+            //     $html = $builder->buildWebcomponentsByHttpRequest($name, $destFilename);
+        
+            //     Utils::safeWrite($finalJs, $html);
+    
+            // }
+    
+        }
+    });
+
     return (<<< HTML
-    {{ children }}
+        <{{ tag }} {{ props }} />
     HTML);
 }
