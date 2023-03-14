@@ -2,6 +2,7 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use Ephect\Framework\Components\WebComponent;
 use Ephect\Framework\Core\Builder;
 use Ephect\Framework\IO\Utils;
 
@@ -10,7 +11,7 @@ use function Ephect\Hooks\useEffect;
 function WebComponent($children)
 {
 
-    useEffect(function($children, /* string */ $tag, /* string */ $props) {
+    useEffect(function($children, /* string */ $tag, /* string */ $args) {
 
         if($children === null) {
 
@@ -24,9 +25,6 @@ function WebComponent($children)
         $name = $children->getClass();
 
         $srcFilename = $motherUID . DIRECTORY_SEPARATOR . $name . ".component" . PREHTML_EXTENSION;
-        $destFilename = $motherUID . DIRECTORY_SEPARATOR . $name . ".php";
-        $phpCache = CACHE_DIR . $srcFilename;
-        $jsCache = DOCUMENT_ROOT . $destFilename;
 
         $props = $children->props();
 
@@ -37,7 +35,7 @@ function WebComponent($children)
             $args[] =  $key . '="' . $value . '"';
         }
 
-        $props = implode(" ", $args);
+        $args = implode(" ", $args);
 
         $motherUID = $children->getMotherUID();
         $name = $children->getClass();
@@ -56,22 +54,16 @@ function WebComponent($children)
 
         $finalJs = RUNTIME_JS_DIR . $name . JS_EXTENSION;
 
-        if(!file_exists($jsCache)) {
-            $php = Utils::safeRead($phpCache);
-            $php = Utils::safeWrite($jsCache, $php);
+        if(!file_exists($finalJs)) {
+            $comp = new WebComponent($name, $motherUID);
+            $html = $comp->renderHTML($srcFilename, $props);
+
+            Utils::safeWrite($finalJs, $html);
         } else {
-            // if(!file_exists($finalJs)) {
-            //     $builder = new Builder;
-            //     $html = $builder->buildWebcomponentsByHttpRequest($name, $destFilename);
-        
-            //     Utils::safeWrite($finalJs, $html);
-    
-            // }
-    
         }
     });
 
     return (<<< HTML
-        <{{ tag }} {{ props }} />
+        <{{ tag }} {{ args }} />
     HTML);
 }
