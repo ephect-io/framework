@@ -326,8 +326,21 @@ class Builder
         $curl = new Curl();
         $time_start = microtime(true);
 
+        $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8';
+        $headers[] = 'Accept-Encoding: gzip, deflate, br';
+        $headers[] = 'Connection: keep-alive';
+        if (isset($_COOKIE['PHPSESSID'])) {
+            $headers[] = "Cookie: PHPSESSID={$_COOKIE['PHPSESSID']};";
+        }
+        $headers[] = 'Upgrade-Insecure-Requests: 1';
+        $headers[] = 'Sec-Fetch-Dest: document';
+        $headers[] = 'Sec-Fetch-Mode: navigate';
+        $headers[] = 'Sec-Fetch-Site: cross-site';
+        $headers[] = 'Pragma: no-cache';
+        $headers[] = 'Cache-Control: no-cache';
+
         ob_start();
-        [$code, $header, $html] = $curl->request(CONFIG_HOSTNAME . ":$port" . $queryString);
+        [$code, $header, $html] = $curl->request(CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
         IOUtils::safeWrite(STATIC_DIR . $filename, $html);
         $output = ob_get_clean();
         IOUtils::safeWrite(LOG_PATH . $outputFilename, $output);

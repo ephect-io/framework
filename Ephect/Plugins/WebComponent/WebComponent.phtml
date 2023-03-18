@@ -31,8 +31,10 @@ function WebComponent($children)
         $props = isset($props->props) ? $props->props : $props;
 
         $args = [];
+        $fnArgs = [];
         foreach($props as $key => $value) {
             $args[] =  $key . '="' . $value . '"';
+            $fnArgs[$key] = $value;
         }
 
         $args = implode(" ", $args);
@@ -51,16 +53,6 @@ function WebComponent($children)
         $manifest = json_decode($manifestJson);
 
         $tag = $manifest->tag;
-
-        $finalJs = RUNTIME_JS_DIR . $name . JS_EXTENSION;
-
-        if(!file_exists($finalJs)) {
-            $comp = new WebComponent($name, $motherUID);
-            $html = $comp->renderHTML($srcFilename, $props);
-
-            Utils::safeWrite($finalJs, $html);
-        } else {
-        }
     });
 
     return (<<< HTML

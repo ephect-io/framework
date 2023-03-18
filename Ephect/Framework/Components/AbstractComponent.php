@@ -160,7 +160,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     {
         include_once CACHE_DIR . $cacheFilename;
 
-
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();
 
