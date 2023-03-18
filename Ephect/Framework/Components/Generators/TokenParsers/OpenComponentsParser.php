@@ -59,8 +59,9 @@ final class OpenComponentsParser extends AbstractTokenParser
             $propsKeys = $this->argumentsKeys($this->useVariables);
             
             $useChildren = $decl->hasArguments() || count($propsKeys) ? $this->useArguments($propsKeys) : ' ';
-    
-            $className = $this->component->getFunction() ?: $componentName;
+
+            $className = $this->component->getFullyQualifiedFunction() ?: $componentName;
+            $name = $this->component->getFunction() ?: $componentName;
             $classArgs = '[]';
     
             $fqComponentName = '\\' . ComponentRegistry::read($componentName);
@@ -73,7 +74,7 @@ final class OpenComponentsParser extends AbstractTokenParser
                 $preComponentBody .= "\t\t\t<?php } ?>\n";
             }
             
-            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'onrender' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
+            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
             $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Framework\\Components\\Children(\$struct); ?>\n";
             $componentRender .= "\t\t\t<?php \$fn = $fqComponentName(\$children); \$fn(); ?>\n";
 
