@@ -4,7 +4,6 @@ namespace Ephect\Framework\Utils;
 
 class TextUtils
 {
-    // code derived from http://php.vrana.cz/vytvoreni-pratelskeho-url.php
     public static function slugify(string $text): ?string
     {
         // replace non letter or digits by -
@@ -33,7 +32,7 @@ class TextUtils
         return $text;
     }
 
-    public static function format($string, ...$params): string
+    public static function format(string|array|object $string, ...$params): string
     {
 
         if (is_object($string)) {
@@ -44,12 +43,10 @@ class TextUtils
         }
         $result = $string;
         if (count($params) > 0 && is_array($params[0])) {
-            $result = vsprintf($string, $params[0]);
-            return $result;
+            return vsprintf($string, $params[0]);
         }
         if (count($params) > 0 && is_array($params)) {
-            $result = vsprintf($string, $params);
-            return $result;
+            return vsprintf($string, $params);
         }
     }
 

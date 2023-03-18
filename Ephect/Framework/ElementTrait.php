@@ -7,12 +7,12 @@ use Ephect\Framework\Crypto\Crypto;
 trait ElementTrait
 {
     protected $parent = null;
-    protected $uid = '';
-    protected $motherUID = '';
-    protected $id = 'noname';
-    protected $class = '';
-    protected $namespace = '';
-    protected $function = '';
+    protected ?string $uid = '';
+    protected ?string $motherUID = '';
+    protected string $id = 'noname';
+    protected ?string $class = '';
+    protected string $namespace = '';
+    protected string $function = '';
 
     public function getUID(): string
     {
@@ -71,8 +71,6 @@ trait ElementTrait
     public static function functionName($fullQualifiedName): string
     {
         $fqFunctionName = explode('\\', $fullQualifiedName);
-        $function = array_pop($fqFunctionName);
-
-        return $function;
+        return array_pop($fqFunctionName);
     }
 }

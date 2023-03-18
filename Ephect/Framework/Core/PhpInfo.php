@@ -72,7 +72,7 @@ final class PhpInfo
 
         foreach ($lines as $line) {
 
-            if (false !== preg_match("~<h2>(.*)</h2>~", $line, $title) ? (isset($title[1]) ? $cat = $title[1] : false) : false) {
+            if (false !== preg_match("~<h2>(.*)</h2>~", $line, $title) && ((isset($title[1]) && ($cat = $title[1])))) {
                 // new cat?
                 $cat = self::_formatKey($cat);
                 if (!$asArray) {
@@ -188,9 +188,8 @@ final class PhpInfo
 
     private static function _formatValue(string $value): string
     {
-        $value = trim($value);
         // $value = str_replace("\/", '/', $value);
 
-        return $value;
+        return trim($value);
     }
 }

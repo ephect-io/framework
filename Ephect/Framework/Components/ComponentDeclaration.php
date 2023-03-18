@@ -6,14 +6,17 @@ use Ephect\Framework\Element;
 
 class ComponentDeclaration extends Element implements ComponentDeclarationInterface
 {
-    protected $type = '';
-    protected $name = '';
-    protected $entity = null;
-    protected $arguments = [];
-    protected $flatComposition = [];
+    protected mixed $type = '';
+    protected string $name = '';
+    protected ?ComponentEntity $entity = null;
+    protected mixed $arguments = [];
+    protected mixed $flatComposition = [];
 
     function __construct(ComponentDeclarationStructure $struct)
     {
+
+        parent::__construct($this);
+
         $this->uid = $struct->uid;
         $this->type = $struct->type;
         $this->arguments = $struct->arguments;

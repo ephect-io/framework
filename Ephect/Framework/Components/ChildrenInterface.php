@@ -8,5 +8,6 @@ use Ephect\Framework\Tree\TreeInterface;
 interface ChildrenInterface extends TreeInterface, ElementInterface
 {
     function props(): array|object;
-    function onrender(): void;
+    function render(): void;
+    function getName(): string;
 }

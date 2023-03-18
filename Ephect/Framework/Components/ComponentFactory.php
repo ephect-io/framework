@@ -4,6 +4,7 @@ namespace Ephect\Framework\Components;
 
 use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\WebComponentRegistry;
 
 class ComponentFactory
 {
@@ -11,7 +12,7 @@ class ComponentFactory
     {
 
         $filename = ComponentRegistry::read($fullyQualifiedName);
-        $isPlugin = $filename === null ? ($filename = PluginRegistry::read($fullyQualifiedName)) !== null : false;
+        $isPlugin = $filename === null && ($filename = PluginRegistry::read($fullyQualifiedName)) !== null;
 
         if ($isPlugin) {
             $uid = PluginRegistry::read($filename);
@@ -19,6 +20,16 @@ class ComponentFactory
             $plugin->load($filename);
 
             return $plugin;
+        }
+
+        $isWebComponent = $filename === null && ($filename = WebComponentRegistry::read($fullyQualifiedName)) !== null;
+
+        if ($isWebComponent) {
+            $uid = WebComponentRegistry::read($filename);
+            $webComponent = new WebComponent($uid, $motherUID);
+            $webComponent->load($filename);
+
+            return $webComponent;
         }
 
         $uid = ComponentRegistry::read($filename);

@@ -18,19 +18,21 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 {
     use ElementTrait;
 
-    protected $code;
-    protected $parentHTML;
-    protected $componentList = [];
-    protected $children = null;
-    protected $declaration = null;
-    protected $entity = null;
-    protected $bodyStartsAt = 0;
+    protected ?string $code;
+    protected ?string $parentHTML;
+    protected ?stdClass $children = null;
+    protected ?ComponentDeclaration $declaration = null;
+    protected ?ComponentEntity $entity = null;
+    protected int $bodyStartsAt = 0;
 
     public function getBodyStart(): int
     {
         return $this->bodyStartsAt;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getDeclaration(): ?ComponentDeclaration
     {
         if ($this->declaration === null) {
@@ -73,6 +75,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $this->entity;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function setEntity()
     {
         $decl = $this->getDeclaration();
@@ -125,16 +130,14 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
         if ($result === null) return null;
 
-        $result = array_unique($result);
-
-        return $result;
+        return array_unique($result);
     }
 
     public function findComponent(string $componentName, string $motherUID): array
     {
         ComponentRegistry::uncache();
         $uses = ComponentRegistry::items();
-        $fqFuncName = isset($uses[$componentName]) ? $uses[$componentName] : null;
+        $fqFuncName = $uses[$componentName] ?? null;
 
         if ($fqFuncName === null) {
             throw new BadFunctionCallException('The component ' . $componentName . ' does not exist.');
@@ -156,7 +159,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
     {
         include_once CACHE_DIR . $cacheFilename;
-
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();

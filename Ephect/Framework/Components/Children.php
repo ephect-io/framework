@@ -9,9 +9,11 @@ class Children extends Tree implements ChildrenInterface
 {
     use ElementTrait;
 
-    protected $props = [];
-    protected $parentProps = [];
-    protected $onrender = null;
+    protected ?object $props = null;
+    protected array $parentProps = [];
+    protected ?object $buffer = null;
+
+    protected ?string $name = null;
 
     public function __construct(ChildrenStructure $struct)
     {
@@ -19,8 +21,14 @@ class Children extends Tree implements ChildrenInterface
         $this->motherUID = $struct->motherUID;
         $this->props = $struct->props;
         $this->parentProps = $struct->parentProps;
+        $this->name = $struct->name;
         $this->class = $struct->class;
-        $this->onrender = $struct->onrender;
+        $this->buffer = $struct->buffer;
+    }
+
+    function getName(): string
+    {
+        return $this->name;
     }
 
     public function props(): array|object
@@ -28,10 +36,20 @@ class Children extends Tree implements ChildrenInterface
         return $this->props;
     }
 
-    public function onrender(): void
+    public function getBuffer(): string
     {
-        $fn = $this->onrender;
+        $fn = $this->buffer;
+
+        ob_start();
+        $fn();
+        return ob_get_clean();
+    }
+
+    public function render(): void
+    {
+        $fn = $this->buffer;
 
         $fn();
     }
+
 }

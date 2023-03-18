@@ -2,10 +2,10 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\Components\ComponentStructure;
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Tree\Tree;
 
 /**
@@ -17,27 +17,27 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 {
     use ElementTrait;
 
-    protected $parentId = 0;
-    protected $name = '';
-    protected $text = '';
-    protected $start = 0;
-    protected $end = 0;
-    protected $depth = 0;
-    protected $isSibling = false;
-    protected $closer = '';
-    protected $contents = null;
-    protected $hasCloser = '';
-    protected $hasProperties = false;
-    protected $properties = [];
-    protected $method = '';
-    protected $doc = null;
-    protected $compName = '';
-    protected $className = '';
-    protected $attributes = null;
-    protected $composedOf = null;
+    protected int $parentId = 0;
+    protected string $name = '';
+    protected string $text = '';
+    protected int $start = 0;
+    protected int $end = 0;
+    protected int $depth = 0;
+    protected bool $isSibling = false;
+    protected ?array $closer = null;
+    protected mixed $contents = null;
+    protected bool $hasCloser = false;
+    protected bool $hasProperties = false;
+    protected array $properties = [];
+    protected string $method = '';
+    protected string $compName = '';
+    protected ?string $className = '';
+    protected ?ComponentStructure $attributes = null;
 
     public function __construct(?ComponentStructure $attributes)
     {
+        parent::__construct([]);
+
         if ($attributes === null) {
             return null;
         }
@@ -46,7 +46,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->motherUID = $attributes->motherUID;
         $this->id = $attributes->id;
         $this->className = $attributes->class;
-        $this->componentName = $attributes->component;
+        $this->compName = $attributes->component;
         $this->parentId = $attributes->parentId;
         $this->text = $attributes->text;
         $this->name = $attributes->name;
@@ -91,11 +91,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return count($this->properties) > 0;
     }
 
-    public function getChildName(): string
-    {
-        return $this->childName;
-    }
-
     public function hasCloser(): bool
     {
         return $this->hasCloser;
@@ -134,13 +129,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         $result = [];
 
-        $structs = [];
         $depths = [];
 
         foreach ($list as $match) {
 
             $struct = new ComponentStructure($match);
-            array_push($structs, $struct);
             $depths[$struct->depth] = 1;
         }
 
@@ -148,7 +141,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         for ($i = $maxDepth; $i > -1; $i--) {
             foreach ($list as $match) {
                 if ($match["depth"] == $i) {
-                    array_push($result, $match['id']);
+                    $result[] = $match['id'];
                 }
             }
         }
@@ -178,13 +171,13 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             if (!is_array($list[$pId]['node'])) {
                 $list[$pId]['node'] = [];
             }
-            array_push($list[$pId]['node'], $list[$i]);
+            $list[$pId]['node'][] = $list[$i];
             unset($list[$i]);
         }
 
         if (count($list) === 1) {
             $result = new ComponentEntity(new ComponentStructure($list[0]));
-        } 
+        }
         elseif (count($list) > 1) {
             $result = self::_makeFragment();
             foreach ($list as $item) {
@@ -199,10 +192,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     public function composedOf(): array
     {
         $names = [];
-        array_push($names, $this->name);
+        $names[] = $this->name;
 
         $this->forEach(function (ComponentEntityInterface $item, $key) use (&$names) {
-            array_push($names, $item->getName());
+            $names[] = $item->getName();
         }, $this);
 
         return $names;
@@ -233,9 +226,9 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             return $this->properties;
         }
         if (isset($this->properties[$key])) {
-            $result = $this->properties[$key];
+            return $this->properties[$key];
         }
-        return $result;
+        return null;
     }
 
     public function getContents(?string $html = null): ?string
@@ -252,9 +245,13 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         }
 
         ComponentRegistry::uncache();
-        $compFile = ComponentRegistry::read($this->componentName);
+        $compFile = ComponentRegistry::read($this->compName);
         if ($compFile === null) {
-            return null;
+            WebComponentRegistry::uncache();
+            $compFile = WebComponentRegistry::read($this->compName);
+            if ($compFile === null) {
+                return null;
+            }
         }
         $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
 
@@ -265,9 +262,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             $e += $o;
         }
 
-        $contents = substr($t, $s, $e - $s + 1);
-
-        return $contents;
+        return substr($t, $s, $e - $s + 1);
     }
 
 
@@ -306,9 +301,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         $fragment = json_decode($json, JSON_OBJECT_AS_ARRAY);
 
-        $entity = new ComponentEntity(new ComponentStructure($fragment));
-
-        return $entity;
+        return new ComponentEntity(new ComponentStructure($fragment));
 
     }
 }

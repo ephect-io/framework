@@ -34,9 +34,7 @@ class RouteRegistry extends AbstractStaticRegistry
 
     public static function hasMoved(): bool
     {
-        $result = file_exists(self::getMovedFilename());
-
-        return $result;
+        return file_exists(self::getMovedFilename());
     }
 
     public static function getMovedFilename(): string

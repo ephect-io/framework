@@ -6,8 +6,8 @@ use Ephect\Framework\Logger\Logger;
 
 class StaticElement
 {
-    protected static $instance = null;
-    protected static $logger = null;
+    protected static object|null $instance = null;
+    protected static Logger|null $logger = null;
 
     private function __construct()
     {

@@ -4,7 +4,7 @@ namespace Ephect\Framework\Tree;
 
 class Tree implements TreeInterface
 {
-    protected $elementList = [];
+    protected array $elementList = [];
 
     public function __construct(array $list)
     {
@@ -18,15 +18,12 @@ class Tree implements TreeInterface
 
     public function count(): int
     {
-        $this->count = count($this->elementList);
-        return $this->count;
+        return count($this->elementList);
     }
 
     public function getIterator(): TreeIterator
     {
-        $tree = new TreeIterator($this->elementList);
-
-        return $tree;
+        return new TreeIterator($this->elementList);
     }
 
     public function items(?int $index = null)
@@ -61,7 +58,7 @@ class Tree implements TreeInterface
         $current[0] = $object;
         $current[1] = $this->elementList[$index];
 
-        array_splice($this->elementList, $index, $current);
+        array_splice($this->elementList, $index, null, $current);
 
         return true;
     }
@@ -84,16 +81,17 @@ class Tree implements TreeInterface
     {
         $result = array_search($object, $this->elementList, true);
 
-        $result = false === $result ? null : $result;
-
-        return $result;
+        return false === $result ? null : $result;
     }
 
     public function clear(): void
     {
-        for ($i = 0; $i < $this->count; $i++) {
+        $c = count($this->elementList);
+        for ($i = 0; $i < $c; $i++) {
             unset($this->elementList[$i]);
         }
+
+        $this->elementList = [];
     }
 
     public function forEach(callable $callback, TreeInterface $tree): void

@@ -10,9 +10,7 @@ class Cache extends StaticElement
 
     public static function getCacheFilename(string $basename): string
     {
-        $cache_file = CACHE_DIR . str_replace('/', '_', $basename);
-
-        return $cache_file;
+        return CACHE_DIR . str_replace('/', '_', $basename);
     }
     
     public static function cacheFilenameFromView(string $compName): string

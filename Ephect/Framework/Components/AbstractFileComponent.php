@@ -3,7 +3,6 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Components\Generators\ParserService;
 use Ephect\Framework\ElementUtils;
@@ -12,6 +11,7 @@ use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
+use Ephect\Framework\Registry\WebComponentRegistry;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
 define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
@@ -19,7 +19,7 @@ define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
 {
 
-    protected $filename = '';
+    protected ?string $filename = '';
 
     public function __construct(?string $id = null, string $motherUID = '')
     {
@@ -53,30 +53,23 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
     public function getFlattenSourceFilename(): string
     {
-        $cache_file = static::getFlatFilename($this->filename);
-
-        return $cache_file;
+        return static::getFlatFilename($this->filename);
     }
 
     public function getFlattenFilename(): string
     {
-        $cache_file = static::getFlatFilename($this->filename);
-
-        return $cache_file;
+        return static::getFlatFilename($this->filename);
     }
 
     public static function getFlatFilename(string $basename): string
     {
         $basename = pathinfo($basename, PATHINFO_BASENAME);
 
-        $cache_file = str_replace('/', '_', $basename);
-
-        return $cache_file;
+        return str_replace('/', '_', $basename);
     }
 
     public function load(?string $filename = null): bool
     {
-        $result = false;
         $filename = $filename ?: '';
 
         $this->filename = ($filename !== '') ? $filename : $this->filename;
@@ -92,16 +85,14 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if (!$this->bodyStartsAt) {
-            self::__makeComponent($this->filename, $this->code);
+            self::makeComponent($this->filename, $this->code);
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         }
-        $result = $this->code !== null;
-
-        return  $result;
+        return $this->code !== null;
     }
 
 
-    static private function __makeComponent(string $filename, string &$html): array
+    static private function makeComponent(string $filename, string &$html): void
     {
         $info = (object) pathinfo($filename);
         $namespace = CONFIG_NAMESPACE;
@@ -121,7 +112,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         Utils::safeWrite(COPY_DIR . $filename, $html);
 
-        return [$namespace, $function];
     }
 
 
@@ -132,11 +122,11 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         [$fqFunctionName, $cacheFilename, $isCached] = $this->findComponent($functionName, $motherUID);
         if (!$isCached) {
             ComponentRegistry::uncache();
-
+            WebComponentRegistry::uncache();
+            
             $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName, $motherUID);
             $component->parse();
-            $component->cacheHtml();
 
             $motherUID = $component->getMotherUID();
 
@@ -453,24 +443,23 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
     protected function cacheHtml(): ?string
     {
 
-        // CacheRegistry::uncache();
-        // $cache = ($cache = (CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
-
-        // $isCached = isset($cache[$this->getFullyQualifiedFunction()]);
-        // if($isCached) {
-        //     return $cache[$this->getFullyQualifiedFunction()];
-        // }
-
-        // $cache_file = static::getFlatFilename($this->filename);
-        // Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
-
-        // $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
-        // CacheRegistry::write($this->motherUID, $cache);
-        // CacheRegistry::cache();
-
-        // return $cache_file;
         $cache_file = static::getFlatFilename($this->filename);
         $result = Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
+
+        $cache = (($cache = CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
+
+        $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
+        CacheRegistry::write($this->motherUID, $cache);
+        CacheRegistry::cache();
+
+        return $result === null ? $result : $cache_file;
+    }
+
+    protected function cacheJavascript(): ?string
+    {
+
+        $cache_file = static::getFlatFilename($this->filename);
+        $result = Utils::safeWrite(RUNTIME_JS_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
 
         $cache = (($cache = CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
 

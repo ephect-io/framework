@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
@@ -58,8 +59,9 @@ final class OpenComponentsParser extends AbstractTokenParser
             $propsKeys = $this->argumentsKeys($this->useVariables);
             
             $useChildren = $decl->hasArguments() || count($propsKeys) ? $this->useArguments($propsKeys) : ' ';
-    
-            $className = $this->component->getFunction() ?: $componentName;
+
+            $className = $this->component->getFullyQualifiedFunction() ?: $componentName;
+            $name = $this->component->getFunction() ?: $componentName;
             $classArgs = '[]';
     
             $fqComponentName = '\\' . ComponentRegistry::read($componentName);
@@ -72,7 +74,7 @@ final class OpenComponentsParser extends AbstractTokenParser
                 $preComponentBody .= "\t\t\t<?php } ?>\n";
             }
             
-            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'onrender' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
+            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
             $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Framework\\Components\\Children(\$struct); ?>\n";
             $componentRender .= "\t\t\t<?php \$fn = $fqComponentName(\$children); \$fn(); ?>\n";
 
@@ -90,7 +92,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
-            array_push($this->result, $componentName);
+            $this->result[] = $componentName;
 
         };
 
@@ -107,7 +109,7 @@ final class OpenComponentsParser extends AbstractTokenParser
         $result = [];
 
         foreach ($componentArgs as $key => $value) {
-            array_push($result, "\$" . $key);
+            $result[] = "\$" . $key;
         }
 
         return $result;
@@ -122,9 +124,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             return ' ';
         }
 
-        $result = " use (" . $args . ")";
-     
-        return $result;
+        return " use (" . $args . ")";
 
     }
 
@@ -143,8 +143,6 @@ final class OpenComponentsParser extends AbstractTokenParser
             }
             $result .= $pair;
         }
-        $result = ($result === '') ? null : '[' . $result . ']';
-
-        return $result;
+        return ($result === '') ? null : '[' . $result . ']';
     }
 }

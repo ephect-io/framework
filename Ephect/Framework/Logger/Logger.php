@@ -6,11 +6,10 @@ use Ephect\Framework\Utils\TextUtils;
 
 class Logger
 {
-    private static $_logger = null;
+    private static Logger|null $_logger = null;
 
     private function __construct()
     {
-
     }
 
     public static function create(): Logger
@@ -21,29 +20,29 @@ class Logger
         return self::$_logger;
     }
 
-    public function dump($message, $object)
+    public function dump(string $message, object|array $object): void
     {
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);
     }
 
-    public function info($string, ...$params): void
+    public function info(string $string, ...$params): void
     {
         $message = TextUtils::format($string, $params);
         $this->_log(INFO_LOG, $message);
     }
 
 
-    public function debug($message, $filename = null, $line = null): void
+    public function debug(string|array|object $message, string $filename = '', int $line = -1): void
     {
         $this->_log(DEBUG_LOG, $message, $filename, $line);
     }
 
-    public function sql($message, $filename = null, $line = null): void
+    public function sql(string|array|object $message, string $filename = '', int $line = -1): void
     {
         $this->_log(SQL_LOG, $message, $filename, $line);
     }
 
-    public function error(\Throwable $ex, $filename = null, $line = null): void
+    public function error(\Throwable $ex,  string $filename = '', int $line = -1): void
     {
         $message = '';
 
@@ -58,20 +57,20 @@ class Logger
         $this->_log(ERROR_LOG, $message, $filename, $line);
     }
 
-    private function _log($filepath, $message, $filename = '', $line = ''): void
+    private function _log(string $filepath, string|array|object $message, string $filename = '', int $line = -1): void
     {
         $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
 
         if (!file_exists(dirname($filepath))) {
             mkdir(dirname($filepath), 0755);
         }
-        
+
         $handle = fopen($filepath, 'a');
 
         if (SRC_ROOT) {
             $filename = substr($filename, strlen(SRC_ROOT));
         }
-        $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
+        $message = date('Y-m-d h:i:s') . (isset($filename) ? ":$filename" : '') . ($line > -1 ? ":$line" : '') . " : $message" . PHP_EOL;
         fwrite($handle, $message . PHP_EOL);
         fclose($handle);
     }
@@ -121,11 +120,11 @@ class Logger
         if (file_exists(INFO_LOG)) {
             unlink(INFO_LOG);
         }
-        
+
         if (file_exists(DEBUG_LOG)) {
             unlink(DEBUG_LOG);
-        }      
-        
+        }
+
         if (file_exists(ERROR_LOG)) {
             unlink(ERROR_LOG);
         }
@@ -137,6 +136,5 @@ class Logger
         if (file_exists(DOCUMENT_ROOT . 'php_error_log')) {
             unlink(DOCUMENT_ROOT . 'php_error_log');
         }
-
     }
 }

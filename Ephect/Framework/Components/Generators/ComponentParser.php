@@ -21,9 +21,9 @@ define('STR_SPACE', ' ');
 
 class ComponentParser extends Parser
 {
-    protected $depths = [];
-    protected $idListByDepth = [];
-    protected $list = [];
+    protected array $depths = [];
+    protected array $idListByDepth = [];
+    protected array $list = [];
 
     public function __construct(ComponentInterface $comp)
     {
@@ -38,9 +38,7 @@ class ComponentParser extends Parser
         $func = $this->doFunctionDeclaration();
         $decl = ['type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];
 
-        $struct = new ComponentDeclarationStructure($decl);
-
-        return $struct;
+        return new ComponentDeclarationStructure($decl);
     }
 
     public function getList(): array
@@ -92,7 +90,7 @@ class ComponentParser extends Parser
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-            array_push($result, $match[1]);
+            $result[] = $match[1];
         }
 
         return $result;
@@ -101,28 +99,20 @@ class ComponentParser extends Parser
 
     public function isClosedTag(array $tag): bool
     {
-        $result = false;
-
         $text = $tag['text'];
         if(empty($text) || $tag['name'] === 'Fragment') {
-            return $result;
+            return false;
         }
-        $result = substr($text, -2) === TERMINATOR . CLOSE_TAG;
-
-        return $result;
+        return substr($text, -2) === TERMINATOR . CLOSE_TAG;
     }
 
     public function isCloseTag(array $tag): bool
     {
-        $result = false;
-
         $text = $tag['text'];
         if(empty($text) || $text === '<>') {
-            return $result;
+            return false;
         }
-        $result = substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
-
-        return $result;
+        return substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
     }
 
     public function makeTag($tag, $parentIds, $depth, $isCloser = false): array
@@ -185,14 +175,13 @@ class ComponentParser extends Parser
             unset($tag[1]);
             unset($tag[2]);
 
-            array_push($allTags, $tag);
+            $allTags[] = $tag;
             $i++;
 
         }
 
         $this->depths[$depth] = 1;
 
-        $this->allTags = $allTags;
         $l = count($allTags);
         $i = 0;
         while (count($allTags)) {
@@ -263,7 +252,7 @@ class ComponentParser extends Parser
         for ($i = $maxDepth; $i > -1; $i--) {
             foreach ($list as $match) {
                 if ($match["depth"] == $i) {
-                    array_push($this->idListByDepth, $match['id']);
+                    $this->idListByDepth[] = $match['id'];
                 }
             }
         }

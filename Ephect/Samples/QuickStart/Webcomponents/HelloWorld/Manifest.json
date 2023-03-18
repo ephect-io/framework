@@ -1,0 +1,11 @@
+{
+    "filenames": ["HelloWorld.class.mjs"],
+    "class": "HelloWorld",
+    "tag": "hello-world",
+    "entrypoint": {
+        "method": "sayHello",
+        "args": [
+            "word"
+        ]
+    }
+}

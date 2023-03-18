@@ -12,8 +12,10 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 {
     private array $_commands = [];
 
-    public function __construct(private AbstractApplication $_application)
+    public function __construct(private readonly AbstractApplication $_application)
     {
+        parent::__construct($this->_application);
+
         $this->collectCommands();
     }
 
@@ -26,11 +28,11 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
     {
         $usage = [];
         $commandFiles = Utils::walkTreeFiltered(COMMANDS_ROOT, ['php']);
-        $customCommandFiles = Utils::walkTreeFiltered(CONFIG_COMMANDS, ['php']);
+        $customCommandFiles = Utils::walkTreeFiltered(CUSTOM_COMMANDS_ROOT, ['php']);
 
         $allFiles = [
             (object) ["root" => COMMANDS_ROOT, "files" => $commandFiles],
-            (object) ["root" => CONFIG_COMMANDS, "files" => $customCommandFiles],
+            (object) ["root" => CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles],
         ];
 
         foreach ($allFiles as $entry) {
@@ -39,6 +41,10 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 [$namespace, $class] = ElementUtils::getClassDefinitionFromFile($root_dir . $filename);
                 $fqClass = "$namespace\\$class";
 
+                if($class !== 'Main') {
+                    continue;
+                }
+
                 include $root_dir . $filename;
                 $object = new $fqClass($this->_application);
 
@@ -46,9 +52,9 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 $commandArgs = $attr[0]['args'];
 
                 $verb = $commandArgs['verb'];
-                $subject = isset($commandArgs['subject']) ? $commandArgs['subject'] : '';
+                $subject = $commandArgs['subject'] ?? '';
                 $desc = $commandArgs['desc'];
-                $isPhar = isset($commandArgs['isPhar']) ? $commandArgs['isPhar'] : '';
+                $isPhar = $commandArgs['isPhar'] ?? '';
 
                 if($isPhar) {
                     continue;

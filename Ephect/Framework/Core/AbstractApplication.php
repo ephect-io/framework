@@ -15,20 +15,20 @@ abstract class AbstractApplication extends Element
     const TEST_MODE = 'TEST';
     const PROD_MODE = 'PROD';
 
-    private static $_executionMode = self::PROD_MODE;
-    private static $_verboseMode = false;
-    private static $_useTransactions = true;
+    private static string $_executionMode = self::PROD_MODE;
+    private static bool $_verboseMode = false;
+    private static bool $_useTransactions = true;
 
-    protected $commands = [];
-    protected $callbacks = [];
-    protected $appName = 'app';
-    protected $appTitle = '';
-    protected $scriptName = 'app.php';
-    protected $appDirectory = '';
-    protected $canStop = false;
+    protected array $commands = [];
+    protected array $callbacks = [];
+    protected string $appName = 'app';
+    protected string $appTitle = '';
+    protected string $scriptName = 'app.php';
+    protected string $appDirectory = '';
+    protected bool $canStop = false;
     protected $dataConfName = '';
-    private $_usage = '';
-    private $_appini = [];
+    private string $_usage = '';
+    private array $_appini = [];
 
     public function __construct()
     {
@@ -50,7 +50,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All logs cleared';
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             $result = 'Impossible to clear logs';
         }
@@ -65,7 +65,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All runtime files deleted';
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             $result = 'Impossible to delete runtime files';
         }
@@ -81,7 +81,7 @@ abstract class AbstractApplication extends Element
 
             $result = 'All cache files deleted';
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
 
             $result = 'Impossible to delete cache files';
         }
@@ -110,7 +110,7 @@ abstract class AbstractApplication extends Element
             $this->appTitle = StateRegistry::read('application', 'title');
 
         } catch (\Throwable $ex) {
-            Console::writeException($ex);
+            Console::error($ex);
         }
     }
 

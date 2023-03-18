@@ -23,12 +23,11 @@ class Application extends AbstractApplication
     public function run(...$params): void
     {
         $this->loadInFile();
+        $compiler = new Builder;
 
         if (!ComponentRegistry::uncache()) {
-            $compiler = new Builder;
-            $compiler->perform();
-            $compiler->postPerform();
-        
+            $compiler->describeComponents();
+            $compiler->prepareRoutedComponents();
         }
 
         CacheRegistry::uncache();
@@ -36,6 +35,10 @@ class Application extends AbstractApplication
 
         $app = new Component('App');
         $app->render();
+        
+        // $motherUID = $app->getMotherUID();
+        // $compiler->buildWebcomponents($motherUID);
+
     }
 
     public function displayConstants(): array

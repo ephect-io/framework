@@ -2,36 +2,63 @@
 
 namespace Ephect\Framework\IO;
 
+use Directory;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 class Utils
 {
-    public static function walkTreeFiltered($path, $filter = [])
+    public static function walkTreeFiltered($path, $filter = [], $noDepth = false)
     {
         $result = [];
 
         $l = strlen($path);
 
-        $dir_iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::FOLLOW_SYMLINKS);
-        $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::CHILD_FIRST);
+        $iterator = null;
 
-        foreach ($iterator as $file) {
-            $fi = pathinfo($file->getPathName());
+        if ($noDepth) {
+            $iterator = dir($path);
 
-            if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
-                continue;
+            while($file = $iterator->read()) {
+                $fi = pathinfo($file);
+
+                
+                if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
+                    continue;
+                }
+                
+                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                    continue;
+                }
+
+                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                    $result[] = $file;
+
+                }
             }
+        } else {
+            $dir_iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::FOLLOW_SYMLINKS);
+            $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
-            if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
-                continue;
-            }
 
-            if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
-                array_push($result, substr($file->getPathName(), $l));
+            foreach ($iterator as $file) {
+                $fi = pathinfo($file->getPathName());
+
+                if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
+                    continue;
+                }
+
+                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                    continue;
+                }
+
+                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                    $result[] = substr($file->getPathName(), $l);
+                }
             }
         }
+
 
         return $result;
     }
@@ -54,9 +81,7 @@ class Utils
 
     public static function safeMkDir(string $directory): bool
     {
-        $result = false;
-
-        if (!file_exists($directory)) {
+        if (!$result = file_exists($directory)) {
             $result = mkdir($directory, 0775, true);
         }
 
@@ -95,9 +120,7 @@ class Utils
         if (!file_exists($dir)) {
             $result = mkdir($dir, 0775, true);
         }
-        $result = (false === $len = file_put_contents($filename, $contents)) ? null : $len;
-
-        return $result;
+        return (false === $len = file_put_contents($filename, $contents)) ? null : $len;
     }
 
     public static function safeRead(string $filename): ?string
@@ -105,20 +128,17 @@ class Utils
         if (!file_exists($filename)) {
             return null;
         }
-        $result = (false === $contents = file_get_contents($filename)) ? null : $contents;
-
-        return $result;
+        return (false === $contents = file_get_contents($filename)) ? null : $contents;
     }
 
     /**
      * Should be replaced by realpath()
      *
      * @param string $path
-     * @return void
+     * @return string
      */
-    public static function reducePath(string $path)
+    public static function reducePath(string $path): string
     {
-        $result = '';
         $array = explode(DIRECTORY_SEPARATOR, $path);
 
         $c = count($array);
@@ -132,8 +152,6 @@ class Utils
         }
 
 
-        $result = implode(DIRECTORY_SEPARATOR, $array);
-
-        return $result;
+        return implode(DIRECTORY_SEPARATOR, $array);
     }
 }

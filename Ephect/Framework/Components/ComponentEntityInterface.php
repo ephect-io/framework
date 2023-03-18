@@ -17,7 +17,6 @@ interface ComponentEntityInterface extends TreeInterface, ElementInterface, Stru
     public function getStart(): int;
     public function getEnd(): int;
     public function getContents(): ?string;
-    public function getChildName(): string;
     public function hasCloser(): bool;
     public function isSibling(): bool;
     public function getCloser(): array;

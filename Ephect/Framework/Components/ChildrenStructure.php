@@ -6,10 +6,11 @@ use Ephect\Framework\Core\Structure;
 
 class ChildrenStructure extends Structure
 {
-    public $uid;
-    public $props;
-    public $class;
-    public $parentProps;
-    public $motherUID;
-    public $onrender;
+    public string $uid = '';
+    public ?object $props = null;
+    public string $class = '';
+    public string $name = '';
+    public ?array $parentProps = null;
+    public string $motherUID = '';
+    public ?object $buffer = null;
 }

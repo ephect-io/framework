@@ -9,18 +9,18 @@ use Ephect\Framework\Xml\XmlDocument;
 
 class ComponentDocument
 {
-    protected $list = [];
-    protected $text = '';
-    protected $count = 0;
-    protected $matches = [];
-    protected $currentMatchKey = -1;
-    protected $match = null;
-    protected $depths = [];
-    protected $matchesByDepth = [];
-    protected $matchesById = [];
-    protected $matchesByKey = [];
-    protected $offsetsById = [];
-    protected $component = null;
+    protected array $list = [];
+    protected ?string $text = '';
+    protected int $count = 0;
+    protected array $matches = [];
+    protected int $currentMatchKey = -1;
+    protected ?ComponentEntity $match = null;
+    protected array $depths = [];
+    protected array $matchesByDepth = [];
+    protected array $matchesById = [];
+    protected array $matchesByKey = [];
+    protected array $offsetsById = [];
+    protected ?ComponentInterface $component = null;
 
     public function __construct(ComponentInterface $comp)
     {
@@ -44,17 +44,13 @@ class ComponentDocument
 
     public function getMatchById(int $id): ?ComponentEntity
     {
-        $match = null;
-
         if (!isset($this->list[$id])) {
-            return $match;
+            return null;
         }
 
         $struct = new ComponentStructure($this->list[$id]);
 
-        $match = new ComponentEntity($struct);
-
-        return $match;
+        return new ComponentEntity($struct);
     }
 
     public function getCount(): int
@@ -136,7 +132,7 @@ class ComponentDocument
     {
         $result = [];
         foreach ($this->list as $match) {
-            array_push($result, $match['id']);
+            $result[] = $match['id'];
         }
 
         return $result;
@@ -179,7 +175,6 @@ class ComponentDocument
 
         $childMatchesById = $doc->getIDsOfMatches();
         $childCount = $doc->getCount();
-        $childText = $childText;
 
         for ($i = $parentCount - 1; $i > -1; $i--) {
             $parentId = $parentMatchesById[$i];
@@ -262,7 +257,7 @@ class ComponentDocument
             $offset = 0;
 
             $currentMatchKey = $this->matchesByKey[$match->getId()];
-            $previousMatchId = isset($this->matchesById[$currentMatchKey + 1]) ? $this->matchesById[$currentMatchKey + 1] : $match->getId();
+            $previousMatchId = $this->matchesById[$currentMatchKey + 1] ?? $match->getId();
 
             if (
                 !$match->isSibling()
@@ -313,7 +308,7 @@ class ComponentDocument
         for ($j = $l - 1; $j > -1; $j--) {
             $id = $this->matchesById[$j];
             if ($this->list[$id]['parentId'] == $parentId) {
-                $offset += isset($this->offsetsById[$id]) ? $this->offsetsById[$id] : 0;
+                $offset += $this->offsetsById[$id] ?? 0;
                 $offset += $this->findOffset($id);
             }
         }
