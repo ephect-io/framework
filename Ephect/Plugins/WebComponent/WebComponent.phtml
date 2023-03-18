@@ -10,7 +10,9 @@ function WebComponent($children)
     useEffect(function($children, /* string */ $tag, /* string */ $args, $service) {
 
         $service = new WebComponentService($children);
-        [$tag, $args] = $service->prepareFiles();
+        $manifest = $service->readManifest();
+        $tag = $manifest->getTag();
+        $args = $service->getAttributes();
 
     });
 

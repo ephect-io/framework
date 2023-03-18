@@ -2,12 +2,13 @@
 
 namespace Ephect\Plugins\WebComponent;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\WebComponents\Manifest;
 
 interface WebComponentServiceInterface
 {
 
-    public function prepareFiles(): array;
+    public function getAttributes(): string;
+    public function readManifest(): Manifest;
     public function storeHTML(string $html): void;
     public function isPending(): bool;
     public function markAsPending(): void;

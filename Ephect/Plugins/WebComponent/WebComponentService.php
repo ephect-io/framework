@@ -3,6 +3,8 @@
 namespace Ephect\Plugins\WebComponent;
 
 use Ephect\Framework\IO\Utils;
+use Ephect\Framework\WebComponents\Manifest;
+use Ephect\Framework\WebComponents\ManifestStructure;
 
 class WebComponentService implements WebComponentServiceInterface
 {
@@ -24,24 +26,27 @@ class WebComponentService implements WebComponentServiceInterface
         Utils::safeWrite($pendingJs, "const time = $timestamp");
     }
 
-    public function prepareFiles(): array
+    public function getAttributes(): string
     {
-        $children = $this->children;
+        $props = $this->children->props();
 
-        $motherUID = $children->getMotherUID();
-        $name = $children->getName();
-        $class = $children->getClass();
-
-        $props = $children->props();
-
-        $props = isset($props->props) ? $props->props : $props;
+        $props = $props->props ?? $props;
 
         $args = [];
         foreach ($props as $key => $value) {
             $args[] =  $key . '="' . $value . '"';
         }
 
-        $args = implode(" ", $args);
+        return implode(" ", $args);
+
+    }
+
+    public function readManifest(): Manifest
+    {
+        $children = $this->children;
+
+        $motherUID = $children->getMotherUID();
+        $name = $children->getName();
 
         $manifestFilename = 'manifest.json';
         $manifestCache = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $manifestFilename;
@@ -51,17 +56,17 @@ class WebComponentService implements WebComponentServiceInterface
         }
 
         $manifestJson = Utils::safeRead($manifestCache);
-        $manifest = json_decode($manifestJson);
+        $manifest = json_decode($manifestJson, JSON_OBJECT_AS_ARRAY);
 
-        $tag = $manifest->tag;
+        $struct = new ManifestStructure($manifest);
 
-        return [$tag, $args];
+        return new Manifest($struct);
+
     }
 
     public function storeHTML(string $html): void
     {
-        $children = $this->children;
-        $name = $children->getName();
+        $name = $this->children->getName();
         $finalJs = RUNTIME_JS_DIR . $name . HTML_EXTENSION;
         Utils::safeWrite($finalJs, $html);
     }
