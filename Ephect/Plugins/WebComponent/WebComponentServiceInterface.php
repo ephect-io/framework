@@ -8,7 +8,6 @@ interface WebComponentServiceInterface
 {
 
     public function prepareFiles(): array;
-    public function renderHTML($fnArgs): void;
     public function storeHTML(string $html): void;
     public function isPending(): bool;
     public function markAsPending(): void;

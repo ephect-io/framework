@@ -11,10 +11,10 @@ use function Ephect\Hooks\useEffect;
 function WebComponent($children)
 {
 
-    useEffect(function($children, /* string */ $tag, /* string */ $args, $fnArgs, $service) {
+    useEffect(function($children, /* string */ $tag, /* string */ $args, $service) {
 
         $service = new WebComponentService($children);
-        [$tag, $args, $fnArgs] = $service->prepareFiles();
+        [$tag, $args] = $service->prepareFiles();
 
     });
 

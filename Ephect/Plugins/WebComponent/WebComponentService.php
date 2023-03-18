@@ -2,7 +2,6 @@
 
 namespace Ephect\Plugins\WebComponent;
 
-use Ephect\Framework\Components\WebComponent;
 use Ephect\Framework\IO\Utils;
 
 class WebComponentService implements WebComponentServiceInterface
@@ -38,10 +37,8 @@ class WebComponentService implements WebComponentServiceInterface
         $props = isset($props->props) ? $props->props : $props;
 
         $args = [];
-        $fnArgs = [];
         foreach ($props as $key => $value) {
             $args[] =  $key . '="' . $value . '"';
-            $fnArgs[$key] = $value;
         }
 
         $args = implode(" ", $args);
@@ -58,7 +55,7 @@ class WebComponentService implements WebComponentServiceInterface
 
         $tag = $manifest->tag;
 
-        return [$tag, $args, $fnArgs];
+        return [$tag, $args];
     }
 
     public function storeHTML(string $html): void
@@ -67,39 +64,6 @@ class WebComponentService implements WebComponentServiceInterface
         $name = $children->getName();
         $finalJs = RUNTIME_JS_DIR . $name . HTML_EXTENSION;
         Utils::safeWrite($finalJs, $html);
-
     }
 
-    public function renderHTML($fnArgs): void
-    {
-        $children = $this->children;
-        $motherUID = $children->getMotherUID();
-        $name = $children->getName();
-        $class = $children->getClass();
-        $srcFilename = $motherUID . DIRECTORY_SEPARATOR . $name . ".component" . PREHTML_EXTENSION;
-
-        $finalJs = RUNTIME_JS_DIR . $name . JS_EXTENSION;
-
-
-        //        if(!file_exists($jsCache)) {
-        //            $php = Utils::safeRead($phpCache);
-        //            $php = Utils::safeWrite($jsCache, $php);
-        //        } else {
-        //             if(!file_exists($finalJs)) {
-        //                 $builder = new Builder;
-        //                 $html = $builder->buildWebcomponentsByHttpRequest($name, $destFilename);
-        //
-        //                 Utils::safeWrite($finalJs, $html);
-        //
-        //             }
-        //
-        //        }
-
-
-
-        $comp = new WebComponent($name, $motherUID);
-        $html = $comp->renderHTML($srcFilename, $class, $fnArgs);
-
-        Utils::safeWrite($finalJs, $html);
-    }
 }
