@@ -67,8 +67,9 @@ class WebComponentService implements WebComponentServiceInterface
     public function storeHTML(string $html): void
     {
         $name = $this->children->getName();
-        $finalJs = RUNTIME_JS_DIR . $name . HTML_EXTENSION;
-        Utils::safeWrite($finalJs, $html);
+        // $finalJs = RUNTIME_JS_DIR . $name . HTML_EXTENSION;
+        $finalHTML = CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $name . HTML_EXTENSION;
+        Utils::safeWrite($finalHTML, $html);
     }
 
 }
