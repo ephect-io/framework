@@ -2,6 +2,7 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use Ephect\Framework\Components\WebComponent as Component;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\WebComponents\Manifest;
 use Ephect\Framework\WebComponents\ManifestStructure;
@@ -64,10 +65,20 @@ class WebComponentService implements WebComponentServiceInterface
 
     }
 
+    public function splitHTML(string $html): void
+    {
+        $name = $this->children->getName();
+        $finalJs = RUNTIME_JS_DIR . $name . JS_EXTENSION;
+        $finalTpl = RUNTIME_JS_DIR . $name . TPL_EXTENSION;
+        [$template, $script] = Component::split($html);
+        Utils::safeWrite($finalJs, $script);
+        Utils::safeWrite($finalTpl, $template);
+
+    }
+
     public function storeHTML(string $html): void
     {
         $name = $this->children->getName();
-        // $finalJs = RUNTIME_JS_DIR . $name . HTML_EXTENSION;
         $finalHTML = CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $name . HTML_EXTENSION;
         Utils::safeWrite($finalHTML, $html);
     }

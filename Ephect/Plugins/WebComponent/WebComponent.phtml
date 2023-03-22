@@ -20,9 +20,10 @@ function WebComponent($children)
         <{{ tag }} {{ args }} />
         {? 
             if(!{service}->isPending()) {
-                {service}->markAsPending(); 
                 {@html} = { children };
+                {service}->splitHTML({@html});
                 {service}->storeHTML({@html});
+                {service}->markAsPending();
             }
         ?}
     HTML);
