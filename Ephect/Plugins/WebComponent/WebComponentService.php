@@ -69,10 +69,8 @@ class WebComponentService implements WebComponentServiceInterface
     {
         $name = $this->children->getName();
         $finalJs = RUNTIME_JS_DIR . $name . JS_EXTENSION;
-        $finalTpl = RUNTIME_JS_DIR . $name . TPL_EXTENSION;
-        [$template, $script] = Component::split($html);
+        $script = Component::htmlToScript($html);
         Utils::safeWrite($finalJs, $script);
-        Utils::safeWrite($finalTpl, $template);
 
     }
 

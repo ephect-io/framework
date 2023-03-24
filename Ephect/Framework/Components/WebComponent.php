@@ -2,14 +2,13 @@
 
 namespace Ephect\Framework\Components;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\Generators\ComponentParser;
-use Ephect\Framework\Components\Generators\Parser;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 
-class WebComponent extends AbstractFileComponent
+class WebComponent extends AbstractFileComponent implements WebComponentInterface
 {
-
     public function analyse(): void
     {
         parent::analyse();
@@ -27,17 +26,39 @@ class WebComponent extends AbstractFileComponent
         $this->cacheHtml();
     }
 
-    static public function split($html): array
+    static public function htmlToScript($html): string
     {
         $parser = new ComponentParser($html);
         $parser->doComponents('template');
         $list = $parser->getList();
-        $template = $list[0]['closer']['contents']['text'];
+        $struct = new ComponentStructure($list[0]);
+        $entity = new ComponentEntity($struct);
+        $template = $entity->getInnerHTML();
+
         $parser->doComponents('script');
         $list = $parser->getList();
-        $script = $list[0]['closer']['contents']['text'];
+        $struct = new ComponentStructure($list[0]);
+        $entity = new ComponentEntity($struct);
+        $script = $entity->getInnerHTML();
 
-        return [$template, $script];
+        $parser->doComponents('style');
+        $list = $parser->getList();
+        $style = '';
+        if(count($list) > 0) {
+            $struct = new ComponentStructure($list[0]);
+            $entity = new ComponentEntity($struct);
+            $style = $entity->getInnerHTML();
+        }
+
+        $heredoc = <<<HTML
+        `
+        $style
+        $template
+        `
+        HTML;
+        $script = str_replace("document.getElementById('HelloWord').innerHTML", $heredoc, $script);
+
+        return $script;
     }
 
 }
