@@ -230,7 +230,7 @@ class ComponentParser extends Parser
                     $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
                     $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
                     $contents = substr($this->html,  $closer['contents']['startsAt'],  $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
-                    $closer['contents']['text'] = '!#base64#' . htmlentities(html_entity_decode($contents));
+                    $closer['contents']['text'] = '!#base64#' . base64_encode($contents);
 
                     $item['closer'] = $closer;
 
