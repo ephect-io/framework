@@ -9,6 +9,8 @@ interface FileComponentInterface extends ComponentInterface
     function getFlattenFilename(): string;
     function getFlattenSourceFilename(): string;
     function load(string $filename = ''): bool;
+    function analyse(): void;
+    function parse(): void;
     function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string;
     function identifyComponents(array &$list, ?string $motherUID = null, ?FileComponentInterface $component = null): void;
     
