@@ -2,10 +2,10 @@
 
 namespace Ephect\Plugins\WebComponent;
 
-use Ephect\Framework\Components\WebComponent as Component;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\WebComponents\Manifest;
 use Ephect\Framework\WebComponents\ManifestStructure;
+use Ephect\Framework\WebComponents\Parser;
 
 class WebComponentService implements WebComponentServiceInterface
 {
@@ -68,8 +68,10 @@ class WebComponentService implements WebComponentServiceInterface
     public function splitHTML(string $html): void
     {
         $name = $this->children->getName();
-        $finalJs = RUNTIME_JS_DIR . $name . JS_EXTENSION;
-        $script = Component::htmlToScript($html);
+        $finalJs = RUNTIME_JS_DIR . $name . MJS_EXTENSION;
+        $parser = new Parser($html);
+        $parser->doTags();
+        $script = $parser->getScript();
         Utils::safeWrite($finalJs, $script);
 
     }

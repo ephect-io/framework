@@ -17,7 +17,8 @@ function WebComponent($children)
     });
 
     return (<<< HTML
-        <{{ tag }} {{ args }} />
+        <{{ tag }} {{ args }}>
+        </{{ tag }}>
         {? 
             if(!{service}->isPending()) {
                 {@html} = { children };

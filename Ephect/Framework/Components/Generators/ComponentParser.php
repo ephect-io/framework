@@ -19,7 +19,7 @@ define('CR_MARK', "\r");
 define('STR_EMPTY', '');
 define('STR_SPACE', ' ');
 
-class ComponentParser extends Parser
+class ComponentParser extends Parser implements ParserInterface
 {
     protected array $depths = [];
     protected array $idListByDepth = [];
