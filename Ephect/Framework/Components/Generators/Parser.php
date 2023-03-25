@@ -5,16 +5,21 @@ namespace Ephect\Framework\Components\Generators;
 use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Registry\CodeRegistry;
 
-class Parser
+class Parser implements ParserInterface
 {
     protected ?string $html = '';
     protected ?ComponentInterface $component = null;
 
-    public function __construct(ComponentInterface $comp)
+    public function __construct(string|ComponentInterface $comp)
     {
-        $this->component = $comp;
-        $this->html = $comp->getCode();
-        $this->doUncache();
+        if (is_string($comp)) {
+            $this->component = null;
+            $this->html = $comp;
+        } else {
+            $this->component = $comp;
+            $this->html = $comp->getCode();
+            $this->doUncache();
+        }
     }
 
     public function getHtml(): ?string
@@ -32,7 +37,6 @@ class Parser
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->component->getMotherUID());
         return CodeRegistry::uncache();
     }
-
 
     public function doArguments(string $componentArgs): ?array
     {
@@ -71,4 +75,5 @@ class Parser
         }
         return ($result === '') ? null : '[' . $result . ']';
     }
+
 }

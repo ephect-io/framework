@@ -158,17 +158,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $parser->doUses($this);
         $parser->doUsesAs($this);
 
-        /**
-         * Deprecated
-         */
-        // $parser->doMotherSlots($this);
-        // $res = $parser->getResult();
-        // $didMotherSlots = $res !== "" && $res !== null;
-        // $this->code = $parser->getHtml();
-        /**
-         * end
-         */
-
         $parser->doHeredoc($this);
         $this->code = $parser->getHtml();
 
@@ -187,9 +176,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $parser->doArrays($this);
         $this->code = $parser->getHtml();
 
-        $parser->doUseProps($this);
-        $this->code = $parser->getHtml();
-
         $parser->doUseEffect($this);
         $this->code = $parser->getHtml();
 
@@ -205,11 +191,9 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         Utils::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
         $this->updateComponent($this);
 
-        // if (!$didMotherSlots) { // Deprecated test
         $parser->doChildSlots($this);
         $this->code = $parser->getHtml();
         $this->updateComponent($this);
-        // }
 
         while ($compz = $this->getDeclaration()->getComposition() !== null) {
             $parser->doClosedComponents($this);
@@ -318,21 +302,6 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
             $parentHtml = preg_replace($re, $subst, $parentHtml, 1);
 
-            // if (!$isPlugin) {
-            //     $cacheFile = $cachedir . $nextCopyFile;
-            //     $funcHtml = $nextComponent->getCode();
-            //     if (file_exists($cacheFile)) {
-            //         $funcHtml = file_get_contents($cacheFile);
-            //     }
-
-            //     $re = '/(<)(' . $funcName . ')(((?!_[A-F0-9]{32}).)*)(>)/';
-            //     $subst = '$1$2' . $token . '$3$5';
-
-            //     $funcName = preg_replace($re, $subst, $funcName, 1);
-
-            //     Utils::safeWrite($cachedir . $nextCopyFile, $funcHtml);
-            // }
-
             if ($nextComponent !== null) {
                 $component->identifyComponents($list, $motherUID, $nextComponent);
             }
@@ -393,13 +362,10 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
                 continue;
             }
 
-            // $nextComponent = !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
             if ($nextComponent === null) {
                 continue;
             }
-            // if ($nextComponent !== null) {
             $component->copyComponents($list, $motherUID, $nextComponent);
-            // }
         }
 
         if (!file_exists($cachedir . $copyFile)) {

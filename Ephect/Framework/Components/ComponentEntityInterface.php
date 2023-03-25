@@ -16,7 +16,7 @@ interface ComponentEntityInterface extends TreeInterface, ElementInterface, Stru
     public function props(?string $key = null): string|array|null;
     public function getStart(): int;
     public function getEnd(): int;
-    public function getContents(): ?string;
+    public function getInnerHTML(): ?string;
     public function hasCloser(): bool;
     public function isSibling(): bool;
     public function getCloser(): array;

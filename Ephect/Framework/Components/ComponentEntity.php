@@ -3,9 +3,6 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\IO\Utils;
-use Ephect\Framework\Registry\ComponentRegistry;
-use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Tree\Tree;
 
 /**
@@ -32,9 +29,8 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     protected string $method = '';
     protected string $compName = '';
     protected ?string $className = '';
-    protected ?ComponentStructure $attributes = null;
 
-    public function __construct(?ComponentStructure $attributes)
+    public function __construct(protected ?ComponentStructure $attributes)
     {
         parent::__construct([]);
 
@@ -59,7 +55,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->closer = $attributes->closer;
         $this->hasCloser = is_array($this->closer);
         $this->contents = $this->hasCloser ? $this->closer['contents'] : null;
-        $this->attributes = $attributes;
 
         $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
 
@@ -231,40 +226,16 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return null;
     }
 
-    public function getContents(?string $html = null): ?string
+    public function getInnerHTML(): string 
     {
-        if ($this->contents === null) {
-            return null;
-        }
+        $result = '';
 
-        $s = $this->contents['startsAt'];
-        $e = $this->contents['endsAt'];
+        $result = $this->closer['contents']['text'];
+        $result = substr($result, 9);
+        $result = base64_decode($result);
 
-        if ($e - $s < 1) {
-            return '';
-        }
-
-        ComponentRegistry::uncache();
-        $compFile = ComponentRegistry::read($this->compName);
-        if ($compFile === null) {
-            WebComponentRegistry::uncache();
-            $compFile = WebComponentRegistry::read($this->compName);
-            if ($compFile === null) {
-                return null;
-            }
-        }
-        $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
-
-        if (($p = (strpos($t, $this->text) + strlen($this->text))) > $s) {
-            $o =  $p - $s;
-
-            $s += $o;
-            $e += $o;
-        }
-
-        return substr($t, $s, $e - $s + 1);
+        return $result;
     }
-
 
     private static function _makeFragment(): ComponentEntityInterface
     {

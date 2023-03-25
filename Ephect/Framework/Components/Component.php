@@ -4,7 +4,7 @@ namespace Ephect\Framework\Components;
 
 use Ephect\Framework\Registry\ComponentRegistry;
 
-class Component extends AbstractFileComponent
+class Component extends AbstractFileComponent implements FileComponentInterface
 {
 
     public function parse(): void

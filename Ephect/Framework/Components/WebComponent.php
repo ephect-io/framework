@@ -2,12 +2,12 @@
 
 namespace Ephect\Framework\Components;
 
+use Ephect\Framework\Components\Generators\RawHtmlParser;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 
 class WebComponent extends AbstractFileComponent
 {
-
     public function analyse(): void
     {
         parent::analyse();
@@ -15,7 +15,6 @@ class WebComponent extends AbstractFileComponent
         WebComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
         ComponentRegistry::cache();
-
     }
 
     public function parse(): void

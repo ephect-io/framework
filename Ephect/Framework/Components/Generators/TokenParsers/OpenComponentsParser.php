@@ -34,7 +34,8 @@ final class OpenComponentsParser extends AbstractTokenParser
             $opener = $item->getText();
             $closer = ((object) $item->getCloser())->text;
             $componentName = $item->getName();
-            $componentBody = $item->getContents($subject);
+            // $componentBody = $item->getContents($subject);
+            $componentBody = $item->getInnerHTML();
             $componentArgs = $this->useVariables;
             $componentArgs = $item->props() !== null ? array_merge($componentArgs, $item->props()) : $componentArgs;
             

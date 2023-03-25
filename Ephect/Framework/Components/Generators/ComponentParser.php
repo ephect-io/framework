@@ -19,13 +19,13 @@ define('CR_MARK', "\r");
 define('STR_EMPTY', '');
 define('STR_SPACE', ' ');
 
-class ComponentParser extends Parser
+class ComponentParser extends Parser implements ParserInterface
 {
     protected array $depths = [];
     protected array $idListByDepth = [];
     protected array $list = [];
 
-    public function __construct(ComponentInterface $comp)
+    public function __construct(string|ComponentInterface $comp)
     {
         parent::__construct($comp);
 
@@ -123,6 +123,11 @@ class ComponentParser extends Parser
         $i = count($this->list);
         $item = [];
 
+        $fqName = '';
+        if(is_object($this->component)) {
+            $fqName = $this->component->getFullyQualifiedFunction();
+        }
+
         $item['id'] = $tag['id'];
         $item['name'] =  empty($name) ? 'Fragment' : $name;
         $item['text'] = $text;
@@ -132,7 +137,7 @@ class ComponentParser extends Parser
             $item['uid'] = Crypto::createUID();
             $item['class'] = ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
-            $item['component'] = $this->component->getFullyQualifiedFunction();
+            $item['component'] = $fqName;
             $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
             $item['depth'] = $depth;
             $item['hasCloser'] = !$isCloser && substr($text, -2) !== TERMINATOR . CLOSE_TAG;
@@ -146,7 +151,7 @@ class ComponentParser extends Parser
         return $item;
     }
 
-    public function doComponents(): void
+    public function doComponents(?string $tag = null): void
     {
 
         $list = [];
@@ -158,6 +163,11 @@ class ComponentParser extends Parser
         $allTags = [];
 
         $re = '/<\/?([A-Z]\w+)(\s|.*?)+?>|<\/?>/m';
+        if($tag !== null) {
+            $re = <<< REGEX
+            /<\/?({$tag})(\s|.*?)?>/mu
+            REGEX;
+        }
 
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
@@ -220,7 +230,7 @@ class ComponentParser extends Parser
                     $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
                     $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
                     $contents = substr($this->html,  $closer['contents']['startsAt'],  $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
-                    $closer['contents']['text'] = '!#base64#' . htmlentities(html_entity_decode($contents));
+                    $closer['contents']['text'] = '!#base64#' . base64_encode($contents);
 
                     $item['closer'] = $closer;
 

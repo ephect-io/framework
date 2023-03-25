@@ -17,12 +17,14 @@ function WebComponent($children)
     });
 
     return (<<< HTML
-        <{{ tag }} {{ args }} />
+        <{{ tag }} {{ args }}>
+        </{{ tag }}>
         {? 
             if(!{service}->isPending()) {
-                {service}->markAsPending(); 
                 {@html} = { children };
+                {service}->splitHTML({@html});
                 {service}->storeHTML({@html});
+                {service}->markAsPending();
             }
         ?}
     HTML);

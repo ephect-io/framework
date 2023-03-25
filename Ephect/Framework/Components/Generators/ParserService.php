@@ -11,12 +11,10 @@ use Ephect\Framework\Components\Generators\TokenParsers\ClosedComponentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\EchoParser;
 use Ephect\Framework\Components\Generators\TokenParsers\FragmentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\HeredocParser;
-use Ephect\Framework\Components\Generators\TokenParsers\MotherSlotsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Framework\Components\Generators\TokenParsers\OpenComponentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\PhpTagsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseEffectParser;
-use Ephect\Framework\Components\Generators\TokenParsers\UsePropsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseVariablesParser;
@@ -70,14 +68,6 @@ class ParserService implements ParserServiceInterface
     public function doChildSlots(FileComponentInterface $component): void
     {
         $p = new ChildSlotsParser($component);
-        $p->do();
-        $this->html = $p->getHtml();
-        $this->result = $p->getResult();
-    }
-
-    public function doMotherSlots(FileComponentInterface $component): void
-    {
-        $p = new MotherSlotsParser($component, $this);
         $p->do();
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
@@ -141,13 +131,6 @@ class ParserService implements ParserServiceInterface
         $this->useVariables = $p->getVariables();
         $this->html = $p->getHtml();
     }
-
-    public function doUseProps(FileComponentInterface $component): void
-    {
-        $p = new UsePropsParser($component);
-        $p->do();
-        $this->html = $p->getHtml();
-    }
     
     public function doUseEffect(FileComponentInterface $component): void
     {
@@ -169,8 +152,8 @@ class ParserService implements ParserServiceInterface
         $p->do($this->useVariables);
         $this->useVariables = $p->getVariables();
         $this->html = $p->getHtml();
-    }
-
+    }   
+    
     public function doNamespace(FileComponentInterface $component): void
     {
         $p = new NamespaceParser($component);
