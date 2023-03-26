@@ -232,5 +232,6 @@ define('HTML_EXTENSION', '.html');
 define('PREHTML_EXTENSION', '.phtml');
 define('CSS_EXTENSION', '.css');
 define('JS_EXTENSION', '.js');
+define('CLASS_MJS_EXTENSION', '.class.mjs');
 define('MJS_EXTENSION', '.mjs');
 define('TPL_EXTENSION', '.tpl');

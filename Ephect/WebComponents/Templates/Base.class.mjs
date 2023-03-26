@@ -5,9 +5,9 @@ export default class Base
         this.foo = 'bar'
     }
 
-    doSomething(foo = null) {
-        const foo = foo ?? this.foo
-        return 'Something ' + foo
+    entrypoint(foo = null) {
+        const baz = foo ?? this.foo
+        return 'Something ' + baz
     }
 
 }

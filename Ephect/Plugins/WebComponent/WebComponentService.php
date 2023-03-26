@@ -69,10 +69,14 @@ class WebComponentService implements WebComponentServiceInterface
     {
         $name = $this->children->getName();
         $finalJs = RUNTIME_JS_DIR . $name . MJS_EXTENSION;
+        $classJs = $name . CLASS_MJS_EXTENSION;
+
         $parser = new Parser($html);
         $parser->doTags();
         $script = $parser->getScript();
+
         Utils::safeWrite($finalJs, $script);
+        copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $classJs, RUNTIME_JS_DIR . $classJs);
 
     }
 
