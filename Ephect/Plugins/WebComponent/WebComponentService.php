@@ -73,7 +73,7 @@ class WebComponentService implements WebComponentServiceInterface
 
         $parser = new Parser($html);
         $parser->doTags();
-        $script = $parser->getScript();
+        $script = $parser->getScript($name);
 
         Utils::safeWrite($finalJs, $script);
         copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $classJs, RUNTIME_JS_DIR . $classJs);

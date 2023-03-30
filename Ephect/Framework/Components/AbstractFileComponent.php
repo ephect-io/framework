@@ -16,7 +16,7 @@ use Ephect\Framework\Registry\WebComponentRegistry;
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
 define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 
-class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
+abstract class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
 {
 
     protected ?string $filename = '';
@@ -85,35 +85,13 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if (!$this->bodyStartsAt) {
-            self::makeComponent($this->filename, $this->code);
+            $this->makeComponent($this->filename, $this->code);
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         }
         return $this->code !== null;
     }
 
-
-    static private function makeComponent(string $filename, string &$html): void
-    {
-        $info = (object) pathinfo($filename);
-        $namespace = CONFIG_NAMESPACE;
-        $function = $info->filename;
-
-        $html = <<< COMPONENT
-        <?php
-
-        namespace $namespace;
-
-        function $function() {
-        return (<<< HTML
-        $html
-        HTML);
-        }
-        COMPONENT;
-
-        Utils::safeWrite(COPY_DIR . $filename, $html);
-
-    }
-
+    public abstract function makeComponent(string $filename, string &$html): void;
 
     public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
     {
