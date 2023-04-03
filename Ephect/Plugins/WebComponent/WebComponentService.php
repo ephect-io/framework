@@ -2,15 +2,17 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use Ephect\Framework\Components\ChildrenInterface;
 use Ephect\Framework\IO\Utils;
-use Ephect\Framework\WebComponents\Manifest;
+use Ephect\Framework\WebComponents\ManifestEntity;
+use Ephect\Framework\WebComponents\ManifestReader;
 use Ephect\Framework\WebComponents\ManifestStructure;
 use Ephect\Framework\WebComponents\Parser;
 
 class WebComponentService implements WebComponentServiceInterface
 {
 
-    public function __construct(private $children)
+    public function __construct(private ChildrenInterface $children)
     {
     }
 
@@ -42,27 +44,30 @@ class WebComponentService implements WebComponentServiceInterface
 
     }
 
-    public function readManifest(): Manifest
+    public function getBody(string $tag): ?string
+    {
+        $uid = $this->children->getUID();
+        $muid = $this->children->getUID();
+        $name = $this->children->getName();
+
+        $textFilename = CACHE_DIR . $muid . DIRECTORY_SEPARATOR . $name . $uid . '.txt';
+
+        $body = Utils::safeRead($textFilename);
+
+        return $body;
+
+    }
+
+    public function readManifest(): ManifestEntity
     {
         $children = $this->children;
 
         $motherUID = $children->getMotherUID();
         $name = $children->getName();
 
-        $manifestFilename = 'manifest.json';
-        $manifestCache = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $manifestFilename;
+        $reader = new ManifestReader($motherUID, $name);
 
-        if (!file_exists($manifestCache)) {
-            copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $manifestFilename, $manifestCache);
-        }
-
-        $manifestJson = Utils::safeRead($manifestCache);
-        $manifest = json_decode($manifestJson, JSON_OBJECT_AS_ARRAY);
-
-        $struct = new ManifestStructure($manifest);
-
-        return new Manifest($struct);
-
+        return $reader->read();
     }
 
     public function splitHTML(string $html): void
