@@ -25,8 +25,6 @@ final class OpenComponentsParser extends AbstractTokenParser
             return;
         }
 
-        // $parentProps = $cmpz->props();
-
         $subject = $this->html;
 
         $closure = function (ComponentEntityInterface $item, int $index)  use (&$subject, &$result) {
@@ -68,7 +66,7 @@ final class OpenComponentsParser extends AbstractTokenParser
 
             $className = $this->component->getFullyQualifiedFunction() ?: $componentName;
             $name = $this->component->getFunction() ?: $componentName;
-            $classArgs = '[]'; //'json_decode("' . json_encode($parentProps) . '")';
+            $classArgs = '[]';
 
             $fqComponentName = ComponentRegistry::read($componentName);
             $filename = ComponentRegistry::read($fqComponentName);
@@ -78,6 +76,8 @@ final class OpenComponentsParser extends AbstractTokenParser
             if ($filename === null) {
                 $filename = WebComponentRegistry::read($fqComponentName);
                 if ($filename !== null) {
+
+                    Console::log($componentArgs);
                     // $uid = WebComponentRegistry::read($filename);
                     $reader = new ManifestReader($motherUID, $componentName);
                     $manifest = $reader->read();
@@ -97,7 +97,7 @@ final class OpenComponentsParser extends AbstractTokenParser
                 $preComponentBody .= "\t\t\t<?php } ?>\n";
             }
 
-            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$wopener$componentBody$wcloser\n<?php\n}, 'uid' => '$uid', 'motherUID' => '$motherUID', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]); ?>\n";
+            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
             $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Framework\\Components\\Children(\$struct); ?>\n";
             $componentRender .= "\t\t\t<?php \$fn = \\$fqComponentName(\$children); \$fn(); ?>\n";
 

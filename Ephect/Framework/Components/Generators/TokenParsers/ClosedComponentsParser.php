@@ -2,9 +2,12 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\WebComponentRegistry;
+use Ephect\Framework\WebComponents\ManifestReader;
 
 final class ClosedComponentsParser extends AbstractTokenParser
 {
@@ -16,7 +19,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
         $decl = $comp->getDeclaration();
         $cmpz = $decl->getComposition();
 
-        if($cmpz === null) {
+        if ($cmpz === null) {
             return;
         }
 
@@ -24,22 +27,45 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
         $closure = function (ComponentEntityInterface $item, int $index)  use (&$subject, &$result) {
 
-            if($item->hasCloser()) {
+            if ($item->hasCloser()) {
                 return;
             }
-            
+
             $component = $item->getText();
             $componentName = $item->getName();
-            $componentArgs = $item->props();
+            $componentArgs = [];
+            $componentArgs['uid'] = $item->getUID();
 
             $args = '';
-            if ($componentArgs !== null) {
+            if ($item->props() !== null) {
+                $componentArgs = array_merge($componentArgs, $item->props());
                 $args = json_encode($componentArgs, JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG);
                 $args = "json_decode('$args')";
             }
 
             $funcName = ComponentRegistry::read($componentName);
+            // $filename = ComponentRegistry::read($funcName);
+
             $componentRender = "\t\t\t<?php \$fn = \\{$funcName}($args); \$fn(); ?>\n";
+
+            // if ($filename === null) {
+            //     $filename = WebComponentRegistry::read($funcName);
+            //     if ($filename !== null) {
+
+            //         // $uid = WebComponentRegistry::read($filename);
+
+            //         $reader = new ManifestReader($this->component->getMotherUID(), $componentName);
+            //         $manifest = $reader->read();
+            //         $tag = $manifest->getTag();
+
+            //         $webcomp = str_replace($componentName, $tag, $component);
+            //         // $webcomp = str_replace('\>', '>', $component);
+            //         $componentRender .= $webcomp; //. '</'. $tag. '>';
+
+            //         // Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID(). DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $component);
+            //     }
+            // }
+
 
             $subject = str_replace($component, $componentRender, $subject);
 
@@ -47,19 +73,15 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
-
         };
 
-        if (!$cmpz->hasChildren()) 
-        {
+        if (!$cmpz->hasChildren()) {
             $closure($cmpz, 0);
-        } 
-        if($cmpz->hasChildren()) {
+        }
+        if ($cmpz->hasChildren()) {
             $cmpz->forEach($closure, $cmpz);
-        } 
+        }
 
         $this->html = $subject;
-
     }
-    
 }
