@@ -50,11 +50,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->start = $attributes->startsAt;
         $this->end = $attributes->endsAt;
         $this->depth = $attributes->depth;
-        $this->properties = $attributes->props;
-        $this->hasProperties = count($this->properties) !== 0;
-        $this->closer = $attributes->closer;
-        $this->hasCloser = is_array($this->closer);
-        $this->contents = $this->hasCloser ? $this->closer['contents'] : null;
+        $this->hasProperties = count($attributes->props) !== 0;
+        $this->properties = $this->hasProperties ? $attributes->props : [];
+        $this->hasCloser = is_array($attributes->closer);
+        $this->closer = $this->hasCloser ? $attributes->closer : null;
 
         $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
 
@@ -229,6 +228,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     public function getInnerHTML(): string 
     {
         $result = '';
+
+        if(!isset($this->closer['contents']['text'])) {
+            return $result;
+        }
 
         $result = $this->closer['contents']['text'];
         $result = substr($result, 9);
