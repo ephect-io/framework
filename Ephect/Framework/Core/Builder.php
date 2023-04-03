@@ -72,6 +72,7 @@ class Builder
             foreach ($webcomponentList as $key => $webcomponentFile) {
                 $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
             }
+            CodeRegistry::cache();
             WebComponentRegistry::cache();
             ComponentRegistry::cache();
         }
@@ -106,12 +107,13 @@ class Builder
         $comp->load($cachedSourceViewFile);
         $comp->analyse();
 
+        $uid = $comp->getUID();
         $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration();
+        $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+        ComponentRegistry::write($cachedSourceViewFile, $uid);
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
@@ -139,12 +141,13 @@ class Builder
         $comp->load($cachedSourceViewFile);
         $comp->analyse();
 
+        $uid = $comp->getUID();
         $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration();
+        $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        WebComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+        WebComponentRegistry::write($cachedSourceViewFile, $uid);
         WebComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
