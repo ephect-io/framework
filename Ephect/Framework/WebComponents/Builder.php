@@ -23,24 +23,15 @@ class Builder
     function saveManifest(string $tagName, string $className, string $entrypoint, array $arguments, string $destDir): void
     {
 
-        if (!Utils::safeMkDir($destDir)) {
-            throw new Exception("$destDir creation failed");
-        }
-
-        $destDir = realpath($destDir);
-
         $struct = new ManifestStructure([
             'tag' => $tagName,
             'class' => $className,
             'entrypoint' => $entrypoint,
             'arguments' => $arguments,
         ]);
-        $json = json_encode($struct->toArray(), JSON_PRETTY_PRINT);
 
-        $destDir .= DIRECTORY_SEPARATOR;
-
-        Utils::safeWrite($destDir . DIRECTORY_SEPARATOR . 'manifest.json', $json);
-
+        $writer = new ManifestWriter($struct, $destDir);
+        $writer->write();
     }
 
     /**
