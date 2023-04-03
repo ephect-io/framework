@@ -8,7 +8,7 @@ final class ArgumentsParser extends AbstractTokenParser
     {
         $componentArgs = $parameter;
         
-        $re = '/([A-Za-z0-9_]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
+        $re = '/([A-Za-z0-9_-]+)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m';
 
         preg_match_all($re, $componentArgs, $matches, PREG_SET_ORDER, 0);
 
