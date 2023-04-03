@@ -23,27 +23,42 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     public function __construct(?string $id = null, string $motherUID = '')
     {
-        if ($id !== null) {
-            ComponentRegistry::uncache();
-            $this->class = ComponentRegistry::read($id);
+        $this->id = $id ?: '';
+        if ($id === null) {
+            $this->getUID();
+            $this->motherUID = $motherUID ?: $this->uid;
+
+            return;
+        }
+
+        ComponentRegistry::uncache();
+        $this->class = ComponentRegistry::read($id);
+        if ($this->class !== null) {
+            $this->filename = ComponentRegistry::read($this->class);
+            $this->filename = $this->filename ?: '';
+
+            $this->uid = ComponentRegistry::read($this->filename);
+            $this->uid = $this->uid ?: '';
+        } else {
+            $this->class = WebComponentRegistry::read($id);
             if ($this->class !== null) {
-                $this->filename = ComponentRegistry::read($this->class);
+                $this->filename = WebComponentRegistry::read($this->class);
                 $this->filename = $this->filename ?: '';
 
-                $this->uid = ComponentRegistry::read($this->filename);
+                $this->uid = WebComponentRegistry::read($this->filename);
                 $this->uid = $this->uid ?: '';
-            }
-
-            if ($this->uid !== $this->id) {
-                $this->function = $id;
-            }
-            if ($this->uid === $this->id) {
-                $this->function = self::functionName($this->class);
             }
         }
 
-        $this->getUID();
+        if ($this->uid !== $this->id) {
+            $this->function = $id;
+        }
+        if ($this->uid === $this->id) {
+            $this->function = self::functionName($this->class);
+        }
+
         $this->motherUID = $motherUID ?: $this->uid;
+
     }
 
     public function getSourceFilename(): string
@@ -101,7 +116,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         if (!$isCached) {
             ComponentRegistry::uncache();
             WebComponentRegistry::uncache();
-            
+
             $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName, $motherUID);
             $component->parse();
@@ -130,6 +145,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
         CodeRegistry::uncache();
+        WebComponentRegistry::uncache();
 
         $parser = new ParserService();
 
@@ -375,7 +391,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $comp = new Component($uid, $motherUID);
         $comp->load($filename);
         $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration();
+        $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
