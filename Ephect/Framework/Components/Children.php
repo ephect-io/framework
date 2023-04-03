@@ -10,7 +10,7 @@ class Children extends Tree implements ChildrenInterface
     use ElementTrait;
 
     protected ?object $props = null;
-    protected array $parentProps = [];
+    protected ?array $parentProps = null;
     protected ?object $buffer = null;
 
     protected ?string $name = null;
