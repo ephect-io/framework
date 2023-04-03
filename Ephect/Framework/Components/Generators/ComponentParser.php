@@ -32,11 +32,11 @@ class ComponentParser extends Parser implements ParserInterface
         ComponentRegistry::uncache();
     }
 
-    public function doDeclaration(): ComponentDeclarationStructure
+    public function doDeclaration(string $uid): ComponentDeclarationStructure
     {
         $this->doComponents();
         $func = $this->doFunctionDeclaration();
-        $decl = ['type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];
+        $decl = ['uid' => $uid, 'type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];
 
         return new ComponentDeclarationStructure($decl);
     }

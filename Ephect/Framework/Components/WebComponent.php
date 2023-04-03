@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\ElementUtils;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
@@ -46,7 +45,6 @@ class WebComponent extends AbstractFileComponent
     public function parse(): void
     {
         parent::parse();
-
         $this->cacheHtml();
     }
 
