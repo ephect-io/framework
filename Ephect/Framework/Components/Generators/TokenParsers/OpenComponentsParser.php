@@ -71,35 +71,35 @@ final class OpenComponentsParser extends AbstractTokenParser
             $fqComponentName = ComponentRegistry::read($componentName);
             $filename = ComponentRegistry::read($fqComponentName);
 
-            $wopener = '';
-            $wcloser = '';
+            $wcom = '';
             if ($filename === null) {
                 $filename = WebComponentRegistry::read($fqComponentName);
                 if ($filename !== null) {
 
-                    Console::log($componentArgs);
                     // $uid = WebComponentRegistry::read($filename);
                     $reader = new ManifestReader($motherUID, $componentName);
                     $manifest = $reader->read();
                     $tag = $manifest->getTag();
-                    $text = str_replace($componentName, $tag, $opener . $componentBody . $closer);
-                    // $wopener = str_replace($componentName, $tag, $opener);
-                    // $wcloser = str_replace($componentName, $tag, $closer);
-                    Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $text);
+                    $wcom = str_replace($componentName, $tag, $opener . $componentBody . $closer);
+                    Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $wcom);
                 }
             }
 
             $preComponentBody = '';
-            if (count($propsKeys) === 1 && $propsKeys[0] === "\$children") {
-                $preComponentBody .= "\t\t\t<?php \$props = \$children->props(); ?>\n";
-                $preComponentBody .= "\t\t\t<?php foreach(\$props as \$key => \$value) { ?>\n";
+            $pkey = "\$children";
+            if (count($propsKeys) === 1 && ($propsKeys[0] === "\$children" || $propsKeys[0] === "\$slot")) {
+                $pkey = $propsKeys[0];
+                $preComponentBody .= "\t\t\t<?php if(method_exists({$pkey}, 'props')) { ?>\n";
+                $preComponentBody .= "\t\t\t<?php   \$props = {$pkey}->props(); ?>\n";
+                $preComponentBody .= "\t\t\t<?php   foreach(\$props as \$key => \$value) { ?>\n";
                 $preComponentBody .= "\t\t\t<?php     $\$key = \"\$value\"; ?>\n";
+                $preComponentBody .= "\t\t\t<?php   } ?>\n";
                 $preComponentBody .= "\t\t\t<?php } ?>\n";
             }
 
-            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs, 'motherUID' => '$motherUID']); ?>\n";
-            $componentRender .= "\t\t\t<?php \$children = new \\Ephect\\Framework\\Components\\Children(\$struct); ?>\n";
-            $componentRender .= "\t\t\t<?php \$fn = \\$fqComponentName(\$children); \$fn(); ?>\n";
+            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'motherUID' => '$motherUID', 'uid' => '$uid', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]); ?>\n";
+            $componentRender .= "\t\t\t<?php {$pkey} = new \\Ephect\\Framework\\Components\\Children(\$struct); ?>\n";
+            $componentRender .= "\t\t\t<?php \$fn = \\$fqComponentName({$pkey}); \$fn(); ?>\n";
 
             $subject = str_replace($componentBody, $componentRender, $subject);
 

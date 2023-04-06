@@ -20,7 +20,10 @@ class WebComponent extends AbstractFileComponent
 
         namespace $namespace;
 
-        function $function(\$props) {
+        use function Ephect\Hooks\useEffect;
+
+        function $function(\$slot) {
+    
         return (<<< HTML
         <WebComponent>
         $html

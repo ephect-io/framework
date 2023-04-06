@@ -2,6 +2,7 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ChildrenInterface;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\WebComponents\ManifestEntity;
@@ -44,10 +45,32 @@ class WebComponentService implements WebComponentServiceInterface
 
     }
 
+    public function getAttribute(string $attribute): ?string
+    {
+        $props = $this->children->props();
+        $props = $props->props ?? $props;
+
+        return isset($props->$attribute) ? $props->$attribute : null;
+    }
+
     public function getBody(string $tag): ?string
     {
-        $uid = $this->children->getUID();
-        $muid = $this->children->getUID();
+        $uid = '';
+        Console::log('BEGIN children props');
+        Console::log($this->children->props());
+        if(!isset($this->children->props()->slot)) {
+            $uid = $this->children->getUID();
+        } else {
+            if(method_exists($this->children->props()->slot, 'getUID')) {
+                $uid = $this->children->props()->slot->getUID();
+            } 
+            if(isset($this->children->props()->slot->uid)) {
+                $uid = $this->children->props()->slot->uid;
+            } 
+            Console::log("UId: $uid");
+        }
+        Console::log('END children props');
+        $muid = $this->children->getMotherUID();
         $name = $this->children->getName();
 
         $textFilename = CACHE_DIR . $muid . DIRECTORY_SEPARATOR . $name . $uid . '.txt';

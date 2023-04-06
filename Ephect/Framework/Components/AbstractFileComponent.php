@@ -173,6 +173,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $parser->doUseEffect($this);
         $this->code = $parser->getHtml();
 
+        $parser->doWebComponent($this);
+
         $parser->doUseVariables($this);
         $this->code = $parser->getHtml();
 

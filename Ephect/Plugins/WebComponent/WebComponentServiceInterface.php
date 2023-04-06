@@ -8,6 +8,7 @@ interface WebComponentServiceInterface
 {
 
     public function getAttributes(): string;
+    public function getAttribute(string $attribute): ?string;
     public function getBody(string $tag): ?string;
     public function readManifest(): ManifestEntity;
     public function storeHTML(string $html): void;

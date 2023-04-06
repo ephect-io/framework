@@ -9,27 +9,30 @@ use function Ephect\Hooks\useEffect;
 function WebComponent($children)
 {
 
-    useEffect(function($children, /* string */ $tag, /* string */ $args, $service) {
+    useEffect(function($children, /* string */ $tag, /* string */ $args, /* string */ $body, $service) {
 
         $service = new WebComponentService($children);
         $manifest = $service->readManifest();
         $tag = $manifest->getTag();
-        $args = $service->getAttributes();
         
-        // $body = $service->getBody($tag);
-
-        // Console::log($body);
+        $body = $service->getBody($tag);
+        if($body === null) {
+            $args = $service->getAttributes();
+            $body = <<< BODY
+            <$tag $args>
+            </$tag>
+            BODY;
+        }
     });
 
     return (<<< HTML
-        <{{ tag }} {{ args }}>
-        </{{ tag }}>
+        {{ body }}
         {? 
             if(!{service}->isPending()) {
+                {service}->markAsPending();
                 {@html} = { children };
                 {service}->splitHTML({@html});
                 {service}->storeHTML({@html});
-                {service}->markAsPending();
             }
         ?}
     HTML);

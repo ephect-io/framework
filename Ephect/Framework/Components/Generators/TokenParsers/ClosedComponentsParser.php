@@ -31,10 +31,11 @@ final class ClosedComponentsParser extends AbstractTokenParser
                 return;
             }
 
+            $uid = $item->getUID();
             $component = $item->getText();
             $componentName = $item->getName();
             $componentArgs = [];
-            $componentArgs['uid'] = $item->getUID();
+            $componentArgs['uid'] = $uid;
 
             $args = '';
             if ($item->props() !== null) {
@@ -44,27 +45,23 @@ final class ClosedComponentsParser extends AbstractTokenParser
             }
 
             $funcName = ComponentRegistry::read($componentName);
-            // $filename = ComponentRegistry::read($funcName);
+            $filename = ComponentRegistry::read($funcName);
 
             $componentRender = "\t\t\t<?php \$fn = \\{$funcName}($args); \$fn(); ?>\n";
 
-            // if ($filename === null) {
-            //     $filename = WebComponentRegistry::read($funcName);
-            //     if ($filename !== null) {
+            if ($filename === null) {
+                $filename = WebComponentRegistry::read($funcName);
+                if ($filename !== null) {
 
-            //         // $uid = WebComponentRegistry::read($filename);
-
-            //         $reader = new ManifestReader($this->component->getMotherUID(), $componentName);
-            //         $manifest = $reader->read();
-            //         $tag = $manifest->getTag();
-
-            //         $webcomp = str_replace($componentName, $tag, $component);
-            //         // $webcomp = str_replace('\>', '>', $component);
-            //         $componentRender .= $webcomp; //. '</'. $tag. '>';
-
-            //         // Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID(). DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $component);
-            //     }
-            // }
+                    $reader = new ManifestReader($this->component->getMotherUID(), $componentName);
+                    $manifest = $reader->read();
+                    $tag = $manifest->getTag();
+                    $text = str_replace($componentName, $tag, $component);
+                    $text = str_replace('/>', '>', $text);
+                    $text .=  '</' . $tag . '>';
+                    Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $text);
+                }
+            }
 
 
             $subject = str_replace($component, $componentRender, $subject);
