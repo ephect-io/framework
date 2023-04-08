@@ -100,7 +100,7 @@ class ComponentParser extends Parser implements ParserInterface
     public function isClosedTag(array $tag): bool
     {
         $text = $tag['text'];
-        if(empty($text) || $tag['name'] === 'Fragment') {
+        if (empty($text) || $tag['name'] === 'Fragment') {
             return false;
         }
         return substr($text, -2) === TERMINATOR . CLOSE_TAG;
@@ -109,7 +109,7 @@ class ComponentParser extends Parser implements ParserInterface
     public function isCloseTag(array $tag): bool
     {
         $text = $tag['text'];
-        if(empty($text) || $text === '<>') {
+        if (empty($text) || $text === '<>') {
             return false;
         }
         return substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
@@ -124,7 +124,7 @@ class ComponentParser extends Parser implements ParserInterface
         $item = [];
 
         $fqName = '';
-        if(is_object($this->component)) {
+        if (is_object($this->component)) {
             $fqName = $this->component->getFullyQualifiedFunction();
         }
 
@@ -133,7 +133,7 @@ class ComponentParser extends Parser implements ParserInterface
         $item['text'] = $text;
         $item['startsAt'] = $tag['startsAt'];
         $item['endsAt'] = $tag['endsAt'];
-        if(!$isCloser) {
+        if (!$isCloser) {
             $item['uid'] = Crypto::createUID();
             $item['class'] = ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
@@ -162,10 +162,10 @@ class ComponentParser extends Parser implements ParserInterface
         $parentIds[$depth] = -1;
         $allTags = [];
 
-        $re = '/<\/?([A-Z]\w+)(\s|.*?)+?>|<\/?>/m';
-        if($tag !== null) {
+        $re = '/<\/?([A-Z]\w+)(\s|.*?)?>|<\/?>/';
+        if ($tag !== null) {
             $re = <<< REGEX
-            /<\/?({$tag})(\s|.*?)?>/mu
+            /<\/?({$tag})(\s|.*?)?>/
             REGEX;
         }
 
@@ -187,7 +187,6 @@ class ComponentParser extends Parser implements ParserInterface
 
             $allTags[] = $tag;
             $i++;
-
         }
 
         $this->depths[$depth] = 1;
@@ -214,7 +213,7 @@ class ComponentParser extends Parser implements ParserInterface
                 continue;
             }
 
-            if ($this->isCloseTag($tag) ) {
+            if ($this->isCloseTag($tag)) {
                 $depth--;
             }
 
@@ -229,7 +228,7 @@ class ComponentParser extends Parser implements ParserInterface
                     $closer['parentId'] = $item['id'];
                     $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
                     $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
-                    $contents = substr($this->html,  $closer['contents']['startsAt'],  $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
+                    $contents = substr($this->html, $closer['contents']['startsAt'], $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
                     $closer['contents']['text'] = '!#base64#' . base64_encode($contents);
 
                     $item['closer'] = $closer;
@@ -247,7 +246,6 @@ class ComponentParser extends Parser implements ParserInterface
                 if (!$this->isCloseTag($tag) && !$this->isCloseTag($nextMatch)) {
                     $depth++;
                     $parentIds[$depth] = $tag['id'];
-
                 }
             }
 

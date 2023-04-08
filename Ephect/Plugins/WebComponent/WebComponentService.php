@@ -2,12 +2,10 @@
 
 namespace Ephect\Plugins\WebComponent;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ChildrenInterface;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\WebComponents\ManifestEntity;
 use Ephect\Framework\WebComponents\ManifestReader;
-use Ephect\Framework\WebComponents\ManifestStructure;
 use Ephect\Framework\WebComponents\Parser;
 
 class WebComponentService implements WebComponentServiceInterface
@@ -56,8 +54,6 @@ class WebComponentService implements WebComponentServiceInterface
     public function getBody(string $tag): ?string
     {
         $uid = '';
-        Console::log('BEGIN children props');
-        Console::log($this->children->props());
         if(!isset($this->children->props()->slot)) {
             $uid = $this->children->getUID();
         } else {
@@ -67,9 +63,7 @@ class WebComponentService implements WebComponentServiceInterface
             if(isset($this->children->props()->slot->uid)) {
                 $uid = $this->children->props()->slot->uid;
             } 
-            Console::log("UId: $uid");
         }
-        Console::log('END children props');
         $muid = $this->children->getMotherUID();
         $name = $this->children->getName();
 

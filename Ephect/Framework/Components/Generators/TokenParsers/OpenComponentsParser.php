@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
@@ -104,13 +103,13 @@ final class OpenComponentsParser extends AbstractTokenParser
             $subject = str_replace($componentBody, $componentRender, $subject);
 
             $opener = preg_quote($opener, '/');
-            $subject = preg_replace('/(' . $opener . ')/su', '', $subject, 1);
+            $subject = preg_replace('/(' . $opener . ')/', '', $subject, 1);
 
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $closer = preg_quote($closer, '/');
-            $subject = preg_replace('/' . $closer . '(?!.*' . $closer . ')/su', '', $subject, 1);
+            $subject = preg_replace('/' . $closer . '(?!.*' . $closer . ')/', '', $subject, 1);
 
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);

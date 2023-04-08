@@ -10,11 +10,11 @@ use Ephect\Framework\Components\ComponentDeclaration;
 use Ephect\Framework\Components\ComponentDeclarationStructure;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
+use Ephect\Framework\Components\Generators\ParserService;
 use Ephect\Framework\Components\Plugin;
 use Ephect\Framework\Components\WebComponent;
 use Ephect\Framework\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
-use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
@@ -80,7 +80,6 @@ class Builder
 
     public function prepareRoutedComponents(): void
     {
-
         CodeRegistry::uncache();
         ComponentRegistry::uncache();
 
@@ -105,6 +104,15 @@ class Builder
 
         $comp = new Component();
         $comp->load($cachedSourceViewFile);
+
+        $parser = new ParserService;
+        $parser->doEmptyComponents($comp);
+        if($parser->getResult() === true) {
+            $html = $parser->getHtml();
+            IOUtils::safeWrite(COPY_DIR . $cachedSourceViewFile, $html);
+            $comp->load($cachedSourceViewFile);
+        }
+
         $comp->analyse();
 
         $uid = $comp->getUID();
@@ -336,6 +344,6 @@ class Builder
 
     public static function purgeCopies(): void
     {
-        IOUtils::delTree(COPY_DIR);
+       // IOUtils::delTree(COPY_DIR);
     }
 }
