@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\Cache;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\IO\Utils;
 use Ephect\Framework\StaticElement;
 
@@ -73,10 +74,71 @@ class Cache extends StaticElement
         try {
 
             if (file_exists(RUNTIME_DIR)) {
-                $ok = Utils::delTree(RUNTIME_DIR);
-                $result = $result || $ok;
+                $result = Utils::delTree(RUNTIME_DIR);
+                if(!$result) {
+                    $error_dir[] = RUNTIME_DIR;
+                }
+
             } else {
-                $error_dir[] = RUNTIME_DIR;
+                Console::log("Nothing to delete");
+            }
+
+            if (count($error_dir) > 0) {
+                $result = false;
+
+                $message = 'An error occured while deleting ' . implode(', ', $error_dir);
+                throw new \Exception($message, 0);
+            }
+        } catch (\Exception $ex) {
+            self::getLogger()->error($ex);
+        }
+
+        return $result;
+    }
+
+    public static function createRuntimeJsDirs(): bool
+    {
+        $result = false;
+        $error_dir = [];
+
+        try {
+            $runtime_dir = dirname(RUNTIME_JS_DIR . '_');
+            if (!file_exists($runtime_dir)) {
+                $result = mkdir($runtime_dir, 0755, true);
+                if(!$result) {
+                    $error_dir[] = RUNTIME_DIR;
+                }
+            } else {
+                Console::log("Nothing to delete");
+            }
+            if (count($error_dir) > 0) {
+                $result = false;
+
+                $message = 'An error occured while creating ' . implode(', ', $error_dir);
+                throw new \Exception($message, 0);
+            }
+        } catch (\Throwable $ex) {
+            self::getLogger()->error($ex);
+        }
+
+        return $result;
+    }
+
+    public static function deleteRuntimeJsDirs(): bool
+    {
+        $result = false;
+        $error_dir = [];
+
+        try {
+
+            if (file_exists(RUNTIME_JS_DIR)) {
+                $result = Utils::delTree(RUNTIME_JS_DIR);
+                if(!$result) {
+                    $error_dir[] = RUNTIME_JS_DIR;
+                }
+
+            } else {
+                Console::log("Nothing to delete");
             }
 
             if (count($error_dir) > 0) {
@@ -96,6 +158,8 @@ class Cache extends StaticElement
     {
         $result = false;
         try {
+            $result = $result || self::deleteRuntimeJsDirs();
+            $result = $result || self::createRuntimeJsDirs();
             $result = $result || self::deleteRuntimeDirs();
             $result = $result || self::createRuntimeDirs();
             $result = $result || self::deleteCacheDir();

@@ -11,9 +11,10 @@ class Lib extends AbstractCommandLib
 
     public function build(): void
     {
-        if (file_exists(CACHE_DIR)) {
-            Utils::delTree(CACHE_DIR);
-        }
+        $application = $this->parent;
+
+        $application->clearRuntime();
+        $application->clearLogs();
 
         $builder = new Builder;
         $builder->describeComponents();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\BuildWebcomponent;
+namespace Ephect\Commands\MakeQuickStart;
 
 use Ephect\Framework\IO\Utils;
 

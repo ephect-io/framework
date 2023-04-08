@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\CreateQuickstart;
+namespace Ephect\Commands\MakeQuickStart;
 
 use Ephect\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;
