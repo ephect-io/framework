@@ -12,7 +12,7 @@ class Main extends AbstractCommand
 {
     public function run(): void
     {
-        $data = $this->application->clearCache();
+        $data = $this->application->clearRuntime();
         Console::writeLine($data);
     }
 }
