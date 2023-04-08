@@ -6,6 +6,7 @@ use Ephect\Framework\Core\Structure;
 
 class RouteStructure extends Structure
 {
+    public string $uid = '';
     public string $method = '';
     public string $rule = '';
     public string $normalized = '';
