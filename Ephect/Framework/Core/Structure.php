@@ -18,6 +18,7 @@ class Structure implements StructureInterface
                 throw new Error("The property [$key] is not defined.");
             }
 
+
             $this->{$key} = $value;
         }
     }

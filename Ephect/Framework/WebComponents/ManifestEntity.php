@@ -4,7 +4,7 @@ namespace Ephect\Framework\WebComponents;
 
 use Ephect\Framework\Element;
 
-class Manifest extends Element
+class ManifestEntity extends Element implements ManifestEntityInterface
 {
     private string $tag;
     private string $className;

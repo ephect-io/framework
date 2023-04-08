@@ -10,11 +10,11 @@ use Ephect\Framework\Components\ComponentDeclaration;
 use Ephect\Framework\Components\ComponentDeclarationStructure;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
+use Ephect\Framework\Components\Generators\ParserService;
 use Ephect\Framework\Components\Plugin;
 use Ephect\Framework\Components\WebComponent;
 use Ephect\Framework\IO\Utils as IOUtils;
 use Ephect\Plugins\Route\RouteBuilder;
-use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
@@ -72,6 +72,7 @@ class Builder
             foreach ($webcomponentList as $key => $webcomponentFile) {
                 $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
             }
+            CodeRegistry::cache();
             WebComponentRegistry::cache();
             ComponentRegistry::cache();
         }
@@ -79,7 +80,6 @@ class Builder
 
     public function prepareRoutedComponents(): void
     {
-
         CodeRegistry::uncache();
         ComponentRegistry::uncache();
 
@@ -104,14 +104,24 @@ class Builder
 
         $comp = new Component();
         $comp->load($cachedSourceViewFile);
+
+        $parser = new ParserService;
+        $parser->doEmptyComponents($comp);
+        if($parser->getResult() === true) {
+            $html = $parser->getHtml();
+            IOUtils::safeWrite(COPY_DIR . $cachedSourceViewFile, $html);
+            $comp->load($cachedSourceViewFile);
+        }
+
         $comp->analyse();
 
+        $uid = $comp->getUID();
         $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration();
+        $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        ComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+        ComponentRegistry::write($cachedSourceViewFile, $uid);
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
@@ -139,12 +149,13 @@ class Builder
         $comp->load($cachedSourceViewFile);
         $comp->analyse();
 
+        $uid = $comp->getUID();
         $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration();
+        $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        WebComponentRegistry::write($cachedSourceViewFile, $comp->getUID());
+        WebComponentRegistry::write($cachedSourceViewFile, $uid);
         WebComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
@@ -333,6 +344,6 @@ class Builder
 
     public static function purgeCopies(): void
     {
-        IOUtils::delTree(COPY_DIR);
+       IOUtils::delTree(COPY_DIR);
     }
 }

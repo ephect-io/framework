@@ -23,6 +23,10 @@ class Plugin extends AbstractFileComponent implements FileComponentInterface
         return $this->code !== null;
     }
 
+    public function makeComponent(string $filename, string &$html): void
+    {
+    }
+
     public function analyse(): void
     {
         parent::analyse();

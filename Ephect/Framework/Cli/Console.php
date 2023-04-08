@@ -52,8 +52,10 @@ class Console extends Element
         echo $value . PHP_EOL;
     }
 
-    public static function log(string|array|object $string, ...$params): void 
+    public static function log(string|array|object|null $string, ...$params): void 
     {
+        $string = $string ?: '';
+        
         if (IS_WEB_APP) {
             self::getLogger()->debug($string);
             return;

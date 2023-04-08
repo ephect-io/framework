@@ -2,15 +2,16 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use Ephect\Framework\Components\ChildrenInterface;
 use Ephect\Framework\IO\Utils;
-use Ephect\Framework\WebComponents\Manifest;
-use Ephect\Framework\WebComponents\ManifestStructure;
+use Ephect\Framework\WebComponents\ManifestEntity;
+use Ephect\Framework\WebComponents\ManifestReader;
 use Ephect\Framework\WebComponents\Parser;
 
 class WebComponentService implements WebComponentServiceInterface
 {
 
-    public function __construct(private $children)
+    public function __construct(private ChildrenInterface $children)
     {
     }
 
@@ -42,27 +43,48 @@ class WebComponentService implements WebComponentServiceInterface
 
     }
 
-    public function readManifest(): Manifest
+    public function getAttribute(string $attribute): ?string
+    {
+        $props = $this->children->props();
+        $props = $props->props ?? $props;
+
+        return isset($props->$attribute) ? $props->$attribute : null;
+    }
+
+    public function getBody(string $tag): ?string
+    {
+        $uid = '';
+        if(!isset($this->children->props()->slot)) {
+            $uid = $this->children->getUID();
+        } else {
+            if(method_exists($this->children->props()->slot, 'getUID')) {
+                $uid = $this->children->props()->slot->getUID();
+            } 
+            if(isset($this->children->props()->slot->uid)) {
+                $uid = $this->children->props()->slot->uid;
+            } 
+        }
+        $muid = $this->children->getMotherUID();
+        $name = $this->children->getName();
+
+        $textFilename = CACHE_DIR . $muid . DIRECTORY_SEPARATOR . $name . $uid . '.txt';
+
+        $body = Utils::safeRead($textFilename);
+
+        return $body;
+
+    }
+
+    public function readManifest(): ManifestEntity
     {
         $children = $this->children;
 
         $motherUID = $children->getMotherUID();
         $name = $children->getName();
 
-        $manifestFilename = 'manifest.json';
-        $manifestCache = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $manifestFilename;
+        $reader = new ManifestReader($motherUID, $name);
 
-        if (!file_exists($manifestCache)) {
-            copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $manifestFilename, $manifestCache);
-        }
-
-        $manifestJson = Utils::safeRead($manifestCache);
-        $manifest = json_decode($manifestJson, JSON_OBJECT_AS_ARRAY);
-
-        $struct = new ManifestStructure($manifest);
-
-        return new Manifest($struct);
-
+        return $reader->read();
     }
 
     public function splitHTML(string $html): void
@@ -73,7 +95,7 @@ class WebComponentService implements WebComponentServiceInterface
 
         $parser = new Parser($html);
         $parser->doTags();
-        $script = $parser->getScript();
+        $script = $parser->getScript($name);
 
         Utils::safeWrite($finalJs, $script);
         copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $classJs, RUNTIME_JS_DIR . $classJs);

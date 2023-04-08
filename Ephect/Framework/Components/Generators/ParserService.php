@@ -9,6 +9,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\ChildrenDeclarationParse
 use Ephect\Framework\Components\Generators\TokenParsers\ChildSlotsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ClosedComponentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\EchoParser;
+use Ephect\Framework\Components\Generators\TokenParsers\EmptyComponentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\FragmentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\HeredocParser;
 use Ephect\Framework\Components\Generators\TokenParsers\NamespaceParser;
@@ -19,6 +20,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ValuesParser;
+use Ephect\Framework\Components\Generators\TokenParsers\WebComponentParser;
 use Ephect\Framework\Registry\ComponentRegistry;
 
 class ParserService implements ParserServiceInterface
@@ -72,7 +74,7 @@ class ParserService implements ParserServiceInterface
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
     }
-    
+
     public function doUses(FileComponentInterface $component): void
     {
         $p = new UsesParser($component);
@@ -131,7 +133,7 @@ class ParserService implements ParserServiceInterface
         $this->useVariables = $p->getVariables();
         $this->html = $p->getHtml();
     }
-    
+
     public function doUseEffect(FileComponentInterface $component): void
     {
         $p = new UseEffectParser($component);
@@ -152,8 +154,15 @@ class ParserService implements ParserServiceInterface
         $p->do($this->useVariables);
         $this->useVariables = $p->getVariables();
         $this->html = $p->getHtml();
-    }   
-    
+    }
+
+    public function doWebComponent(FileComponentInterface $component): void
+    {
+        $p = new WebComponentParser($component);
+        $p->do($this->useVariables);
+        $this->useVariables = $p->getVariables();
+    }
+
     public function doNamespace(FileComponentInterface $component): void
     {
         $p = new NamespaceParser($component);
@@ -184,6 +193,14 @@ class ParserService implements ParserServiceInterface
         $this->html = $p->getHtml();
     }
 
+    public function doEmptyComponents(FileComponentInterface $component): void
+    {
+        $p = new EmptyComponentsParser($component);
+        $p->do();
+        $this->html = $p->getHtml();
+        $this->result = $p->getResult();
+    }
+
     public function doIncludes(FileComponentInterface $component): void
     {
         $componentList = array_unique(array_merge($this->componentList, $this->openComponentList));
@@ -199,7 +216,7 @@ class ParserService implements ParserServiceInterface
             $re = '/(namespace +[\w\\\\]+;)/m';
             preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
 
-            if(!isset($matches[0])) {
+            if (!isset($matches[0])) {
                 $re = '/(<\?php)/m';
             }
 

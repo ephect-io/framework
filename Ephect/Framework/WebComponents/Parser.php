@@ -7,9 +7,9 @@ use Ephect\Framework\Components\Generators\RawHtmlParser;
 class Parser extends RawHtmlParser
 {
 
-   private string $template;
-   private string $script;
-   private string $style;
+   private string $template = '';
+   private string $script = '';
+   private string $style = '';
 
    public function __construct(private string $html)
    {
@@ -19,16 +19,21 @@ class Parser extends RawHtmlParser
    public function doTags(): void
    {
       $this->doTag('template');
-      $this->template = $this->getInnerHTML();
-
+      $htmls = $this->getInnerHTML();
+      $this->template = count($htmls) ? $htmls[0] : '';
+ 
       $this->doTag('script');
-      $this->script = $this->getInnerHTML();
+      $htmls = $this->getInnerHTML();
+      $this->script = count($htmls) ? $htmls[0] : '';
 
       $this->doTag('style');
-      $this->style = $this->getInnerHTML();
+      $htmls = $this->getOuterHTML();
+      foreach($htmls as $html) {
+         $this->style .= $html . PHP_EOL;
+      }
    }
 
-   public function getScript(): string
+   public function getScript($name): string
    {
       $heredoc = <<<HTML
       `
@@ -36,7 +41,7 @@ class Parser extends RawHtmlParser
       $this->template
       `
       HTML;
-      $script = str_replace("document.getElementById('HelloWord').innerHTML", $heredoc, $this->script);
+      $script = str_replace("document.getElementById('$name').innerHTML", $heredoc, $this->script);
 
       return $script;
    }

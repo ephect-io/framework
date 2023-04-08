@@ -16,34 +16,49 @@ use Ephect\Framework\Registry\WebComponentRegistry;
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
 define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 
-class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
+abstract class AbstractFileComponent extends AbstractComponent implements FileComponentInterface
 {
 
     protected ?string $filename = '';
 
     public function __construct(?string $id = null, string $motherUID = '')
     {
-        if ($id !== null) {
-            ComponentRegistry::uncache();
-            $this->class = ComponentRegistry::read($id);
+        $this->id = $id ?: '';
+        if ($id === null) {
+            $this->getUID();
+            $this->motherUID = $motherUID ?: $this->uid;
+
+            return;
+        }
+
+        ComponentRegistry::uncache();
+        $this->class = ComponentRegistry::read($id);
+        if ($this->class !== null) {
+            $this->filename = ComponentRegistry::read($this->class);
+            $this->filename = $this->filename ?: '';
+
+            $this->uid = ComponentRegistry::read($this->filename);
+            $this->uid = $this->uid ?: '';
+        } else {
+            $this->class = WebComponentRegistry::read($id);
             if ($this->class !== null) {
-                $this->filename = ComponentRegistry::read($this->class);
+                $this->filename = WebComponentRegistry::read($this->class);
                 $this->filename = $this->filename ?: '';
 
-                $this->uid = ComponentRegistry::read($this->filename);
+                $this->uid = WebComponentRegistry::read($this->filename);
                 $this->uid = $this->uid ?: '';
-            }
-
-            if ($this->uid !== $this->id) {
-                $this->function = $id;
-            }
-            if ($this->uid === $this->id) {
-                $this->function = self::functionName($this->class);
             }
         }
 
-        $this->getUID();
+        if ($this->uid !== $this->id) {
+            $this->function = $id;
+        }
+        if ($this->uid === $this->id) {
+            $this->function = self::functionName($this->class);
+        }
+
         $this->motherUID = $motherUID ?: $this->uid;
+
     }
 
     public function getSourceFilename(): string
@@ -85,35 +100,13 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if (!$this->bodyStartsAt) {
-            self::makeComponent($this->filename, $this->code);
+            $this->makeComponent($this->filename, $this->code);
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         }
         return $this->code !== null;
     }
 
-
-    static private function makeComponent(string $filename, string &$html): void
-    {
-        $info = (object) pathinfo($filename);
-        $namespace = CONFIG_NAMESPACE;
-        $function = $info->filename;
-
-        $html = <<< COMPONENT
-        <?php
-
-        namespace $namespace;
-
-        function $function() {
-        return (<<< HTML
-        $html
-        HTML);
-        }
-        COMPONENT;
-
-        Utils::safeWrite(COPY_DIR . $filename, $html);
-
-    }
-
+    public abstract function makeComponent(string $filename, string &$html): void;
 
     public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
     {
@@ -123,7 +116,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         if (!$isCached) {
             ComponentRegistry::uncache();
             WebComponentRegistry::uncache();
-            
+
             $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName, $motherUID);
             $component->parse();
@@ -152,6 +145,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
         CodeRegistry::uncache();
+        WebComponentRegistry::uncache();
 
         $parser = new ParserService();
 
@@ -178,6 +172,8 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
 
         $parser->doUseEffect($this);
         $this->code = $parser->getHtml();
+
+        $parser->doWebComponent($this);
 
         $parser->doUseVariables($this);
         $this->code = $parser->getHtml();
@@ -397,7 +393,7 @@ class AbstractFileComponent extends AbstractComponent implements FileComponentIn
         $comp = new Component($uid, $motherUID);
         $comp->load($filename);
         $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration();
+        $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
