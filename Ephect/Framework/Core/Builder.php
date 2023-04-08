@@ -344,6 +344,6 @@ class Builder
 
     public static function purgeCopies(): void
     {
-       // IOUtils::delTree(COPY_DIR);
+       IOUtils::delTree(COPY_DIR);
     }
 }
