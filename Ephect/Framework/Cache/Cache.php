@@ -13,7 +13,7 @@ class Cache extends StaticElement
     {
         return CACHE_DIR . str_replace('/', '_', $basename);
     }
-    
+
     public static function cacheFilenameFromView(string $compName): string
     {
 
@@ -38,119 +38,31 @@ class Cache extends StaticElement
         file_put_contents($filename, $content);
     }
 
-    public static function createRuntimeDirs(): bool
+    public static function clearCache(): bool
     {
         $result = false;
-        $error_dir = [];
-
-        try {
-            $runtime_dir = dirname(RUNTIME_DIR . '_');
-            if (!file_exists($runtime_dir)) {
-                $ok = mkdir($runtime_dir, 0755, true);
-                $result = $result || $ok;
-            }
-            if (!file_exists($runtime_dir)) {
-                $error_dir[] = RUNTIME_DIR;
-            }
-
-            if (count($error_dir) > 0) {
-                $result = false;
-
-                $message = 'An error occured while creating ' . implode(', ', $error_dir);
-                throw new \Exception($message, 0);
-            }
-        } catch (\Throwable $ex) {
-            self::getLogger()->error($ex);
+        if (file_exists(CACHE_DIR)) {
+            $result &= Utils::delTree(CACHE_DIR);
         }
 
         return $result;
     }
 
-    public static function deleteRuntimeDirs(): bool
+    public static function clearRuntimeDirs(): bool
     {
         $result = false;
-        $error_dir = [];
-
-        try {
-
-            if (file_exists(RUNTIME_DIR)) {
-                $result = Utils::delTree(RUNTIME_DIR);
-                if(!$result) {
-                    $error_dir[] = RUNTIME_DIR;
-                }
-
-            } else {
-                Console::log("Nothing to delete");
-            }
-
-            if (count($error_dir) > 0) {
-                $result = false;
-
-                $message = 'An error occured while deleting ' . implode(', ', $error_dir);
-                throw new \Exception($message, 0);
-            }
-        } catch (\Exception $ex) {
-            self::getLogger()->error($ex);
+        if (file_exists(RUNTIME_DIR)) {
+            $result &= Utils::delTree(RUNTIME_DIR);
         }
-
         return $result;
     }
 
-    public static function createRuntimeJsDirs(): bool
+    public static function clearRuntimeJsDirs(): bool
     {
         $result = false;
-        $error_dir = [];
-
-        try {
-            $runtime_dir = dirname(RUNTIME_JS_DIR . '_');
-            if (!file_exists($runtime_dir)) {
-                $result = mkdir($runtime_dir, 0755, true);
-                if(!$result) {
-                    $error_dir[] = RUNTIME_DIR;
-                }
-            } else {
-                Console::log("Nothing to delete");
-            }
-            if (count($error_dir) > 0) {
-                $result = false;
-
-                $message = 'An error occured while creating ' . implode(', ', $error_dir);
-                throw new \Exception($message, 0);
-            }
-        } catch (\Throwable $ex) {
-            self::getLogger()->error($ex);
+        if (file_exists(RUNTIME_JS_DIR)) {
+            $result &= Utils::delTree(RUNTIME_JS_DIR);
         }
-
-        return $result;
-    }
-
-    public static function deleteRuntimeJsDirs(): bool
-    {
-        $result = false;
-        $error_dir = [];
-
-        try {
-
-            if (file_exists(RUNTIME_JS_DIR)) {
-                $result = Utils::delTree(RUNTIME_JS_DIR);
-                if(!$result) {
-                    $error_dir[] = RUNTIME_JS_DIR;
-                }
-
-            } else {
-                Console::log("Nothing to delete");
-            }
-
-            if (count($error_dir) > 0) {
-                $result = false;
-
-                $message = 'An error occured while deleting ' . implode(', ', $error_dir);
-                throw new \Exception($message, 0);
-            }
-        } catch (\Exception $ex) {
-            self::getLogger()->error($ex);
-        }
-
         return $result;
     }
 
@@ -158,90 +70,14 @@ class Cache extends StaticElement
     {
         $result = false;
         try {
-            $result = $result || self::deleteRuntimeJsDirs();
-            $result = $result || self::createRuntimeJsDirs();
-            $result = $result || self::deleteRuntimeDirs();
-            $result = $result || self::createRuntimeDirs();
-            $result = $result || self::deleteCacheDir();
-            $result = $result || self::createCacheDir();
-
+            $result &=  self::clearCache();
+            $result &=  self::clearRuntimeDirs();
+            $result &=  self::clearRuntimeJsDirs();
         } catch (\Throwable $ex) {
-            self::getLogger()->error($ex);
+            Console::error($ex);
 
             $result = false;
         }
         return $result;
     }
-
-
-    public static function clearCache(): bool
-    {
-        $result = false;
-        try {
-            $result = $result || self::deleteCacheDir();
-            $result = $result || self::createCacheDir();
-
-        } catch (\Throwable $ex) {
-            self::getLogger()->error($ex);
-
-            $result = false;
-        }
-        return $result;
-    }
-
-    public static function createCacheDir(): bool
-    {
-        $result = false;
-        $error_dir = [];
-
-        try {
-            $cache_dir = dirname(CACHE_DIR . '_');
-            if (!file_exists($cache_dir)) {
-                $ok = mkdir($cache_dir, 0755, true);
-                $result = $result || $ok;
-            }
-            if (!file_exists($cache_dir)) {
-                $error_dir[] = CACHE_DIR;
-            }
-
-            if (count($error_dir) > 0) {
-                $result = false;
-
-                $message = 'An error occured while creating ' . implode(', ', $error_dir);
-                throw new \Exception($message, 0);
-            }
-        } catch (\Throwable $ex) {
-            self::getLogger()->error($ex);
-        }
-
-        return $result;
-    }
-
-    public static function deleteCacheDir(): bool
-    {
-        $result = false;
-        $error_dir = [];
-
-        try {
-
-            if (file_exists(CACHE_DIR)) {
-                $ok = Utils::delTree(CACHE_DIR);
-                $result = $result || $ok;
-            } else {
-                $error_dir[] = CACHE_DIR;
-            }
-
-            if (count($error_dir) > 0) {
-                $result = false;
-
-                $message = 'Permission denied while deleting ' . implode(', ', $error_dir);
-                throw new \Exception($message, 0);
-            }
-        } catch (\Exception $ex) {
-            self::getLogger()->error($ex);
-        }
-
-        return $result;
-    }
-
 }

@@ -55,7 +55,7 @@ class Builder
         $classText = str_replace('entrypoint', $entrypoint, $classText);
         Utils::safeWrite($destDir . "$className.class.mjs", $classText);
 
-        $componentText = Utils::safeRead($srcDir . 'Base.component.phtml');
+        $componentText = Utils::safeRead($srcDir . 'Base.phtml');
         $componentText = str_replace('Base', $className, $componentText);
         $componentText = str_replace('<TagName />', $tagName, $componentText);
         $componentText = str_replace('<Entrypoint />', $entrypoint, $componentText);
@@ -103,8 +103,6 @@ class Builder
 
         }
 
-        Utils::safeWrite($destDir . "$className.component.phtml", $componentText);
-
-        copy($srcDir . 'Base.tpl', $destDir . "$className.tpl");
+        Utils::safeWrite($destDir . "$className.phtml", $componentText);
     }
 }

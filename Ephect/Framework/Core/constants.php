@@ -64,10 +64,6 @@ if (IS_WEB_APP) {
     define('BASE_URI', SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : '') . ((REQUEST_URI !== '') ? REQUEST_URI : ''));
     define('FULL_URI', HTTP_PROTOCOL . '://' . BASE_URI);
     define('FULL_SSL_URI', 'https://' . BASE_URI);
-    define('REL_RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
-    define('REL_RUNTIME_CSS_DIR', 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
-    define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
-    define('RUNTIME_CSS_DIR', DOCUMENT_ROOT . REL_RUNTIME_CSS_DIR);
 
     /**
      * TO BE TESTED ON SUBDIRECTORY
@@ -178,12 +174,21 @@ if (!IS_WEB_APP) {
     define('AJIL_ROOT', SITE_ROOT . AJIL_VENDOR_SRC);
 }
 
-define('CONFIG_DOCROOT', trim(file_get_contents(CONFIG_DIR . 'document_root')));
-define('CONFIG_HOSTNAME', trim(file_get_contents(CONFIG_DIR . 'hostname')));
-define('CONFIG_NAMESPACE', trim(file_get_contents(CONFIG_DIR . 'namespace')));
-define('CONFIG_COMMANDS', trim(file_get_contents(CONFIG_DIR . 'commands')));
-define('CONFIG_COMPONENTS', trim(file_get_contents(CONFIG_DIR . 'components')));
-define('CONFIG_WEBCOMPONENTS', trim(file_get_contents(CONFIG_DIR . 'webcomponents')));
+define('CONFIG_DOCROOT', file_exists(CONFIG_DIR . 'document_root') ? trim(file_get_contents(CONFIG_DIR . 'document_root')) : 'public');
+define('CONFIG_HOSTNAME', file_exists(CONFIG_DIR . 'hostname') ? trim(file_get_contents(CONFIG_DIR . 'hostname')) : 'localhost');
+define('CONFIG_NAMESPACE', file_exists(CONFIG_DIR . 'namespace') ? trim(file_get_contents(CONFIG_DIR . 'namespace')) : APP_NAME);
+define('CONFIG_COMMANDS', file_exists(CONFIG_DIR . 'commands') ? trim(file_get_contents(CONFIG_DIR . 'commands')) : 'Commands');
+define('CONFIG_COMPONENTS', file_exists(CONFIG_DIR . 'components') ? trim(file_get_contents(CONFIG_DIR . 'components')) : 'Components');
+define('CONFIG_WEBCOMPONENTS', file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : 'WebComponents');
+
+if (!IS_WEB_APP) {
+    define('DOCUMENT_ROOT', SITE_ROOT . CONFIG_DOCROOT . DIRECTORY_SEPARATOR);
+}
+define('REL_RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
+define('REL_RUNTIME_CSS_DIR', 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
+define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
+define('RUNTIME_CSS_DIR', DOCUMENT_ROOT . REL_RUNTIME_CSS_DIR);
+
 
 define('EPHECT_VENDOR_WIDGETS', EPHECT_VENDOR_SRC . 'Widgets' . DIRECTORY_SEPARATOR);
 define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARATOR);

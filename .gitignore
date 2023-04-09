@@ -9,16 +9,3 @@ docker-compose.yml
 *.code-workspace
 
 /vendor/
-
-/runtime/
-/cache/*
-/static/
-/src/
-build/
-
-*.log
-*_log
-
-phink/
-
-/bin/egg
