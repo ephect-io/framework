@@ -2,11 +2,12 @@ export default class HelloWorld
 {
 
     constructor() {
-        this.hello = 'world'
+        this.foo = 'bar'
     }
 
-    sayHello(word = null) {
-        const message = word ?? this.hello
-        return 'Hello ' + message
+    hello(foo = null) {
+        const baz = foo ?? this.foo
+        return 'Something ' + baz
     }
+
 }
