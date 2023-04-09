@@ -1,19 +1,10 @@
-<?php
-
-namespace QuickStart;
-
-function Base()
-{
-
-    return (<<< HTML
-    <WebComponent>
-    <template id="Base">
-        <h1>
-            <slot />
-            {{ foo }}
-        </h1>
-    </template>
-    <script>
+<template id="Base">
+    <h1>
+        <slot/>
+        {{ foo }}
+    </h1>
+</template>
+<script>
     import Base from "./Base.class.mjs"
 
 
@@ -25,12 +16,12 @@ function Base()
         constructor() {
             super();
 
-            <Properties />
-            this.attachShadow({ mode: 'open' });
+            <Properties/>
+            this.attachShadow({mode: 'open'});
             this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
 
             const slots = this.shadowRoot.querySelectorAll('slot')
-            if(slots.length) {
+            if (slots.length) {
                 slots[0].addEventListener('slotchange', event => {
                     console.dir(slots[0].assignedNodes())
                 })
@@ -38,19 +29,18 @@ function Base()
 
         }
 
-        <ObserveAttributes />
-        <GetAttributes />
+    <ObserveAttributes />
+    <GetAttributes />
+
         async connectedCallback() {
             /**
              * The magic starts here
              */
             const base = new Base()
-            base.<Entrypoint />()
+            base.
+            <Entrypoint/>()
         }
     }
 
     customElements.define('<TagName />', BaseComponent);
-    </script>
-    </WebComponent>
-    HTML);
-}
+</script>
