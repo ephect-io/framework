@@ -12,7 +12,7 @@ class Lib extends AbstractCommandLib
     public function build(): void
     {
         $application = $this->parent;
-
+        
         $application->clearRuntime();
         $application->clearLogs();
 
