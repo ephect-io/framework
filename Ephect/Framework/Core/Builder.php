@@ -67,14 +67,16 @@ class Builder
             ComponentRegistry::cache();
         }
 
-        if (!WebComponentRegistry::uncache()) {
-            $webcomponentList = IOUtils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
-            foreach ($webcomponentList as $key => $webcomponentFile) {
-                $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
+        if (file_exists(CUSTOM_WEBCOMPONENTS_ROOT)) {
+            if (!WebComponentRegistry::uncache()) {
+                $webcomponentList = IOUtils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
+                foreach ($webcomponentList as $key => $webcomponentFile) {
+                    $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
+                }
+                CodeRegistry::cache();
+                WebComponentRegistry::cache();
+                ComponentRegistry::cache();
             }
-            CodeRegistry::cache();
-            WebComponentRegistry::cache();
-            ComponentRegistry::cache();
         }
     }
 
@@ -107,7 +109,7 @@ class Builder
 
         $parser = new ParserService;
         $parser->doEmptyComponents($comp);
-        if($parser->getResult() === true) {
+        if ($parser->getResult() === true) {
             $html = $parser->getHtml();
             IOUtils::safeWrite(COPY_DIR . $cachedSourceViewFile, $html);
             $comp->load($cachedSourceViewFile);
@@ -288,7 +290,7 @@ class Builder
         if ($root !== null) {
             $routes = $root->items();
             foreach ($routes as $route) {
-                $props = (object) $route->props();
+                $props = (object)$route->props();
                 $rb = new RouteBuilder($props);
                 $re = $rb->build();
 
@@ -344,6 +346,6 @@ class Builder
 
     public static function purgeCopies(): void
     {
-       IOUtils::delTree(COPY_DIR);
+        IOUtils::delTree(COPY_DIR);
     }
 }
