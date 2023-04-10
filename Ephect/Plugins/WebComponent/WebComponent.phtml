@@ -2,8 +2,6 @@
 
 namespace Ephect\Plugins\WebComponent;
 
-use Ephect\Framework\CLI\Console;
-
 use function Ephect\Hooks\useEffect;
 
 function WebComponent($children)
@@ -17,7 +15,7 @@ function WebComponent($children)
         
         $body = $service->getBody($tag);
         if($body === null) {
-            $args = $service->getAttributes();
+            $args = $children->getAttributes();
             $body = <<< BODY
             <$tag $args>
             </$tag>
