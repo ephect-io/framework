@@ -17,14 +17,17 @@ function Com($props)
         $m = $state->m->n;
 
         $setState(['p' => ['n' => 'q']]);
+
     });
 
     return (<<< HTML
+    <HtmlSaver render="false" >
     <h1>{{ props->message }}</h1>
     <sub>from {{ d }}</sub>
     <h2>{{ b }}</h2>
     <h3>{{ c }}</h3>
     <h3>{{ m }}</h3>
     <Dummy />
+    </HtmlSaver>
     HTML);
 }
