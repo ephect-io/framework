@@ -7,12 +7,10 @@ use Ephect\Framework\WebComponents\ManifestEntity;
 interface WebComponentServiceInterface
 {
 
-    public function getAttributes(): string;
-    public function getAttribute(string $attribute): ?string;
+    public function isPending(): bool;
+    public function markAsPending(): void;
     public function getBody(string $tag): ?string;
     public function readManifest(): ManifestEntity;
     public function storeHTML(string $html): void;
-    public function isPending(): bool;
-    public function markAsPending(): void;
 
 }

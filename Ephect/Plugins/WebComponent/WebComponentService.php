@@ -28,29 +28,6 @@ class WebComponentService implements WebComponentServiceInterface
         Utils::safeWrite($pendingJs, "const time = $timestamp");
     }
 
-    public function getAttributes(): string
-    {
-        $props = $this->children->props();
-
-        $props = $props->props ?? $props;
-
-        $args = [];
-        foreach ($props as $key => $value) {
-            $args[] =  $key . '="' . $value . '"';
-        }
-
-        return implode(" ", $args);
-
-    }
-
-    public function getAttribute(string $attribute): ?string
-    {
-        $props = $this->children->props();
-        $props = $props->props ?? $props;
-
-        return isset($props->$attribute) ? $props->$attribute : null;
-    }
-
     public function getBody(string $tag): ?string
     {
         $uid = '';

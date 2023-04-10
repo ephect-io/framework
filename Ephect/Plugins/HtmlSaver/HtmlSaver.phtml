@@ -1,0 +1,25 @@
+<?php
+
+namespace Ephect\Plugins\HtmlSaver;
+
+use function Ephect\Hooks\useEffect;
+
+function HtmlSaver($children)
+{
+    useEffect(function($children, $service) {
+        $service = new HtmlSaverService($children);
+    });
+
+    return (<<< HTML
+        {? if({service}->canRender()) { ?}
+        {{ children }}
+        {? } ?}
+        {? 
+            if(!{service}->isPending()) {
+                {service}->markAsPending();
+                {@html} = { children };
+                {service}->storeHTML({@html});
+            }
+        ?}
+    HTML);
+}

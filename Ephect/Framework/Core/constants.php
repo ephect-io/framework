@@ -240,3 +240,4 @@ define('JS_EXTENSION', '.js');
 define('CLASS_MJS_EXTENSION', '.class.mjs');
 define('MJS_EXTENSION', '.mjs');
 define('TPL_EXTENSION', '.tpl');
+define('TXT_EXTENSION', '.txt');
