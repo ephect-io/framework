@@ -1,0 +1,9 @@
+{
+    "tag": "code-writer",
+    "class": "CodeWriter",
+    "entrypoint": "writeLikeAHuman",
+    "arguments": [
+        "source",
+        "use-highlight-js"
+    ]
+}
