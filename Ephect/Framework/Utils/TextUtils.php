@@ -58,7 +58,7 @@ class TextUtils
         $l = mb_strlen($json, 'UTF-8');
         $text = mb_substr($json, 1, $l - 2);
 
-        $text = mb_ereg_replace(':', ' =>', $text);
+        $text = mb_ereg_replace(': ', ' => ', $text);
         $text = mb_ereg_replace('{', '[', $text);
         $text = mb_ereg_replace('}', ']', $text);
         $text = mb_ereg_replace('\\\/', '/', $text);

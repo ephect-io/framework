@@ -66,7 +66,12 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
         if ($asArray) {
             $result = TextUtils::jsonToPhpArray($result);
-            $result = str_replace('"' . EPHECT_ROOT, 'EPHECT_ROOT . "', $result);
+            $ephect_root = EPHECT_ROOT;
+            if(DIRECTORY_SEPARATOR === '\\') {
+                $ephect_root = str_replace('\\', '\\\\', EPHECT_ROOT);
+            }
+
+            $result = str_replace('"' . $ephect_root, 'EPHECT_ROOT . "', $result);
             $result = str_replace('"' . SRC_ROOT, 'SRC_ROOT . "', $result);
         }
 
@@ -91,7 +96,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         if ($this->isLoaded && $asArray) {
 
             $fn = function() use($registryFilename) {
-               return include $registryFilename;
+                return include $registryFilename;
             };
 
             $dictionary = $fn();
