@@ -77,6 +77,13 @@ class WebComponentService implements WebComponentServiceInterface
         Utils::safeWrite($finalJs, $script);
         copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $classJs, RUNTIME_JS_DIR . $classJs);
 
+        if(file_exists(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR  . "lib")) {
+            $libFiles = Utils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR  . "lib");
+            Utils::safeMkDir(RUNTIME_JS_DIR . 'lib');
+            foreach($libFiles as $filename) {
+                copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR  . 'lib' . $filename, RUNTIME_JS_DIR . 'lib' . $filename);
+            }
+        }
     }
 
     public function storeHTML(string $html): void
