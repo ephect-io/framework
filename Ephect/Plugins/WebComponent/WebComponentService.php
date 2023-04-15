@@ -67,7 +67,10 @@ class WebComponentService implements WebComponentServiceInterface
     public function splitHTML(string $html): void
     {
         $name = $this->children->getName();
-        $finalJs = RUNTIME_JS_DIR . $name . MJS_EXTENSION;
+
+        $runtimeDir = strtolower(RUNTIME_JS_DIR . $name) . DIRECTORY_SEPARATOR;
+        Utils::safeMkDir($runtimeDir);
+        $finalJs = $runtimeDir . $name . MJS_EXTENSION;
         $classJs = $name . CLASS_MJS_EXTENSION;
 
         $parser = new Parser($html);
@@ -75,13 +78,13 @@ class WebComponentService implements WebComponentServiceInterface
         $script = $parser->getScript($name);
 
         Utils::safeWrite($finalJs, $script);
-        copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $classJs, RUNTIME_JS_DIR . $classJs);
+        copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $classJs, $runtimeDir . $classJs);
 
         if(file_exists(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR  . "lib")) {
             $libFiles = Utils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR  . "lib");
-            Utils::safeMkDir(RUNTIME_JS_DIR . 'lib');
+            Utils::safeMkDir($runtimeDir . 'lib');
             foreach($libFiles as $filename) {
-                copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR  . 'lib' . $filename, RUNTIME_JS_DIR . 'lib' . $filename);
+                copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR  . 'lib' . $filename, $runtimeDir . 'lib' . $filename);
             }
         }
     }
