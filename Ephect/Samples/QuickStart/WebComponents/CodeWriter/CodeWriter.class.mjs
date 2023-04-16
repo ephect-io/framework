@@ -1,3 +1,5 @@
+import Decomposer from "./lib/decomposer.mjs"
+
 export default class CodeWriter 
 {
     #parent = null
