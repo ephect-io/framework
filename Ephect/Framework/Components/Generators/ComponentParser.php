@@ -103,6 +103,7 @@ class ComponentParser extends Parser implements ParserInterface
         if (empty($text) || $tag['name'] === 'Fragment') {
             return false;
         }
+
         return substr($text, -2) === TERMINATOR . CLOSE_TAG;
     }
 
@@ -115,7 +116,7 @@ class ComponentParser extends Parser implements ParserInterface
         return substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
     }
 
-    public function makeTag($tag, $parentIds, $depth, $isCloser = false): array
+    public function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
     {
         $text = $tag['text'];
         $name =  $tag['name'];
@@ -140,7 +141,7 @@ class ComponentParser extends Parser implements ParserInterface
             $item['component'] = $fqName;
             $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
             $item['depth'] = $depth;
-            $item['hasCloser'] = !$isCloser && substr($text, -2) !== TERMINATOR . CLOSE_TAG;
+            $item['hasCloser'] = $hasCloser;
             $item['node'] = false;
         }
         if (!isset($parentIds[$depth])) {
@@ -151,23 +152,21 @@ class ComponentParser extends Parser implements ParserInterface
         return $item;
     }
 
-    public function doComponents(?string $tag = null): void
+    public function doComponents(?string $tag = "[A-Z]\w+"): void
     {
 
         $list = [];
         $i = 0;
         $text = $this->html;
+        $text .= "\n<Eof />";
         $parentIds = [];
         $depth = 0;
         $parentIds[$depth] = -1;
         $allTags = [];
 
-        $re = '/<\/?([A-Z]\w+)(\s|.*?)?>|<\/?>/';
-        if ($tag !== null) {
-            $re = <<< REGEX
-            /<\/?({$tag})(\s|.*?)?>/
-            REGEX;
-        }
+        $re = <<< REGEX
+        /<\/?({$tag})(\s|.*?)?\/?>|<\/?>/
+        REGEX;
 
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
@@ -193,18 +192,33 @@ class ComponentParser extends Parser implements ParserInterface
 
         $l = count($allTags);
         $i = 0;
-        while (count($allTags)) {
+        $isFinished = false;
+        $spinner = 0;
+        $spinnerMax = $l;
+        $isSpinning = false;
+        while (count($allTags) && !$isFinished && !$isSpinning) {
 
             if ($i === $l) {
                 $i = 0;
                 $allTags = array_values($allTags);
                 $l = count($allTags);
+                if ($l === 0) {
+                    $isFinished = true;
+                    continue;
+                }
+
+                $spinner++;
+                $isSpinning = $spinner > $spinnerMax + 1;
             }
 
             $tag = $allTags[$i];
+            if (count($allTags) === 1 && $tag['name'] === 'Eof') {
+                $isFinished = true;
+                continue;
+            }
 
-            if ($this->isClosedTag($tag)) {
-                $item  = $this->makeTag($tag, $parentIds, $depth);
+            if ($this->isClosedTag($tag) && $tag['name'] !== 'Eof') {
+                $item  = $this->makeTag($tag, $parentIds, $depth, false);
                 $list[$item['id']] = $item;
                 unset($allTags[$i]);
 
@@ -221,8 +235,18 @@ class ComponentParser extends Parser implements ParserInterface
                 $nextMatch = $allTags[$i + 1];
 
                 if (!$this->isCloseTag($tag) && $this->isCloseTag($nextMatch)) {
-                    $item = $this->makeTag($tag, $parentIds, $depth);
-                    $closer = $this->makeTag($nextMatch, $parentIds, $depth, true);
+                    $item = $this->makeTag($tag, $parentIds, $depth, true);
+                    $closer = $this->makeTag($nextMatch, $parentIds, $depth, false, true);
+
+                    if ($item['name'] !== $closer['name']) {
+                        $item['hasCloser'] = false;
+                        $list[$item['id']] = $item;
+                        unset($allTags[$i]);
+                        $this->depths[$depth] = 1;
+                        $i++;
+
+                        continue;
+                    }
 
                     $closer['contents'] = [];
                     $closer['parentId'] = $item['id'];
