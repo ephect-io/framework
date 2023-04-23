@@ -1,7 +1,6 @@
 import Decomposer from "./lib/decomposer.mjs"
 
-export default class CodeWriter 
-{
+export default class CodeWriter {
     #parent = null
 
     constructor(parent) {
@@ -14,12 +13,18 @@ export default class CodeWriter
         const targetComponent = this.#parent.shadowRoot.querySelector('pre#' + target + ' code')
         const reg = []
         const LF = "\n"
-        let positions
         let indents
-        let html =  ''
+        let html = ''
         let lfCount = 0
         let lastIndent = ''
         let lastLineFeed = ''
+        let node = null
+        let nodes = []
+        let stack = []
+        let text = ''
+        let workingText = ''
+        let depth = -1
+        const speed = 100
 
         function delay(milliseconds) {
             return new Promise(resolve => {
@@ -27,179 +32,49 @@ export default class CodeWriter
             })
         }
 
-        async function addChar (c, useRegistry = true) {
+        async function addChar(c, useRegistry = true) {
             const tail = reg.join("")
             let suffix = useRegistry ? tail : ''
 
             html += c
             targetComponent.innerHTML = html + suffix
-            if(window['hljs'] !== undefined) {
+            if (window['hljs'] !== undefined) {
                 hljs.highlightElement(targetComponent)
             }
 
-            await delay(50)
+            await delay(speed)
         }
 
-        function findObjectIndexByPosition (position) {
-            let result = null
-    
-            for (const i in positions) {
-                const bracketObject = positions[i]
-                const index = Object.keys(bracketObject)[0]
-
-                if(index === "" + position + "")  {
-                    result = i
-                    break 
-                }
-            }
-            
-            return result
-        }
-
-        function findObjectValueByPosition (position) {
-            let result = null
-
-            const objects = positions.filter(item => Object.keys(item)[0] === "" + position + "")
-            if(objects.length === 0) {
-                return result
-            }
-
-            const object = objects[0]
-            result = object[Object.keys(object)[0]]
-
-            return result
-        }
-
-        function findObjectValueByIndex (index) {
-            let result = null
-            
-            const object = positions[index]
-            const key = Object.keys(object)[0]
-            result = object[key]
-
-            return result
-        }
-
-        function findClosingBracketByPosition (opener, startIndex) {
-            let followsLF = false
-            let shiftMe = false
-            let closer = ')'
-
-            if('})]'.includes(opener)) {
-                shiftMe = true
-                closer = opener
-                return {closer, followsLF, shiftMe} 
-            }
-
-            if(opener === '{') closer = '}'
-            else if(opener === '[') closer = ']'
-            
-            const l = positions.length
-            for (let i = startIndex; i < l; i++) {
-                const bracketObject = positions[i]
-                const value = Object.values(bracketObject)[0]
-                if(value === "\n") {
-                    followsLF = true
-                }
-                if(value === closer) {
-                    break 
-                }
-            }
-
-            return {closer, followsLF, shiftMe} 
-
-        }
-
-        function findClosingTagByPosition (opener, startIndex) {
-            
-            const semiPos = opener.indexOf(';')
-            let tag = opener.replace('&lt;', '').replace('&gt;', '')
-            const spacePos = tag.indexOf(' ')
-            if(spacePos > 0 && spacePos < tag.length)  {
-                tag = tag.substr(0, spacePos)
-            }
-
-            let closer = ''
-            let followsLF = false
-            let shiftMe = false
-
-            if(tag[0] === '/') {
-                shiftMe = true
-                closer = opener
-                return {closer, followsLF, shiftMe} 
-            }
-            if(semiPos === opener.length - 1)  {
-                return {closer, followsLF, shiftMe} 
-            }
-
-            const closing = '&lt;/' + tag + '&gt;'
-
-            const l = positions.length
-            for (let i = startIndex; i < l; i++) {
-                const closerObject = positions[i]
-                const value = Object.values(closerObject)[0]
-                if(value === "\n") {
-                    followsLF = true
-                }
-                if(value === closing) {
-                    closer = closing
-                    break 
-                }
-            }
-
-            return {closer, followsLF, shiftMe} 
-        }
-
-        function unshift (char) {
+        function unshift(char) {
             reg.unshift(char)
         }
 
-        function unshiftLF (char, indent) {
+        function unshiftLF(char, indent) {
             const text = "\n" + indent + char
             reg.unshift(text)
         }
 
-        function shift (entity) {
+        function shift(entity) {
             let shifted = -1
             const needle = entity.trim()
-            for(const k in reg) {
+            for (const k in reg) {
                 let val = reg[k].trim()
-                if(val === needle) {
+                if (val === needle) {
                     shifted = k
                 }
                 break
             }
 
-            if(shifted > -1)  {
+            if (shifted > -1) {
                 delete reg[shifted]
             }
         }
 
-        function parseBrackets(text) {
-            const result = []
-            const regex = /([\(\{\[\n\]\}\)])|(&lt;\/?.+[^&gt;]&gt;)|(&lt;\/?.+[&gt;]&gt;)|(&[a-z]+;)/mg;
-
-            let matches 
-
-            while ((matches = regex.exec(text)) !== null) {
-                if (matches.index === regex.lastIndex) {
-                    regex.lastIndex++
-                }
-
-                const entry = {}
-                entry[matches.index] = matches[0]
-
-                result.push(entry)
-            }
-
-            return result
-        }
-
-        function parseIndents (text) {
+        function parseIndents(text) {
             const result = []
             const regex = /^([^\S][ \s]+)*/mg;
 
-            let matches 
+            let matches
 
             while ((matches = regex.exec(text)) !== null) {
                 if (matches.index === regex.lastIndex) {
@@ -217,11 +92,11 @@ export default class CodeWriter
             return text.replace(regex, '');
         }
 
-        function parseNextEntity (text, startIndex) {
+        function parseNextEntity(text, startIndex) {
 
             let result = ''
             const regex = /(&[a-z]+;)/;
-            const haystack = text.substr(startIndex) 
+            const haystack = text.substr(startIndex)
 
             const matches = regex.exec(haystack)
             result = matches[0] ?? ''
@@ -229,15 +104,19 @@ export default class CodeWriter
             return result
         }
 
-        function parseArguments (text, startIndex) {
+        function parseArguments(text, startIndex) {
 
             const result = []
-            const regex =  /([\w]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m
+            const regex = /([\w]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m
 
-            const haystack = text.substring(startIndex, text.length - 4) 
+            const haystack = text.substring(startIndex, text.length - 4)
 
-            console.log({text, haystack, startIndex})
-            let matches 
+            console.log({
+                text,
+                haystack,
+                startIndex
+            })
+            let matches
 
             while ((matches = regex.exec(haystack)) !== null) {
                 if (matches.index === regex.lastIndex) {
@@ -250,9 +129,9 @@ export default class CodeWriter
             return result
         }
 
-        async function writeEntities (text, startIndex = 0) {
+        async function writeEntities(text, startIndex = 0) {
 
-            if(text.substr(0, 5) === '&lt;/') {
+            if (text.substr(0, 5) === '&lt;/') {
                 const closer = text.substr(0, text.length - 4)
                 await addChar(lastLineFeed + closer)
                 return
@@ -260,21 +139,21 @@ export default class CodeWriter
 
             let entitiesText = text.substring(startIndex)
 
-            if(entitiesText === '&gt;') {
+            if (entitiesText === '&gt;') {
                 return
             }
 
             unshift('&gt;')
 
-            if(entitiesText.substr(entitiesText.length - 4) === '&gt;') {
+            if (entitiesText.substr(entitiesText.length - 4) === '&gt;') {
                 entitiesText = entitiesText.substr(0, entitiesText.length - 4)
             }
 
-            for(let j = 0; j < entitiesText.length; j++) {
-                let char = entitiesText[j] 
-                if(char === '&') {
+            for (let j = 0; j < entitiesText.length; j++) {
+                let char = entitiesText[j]
+                if (char === '&') {
                     const nextEntity = parseNextEntity(entitiesText, j)
-                    if(nextEntity !== '') {
+                    if (nextEntity !== '') {
                         char = nextEntity
                         j += char.length - 1
                     }
@@ -299,137 +178,215 @@ export default class CodeWriter
         async function loadText(url) {
             let text = ''
             await fetch(url).then(response => response.text()).then((html) => {
-                let lines = html.split("\n");
-                lines = lines.map(line => line.trim())
-
-                text = lines.join("\n");
+                text = html
             })
 
             return text
         }
 
         function protect(text) {
-            text = text.replace(/</g, '&lt;')
+            text = text.replace(/<([\/\w])/gm, '&lt;$1')
             text = text.replace(/>/g, '&gt;')
-            text = text.replace(/\( /g, '(&nbsp;')
-            text = text.replace(/ \)/g, '&nbsp;)')
-            text = text.replace(/\{ /g, '{&nbsp;')
-            text = text.replace(/ \}/g, '&nbsp;}')
 
             return text
         }
 
-        let text = ''
-        // let codeSource = sourceComponent.dataset['code']
+        function translate(text) {
+            text = text.replaceAll('&lt;', '<')
+            text = text.replaceAll('&gt;', '>')
+
+            return text
+        }
+
+
+        function nextNode() {
+            if (nodes.length) {
+                node = null
+            }
+
+            node = nodes.shift()
+            if (node.hasCloser) {
+                stack.push(node)
+            }
+        }
+
+        function lastNode() {
+            if (!stack.length) {
+                node = null
+                return
+            }
+
+            node = stack[stack.length - 1]
+        }
+
+        function findLastNodeOfDepth(depth) {
+            if (!stack.length) {
+                node = null
+                return
+            }
+
+            lastNode()
+            if (depth === node.depth) {
+                return
+            }
+
+            let isFound = false
+            for (let i = stack.length - 1; i > -1; i--) {
+                node = stack[i]
+                if (depth === node.depth) {
+                    isFound = true
+                    break
+                }
+            }
+            if (!isFound) {
+                node = null
+                return
+            }
+        }
+
         let codeSource = this.#parent.getAttribute("source") ?? ''
 
-        if(window['hljs'] !== undefined) {
+        if (window['hljs'] !== undefined) {
             hljs.highlightElement(sourceComponent);
         }
         text = await loadText(codeSource)
-
         text = protect(text)
 
         indents = parseIndents(text)
         text = deleteIndents(text)
-        positions = parseBrackets(text)
 
-        console.log({ positions })
-        
-        const emptyText = makeEmptyText(text)
+        const decomposer = new Decomposer(text)
+        decomposer.doComponents()
+        nodes = decomposer.list
+        workingText = decomposer.workingText.replace('&lt;Eof /&gt;', '')
+
+        const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
 
-        for (let i = 0; i < text.length; i++) {
-            let c = text[i]
-            
-            if(c === "\n") {
-                lfCount++
-                lastIndent = indents[lfCount]
-                lastLineFeed = c + lastIndent
+        for (let i = 0; i < workingText.length; i++) {
 
-                const value = findObjectValueByPosition(i + 1)
-                if(value !== null && value.substr(0, 5) === '&lt;/') {
-                    let val = ''
-                    for(const k in reg) {
-                        if(k === 0) {
-                            val = reg[k].substr(1)
-                            reg[k] = val
-                        }
-                    }
-                    continue
-                }
-                
-                await addChar(lastLineFeed)
-                continue
-            }
-
-            if('[({})]'.includes(c)) {
-                const objectIndex = findObjectIndexByPosition(i)
-                // const htmle = findObjectValueByPosition(i)
-                const {closer, followsLF, shiftMe} = findClosingBracketByPosition(c, objectIndex)
-
-                if (shiftMe) {
-                    shift(closer) 
-                } else if(closer !== '') {
-                    if(followsLF) {
-                        unshiftLF(closer, lastIndent)
-                    } else {
-                        unshift(closer)
-                    }
-                }
-
+            let c = workingText[i]
+            if (c === '<') {
+                c = '&lt;'
                 await addChar(c)
                 continue
             }
 
-            if(c === '&') {
-                const objectIndex = findObjectIndexByPosition(i)
-                const htmle = findObjectValueByPosition(i)
-                const {closer, followsLF, shiftMe} = findClosingTagByPosition(htmle, objectIndex)
+            if (c === '&' && workingText.substring(i, i + 5) === '&lt;/') {
 
-                let opener = closer.replace('/', '')
-                opener = opener.replace('&gt;', '')
+                findLastNodeOfDepth(depth)
 
-    
-
-                let withArgs = htmle.includes('&lt;') && htmle.length > 4
-
-                if (shiftMe) {
-                    shift(closer) 
-                } else if(closer !== '') {
-                
-                    if(followsLF) {
-                        await writeEntities(opener)
-                        unshiftLF(closer, lastIndent)
-                    } else {
-                        unshift(closer)
-                    }
-
-                    if(!withArgs) {
-                        await addChar('&gt;')
-                    }
+                if (node === null && depth - 1 > -1) {
+                    findLastNodeOfDepth(depth - 1)
                 }
-
-                i += htmle.length - 1
-                
-                if(withArgs) {
-                    // if(opener === '') {
-                    //     opener = htmle.substring(0, htmle.indexOf(' '))
-                    // }
-
-                    // const args = parseArguments(htmle, opener.length)
-                    // console.log({args})
-                    await writeEntities(htmle, opener.length)
-                    await addChar('&gt;')
-
+                if (node === null) {
                     continue
                 }
 
-                c = htmle
+                c = node.closer.text
+                if ('CDET'.includes(node.name)) {
+                    if (node.name === 'C') {
+                        c = ')'
+                    }
+                    if (node.name === 'D') {
+                        c = '}}'
+                    }
+                    if (node.name === 'E') {
+                        c = '}'
+                    }
+                    if (node.name === 'T') {
+                        c = ']'
+                    }
+                }
+                if (c !== '') {
+
+                    if (node.closer.contents.text.indexOf(LF) > -1) {
+                        shift(LF + lastIndent + c)
+                    } else {
+                        shift(c)
+                    }
+
+                    i = node.closer.endsAt
+                    await addChar(c)
+                    depth--
+                    continue
+                }
+
+            } else if (c === '&' && workingText.substring(i, i + 4) === '&lt;') {
+                nextNode()
+                if (node.startsAt === i) {
+                    c = node.text
+                    if ('CDET'.includes(node.name)) {
+                        if (node.name === 'C') {
+                            c = '('
+                        }
+                        if (node.name === 'D') {
+                            c = '{{'
+                        }
+                        if (node.name === 'E') {
+                            c = '{'
+                        }
+                        if (node.name === 'T') {
+                            c = '['
+                        }
+                    }
+
+                    if (node.hasCloser) {
+                        let unshifted = node.closer.text
+                        if ('CDET'.includes(node.name)) {
+                            if (node.name === 'C') {
+                                unshifted = ')'
+                            }
+                            if (node.name === 'D') {
+                                unshifted = '}}'
+                            }
+                            if (node.name === 'E') {
+                                unshifted = '}'
+                            }
+                            if (node.name === 'T') {
+                                unshifted = ']'
+                            }
+
+                        }
+                        if (node.closer.contents.text.indexOf(LF) > -1) {
+                            unshift(LF + lastIndent + unshifted)
+                        } else {
+                            unshift(unshifted)
+                        }
+
+                    }
+
+                    depth++
+                    i = node.endsAt
+                    await addChar(c)
+                    continue
+
+                }
             }
 
+            if (c === LF) {
+                lfCount++
+                lastIndent = indents[lfCount] ?? ''
+                lastLineFeed = LF + lastIndent
+
+                await addChar(lastLineFeed)
+                continue
+            }
+
+            // console.log({i, c})
             await addChar(c)
         }
+
+        html = translate(html)
+
+        const finishedEvent = new CustomEvent("finishedWriting", {
+            bubbles: true,
+            composed: true,
+            detail: {
+                content: html
+            }
+        })
+        this.#parent.dispatchEvent(finishedEvent)
     }
 
 }
