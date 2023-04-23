@@ -37,7 +37,7 @@ export default class Decomposer {
         if (text === '' || tag.name === 'Fragment') {
             return result
         }
-        result = text.substring(text.length - 3, 2) === '/>'
+        result = text.substring(text.length - 6, 5) === '/&lg;'
 
         return result
     }
@@ -49,7 +49,7 @@ export default class Decomposer {
         if (text === '' || text === '<>') {
             return result
         }
-        result = text.substring(0, 2) === '</'
+        result = text.substring(0, 5) === '&lt;/'
 
         return result
     }
@@ -92,14 +92,17 @@ export default class Decomposer {
         text = text.replace(/\}/g, '</E>')
         text = text.replace(/\[/g, '<T>')
         text = text.replace(/\]/g, '</T>')
+        text = text.replace(/<([\/\w])/gm, '&lt;$1')
+        text = text.replace(/>/g, '&gt;')
+        
         return text
     }
 
     doComponents(tag = '\\w+') {
-        this.#workingText = this.protect(this.#text)
-        const html = this.#workingText + "\n<Eof />"
+        this.#workingText = this.protect(this.#text + "\n<Eof />")
+        const html = this.#workingText 
 
-        const re = `<\\/?(${tag})((\\s|.*?)+?)\\/?>`
+        const re = `&lt;\\/?(${tag})((\\s|.*?)+?)\\/?&gt;`
 
         const regex = new RegExp(re, 'gm')
         let matches
