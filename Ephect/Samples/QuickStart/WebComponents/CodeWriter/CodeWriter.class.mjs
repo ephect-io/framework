@@ -24,6 +24,8 @@ export default class CodeWriter {
         let text = ''
         let workingText = ''
         let depth = -1
+        let toUnshift = []
+        let toUnshiftHasLF = []
         const speed = 100
 
         function delay(milliseconds) {
@@ -170,7 +172,6 @@ export default class CodeWriter {
             for (const k in lines) {
                 result += "<br />"
             }
-            result += "<br />"
 
             return result
         }
@@ -219,6 +220,22 @@ export default class CodeWriter {
             node = stack[stack.length - 1]
         }
 
+        function nextUnshift() {
+            if (!toUnshift.length) {
+                return null
+            }
+
+            const closer = toUnshift.pop()
+            const contentHasLF = toUnshiftHasLF.pop()
+
+            if (contentHasLF) {
+                unshift(LF + lastIndent + closer)
+            } else {
+                unshift(closer)
+            }
+
+        }
+
         function findLastNodeOfDepth(depth) {
             if (!stack.length) {
                 node = null
@@ -241,6 +258,35 @@ export default class CodeWriter {
             if (!isFound) {
                 node = null
                 return
+            }
+        }
+
+        function translateBracket(base, node, isClosing = false) {
+            let word = base
+            let translated = false
+
+            if ('CDET'.includes(node.name)) {
+                if (node.name === 'C') {
+                    word = isClosing ? ')' : '('
+                    translated = true
+                }
+                if (node.name === 'D') {
+                    word = isClosing ? '}}' : '{{'
+                    translated = true
+                }
+                if (node.name === 'E') {
+                    word = isClosing ? '}' : '{'
+                    translated = true
+                }
+                if (node.name === 'T') {
+                    word = isClosing ? ']' : '['
+                    translated = true
+                }
+            }
+
+            return {
+                word,
+                translated
             }
         }
 
@@ -272,6 +318,26 @@ export default class CodeWriter {
                 continue
             }
 
+            if (c === '&' && workingText.substring(i, i + 4) === '&gt;') {
+
+                if (node.endsAt === i + 3) {
+
+                    const shifted = '&gt;'
+                    if (node.text.indexOf(LF) > -1) {
+                        shift(LF + lastIndent + shifted)
+                    } else {
+                        shift(shifted)
+                    }
+
+                    await addChar(shifted)
+
+                    nextUnshift()
+
+                    i += 3
+                    continue
+                }
+            }
+
             if (c === '&' && workingText.substring(i, i + 5) === '&lt;/') {
 
                 findLastNodeOfDepth(depth)
@@ -279,27 +345,16 @@ export default class CodeWriter {
                 if (node === null && depth - 1 > -1) {
                     findLastNodeOfDepth(depth - 1)
                 }
-                if (node === null) {
-                    continue
-                }
 
                 c = node.closer.text
-                if ('CDET'.includes(node.name)) {
-                    if (node.name === 'C') {
-                        c = ')'
-                    }
-                    if (node.name === 'D') {
-                        c = '}}'
-                    }
-                    if (node.name === 'E') {
-                        c = '}'
-                    }
-                    if (node.name === 'T') {
-                        c = ']'
-                    }
-                }
-                if (c !== '') {
+                let {
+                    word,
+                    translated
+                } = translateBracket(c, node, true)
 
+                c = word
+
+                if (c !== '') {
                     if (node.closer.contents.text.indexOf(LF) > -1) {
                         shift(LF + lastIndent + c)
                     } else {
@@ -310,54 +365,63 @@ export default class CodeWriter {
                     await addChar(c)
                     depth--
                     continue
+
                 }
 
-            } else if (c === '&' && workingText.substring(i, i + 4) === '&lt;') {
+            }
+            if (c === '&' && workingText.substring(i, i + 4) === '&lt;') {
                 nextNode()
                 if (node.startsAt === i) {
+                    let hasLF = false
+                    let unshifted = ''
+
                     c = node.text
-                    if ('CDET'.includes(node.name)) {
-                        if (node.name === 'C') {
-                            c = '('
+                    let {
+                        word,
+                        translated
+                    } = translateBracket(c, node)
+                    c = word
+
+                    hasLF = node.text.indexOf(LF) > -1
+                    if (node.hasCloser) {
+                        unshifted = node.closer.text
+                        let {
+                            word,
+                            translated
+                        } = translateBracket(unshifted, node, true)
+                        unshifted = word
+
+                        hasLF = node.closer.contents.text.indexOf(LF) > -1
+
+                        if (translated) {
+                            i = node.endsAt
+                            if (hasLF) {
+                                unshift(LF + lastIndent + unshifted)
+                            } else {
+                                unshift(unshifted)
+                            }
+
+                        } else {
+                            toUnshift.push(unshifted)
+                            toUnshiftHasLF.push(hasLF)
                         }
-                        if (node.name === 'D') {
-                            c = '{{'
-                        }
-                        if (node.name === 'E') {
-                            c = '{'
-                        }
-                        if (node.name === 'T') {
-                            c = '['
-                        }
+
                     }
 
-                    if (node.hasCloser) {
-                        let unshifted = node.closer.text
-                        if ('CDET'.includes(node.name)) {
-                            if (node.name === 'C') {
-                                unshifted = ')'
-                            }
-                            if (node.name === 'D') {
-                                unshifted = '}}'
-                            }
-                            if (node.name === 'E') {
-                                unshifted = '}'
-                            }
-                            if (node.name === 'T') {
-                                unshifted = ']'
-                            }
+                    if (!translated) {
+                        hasLF = node.text.indexOf(LF) > -1
 
-                        }
-                        if (node.closer.contents.text.indexOf(LF) > -1) {
+                        c = '&lt;'
+                        i += 3
+                        unshifted = '&gt;'
+                        if (hasLF) {
                             unshift(LF + lastIndent + unshifted)
                         } else {
                             unshift(unshifted)
                         }
-
                     }
 
                     depth++
-                    i = node.endsAt
                     await addChar(c)
                     continue
 
@@ -373,7 +437,6 @@ export default class CodeWriter {
                 continue
             }
 
-            // console.log({i, c})
             await addChar(c)
         }
 
