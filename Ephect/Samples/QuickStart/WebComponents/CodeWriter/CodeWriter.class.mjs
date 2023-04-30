@@ -11,8 +11,9 @@ export default class CodeWriter {
 
         const sourceComponent = this.#parent.shadowRoot.querySelector('pre#' + source + ' code')
         const targetComponent = this.#parent.shadowRoot.querySelector('pre#' + target + ' code')
-        const reg = []
+        const speed = 50
         const LF = "\n"
+        let reg = []
         let indents
         let html = ''
         let lfCount = 0
@@ -26,7 +27,7 @@ export default class CodeWriter {
         let depth = -1
         let toUnshift = []
         let toUnshiftHasLF = []
-        const speed = 100
+        let canContinue = true
 
         function delay(milliseconds) {
             return new Promise(resolve => {
@@ -34,12 +35,14 @@ export default class CodeWriter {
             })
         }
 
-        async function addChar(c, useRegistry = true) {
-            const tail = reg.join("")
-            let suffix = useRegistry ? tail : ''
+        async function addChar(c) {
+            let tail = reg.join("")
+            if (c[0] === LF && tail[0] === LF) {
+                tail = tail.substring(1).trim()
+            }
 
             html += c
-            targetComponent.innerHTML = html + suffix
+            targetComponent.innerHTML = html + tail
             if (window['hljs'] !== undefined) {
                 hljs.highlightElement(targetComponent)
             }
@@ -51,25 +54,9 @@ export default class CodeWriter {
             reg.unshift(char)
         }
 
-        function unshiftLF(char, indent) {
-            const text = "\n" + indent + char
-            reg.unshift(text)
-        }
-
-        function shift(entity) {
-            let shifted = -1
-            const needle = entity.trim()
-            for (const k in reg) {
-                let val = reg[k].trim()
-                if (val === needle) {
-                    shifted = k
-                }
-                break
-            }
-
-            if (shifted > -1) {
-                delete reg[shifted]
-            }
+        function shift() {
+            delete reg[0]
+            reg = Object.values(reg)
         }
 
         function parseIndents(text) {
@@ -92,78 +79,6 @@ export default class CodeWriter {
         function deleteIndents(text) {
             const regex = /^([^\S][ \s]+)*/mg
             return text.replace(regex, '');
-        }
-
-        function parseNextEntity(text, startIndex) {
-
-            let result = ''
-            const regex = /(&[a-z]+;)/;
-            const haystack = text.substr(startIndex)
-
-            const matches = regex.exec(haystack)
-            result = matches[0] ?? ''
-
-            return result
-        }
-
-        function parseArguments(text, startIndex) {
-
-            const result = []
-            const regex = /([\w]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/m
-
-            const haystack = text.substring(startIndex, text.length - 4)
-
-            console.log({
-                text,
-                haystack,
-                startIndex
-            })
-            let matches
-
-            while ((matches = regex.exec(haystack)) !== null) {
-                if (matches.index === regex.lastIndex) {
-                    regex.lastIndex++
-                }
-
-                result.push(matches[0] ?? '')
-            }
-
-            return result
-        }
-
-        async function writeEntities(text, startIndex = 0) {
-
-            if (text.substr(0, 5) === '&lt;/') {
-                const closer = text.substr(0, text.length - 4)
-                await addChar(lastLineFeed + closer)
-                return
-            }
-
-            let entitiesText = text.substring(startIndex)
-
-            if (entitiesText === '&gt;') {
-                return
-            }
-
-            unshift('&gt;')
-
-            if (entitiesText.substr(entitiesText.length - 4) === '&gt;') {
-                entitiesText = entitiesText.substr(0, entitiesText.length - 4)
-            }
-
-            for (let j = 0; j < entitiesText.length; j++) {
-                let char = entitiesText[j]
-                if (char === '&') {
-                    const nextEntity = parseNextEntity(entitiesText, j)
-                    if (nextEntity !== '') {
-                        char = nextEntity
-                        j += char.length - 1
-                    }
-                }
-                await addChar(char)
-            }
-
-            shift('&gt;')
         }
 
         function makeEmptyText(text) {
@@ -227,7 +142,6 @@ export default class CodeWriter {
 
             const closer = toUnshift.pop()
             const contentHasLF = toUnshiftHasLF.pop()
-
             if (contentHasLF) {
                 unshift(LF + lastIndent + closer)
             } else {
@@ -265,7 +179,7 @@ export default class CodeWriter {
             let word = base
             let translated = false
 
-            if ('CDET'.includes(node.name)) {
+            if ('CDETQRG'.includes(node.name)) {
                 if (node.name === 'C') {
                     word = isClosing ? ')' : '('
                     translated = true
@@ -280,6 +194,18 @@ export default class CodeWriter {
                 }
                 if (node.name === 'T') {
                     word = isClosing ? ']' : '['
+                    translated = true
+                }
+                if (node.name === 'Q') {
+                    word = "'"
+                    translated = true
+                }
+                if (node.name === 'R') {
+                    word = '"'
+                    translated = true
+                }
+                if (node.name === 'G') {
+                    word = '`'
                     translated = true
                 }
             }
@@ -304,7 +230,8 @@ export default class CodeWriter {
         const decomposer = new Decomposer(text)
         decomposer.doComponents()
         nodes = decomposer.list
-        workingText = decomposer.workingText.replace('&lt;Eof /&gt;', '')
+
+        workingText = decomposer.workingText.replace('\n&lt;Eof /&gt;', '')
 
         const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
@@ -318,16 +245,14 @@ export default class CodeWriter {
                 continue
             }
 
+            // Encountering a "greater than" character 
+            // potentially closing a single parsed tag
             if (c === '&' && workingText.substring(i, i + 4) === '&gt;') {
 
                 if (node.endsAt === i + 3) {
 
                     const shifted = '&gt;'
-                    if (node.text.indexOf(LF) > -1) {
-                        shift(LF + lastIndent + shifted)
-                    } else {
-                        shift(shifted)
-                    }
+                    shift()
 
                     await addChar(shifted)
 
@@ -338,6 +263,8 @@ export default class CodeWriter {
                 }
             }
 
+            // Encountering a "lower than" character 
+            // potentially closing an open parsed tag
             if (c === '&' && workingText.substring(i, i + 5) === '&lt;/') {
 
                 findLastNodeOfDepth(depth)
@@ -355,80 +282,129 @@ export default class CodeWriter {
                 c = word
 
                 if (c !== '') {
-                    if (node.closer.contents.text.indexOf(LF) > -1) {
-                        shift(LF + lastIndent + c)
-                    } else {
-                        shift(c)
-                    }
-
+                    shift()
                     i = node.closer.endsAt
                     await addChar(c)
                     depth--
+                    node = null
                     continue
 
                 }
 
             }
-            if (c === '&' && workingText.substring(i, i + 4) === '&lt;') {
-                nextNode()
-                if (node.startsAt === i) {
-                    let hasLF = false
-                    let unshifted = ''
+            // Encountering an ampersand character 
+            // portentially starting an HTML entity
+            if (c === '&' && workingText.substring(i, i + 4) !== '&lt;') {
 
-                    c = node.text
+                const scpos = workingText.substring(i).indexOf(';')
+                if (scpos > 8) {
+                    await addChar(c)
+                    continue
+                }
+                const entity = workingText.substring(i, i + scpos)
+                await addChar(entity)
+                i += entity.length - 1
+                continue
+
+            }
+            // Encountering a "lower than" character 
+            // potentially opening a parsed tag
+            if (c === '&' && workingText.substring(i, i + 4) === '&lt;') {
+
+                // We don't take the next node if the last 
+                // "lower than" character was not a parsed tag
+                if (canContinue) {
+                    nextNode()
+                }
+
+                // The "lower than" character is actually not
+                // the beginning a parsed tag
+                if (node.startsAt !== i) {
+                    // Write it and prevent taking the next node
+                    await addChar('&lt;')
+                    i += 3
+                    canContinue = false
+                    continue
+                }
+
+                // The "lower than" character 
+                // is starting a parsed tag                
+                canContinue = true
+                let hasLF = false
+                let unshifted = ''
+
+                c = node.text
+                // Is the tag name a bracket?
+                let {
+                    word,
+                    translated
+                } = translateBracket(c, node)
+                c = word
+
+                // Does the tag string contain an LF character?
+                hasLF = node.text.indexOf(LF) > -1
+                // Is it an open tag?
+                if (node.hasCloser) {
+                    unshifted = node.closer.text
+
+                    // Is the tag name a bracket?
                     let {
                         word,
                         translated
-                    } = translateBracket(c, node)
-                    c = word
+                    } = translateBracket(unshifted, node, true)
+                    unshifted = word
 
-                    hasLF = node.text.indexOf(LF) > -1
-                    if (node.hasCloser) {
-                        unshifted = node.closer.text
-                        let {
-                            word,
-                            translated
-                        } = translateBracket(unshifted, node, true)
-                        unshifted = word
 
-                        hasLF = node.closer.contents.text.indexOf(LF) > -1
+                    // Does the tag body contain an LF character?
+                    hasLF = node.closer.contents.text.indexOf(LF) > -1
 
-                        if (translated) {
-                            i = node.endsAt
-                            if (hasLF) {
-                                unshift(LF + lastIndent + unshifted)
-                            } else {
-                                unshift(unshifted)
-                            }
-
-                        } else {
-                            toUnshift.push(unshifted)
-                            toUnshiftHasLF.push(hasLF)
-                        }
-
-                    }
-
-                    if (!translated) {
-                        hasLF = node.text.indexOf(LF) > -1
-
-                        c = '&lt;'
-                        i += 3
-                        unshifted = '&gt;'
+                    // Is the tag name a bracket?
+                    if (translated) {
+                        // Store the closing bracket 
+                        // to write it after each new character
+                        i = node.endsAt
                         if (hasLF) {
                             unshift(LF + lastIndent + unshifted)
                         } else {
                             unshift(unshifted)
                         }
+
+                    } else {
+                        // Store the tag closser after the opener is written
+                        toUnshift.push(unshifted)
+                        toUnshiftHasLF.push(hasLF)
                     }
 
-                    depth++
-                    await addChar(c)
-                    continue
-
                 }
+
+                // The tag name is not a bracket
+                // The tag is not open
+                if (!translated) {
+                    hasLF = node.text.indexOf(LF) > -1
+
+                    c = '&lt;'
+                    i += 3
+                    unshifted = '&gt;'
+                    if (hasLF) {
+                        unshift(LF + lastIndent + unshifted)
+                    } else {
+                        unshift(unshifted)
+                    }
+                }
+
+                // Write the current character
+                // when no above case was met 
+                depth++
+                await addChar(c)
+                continue
+
             }
 
+            // The character is a line feed
             if (c === LF) {
+                // Add the lined feed 
+                // followed by the indent
+                // of the next line
                 lfCount++
                 lastIndent = indents[lfCount] ?? ''
                 lastLineFeed = LF + lastIndent
@@ -440,8 +416,10 @@ export default class CodeWriter {
             await addChar(c)
         }
 
+        // Set back the code text in pure HTML
         html = translate(html)
 
+        // Raise an event when all is done and ready
         const finishedEvent = new CustomEvent("finishedWriting", {
             bubbles: true,
             composed: true,
