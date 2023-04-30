@@ -4,7 +4,7 @@ export default class Decomposer {
     #list = []
     #text = ''
     #workingText = ''
-    
+
     constructor(html) {
         this.#text = html
     }
@@ -25,10 +25,88 @@ export default class Decomposer {
         return Date.now() * Math.random()
     }
 
-    doArguments(text) 
-    {
-        return []
-    } 
+    markupQuotes() {
+
+        let html = this.#text
+        const regex = /([\w]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/gm
+
+        let matches
+        const attributes = []
+
+        while ((matches = regex.exec(html)) !== null) {
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+            attributes.push(matches)
+        }
+
+
+        for (let i = attributes.length - 1; i > -1; i --) {
+            const attr = attributes[i]
+            const key = attr[1]
+            const quote = '\'"`'.includes(attr[3][0]) ? attr[3][0] : ''
+            const quoted = attr[3]
+            const unQuoted = attr[4]
+            const start = attr.index + key.length + quote.length + 1
+            const end = start + quoted.length - 1
+
+
+            let letter = ''
+            if(quote === '"') {
+                letter = 'R'
+            }
+            else if(quote === '\'') {
+                letter = 'Q'
+            }
+            else if(quote === '`') {
+                letter = 'G'
+            }
+            const newValue = '&oq;' + letter + '&cq;' + unQuoted + '&oq;/' + letter + '&cq;'
+
+            const beginBlock = html.substring(0, start - 1)
+            const endBlock = html.substring(end)
+
+            html = beginBlock + newValue + endBlock
+
+        }
+
+        this.#workingText = html
+    }
+
+    doAttributes(text) {
+
+        let result = {}
+        const regex = /([\w]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/gm
+
+        let matches
+        const attributes = []
+
+        while ((matches = regex.exec(text)) !== null) {
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            attributes.push(matches)
+        }
+        for (let attr of attributes) {
+            const key = attr[1]
+            const brackets = attr[2]
+            const quote = attr[3].substring(0, 1)
+            const value = attr[4]
+
+
+            if (brackets === '[]') {
+                if (result[key] === undefined) {
+                    result[key] = []
+                }
+                result[key].push(quote + value)
+            } else {
+                result[key] = quote + "" + value
+            }
+        }
+
+        return result
+    }
 
     isClosedTag(tag) {
         let result = false
@@ -69,7 +147,7 @@ export default class Decomposer {
         if (!isCloser) {
             item.uid = this.#createUID
             item.method = 'echo'
-            item.props = (item.name === 'Fragment') ? [] : this.doArguments(text)
+            item.props = (item.name === 'Fragment') ? [] : this.doAttributes(text)
             item.depth = depth
             item.hasCloser = hasCloser
             item.node = false
@@ -92,15 +170,19 @@ export default class Decomposer {
         text = text.replace(/\}/g, '</E>')
         text = text.replace(/\[/g, '<T>')
         text = text.replace(/\]/g, '</T>')
-        text = text.replace(/<([\/\w])/gm, '&lt;$1')
+        text = text.replace(/<([\/\w])/g, '&lt;$1')
         text = text.replace(/>/g, '&gt;')
-        
+
         return text
     }
 
-    doComponents(tag = '\\w+') {
-        this.#workingText = this.protect(this.#text + "\n<Eof />")
-        const html = this.#workingText 
+    doComponents(tag = '[\\w]+') {
+
+        // this.markupQuotes()
+        this.#workingText = this.#text
+        this.#workingText = this.protect(this.#workingText + "\n<Eof />")
+
+        const html = this.#workingText
 
         const re = `&lt;\\/?(${tag})((\\s|.*?)+?)\\/?&gt;`
 
@@ -111,7 +193,7 @@ export default class Decomposer {
         let allTags = []
         let parentIds = []
         parentIds[depth] = -1
-        
+
         // Re-structure the list recursively
         while ((matches = regex.exec(html)) !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
@@ -156,7 +238,7 @@ export default class Decomposer {
                 i = 0
                 allTags = Object.values(allTags)
                 l = allTags.length
-                if(l === 0 ) {
+                if (l === 0) {
                     isFinished = true
                     continue
                 }
@@ -166,7 +248,7 @@ export default class Decomposer {
             }
 
             let tag = allTags[i]
-            if(allTags.length === 1 && tag.name === 'Eof') {
+            if (allTags.length === 1 && tag.name === 'Eof') {
                 isFinished = true
                 continue
             }
@@ -192,7 +274,7 @@ export default class Decomposer {
                     let item = this.makeTag(tag, parentIds, depth, true)
                     let closer = this.makeTag(nextMatch, parentIds, depth, false, true)
 
-                    if(item.name !== closer.name) {
+                    if (item.name !== closer.name) {
                         item.hasCloser = false
                         list[item.id] = item
                         delete allTags[i]
@@ -238,14 +320,12 @@ export default class Decomposer {
 
         for (let i = l - 1; i > -1; i--) {
             // Remove useless data
-            if(list[i] === undefined) {
+            if (list[i] === undefined) {
                 continue
             }
 
             if (list[i].isCloser) {
                 delete list[i]
-            } else {
-               // delete list[i]['closer']
             }
         }
 
