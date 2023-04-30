@@ -11,12 +11,11 @@ export default class CodeWriter {
 
         const sourceComponent = this.#parent.shadowRoot.querySelector('pre#' + source + ' code')
         const targetComponent = this.#parent.shadowRoot.querySelector('pre#' + target + ' code')
-        const speed = 50
+        const speed = 60
         const LF = "\n"
         let reg = []
         let indents
         let html = ''
-        let lfCount = 0
         let lastIndent = ''
         let lastLineFeed = ''
         let node = null
@@ -28,6 +27,7 @@ export default class CodeWriter {
         let toUnshift = []
         let toUnshiftHasLF = []
         let canContinue = true
+        let indentCount = 0
 
         function delay(milliseconds) {
             return new Promise(resolve => {
@@ -35,10 +35,10 @@ export default class CodeWriter {
             })
         }
 
-        async function addChar(c) {
+        async function addChar(c, removeLF  = false) {
             let tail = reg.join("")
-            if (c[0] === LF && tail[0] === LF) {
-                tail = tail.substring(1).trim()
+            if(removeLF) {
+                tail = tail.trim()
             }
 
             html += c
@@ -128,17 +128,17 @@ export default class CodeWriter {
 
         function lastNode() {
             if (!stack.length) {
-                node = null
-                return
+                return null
             }
 
-            node = stack[stack.length - 1]
+            return stack[stack.length - 1]
         }
 
         function nextUnshift() {
             if (!toUnshift.length) {
                 return null
             }
+
 
             const closer = toUnshift.pop()
             const contentHasLF = toUnshiftHasLF.pop()
@@ -151,28 +151,29 @@ export default class CodeWriter {
         }
 
         function findLastNodeOfDepth(depth) {
+            let result = null
             if (!stack.length) {
-                node = null
-                return
+                return result
             }
 
-            lastNode()
-            if (depth === node.depth) {
-                return
+            result = lastNode()
+            if (depth === result.depth) {
+                return result
             }
 
             let isFound = false
             for (let i = stack.length - 1; i > -1; i--) {
-                node = stack[i]
-                if (depth === node.depth) {
+                result = stack[i]
+                if (depth === result.depth) {
                     isFound = true
                     break
                 }
             }
             if (!isFound) {
-                node = null
-                return
+                return null
             }
+
+            return result
         }
 
         function translateBracket(base, node, isClosing = false) {
@@ -210,10 +211,7 @@ export default class CodeWriter {
                 }
             }
 
-            return {
-                word,
-                translated
-            }
+            return {word, translated}
         }
 
         let codeSource = this.#parent.getAttribute("source") ?? ''
@@ -236,6 +234,10 @@ export default class CodeWriter {
         const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
 
+        const firstIndent = indents[indentCount] ?? ''
+        await addChar(firstIndent)
+        indentCount++
+
         for (let i = 0; i < workingText.length; i++) {
 
             let c = workingText[i]
@@ -255,10 +257,9 @@ export default class CodeWriter {
                     shift()
 
                     await addChar(shifted)
-
                     nextUnshift()
-
                     i += 3
+
                     continue
                 }
             }
@@ -267,17 +268,14 @@ export default class CodeWriter {
             // potentially closing an open parsed tag
             if (c === '&' && workingText.substring(i, i + 5) === '&lt;/') {
 
-                findLastNodeOfDepth(depth)
+                node = findLastNodeOfDepth(depth)
 
                 if (node === null && depth - 1 > -1) {
-                    findLastNodeOfDepth(depth - 1)
+                    node = findLastNodeOfDepth(depth - 1)
                 }
 
                 c = node.closer.text
-                let {
-                    word,
-                    translated
-                } = translateBracket(c, node, true)
+                let {word, translated} = translateBracket(c, node, true)
 
                 c = word
 
@@ -288,12 +286,12 @@ export default class CodeWriter {
                     depth--
                     node = null
                     continue
-
+  
                 }
 
             }
             // Encountering an ampersand character 
-            // portentially starting an HTML entity
+            // potentially starting an HTML entity
             if (c === '&' && workingText.substring(i, i + 4) !== '&lt;') {
 
                 const scpos = workingText.substring(i).indexOf(';')
@@ -301,19 +299,19 @@ export default class CodeWriter {
                     await addChar(c)
                     continue
                 }
-                const entity = workingText.substring(i, i + scpos)
+                const entity = workingText.substring(i, i + scpos) 
                 await addChar(entity)
                 i += entity.length - 1
                 continue
-
+                
             }
             // Encountering a "lower than" character 
-            // potentially opening a parsed tag
+            // potentially starting an open parsed tag
             if (c === '&' && workingText.substring(i, i + 4) === '&lt;') {
 
                 // We don't take the next node if the last 
                 // "lower than" character was not a parsed tag
-                if (canContinue) {
+                if(canContinue) {
                     nextNode()
                 }
 
@@ -327,19 +325,17 @@ export default class CodeWriter {
                     continue
                 }
 
-                // The "lower than" character 
-                // is starting a parsed tag                
+                // The "lower than" character is 
+                // the start of a parsed tag      
                 canContinue = true
                 let hasLF = false
                 let unshifted = ''
+                depth++
 
                 c = node.text
                 // Is the tag name a bracket?
-                let {
-                    word,
-                    translated
-                } = translateBracket(c, node)
-                c = word
+                let {word, translated} = translateBracket(c, node)
+                c = word 
 
                 // Does the tag string contain an LF character?
                 hasLF = node.text.indexOf(LF) > -1
@@ -348,10 +344,7 @@ export default class CodeWriter {
                     unshifted = node.closer.text
 
                     // Is the tag name a bracket?
-                    let {
-                        word,
-                        translated
-                    } = translateBracket(unshifted, node, true)
+                    let {word, translated} = translateBracket(unshifted, node, true)
                     unshifted = word
 
 
@@ -359,7 +352,7 @@ export default class CodeWriter {
                     hasLF = node.closer.contents.text.indexOf(LF) > -1
 
                     // Is the tag name a bracket?
-                    if (translated) {
+                    if(translated) {
                         // Store the closing bracket 
                         // to write it after each new character
                         i = node.endsAt
@@ -368,7 +361,7 @@ export default class CodeWriter {
                         } else {
                             unshift(unshifted)
                         }
-
+                    
                     } else {
                         // Store the tag closser after the opener is written
                         toUnshift.push(unshifted)
@@ -379,7 +372,7 @@ export default class CodeWriter {
 
                 // The tag name is not a bracket
                 // The tag is not open
-                if (!translated) {
+                if(!translated) {
                     hasLF = node.text.indexOf(LF) > -1
 
                     c = '&lt;'
@@ -392,24 +385,28 @@ export default class CodeWriter {
                     }
                 }
 
-                // Write the current character
-                // when no above case was met 
-                depth++
+                // Write the actual sttring 
+                // and continue to next character 
                 await addChar(c)
                 continue
 
             }
 
-            // The character is a line feed
+            // Encounter the line feed character
             if (c === LF) {
                 // Add the lined feed 
                 // followed by the indent
                 // of the next line
-                lfCount++
-                lastIndent = indents[lfCount] ?? ''
+
+                lastIndent = indents[indentCount] ?? ''
                 lastLineFeed = LF + lastIndent
 
-                await addChar(lastLineFeed)
+                const reg0 = reg.length ? reg[0].trim() : ''
+                const nextString = workingText.substring(i + 1, i + reg0.length + 1)
+
+                indentCount++
+
+                await addChar(lastLineFeed, reg0 === nextString)
                 continue
             }
 
@@ -419,7 +416,8 @@ export default class CodeWriter {
         // Set back the code text in pure HTML
         html = translate(html)
 
-        // Raise an event when all is done and ready
+        // Raise an event outside the shadow DOM 
+        // when all is done and ready
         const finishedEvent = new CustomEvent("finishedWriting", {
             bubbles: true,
             composed: true,
