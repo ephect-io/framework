@@ -25,10 +25,49 @@ export default class Decomposer {
         return Date.now() * Math.random()
     }
 
+    translateBracket(base, name, isClosing = false) {
+        // It also translate quotes
+        let word = base
+        let translated = false
+
+        if ('CDETQRG'.includes(name)) {
+            if (name === 'C') {
+                word = isClosing ? ')' : '('
+                translated = true
+            }
+            if (name === 'D') {
+                word = isClosing ? '}}' : '{{'
+                translated = true
+            }
+            if (name === 'E') {
+                word = isClosing ? '}' : '{'
+                translated = true
+            }
+            if (name === 'T') {
+                word = isClosing ? ']' : '['
+                translated = true
+            }
+            if (name === 'Q') {
+                word = "'"
+                translated = true
+            }
+            if (name === 'R') {
+                word = '"'
+                translated = true
+            }
+            if (name === 'G') {
+                word = '`'
+                translated = true
+            }
+        }
+
+        return {word, translated}
+    }
+
     markupQuotes() {
 
         let html = this.#text
-        const regex = /([\w]*)(\[\])?=(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/gm
+        const regex = /([\w]*)(\[\])?=?(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/gm
 
         let matches
         const attributes = []
@@ -46,10 +85,9 @@ export default class Decomposer {
             const key = attr[1]
             const quote = '\'"`'.includes(attr[3][0]) ? attr[3][0] : ''
             const quoted = attr[3]
-            const unQuoted = attr[4]
-            const start = attr.index + key.length + quote.length + 1
+            const unQuoted = attr[4] ?? attr[5]
+            const start = key !== '' ? attr.index + key.length + 1 + 1 : attr.index + 1
             const end = start + quoted.length - 1
-
 
             let letter = ''
             if(quote === '"') {
@@ -70,7 +108,7 @@ export default class Decomposer {
 
         }
 
-        this.#workingText = html
+        this.#text = html
     }
 
     doAttributes(text) {

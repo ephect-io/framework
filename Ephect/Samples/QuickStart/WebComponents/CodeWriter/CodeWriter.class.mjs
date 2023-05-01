@@ -176,44 +176,6 @@ export default class CodeWriter {
             return result
         }
 
-        function translateBracket(base, node, isClosing = false) {
-            let word = base
-            let translated = false
-
-            if ('CDETQRG'.includes(node.name)) {
-                if (node.name === 'C') {
-                    word = isClosing ? ')' : '('
-                    translated = true
-                }
-                if (node.name === 'D') {
-                    word = isClosing ? '}}' : '{{'
-                    translated = true
-                }
-                if (node.name === 'E') {
-                    word = isClosing ? '}' : '{'
-                    translated = true
-                }
-                if (node.name === 'T') {
-                    word = isClosing ? ']' : '['
-                    translated = true
-                }
-                if (node.name === 'Q') {
-                    word = "'"
-                    translated = true
-                }
-                if (node.name === 'R') {
-                    word = '"'
-                    translated = true
-                }
-                if (node.name === 'G') {
-                    word = '`'
-                    translated = true
-                }
-            }
-
-            return {word, translated}
-        }
-
         let codeSource = this.#parent.getAttribute("source") ?? ''
 
         if (window['hljs'] !== undefined) {
@@ -222,10 +184,14 @@ export default class CodeWriter {
         text = await loadText(codeSource)
         text = protect(text)
 
+        text = text.trim()
+        
+        // Seek and destroy indents
         indents = parseIndents(text)
         text = deleteIndents(text)
 
         const decomposer = new Decomposer(text)
+        decomposer.markupQuotes()
         decomposer.doComponents()
         nodes = decomposer.list
 
@@ -247,12 +213,33 @@ export default class CodeWriter {
                 continue
             }
 
-            // Encountering a "greater than" character 
+            const next4chars = workingText.substring(i, i + 4)
+            const next5chars = workingText.substring(i, i + 5)
+
+            // In the case of a closing quote
+            if (c === '&' && next5chars === '&oq;/') {
+                const name = workingText.substring(i + 5, i + 6)
+                let {word, translated} = decomposer.translateBracket(c, name)
+                shift()
+                await addChar(word)
+                i += 9
+                continue
+            }
+            // In the case of an opening quote
+            if (c === '&' && next4chars === '&oq;') {
+                const name = workingText.substring(i + 4, i + 5)
+                let {word, translated} = decomposer.translateBracket(c, name)
+                unshift(word)
+                await addChar(word)
+                i += 8
+                continue
+            }
+
+
+            // In case of a "greater than" character 
             // potentially closing a single parsed tag
-            if (c === '&' && workingText.substring(i, i + 4) === '&gt;') {
-
-                if (node.endsAt === i + 3) {
-
+            if (c === '&' && next4chars === '&gt;') {
+                if(node !== null && node.endsAt === i + 3) {
                     const shifted = '&gt;'
                     shift()
 
@@ -264,9 +251,9 @@ export default class CodeWriter {
                 }
             }
 
-            // Encountering a "lower than" character 
+            // In case of a "lower than" character 
             // potentially closing an open parsed tag
-            if (c === '&' && workingText.substring(i, i + 5) === '&lt;/') {
+            if (c === '&' && next5chars === '&lt;/') {
 
                 node = findLastNodeOfDepth(depth)
 
@@ -275,7 +262,7 @@ export default class CodeWriter {
                 }
 
                 c = node.closer.text
-                let {word, translated} = translateBracket(c, node, true)
+                let {word, translated} = decomposer.translateBracket(c, node.name, true)
 
                 c = word
 
@@ -286,16 +273,14 @@ export default class CodeWriter {
                     depth--
                     node = null
                     continue
-  
                 }
-
             }
-            // Encountering an ampersand character 
+            // In case of an ampersand character 
             // potentially starting an HTML entity
-            if (c === '&' && workingText.substring(i, i + 4) !== '&lt;') {
+            if (c === '&' && next4chars !== '&lt;') {
 
                 const scpos = workingText.substring(i).indexOf(';')
-                if (scpos > 8) {
+                if(scpos > 8) {
                     await addChar(c)
                     continue
                 }
@@ -305,9 +290,9 @@ export default class CodeWriter {
                 continue
                 
             }
-            // Encountering a "lower than" character 
-            // potentially starting an open parsed tag
-            if (c === '&' && workingText.substring(i, i + 4) === '&lt;') {
+            // In case of a "lower than" character 
+            // potentially starting a parsed tag
+            if (c === '&' && next4chars === '&lt;') {
 
                 // We don't take the next node if the last 
                 // "lower than" character was not a parsed tag
@@ -316,7 +301,7 @@ export default class CodeWriter {
                 }
 
                 // The "lower than" character is actually not
-                // the beginning a parsed tag
+                // the start of a parsed tag
                 if (node.startsAt !== i) {
                     // Write it and prevent taking the next node
                     await addChar('&lt;')
@@ -326,7 +311,7 @@ export default class CodeWriter {
                 }
 
                 // The "lower than" character is 
-                // the start of a parsed tag      
+                // the start of an open parsed tag      
                 canContinue = true
                 let hasLF = false
                 let unshifted = ''
@@ -334,7 +319,7 @@ export default class CodeWriter {
 
                 c = node.text
                 // Is the tag name a bracket?
-                let {word, translated} = translateBracket(c, node)
+                let {word, translated} = decomposer.translateBracket(c, node.name)
                 c = word 
 
                 // Does the tag string contain an LF character?
@@ -344,7 +329,7 @@ export default class CodeWriter {
                     unshifted = node.closer.text
 
                     // Is the tag name a bracket?
-                    let {word, translated} = translateBracket(unshifted, node, true)
+                    let {word, translated} = decomposer.translateBracket(unshifted, node.name, true)
                     unshifted = word
 
 
@@ -371,8 +356,9 @@ export default class CodeWriter {
                 }
 
                 // The tag name is not a bracket
-                // The tag is not open
                 if(!translated) {
+                    // We write the tag name and its attributes
+                    // with a trailing "greater than" chaaracter
                     hasLF = node.text.indexOf(LF) > -1
 
                     c = '&lt;'
@@ -385,14 +371,14 @@ export default class CodeWriter {
                     }
                 }
 
-                // Write the actual sttring 
-                // and continue to next character 
+                // Write the actual string 
+                // and continue to the next character 
                 await addChar(c)
                 continue
 
             }
 
-            // Encounter the line feed character
+            // In case of the line feed character
             if (c === LF) {
                 // Add the lined feed 
                 // followed by the indent
@@ -410,6 +396,7 @@ export default class CodeWriter {
                 continue
             }
 
+            // Write any character not matching the cases above
             await addChar(c)
         }
 
