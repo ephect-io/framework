@@ -186,7 +186,7 @@ class Decomposer extends Parser implements ParserInterface
         $spinnerMax = $l;
         $isSpinning = false;
         $singleTags = [];
-        $workTags = [];
+        $regularTags = [];
 
 
         while (count($allTags) && !$isFinished && !$isSpinning) {
@@ -211,7 +211,7 @@ class Decomposer extends Parser implements ParserInterface
             }
 
             if ($this->isSingleTag($tag) && $tag['name'] !== 'Eof') {
-                $workTags[$i] = $allTags[$i];
+                $regularTags[$i] = $allTags[$i];
                 unset($allTags[$i]);
                 $i++;
 
@@ -232,8 +232,8 @@ class Decomposer extends Parser implements ParserInterface
                         continue;
                     }
 
-                    $workTags[$i] = $allTags[$i];
-                    $workTags[$i + 1] = $allTags[$i + 1];
+                    $regularTags[$i] = $allTags[$i];
+                    $regularTags[$i + 1] = $allTags[$i + 1];
                     unset($allTags[$i]);
                     unset($allTags[$i + 1]);
 
@@ -245,7 +245,7 @@ class Decomposer extends Parser implements ParserInterface
             $i++;
         }
 
-        return [$workTags, $singleTags];
+        return [$regularTags, $singleTags];
     }
 
     protected function replaceTags(string $text, array $tags): string
@@ -286,7 +286,9 @@ class Decomposer extends Parser implements ParserInterface
 
         $allTags = $this->collectTags($text, $rule);
 
-        [$workTags, $singleTags] = $this->splitTags($allTags);
+        [$regularTags, $singleTags] = $this->splitTags($allTags);
+
+        $workTags = $allTags;
 
         if (count($singleTags)) {
             foreach ($singleTags as $tag) {
@@ -400,3 +402,4 @@ class Decomposer extends Parser implements ParserInterface
         $this->list = $list;
     }
 }
+
