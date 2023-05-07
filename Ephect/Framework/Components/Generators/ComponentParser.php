@@ -97,7 +97,7 @@ class ComponentParser extends Parser implements ParserInterface
     }
 
 
-    public function isClosedTag(array $tag): bool
+    protected function isClosedTag(array $tag): bool
     {
         $text = $tag['text'];
         if (empty($text) || $tag['name'] === 'Fragment') {
@@ -107,7 +107,7 @@ class ComponentParser extends Parser implements ParserInterface
         return substr($text, -2) === TERMINATOR . CLOSE_TAG;
     }
 
-    public function isCloseTag(array $tag): bool
+    protected function isCloserTag(array $tag): bool
     {
         $text = $tag['text'];
         if (empty($text) || $text === '<>') {
@@ -116,7 +116,7 @@ class ComponentParser extends Parser implements ParserInterface
         return substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
     }
 
-    public function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
+    protected function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
     {
         $text = $tag['text'];
         $name =  $tag['name'];
@@ -143,6 +143,7 @@ class ComponentParser extends Parser implements ParserInterface
             $item['depth'] = $depth;
             $item['hasCloser'] = $hasCloser;
             $item['node'] = false;
+            $item['isSingle'] = false;
         }
         if (!isset($parentIds[$depth])) {
             $parentIds[$depth] = $i - 1;
@@ -152,7 +153,7 @@ class ComponentParser extends Parser implements ParserInterface
         return $item;
     }
 
-    public function doComponents(?string $tag = "[A-Z]\w+"): void
+    public function doComponents(string $rule = "[A-Z]\w+"): void
     {
 
         $list = [];
@@ -163,9 +164,129 @@ class ComponentParser extends Parser implements ParserInterface
         $depth = 0;
         $parentIds[$depth] = -1;
         $allTags = [];
+        $singleTags = [];
+        $singleIdList = [];
+        $workTags = [];
+
+        $allTags = $this->collectTags($text, $rule);
+
+        [$workTags, $singleTags] = $this->splitTags($allTags);
+
+        if (count($singleTags)) {
+            foreach ($singleTags as $tag) {
+                $singleIdList[] = $tag['id'];
+            }
+            $text = $this->replaceTags($text, $singleTags);
+            $workTags = $this->collectTags($text, $rule);
+        }
+
+        $l = count($workTags);
+        $i = 0;
+        $isFinished = false;
+        $spinner = 0;
+        $spinnerMax = $l;
+        $isSpinning = false;
+
+        $this->depths[$depth] = 1;
+
+        while (count($workTags) && !$isFinished && !$isSpinning) {
+
+            if ($i === $l) {
+                $i = 0;
+                $workTags = array_values($workTags);
+                $l = count($workTags);
+                if ($l === 0) {
+                    $isFinished = true;
+                    continue;
+                }
+
+                $spinner++;
+                $isSpinning = $spinner > $spinnerMax + 1;
+            }
+
+            $tag = $workTags[$i];
+            if (count($workTags) === 1 && $tag['name'] === 'Eof') {
+                $isFinished = true;
+                continue;
+            }
+
+            if ($this->isClosedTag($tag) && $tag['name'] !== 'Eof') {
+                $item  = $this->makeTag($tag, $parentIds, $depth, false);
+                $item['isSingle'] = in_array($tag['id'], $singleIdList);
+
+                $list[$item['id']] = $item;
+                unset($workTags[$i]);
+
+                $i++;
+
+                continue;
+            }
+
+            if ($this->isCloserTag($tag)) {
+                $depth--;
+            }
+
+            if ($i + 1 < $l) {
+                $nextMatch = $workTags[$i + 1];
+
+                if (!$this->isCloserTag($tag) && $this->isCloserTag($nextMatch)) {
+                    $item = $this->makeTag($tag, $parentIds, $depth, true);
+                    $closer = $this->makeTag($nextMatch, $parentIds, $depth, false, true);
+
+                    $closer['contents'] = [];
+                    $closer['parentId'] = $item['id'];
+                    $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
+                    $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
+                    $contents = substr($this->html, $closer['contents']['startsAt'], $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
+                    $closer['contents']['text'] = '!#base64#' . base64_encode($contents);
+
+                    $item['closer'] = $closer;
+
+                    $list[$item['id']] = $item;
+
+                    unset($workTags[$i]);
+                    unset($workTags[$i + 1]);
+
+                    $i += 2;
+
+                    continue;
+                }
+
+                if (!$this->isCloserTag($tag) && !$this->isCloserTag($nextMatch)) {
+                    $depth++;
+                    $parentIds[$depth] = $tag['id'];
+                }
+            }
+
+            $this->depths[$depth] = 1;
+
+            $i++;
+        }
+
+        ksort($list);
+        $l = count($list);
+
+        for ($i = 0; $i < $l; $i++) {
+        }
+
+        $maxDepth = count($this->depths);
+        for ($i = $maxDepth; $i > -1; $i--) {
+            foreach ($list as $match) {
+                if ($match["depth"] == $i) {
+                    $this->idListByDepth[] = $match['id'];
+                }
+            }
+        }
+
+        $this->list = $list;
+    }
+
+    protected function collectTags(string $text, string $rule = "[A-Z]\w+"): array
+    {
+        $result = [];
 
         $re = <<< REGEX
-        /<\/?({$tag})((\s|.*?)*)\/?>|<\/?>/
+        /<\/?({$rule})((\s|.*?)*)\/?>|<\/?>/
         REGEX;
 
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -183,19 +304,27 @@ class ComponentParser extends Parser implements ParserInterface
             unset($tag[0]);
             unset($tag[1]);
             unset($tag[2]);
+            unset($tag[3]);
 
-            $allTags[] = $tag;
+            $result[] = $tag;
             $i++;
         }
 
-        $this->depths[$depth] = 1;
+        return $result;
+    }
 
+    protected function splitTags(array $allTags): array
+    {
         $l = count($allTags);
         $i = 0;
         $isFinished = false;
         $spinner = 0;
         $spinnerMax = $l;
         $isSpinning = false;
+        $singleTags = [];
+        $workTags = [];
+
+
         while (count($allTags) && !$isFinished && !$isSpinning) {
 
             if ($i === $l) {
@@ -218,47 +347,29 @@ class ComponentParser extends Parser implements ParserInterface
             }
 
             if ($this->isClosedTag($tag) && $tag['name'] !== 'Eof') {
-                $item  = $this->makeTag($tag, $parentIds, $depth, false);
-                $list[$item['id']] = $item;
+                $workTags[$i] = $allTags[$i];
                 unset($allTags[$i]);
-
                 $i++;
 
                 continue;
             }
 
-            if ($this->isCloseTag($tag)) {
-                $depth--;
-            }
 
             if ($i + 1 < $l) {
                 $nextMatch = $allTags[$i + 1];
 
-                if (!$this->isCloseTag($tag) && $this->isCloseTag($nextMatch)) {
-                    $item = $this->makeTag($tag, $parentIds, $depth, true);
-                    $closer = $this->makeTag($nextMatch, $parentIds, $depth, false, true);
+                if (!$this->isCloserTag($tag) && $this->isCloserTag($nextMatch)) {
 
-                    if ($item['name'] !== $closer['name']) {
-                        $item['hasCloser'] = false;
-                        $list[$item['id']] = $item;
+                    if ($tag['name'] !== $nextMatch['name']) {
                         unset($allTags[$i]);
-                        $this->depths[$depth] = 1;
+                        $singleTags[] = $tag;
+                        $singleIdList[] = $i;
                         $i++;
-
                         continue;
                     }
 
-                    $closer['contents'] = [];
-                    $closer['parentId'] = $item['id'];
-                    $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
-                    $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
-                    $contents = substr($this->html, $closer['contents']['startsAt'], $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
-                    $closer['contents']['text'] = '!#base64#' . base64_encode($contents);
-
-                    $item['closer'] = $closer;
-
-                    $list[$item['id']] = $item;
-
+                    $workTags[$i] = $allTags[$i];
+                    $workTags[$i + 1] = $allTags[$i + 1];
                     unset($allTags[$i]);
                     unset($allTags[$i + 1]);
 
@@ -266,29 +377,32 @@ class ComponentParser extends Parser implements ParserInterface
 
                     continue;
                 }
-
-                if (!$this->isCloseTag($tag) && !$this->isCloseTag($nextMatch)) {
-                    $depth++;
-                    $parentIds[$depth] = $tag['id'];
-                }
             }
-
-            $this->depths[$depth] = 1;
-
             $i++;
         }
 
-        ksort($list);
+        return [$workTags, $singleTags];
+    }
 
-        $maxDepth = count($this->depths);
-        for ($i = $maxDepth; $i > -1; $i--) {
-            foreach ($list as $match) {
-                if ($match["depth"] == $i) {
-                    $this->idListByDepth[] = $match['id'];
-                }
+    protected function replaceTags(string $text, array $tags): string
+    {
+        $result = $text;
+        $c = count($tags);
+
+        for ($i = $c - 1; $i > -1; $i--) {
+            if (!isset($tags[$i])) {
+                continue;
             }
+            $tag = $tags[$i];
+            $tag['text'] = substr($tag['text'], 0, -4) . TERMINATOR . CLOSE_TAG;
+
+            $begin = substr($result, 0, $tag['startsAt']);
+            $end = substr($result,  $tag['endsAt'] + 1);
+
+            $result = $begin . $tag['text'] . $end;
         }
 
-        $this->list = $list;
+        return $result;
     }
+
 }
