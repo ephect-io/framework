@@ -154,12 +154,12 @@ class Decomposer extends Parser implements ParserInterface
         return $item;
     }
 
-    protected function collectTags(string $text, string $tag = "\w+"): array
+    protected function collectTags(string $text, string $rule = "\w+"): array
     {
         $result = [];
 
         $re = <<< REGEX
-        /&lt;\/?($tag)((\s|.*?)*)\/?&gt;/
+        /&lt;\/?($rule)((\s|.*?)*)\/?&gt;/
         REGEX;
 
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -278,7 +278,7 @@ class Decomposer extends Parser implements ParserInterface
         return $result;
     }
 
-    public function doComponents(string $tag = "\w+"): void
+    public function doComponents(string $rule = "\w+"): void
     {
 
         $list = [];
@@ -293,7 +293,7 @@ class Decomposer extends Parser implements ParserInterface
         $singleIdList = [];
         $workTags = [];
 
-        $allTags = $this->collectTags($text);
+        $allTags = $this->collectTags($text, $rule);
 
         [$workTags, $singleTags] = $this->splitTags($allTags);
 
@@ -302,7 +302,7 @@ class Decomposer extends Parser implements ParserInterface
                 $singleIdList[] = $tag['id'];
             }
             $text = $this->replaceTags($text, $singleTags);
-            $workTags = $this->collectTags($text);
+            $workTags = $this->collectTags($text, $rule);
         }
 
 
