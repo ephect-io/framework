@@ -115,7 +115,7 @@ if (!IS_WEB_APP) {
     } 
     elseif (IS_PHAR_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = APP_CWD  . 'app' . DIRECTORY_SEPARATOR;
+        $src_root = APP_CWD . DIRECTORY_SEPARATOR;
     }
 
     define('SRC_ROOT', $src_root);
