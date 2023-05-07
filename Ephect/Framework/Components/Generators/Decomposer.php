@@ -11,8 +11,8 @@ use Ephect\Framework\Registry\ComponentRegistry;
 class Decomposer extends Parser implements ParserInterface
 {
     private const TERMINATOR = '/';
-    private const OPEN_TAG = '<';
-    private const CLOSE_TAG = '>';
+    private const OPEN_TAG = '&lt;';
+    private const CLOSE_TAG = '&gt;';
     protected array $depths = [];
     protected array $idListByDepth = [];
     protected array $list = [];
