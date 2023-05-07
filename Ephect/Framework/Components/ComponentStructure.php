@@ -23,4 +23,5 @@ class ComponentStructure extends Structure
     public ?array $closer = null;
     public array $props = [];
     public bool|array|null $node = null;
+    public bool $isSingle = false;
 }
