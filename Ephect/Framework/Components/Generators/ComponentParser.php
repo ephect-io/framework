@@ -7,20 +7,12 @@ use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\Registry\ComponentRegistry;
 
-define('TERMINATOR', '/');
-define('SKIP_MARK', '!');
-define('QUEST_MARK', '?');
-define('QUOTE', '"');
-define('OPEN_TAG', '<');
-define('CLOSE_TAG', '>');
-define('TAB_MARK', "\t");
-define('LF_MARK', "\n");
-define('CR_MARK', "\r");
-define('STR_EMPTY', '');
-define('STR_SPACE', ' ');
 
 class ComponentParser extends Parser implements ParserInterface
 {
+    private const TERMINATOR = '/';
+    private const OPEN_TAG = '<';
+    private const CLOSE_TAG = '>';
     protected array $depths = [];
     protected array $idListByDepth = [];
     protected array $list = [];
@@ -104,7 +96,7 @@ class ComponentParser extends Parser implements ParserInterface
             return false;
         }
 
-        return substr($text, -2) === TERMINATOR . CLOSE_TAG;
+        return substr($text, -2) === self::TERMINATOR . self::CLOSE_TAG;
     }
 
     protected function isCloseTag(array $tag): bool
@@ -113,7 +105,7 @@ class ComponentParser extends Parser implements ParserInterface
         if (empty($text) || $text === '<>') {
             return false;
         }
-        return substr($text, 0, 2) === OPEN_TAG . TERMINATOR;
+        return substr($text, 0, 2) === self::OPEN_TAG . self::TERMINATOR;
     }
 
     protected function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array

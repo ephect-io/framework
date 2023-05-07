@@ -8,20 +8,11 @@ use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\Registry\ComponentRegistry;
 
-define('TERMINATOR', '/');
-define('SKIP_MARK', '!');
-define('QUEST_MARK', '?');
-define('QUOTE', '"');
-define('OPEN_TAG', '&lt;');
-define('CLOSE_TAG', '&gt;');
-define('TAB_MARK', "\t");
-define('LF_MARK', "\n");
-define('CR_MARK', "\r");
-define('STR_EMPTY', '');
-define('STR_SPACE', ' ');
-
 class Decomposer extends Parser implements ParserInterface
 {
+    private const TERMINATOR = '/';
+    private const OPEN_TAG = '<';
+    private const CLOSE_TAG = '>';
     protected array $depths = [];
     protected array $idListByDepth = [];
     protected array $list = [];
@@ -105,7 +96,7 @@ class Decomposer extends Parser implements ParserInterface
             return false;
         }
 
-        return substr($text, -5) === TERMINATOR . CLOSE_TAG;
+        return substr($text, -5) === self::TERMINATOR . self::CLOSE_TAG;
     }
 
     protected function isCloseTag(array $tag): bool
@@ -114,7 +105,7 @@ class Decomposer extends Parser implements ParserInterface
         if (empty($text)) {
             return false;
         }
-        return substr($text, 0, 5) === OPEN_TAG . TERMINATOR;
+        return substr($text, 0, 5) === self::OPEN_TAG . self::TERMINATOR;
     }
 
     protected function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
@@ -267,7 +258,7 @@ class Decomposer extends Parser implements ParserInterface
                 continue;
             }
             $tag = $tags[$i];
-            $tag['text'] = substr($tag['text'], 0, -4) . TERMINATOR . CLOSE_TAG;
+            $tag['text'] = substr($tag['text'], 0, -4) . self::TERMINATOR . self::CLOSE_TAG;
 
             $begin = substr($result, 0, $tag['startsAt']);
             $end = substr($result,  $tag['endsAt'] + 1);
