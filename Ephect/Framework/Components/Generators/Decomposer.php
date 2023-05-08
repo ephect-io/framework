@@ -21,7 +21,8 @@ class Decomposer extends Parser implements ParserInterface
     {
         parent::__construct($comp);
 
-        ComponentRegistry::uncache();
+        $this->protect();
+        $this->markupQuotes();
     }
 
     public function doDeclaration(string $uid): ComponentDeclarationStructure
@@ -53,6 +54,22 @@ class Decomposer extends Parser implements ParserInterface
         return $this->idListByDepth;
     }
 
+    protected function protect()
+    {
+        $text = trim($this->html);
+        $text = str_replace('{{', '<D>', $text);
+        $text = str_replace('}}', '</D>', $text);
+        $text = str_replace('(', '<C>', $text);
+        $text = str_replace(')', '</C>', $text);
+        $text = str_replace('{', '<E>', $text);
+        $text = str_replace('}', '</E>', $text);
+        $text = str_replace('[', '<T>', $text);
+        $text = str_replace(']', '</T>', $text);
+        $text = preg_replace('/<([\/\w])/m', self::OPEN_TAG . '$1', $text);
+        $text = str_replace('>', self::CLOSE_TAG, $text);
+
+        $this->html = $text;
+    }
     /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
     public function doFunctionDeclaration(): ?array
     {
@@ -88,6 +105,46 @@ class Decomposer extends Parser implements ParserInterface
         return $result;
     }
 
+    protected function markupQuotes()
+    {
+
+        $html = $this->html;
+        $re = '/(["\'`])((\s|((\\\)*)\\\.|.)*?)\1/m';
+
+        preg_match_all($re, $html, $attributes, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
+
+        Console::log($attributes);
+
+        $l = count($attributes);
+        for ($i = $l - 1; $i > -1; $i--) {
+            $attr = $attributes[$i];
+            $quote = $attr[1][0];
+            $quoted = $attr[0][0];
+            $unQuoted = $attr[2][0];
+            $start =  $attr[0][1] + 1;
+            $end = $start + strlen($quoted) - 1;
+
+            $letter = '';
+            if ($quote === '"') {
+                $letter = 'R';
+            } else if ($quote === '\'') {
+                $letter = 'Q';
+            } else if ($quote === '`') {
+                $letter = 'G';
+            }
+
+            $unQuoted = str_replace('&lt;', '&pp;', $unQuoted);
+            $unQuoted = str_replace('&gt;', '&pg;', $unQuoted);
+            $newValue = '&oq;' . $letter . '&cq;' . $unQuoted . '&oq;/' . $letter . '&cq;';
+
+            $beginBlock = substr($html, 0, $start - 1);
+            $endBlock = substr($html, $end);
+
+            $html = $beginBlock . $newValue . $endBlock;
+        }
+
+        $this->html = $html;
+    }
 
     protected function isSingleTag(array $tag): bool
     {
@@ -251,12 +308,18 @@ class Decomposer extends Parser implements ParserInterface
     protected function replaceTags(string $text, array $tags): string
     {
         $result = $text;
-        $c = count($tags);
 
+        $list = [];
+
+        foreach ($tags as $tag) {
+            $list[$tag['id']] = $tag;
+        }
+
+        ksort($list);
+        $tags = array_values($list);
+
+        $c = count($tags);
         for ($i = $c - 1; $i > -1; $i--) {
-            if (!isset($tags[$i])) {
-                continue;
-            }
             $tag = $tags[$i];
             $tag['text'] = substr($tag['text'], 0, -4) . self::TERMINATOR . self::CLOSE_TAG;
 
@@ -297,9 +360,6 @@ class Decomposer extends Parser implements ParserInterface
             $text = $this->replaceTags($text, $singleTags);
             $workTags = $this->collectTags($text, $rule);
         }
-
-
-        Console::log($workTags);
 
         $l = count($workTags);
         $i = 0;
@@ -402,4 +462,3 @@ class Decomposer extends Parser implements ParserInterface
         $this->list = $list;
     }
 }
-
