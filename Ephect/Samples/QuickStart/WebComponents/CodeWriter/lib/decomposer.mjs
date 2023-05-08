@@ -1,12 +1,19 @@
+const OPEN_TAG = '&lt;'
+const CLOSE_TAG = '&gt;'
+const TERMINATOR = '/'
+
 export default class Decomposer {
-    #depths = []
-    #idListByDepth = []
     #list = []
     #text = ''
     #workingText = ''
 
     constructor(html) {
         this.#text = html
+
+        this.#workingText = this.#text + "\n<Eof />"
+
+        this.protect()
+        this.markupQuotes()
     }
 
     get list() {
@@ -66,9 +73,8 @@ export default class Decomposer {
 
     markupQuotes() {
 
-        let html = this.#text
-        const regex = /([\w]*)(\[\])?=?(\"([\S ][^"]*)\"|\'([\S]*)\'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/gm
-
+        let html = this.#workingText
+        const regex = new RegExp('(["\'`])((\\s|((\\\\)*)\\\\.|.)*?)\\1', 'gm')
         let matches
         const attributes = []
 
@@ -79,14 +85,12 @@ export default class Decomposer {
             attributes.push(matches)
         }
 
-
         for (let i = attributes.length - 1; i > -1; i --) {
             const attr = attributes[i]
-            const key = attr[1]
-            const quote = '\'"`'.includes(attr[3][0]) ? attr[3][0] : ''
-            const quoted = attr[3]
-            const unQuoted = attr[4] ?? attr[5]
-            const start = key !== '' ? attr.index + key.length + 1 + 1 : attr.index + 1
+            const quote = attr[1]
+            const quoted = attr[0]
+            let unQuoted = attr[2] 
+            const start =  attr.index + 1
             const end = start + quoted.length - 1
 
             let letter = ''
@@ -99,6 +103,9 @@ export default class Decomposer {
             else if(quote === '`') {
                 letter = 'G'
             }
+
+            unQuoted = unQuoted.replace(/&lt;/g, '&pp;')
+            unQuoted = unQuoted.replace(/&gt;/g, '&pg;')
             const newValue = '&oq;' + letter + '&cq;' + unQuoted + '&oq;/' + letter + '&cq;'
 
             const beginBlock = html.substring(0, start - 1)
@@ -108,7 +115,7 @@ export default class Decomposer {
 
         }
 
-        this.#text = html
+        this.#workingText = html
     }
 
     doAttributes(text) {
@@ -150,22 +157,22 @@ export default class Decomposer {
         let result = false
 
         let text = tag.text
-        if (text === '' || tag.name === 'Fragment') {
+        if (text === '') {
             return result
         }
-        result = text.substring(text.length - 6, 5) === '/&lg;'
+        result = text.substring(text.length - 5, text.length) === TERMINATOR + CLOSE_TAG
 
         return result
     }
 
-    isCloseTag(tag) {
+    isCloserTag(tag) {
         let result = false
 
         let text = tag.text
-        if (text === '' || text === '<>') {
+        if (text === '') {
             return result
         }
-        result = text.substring(0, 5) === '&lt;/'
+        result = text.substring(0, 5) === OPEN_TAG + TERMINATOR
 
         return result
     }
@@ -185,10 +192,11 @@ export default class Decomposer {
         if (!isCloser) {
             item.uid = this.#createUID
             item.method = 'echo'
-            item.props = (item.name === 'Fragment') ? [] : this.doAttributes(text)
+            item.props = (item.name === 'Fragment') ? [] : [] //this.doAttributes(text)
             item.depth = depth
             item.hasCloser = hasCloser
             item.node = false
+            item.isSingle = false
         }
         if (parentIds[depth] === undefined || parentIds[depth] === null) {
             parentIds[depth] = i - 1
@@ -198,7 +206,8 @@ export default class Decomposer {
         return item
     }
 
-    protect(text) {
+    protect() {
+        let text = this.#workingText
         text = text.trim()
         text = text.replace(/\{\{/g, '<D>')
         text = text.replace(/\}\}/g, '</D>')
@@ -208,32 +217,23 @@ export default class Decomposer {
         text = text.replace(/\}/g, '</E>')
         text = text.replace(/\[/g, '<T>')
         text = text.replace(/\]/g, '</T>')
-        text = text.replace(/<([\/\w])/g, '&lt;$1')
-        text = text.replace(/>/g, '&gt;')
+        text = text.replace(/<([\/\w])/g, OPEN_TAG + '$1')
+        text = text.replace(/>/g, CLOSE_TAG)
 
-        return text
+        this.#workingText = text 
     }
 
-    doComponents(tag = '[\\w]+') {
+    collectTags(text, rule = '[\\w]+') {
+        const result = []
+        let list = []
 
-        // this.markupQuotes()
-        this.#workingText = this.#text
-        this.#workingText = this.protect(this.#workingText + "\n<Eof />")
-
-        const html = this.#workingText
-
-        const re = `&lt;\\/?(${tag})((\\s|.*?)+?)\\/?&gt;`
+        const re = OPEN_TAG + `\\/?(${rule})((\\s|.*?)*?)\\/?` + CLOSE_TAG
 
         const regex = new RegExp(re, 'gm')
         let matches
-        let list = []
-        let depth = 0
-        let allTags = []
-        let parentIds = []
-        parentIds[depth] = -1
 
         // Re-structure the list recursively
-        while ((matches = regex.exec(html)) !== null) {
+        while ((matches = regex.exec(text)) !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (matches.index === regex.lastIndex) {
                 regex.lastIndex++
@@ -242,8 +242,8 @@ export default class Decomposer {
             list.push(matches)
         }
 
-        for (let i in list) {
-            const match = list[i]
+        let i = 0
+        list.forEach(match => {
 
             let tag = match
             tag.id = i
@@ -257,25 +257,32 @@ export default class Decomposer {
             delete tag[2]
             delete tag[3]
 
-            allTags.push(tag)
+            result.push(tag)
             i++
+        })
 
-        }
+        return result
+    }
 
-        this.#depths[depth] = 1
+    splitTags(allTags) {
 
-        let l = allTags.length
+        let tags = [...allTags]
+
+        let l = tags.length
         let i = 0
         let isFinished = false
         let spinner = 0
         let spinnerMax = l
         let isSpinning = false
-        while (allTags.length > 0 && !isFinished && !isSpinning) {
+        const singleTags = []
+        const regularTags = []
+
+        while (tags.length > 0 && !isFinished && !isSpinning) {
 
             if (i === l) {
                 i = 0
-                allTags = Object.values(allTags)
-                l = allTags.length
+                tags = Object.values(tags)
+                l = tags.length
                 if (l === 0) {
                     isFinished = true
                     continue
@@ -285,71 +292,163 @@ export default class Decomposer {
                 isSpinning = spinner > spinnerMax + 1
             }
 
-            let tag = allTags[i]
-            if (allTags.length === 1 && tag.name === 'Eof') {
+            let tag = tags[i]
+            if (tags.length === 1 && tag.name === 'Eof') {
+                isFinished = true
+                continue
+            }
+
+            if (this.isClosedTag(tag) && tag.name !== 'Eof') {
+                regularTags[i] = tags[i]
+                delete tags[i]
+                i++
+                continue
+            }
+
+            if (i + 1 < l) {
+                let nextMatch = tags[i + 1]
+
+                if (!this.isCloserTag(tag) && this.isCloserTag(nextMatch)) {
+                    if (tag.name !== nextMatch.name) {
+                        singleTags.push(tag)
+                        delete tags[i]
+                        i++
+                        continue
+                    }
+
+                    regularTags[i] = tags[i]
+                    regularTags[i + 1] = tags[i + 1]
+                    delete tags[i]
+                    delete tags[i + 1]
+
+                    i += 2
+                    continue
+                }
+            }
+            i++
+        }
+        return {regularTags, singleTags}
+    }
+
+    replaceTags(text, tags)
+    {
+        let result = text
+        const list = []
+
+        tags.forEach(item => {
+            list[item.id] = item
+        })
+
+        list.sort()
+        tags = Object.values(list)
+
+        for (let i = tags.length - 1; i > -1; i--) {
+            const tag = tags[i]
+            tag.text = tag.text.substring(0, tag.text.length -4) + TERMINATOR + CLOSE_TAG;
+
+            const begin = result.substring(0, tag.startsAt)
+            const end = result.substring(tag.endsAt + 1)
+
+            result = begin + tag.text + end
+        }
+
+        return result;
+    }
+
+    doComponents(rule = '[\\w]+') {
+
+
+        let html = this.#workingText
+        const allTags = this.collectTags(html, rule)
+        const singleIdList = []
+        let list = []
+        let depth = 0
+        let parentIds = []
+        let l = allTags.length
+        let i = 0
+        let isFinished = false
+        let spinner = 0
+        let spinnerMax = l
+        let isSpinning = false
+
+        parentIds[depth] = -1
+
+        const {regularTags, singleTags} = this.splitTags(allTags)
+
+        let workTags = allTags
+
+        if(singleTags.length) {
+            singleTags.forEach(item => singleIdList.push(item.id))
+            html = this.replaceTags(html, singleTags)
+            workTags = this.collectTags(html, rule)
+        }
+
+        while (workTags.length > 0 && !isFinished && !isSpinning) {
+
+            if (i === l) {
+                i = 0
+                workTags = Object.values(workTags)
+                l = workTags.length
+                if (l === 0) {
+                    isFinished = true
+                    continue
+                }
+
+                spinner++
+                isSpinning = spinner > spinnerMax + 1
+            }
+
+            let tag = workTags[i]
+            if (workTags.length === 1 && tag.name === 'Eof') {
                 isFinished = true
                 continue
             }
 
             if (this.isClosedTag(tag) && tag.name !== 'Eof') {
                 let item = this.makeTag(tag, parentIds, depth, false)
+                item.isSingle = singleIdList.includes(tag.id)
                 list[item.id] = item
-                delete allTags[i]
-
+                delete workTags[i]
                 i++
 
                 continue
             }
 
-            if (this.isCloseTag(tag)) {
+            if (this.isCloserTag(tag)) {
                 depth--
             }
 
             if (i + 1 < l) {
-                let nextMatch = allTags[i + 1]
+                let nextMatch = workTags[i + 1]
 
-                if (!this.isCloseTag(tag) && this.isCloseTag(nextMatch)) {
+                if (!this.isCloserTag(tag) && this.isCloserTag(nextMatch)) {
                     let item = this.makeTag(tag, parentIds, depth, true)
                     let closer = this.makeTag(nextMatch, parentIds, depth, false, true)
-
-                    if (item.name !== closer.name) {
-                        item.hasCloser = false
-                        list[item.id] = item
-                        delete allTags[i]
-                        this.#depths[depth] = 1
-                        i++
-
-                        continue
-                    }
 
                     closer.contents = {}
                     closer.parentId = item.id
                     closer.contents.startsAt = item.endsAt + 1;
                     closer.contents.endsAt = closer.startsAt;
                     let contents = html.substring(closer.contents.startsAt, closer.contents.endsAt)
-                    closer.contents.text = contents // encodeURIComponent (contents)
+                    closer.contents.text = contents
 
                     item.closer = closer
 
                     list[item.id] = item
 
-                    delete list[closer.id]
-                    delete allTags[i]
-                    delete allTags[i + 1]
+                    delete workTags[i]
+                    delete workTags[i + 1]
 
                     i += 2
 
                     continue
                 }
 
-                if (!this.isCloseTag(tag) && !this.isCloseTag(nextMatch)) {
+                if (!this.isCloserTag(tag) && !this.isCloserTag(nextMatch)) {
                     depth++
                     parentIds[depth] = tag.id
-
                 }
             }
-
-            this.#depths[depth] = 1
 
             i++
         }
@@ -367,15 +466,7 @@ export default class Decomposer {
             }
         }
 
-        let maxDepth = this.#depths.length
-        for (let i = maxDepth; i > -1; i--) {
-            for (const match of list) {
-                if (match.depth === i) {
-                    this.#idListByDepth.push(match.id)
-                }
-            }
-        }
-
+        this.#workingText = html
         this.#list = list
     }
 

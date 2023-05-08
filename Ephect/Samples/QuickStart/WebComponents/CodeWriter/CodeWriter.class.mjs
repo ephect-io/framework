@@ -1,5 +1,10 @@
 import Decomposer from "./lib/decomposer.mjs"
 
+const OPEN_TAG = '&lt;'
+const CLOSE_TAG = '&gt;'
+const TERMINATOR = '/'
+const LF = "\n"
+
 export default class CodeWriter {
     #parent = null
 
@@ -12,7 +17,6 @@ export default class CodeWriter {
         const sourceComponent = this.#parent.shadowRoot.querySelector('pre#' + source + ' code')
         const targetComponent = this.#parent.shadowRoot.querySelector('pre#' + target + ' code')
         const speed = 60
-        const LF = "\n"
         let reg = []
         let indents
         let html = ''
@@ -26,7 +30,6 @@ export default class CodeWriter {
         let depth = -1
         let toUnshift = []
         let toUnshiftHasLF = []
-        let canContinue = true
         let indentCount = 0
 
         function delay(milliseconds) {
@@ -100,30 +103,27 @@ export default class CodeWriter {
             return text
         }
 
-        function protect(text) {
-            text = text.replace(/<([\/\w])/gm, '&lt;$1')
-            text = text.replace(/>/g, '&gt;')
-
-            return text
-        }
-
         function translate(text) {
-            text = text.replaceAll('&lt;', '<')
-            text = text.replaceAll('&gt;', '>')
+            text = text.replaceAll(OPEN_TAG, '<')
+            text = text.replaceAll(CLOSE_TAG, '>')
 
             return text
         }
 
 
         function nextNode() {
-            if (nodes.length) {
-                node = null
+            let result = null
+            if (!nodes.length) {
+                return result
             }
 
-            node = nodes.shift()
-            if (node.hasCloser) {
-                stack.push(node)
+            result = nodes.shift()
+            if (result.hasCloser) {
+                stack.push(result)
             }
+
+            return result
+
         }
 
         function lastNode() {
@@ -182,20 +182,16 @@ export default class CodeWriter {
             hljs.highlightElement(sourceComponent);
         }
         text = await loadText(codeSource)
-        text = protect(text)
-
-        text = text.trim()
         
         // Seek and destroy indents
         indents = parseIndents(text)
         text = deleteIndents(text)
 
         const decomposer = new Decomposer(text)
-        decomposer.markupQuotes()
         decomposer.doComponents()
-        nodes = decomposer.list
+        nodes = [...decomposer.list]
 
-        workingText = decomposer.workingText.replace('\n&lt;Eof /&gt;', '')
+        workingText = decomposer.workingText.replace(LF + OPEN_TAG + 'Eof'  + TERMINATOR  + CLOSE_TAG, '')
 
         const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
@@ -203,12 +199,13 @@ export default class CodeWriter {
         const firstIndent = indents[indentCount] ?? ''
         await addChar(firstIndent)
         indentCount++
+        node = null
 
         for (let i = 0; i < workingText.length; i++) {
 
             let c = workingText[i]
             if (c === '<') {
-                c = '&lt;'
+                c = OPEN_TAG
                 await addChar(c)
                 continue
             }
@@ -235,25 +232,51 @@ export default class CodeWriter {
                 continue
             }
 
+            if (c === '&' && next4chars === '&pp;') {
+                i += 3
+                await addChar(OPEN_TAG)
+                continue
+            }
 
-            // In case of a "greater than" character 
-            // potentially closing a single parsed tag
-            if (c === '&' && next4chars === '&gt;') {
-                if(node !== null && node.endsAt === i + 3) {
-                    const shifted = '&gt;'
+            if (c === '&' && next4chars === '&pg;') {
+                i += 3
+                await addChar(CLOSE_TAG)
+                continue
+            }
+
+            if (c === '/' && next5chars === TERMINATOR + CLOSE_TAG) {
+
+                if(node !== null && !node.hasCloser && node.endsAt === i + 4) {
+                    c = TERMINATOR + CLOSE_TAG
                     shift()
-
-                    await addChar(shifted)
-                    nextUnshift()
-                    i += 3
-
+                    await addChar(c);
+                    i += 4
                     continue
                 }
             }
 
+
+            // In case of a "greater than" character 
+            // potentially closing a single parsed tag
+            if (c === '&' && next4chars === CLOSE_TAG) {
+
+                if(node !== null && node.endsAt === i + 3) {
+                    shift()
+
+                    await addChar(CLOSE_TAG)
+                    if(node.hasCloser) {
+                        nextUnshift()
+                    }
+                    i += 3
+
+                    continue
+                }
+
+            }
+
             // In case of a "lower than" character 
             // potentially closing an open parsed tag
-            if (c === '&' && next5chars === '&lt;/') {
+            if (c === '&' && next5chars === OPEN_TAG + TERMINATOR) {
 
                 node = findLastNodeOfDepth(depth)
 
@@ -277,14 +300,14 @@ export default class CodeWriter {
             }
             // In case of an ampersand character 
             // potentially starting an HTML entity
-            if (c === '&' && next4chars !== '&lt;') {
+            if (c === '&' && next4chars !== OPEN_TAG) {
 
                 const scpos = workingText.substring(i).indexOf(';')
                 if(scpos > 8) {
                     await addChar(c)
                     continue
                 }
-                const entity = workingText.substring(i, i + scpos) 
+                const entity = workingText.substring(i, i + scpos + 1) 
                 await addChar(entity)
                 i += entity.length - 1
                 continue
@@ -292,40 +315,39 @@ export default class CodeWriter {
             }
             // In case of a "lower than" character 
             // potentially starting a parsed tag
-            if (c === '&' && next4chars === '&lt;') {
+            if (c === '&' && next4chars === OPEN_TAG) {
 
                 // We don't take the next node if the last 
                 // "lower than" character was not a parsed tag
-                if(canContinue) {
-                    nextNode()
+                if(node === null || (node !== null && node.dirty)) {
+                    node = nextNode()
                 }
 
                 // The "lower than" character is actually not
                 // the start of a parsed tag
                 if (node.startsAt !== i) {
                     // Write it and prevent taking the next node
-                    await addChar('&lt;')
+                    await addChar(OPEN_TAG)
                     i += 3
-                    canContinue = false
+                    node.dirty = false
                     continue
                 }
 
                 // The "lower than" character is 
                 // the start of an open parsed tag      
-                canContinue = true
+                node.dirty = true
                 let hasLF = false
                 let unshifted = ''
-                depth++
 
                 c = node.text
                 // Is the tag name a bracket?
                 let {word, translated} = decomposer.translateBracket(c, node.name)
                 c = word 
 
-                // Does the tag string contain an LF character?
-                hasLF = node.text.indexOf(LF) > -1
                 // Is it an open tag?
                 if (node.hasCloser) {
+                    depth++
+
                     unshifted = node.closer.text
 
                     // Is the tag name a bracket?
@@ -359,11 +381,13 @@ export default class CodeWriter {
                 if(!translated) {
                     // We write the tag name and its attributes
                     // with a trailing "greater than" chaaracter
+
+                    // Does the tag string contain an LF character?
                     hasLF = node.text.indexOf(LF) > -1
 
-                    c = '&lt;'
+                    c = OPEN_TAG
                     i += 3
-                    unshifted = '&gt;'
+                    unshifted = CLOSE_TAG
                     if (hasLF) {
                         unshift(LF + lastIndent + unshifted)
                     } else {
@@ -380,7 +404,7 @@ export default class CodeWriter {
 
             // In case of the line feed character
             if (c === LF) {
-                // Add the lined feed 
+                // Add the line feed 
                 // followed by the indent
                 // of the next line
 
