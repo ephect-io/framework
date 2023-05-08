@@ -29,6 +29,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     protected string $method = '';
     protected string $compName = '';
     protected ?string $className = '';
+    protected bool $isSingle = false;
 
     public function __construct(protected ?ComponentStructure $attributes)
     {
@@ -54,6 +55,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->properties = $this->hasProperties ? $attributes->props : [];
         $this->hasCloser = is_array($attributes->closer);
         $this->closer = $this->hasCloser ? $attributes->closer : null;
+        $this->isSingle = $attributes->isSingle;
 
         $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
 
