@@ -182,7 +182,7 @@ export default class CodeWriter {
             hljs.highlightElement(sourceComponent);
         }
         text = await loadText(codeSource)
-        
+
         // Seek and destroy indents
         indents = parseIndents(text)
         text = deleteIndents(text)
@@ -191,7 +191,7 @@ export default class CodeWriter {
         decomposer.doComponents()
         nodes = [...decomposer.list]
 
-        workingText = decomposer.workingText.replace(LF + OPEN_TAG + 'Eof'  + TERMINATOR  + CLOSE_TAG, '')
+        workingText = decomposer.workingText.replace(LF + OPEN_TAG + 'Eof '  + TERMINATOR  + CLOSE_TAG, '')
 
         const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
@@ -256,7 +256,7 @@ export default class CodeWriter {
             }
 
 
-            // In case of a "greater than" character 
+            // In case of a "greater than" character
             // potentially closing a single parsed tag
             if (c === '&' && next4chars === CLOSE_TAG) {
 
@@ -274,7 +274,7 @@ export default class CodeWriter {
 
             }
 
-            // In case of a "lower than" character 
+            // In case of a "lower than" character
             // potentially closing an open parsed tag
             if (c === '&' && next5chars === OPEN_TAG + TERMINATOR) {
 
@@ -298,7 +298,7 @@ export default class CodeWriter {
                     continue
                 }
             }
-            // In case of an ampersand character 
+            // In case of an ampersand character
             // potentially starting an HTML entity
             if (c === '&' && next4chars !== OPEN_TAG) {
 
@@ -307,17 +307,17 @@ export default class CodeWriter {
                     await addChar(c)
                     continue
                 }
-                const entity = workingText.substring(i, i + scpos + 1) 
+                const entity = workingText.substring(i, i + scpos + 1)
                 await addChar(entity)
                 i += entity.length - 1
                 continue
-                
+
             }
-            // In case of a "lower than" character 
+            // In case of a "lower than" character
             // potentially starting a parsed tag
             if (c === '&' && next4chars === OPEN_TAG) {
 
-                // We don't take the next node if the last 
+                // We don't take the next node if the last
                 // "lower than" character was not a parsed tag
                 if(node === null || (node !== null && node.dirty)) {
                     node = nextNode()
@@ -342,7 +342,7 @@ export default class CodeWriter {
                 c = node.text
                 // Is the tag name a bracket?
                 let {word, translated} = decomposer.translateBracket(c, node.name)
-                c = word 
+                c = word
 
                 // Is it an open tag?
                 if (node.hasCloser) {
@@ -368,7 +368,7 @@ export default class CodeWriter {
                         } else {
                             unshift(unshifted)
                         }
-                    
+
                     } else {
                         // Store the tag closser after the opener is written
                         toUnshift.push(unshifted)
@@ -437,7 +437,7 @@ export default class CodeWriter {
             }
         })
         this.#parent.dispatchEvent(finishedEvent)
-        
+
     }
 
 }
