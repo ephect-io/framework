@@ -13,9 +13,7 @@ class Hello extends AbstractCommand
     public function run(): void
     {
         $data = 'world';
-        if($this->application->getArgc() > 2) {
-            $data = $this->application->getArgv()[2];
-        }
+        $data = $this->application->getArgi(2, $data);
         Console::writeLine("Hello %s!", $data);
     }
 }
