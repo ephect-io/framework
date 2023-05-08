@@ -4,8 +4,11 @@ namespace Ephect\Apps\Egg;
 
 use Ephect\Commands\CommonLib;
 use Ephect\Framework\CLI\Application;
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Element;
 use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\Zip;
+use Ephect\Framework\Web\Curl;
 use Phar;
 
 class PharLib extends Element
@@ -61,7 +64,8 @@ class PharLib extends Element
         }
 
         if (file_exists($master)) {
-            $tree = Utils::walkTree($ephectDir, ['php']);
+            $php = ['php'];
+            $tree = Utils::walkTree($ephectDir, $php);
         }
 
         $result = ['path' => $ephectDir, 'tree' => $tree];
