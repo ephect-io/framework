@@ -56,7 +56,7 @@ trait TypesParserTrait
         if (strpos($item, '/* array */') > -1) {
             return "'$name' => []";
         }
-        
+
         return "'$name' => null";
     }
 }

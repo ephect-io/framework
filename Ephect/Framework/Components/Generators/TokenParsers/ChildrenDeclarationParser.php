@@ -17,9 +17,9 @@ final class ChildrenDeclarationParser extends AbstractTokenParser
             $componentName = $match[2];
             $variable = $match[7];
 
-            $this->result = ['declaration' => $functionDeclaration, 'component' => $componentName, 'variable'=>$variable];
+            $this->result = ['declaration' => $functionDeclaration, 'component' => $componentName, 'variable' => $variable];
         }
 
     }
-    
+
 }

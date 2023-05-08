@@ -49,7 +49,7 @@ class ConsoleColors
         }
 
         // Add string and end coloring
-        $colored_string .=  $string . $suffix;
+        $colored_string .= $string . $suffix;
 
         return $colored_string;
     }

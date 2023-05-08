@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Ephect\Framework\Core;
 
@@ -12,25 +12,25 @@ trait IniLoaderTrait
             return false;
         }
 
-        $ini = parse_ini_file($path  . 'app.ini', TRUE, INI_SCANNER_TYPED);
-        if(isset($ini['application']['name'])) {
+        $ini = parse_ini_file($path . 'app.ini', TRUE, INI_SCANNER_TYPED);
+        if (isset($ini['application']['name'])) {
             StateRegistry::write('application', 'name', $ini['application']['name']);
         }
-        if(isset($ini['application']['title'])) {
+        if (isset($ini['application']['title'])) {
             StateRegistry::write('application', 'title', $ini['application']['title']);
         }
-        
-        foreach($ini as $key=>$values) {
+
+        foreach ($ini as $key => $values) {
             StateRegistry::write('ini', $key, $values);
         }
         unset($ini);
 
         $dataPath = realpath($path . 'data');
-        if(file_exists($dataPath)) {
+        if (file_exists($dataPath)) {
             $dataDir = dir($dataPath);
 
             while (($entry = $dataDir->read()) !== false) {
-                $info = (object) \pathinfo($entry);
+                $info = (object)\pathinfo($entry);
 
                 if ($info->extension == 'json') {
                     $conf = file_get_contents($dataPath . DIRECTORY_SEPARATOR . $entry);

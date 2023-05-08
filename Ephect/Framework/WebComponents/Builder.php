@@ -8,11 +8,11 @@ use Exception;
 class Builder
 {
 
-     /**
+    /**
      * Second creation step of the WebComponent
      *
      * Create a manifest file include all details passed to the command line
-     * 
+     *
      * @param string $tagName
      * @param string $className
      * @param string $entrypoint
@@ -36,7 +36,7 @@ class Builder
 
     /**
      * Third and last creation step of the WebComponent
-     * 
+     *
      * Read templates text, replace the markups and save into user application directory
      *
      * @param string $tagName
@@ -60,9 +60,9 @@ class Builder
         $componentText = str_replace('<TagName />', $tagName, $componentText);
         $componentText = str_replace('<Entrypoint />', $entrypoint, $componentText);
 
-        if(count($arguments) > 0) {
+        if (count($arguments) > 0) {
             $properties = '';
-            foreach($arguments as $property) {
+            foreach ($arguments as $property) {
                 $properties .= <<< HTML
                     this.$property\n
                 HTML;
@@ -71,7 +71,7 @@ class Builder
 
             $componentText = str_replace('<Properties />', $properties, $componentText);
 
-            $attributes = array_map(function($item) {
+            $attributes = array_map(function ($item) {
                 return "'$item'";
             }, $arguments);
 
@@ -89,7 +89,7 @@ class Builder
             $componentText = str_replace('<ObserveAttributes />', $observeAttributes, $componentText);
 
             $getAttributes = '';
-            foreach($arguments as $attribute) {
+            foreach ($arguments as $attribute) {
                 $getAttributes .= <<< HTML
                 get $attribute() {
                             return this.getAttribute('$attribute') ?? null

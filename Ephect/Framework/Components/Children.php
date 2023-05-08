@@ -32,37 +32,9 @@ class Children extends Tree implements ChildrenInterface
         return $this->name;
     }
 
-    public function parentProps(): array|object
-    {
-        if($this->parentProps === null && isset($this->props->props))  {
-            $this->parentProps = $this->props->props;
-        }
-
-        return $this->parentProps;
-    }
-
     public function props(): array|object
     {
         return $this->props;
-    }
-
-    public function getAllProps(): array|object
-    {
-        $parentProps = $this->parentProps();
-        $props = $this->props;
-
-        $parentProps = json_encode($parentProps);
-        $props = json_encode($props);
-
-        $parentProps = json_decode($parentProps, JSON_OBJECT_AS_ARRAY);
-        $props = json_decode($props, JSON_OBJECT_AS_ARRAY);
-
-        $allProps = array_merge(
-            $parentProps,
-            $props
-        );
-
-        return (object) $allProps;
     }
 
     public function getBuffer(): string
@@ -87,7 +59,7 @@ class Children extends Tree implements ChildrenInterface
 
         $args = [];
         foreach ($props as $key => $value) {
-            $args[] =  $key . '="' . $value . '"';
+            $args[] = $key . '="' . $value . '"';
         }
 
         return implode(" ", $args);
@@ -99,13 +71,41 @@ class Children extends Tree implements ChildrenInterface
         $props = $this->getAllProps();
         $value = isset($props->$attribute) ? $props->$attribute : null;
 
-        if($value === 'false') {
+        if ($value === 'false') {
             $value = false;
         }
-        if($value === 'true') {
+        if ($value === 'true') {
             $value = true;
         }
         return $value;
+    }
+
+    public function getAllProps(): array|object
+    {
+        $parentProps = $this->parentProps();
+        $props = $this->props;
+
+        $parentProps = json_encode($parentProps);
+        $props = json_encode($props);
+
+        $parentProps = json_decode($parentProps, JSON_OBJECT_AS_ARRAY);
+        $props = json_decode($props, JSON_OBJECT_AS_ARRAY);
+
+        $allProps = array_merge(
+            $parentProps,
+            $props
+        );
+
+        return (object)$allProps;
+    }
+
+    public function parentProps(): array|object
+    {
+        if ($this->parentProps === null && isset($this->props->props)) {
+            $this->parentProps = $this->props->props;
+        }
+
+        return $this->parentProps;
     }
 
 }

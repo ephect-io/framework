@@ -8,7 +8,7 @@ final class PhpTagsParser extends AbstractTokenParser
     {
         $re = '/({\?)/su';
         $this->html = preg_replace($re, '<?php', $this->html);
-                
+
         $re = '/(\?})/su';
         $this->html = preg_replace($re, '?> ', $this->html);
     }

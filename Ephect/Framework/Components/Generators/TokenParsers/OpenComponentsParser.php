@@ -26,7 +26,7 @@ final class OpenComponentsParser extends AbstractTokenParser
 
         $subject = $this->html;
 
-        $closure = function (ComponentEntityInterface $item, int $index)  use (&$subject, &$result) {
+        $closure = function (ComponentEntityInterface $item, int $index) use (&$subject, &$result) {
 
             if (!$item->hasCloser()) {
                 return;
@@ -34,7 +34,7 @@ final class OpenComponentsParser extends AbstractTokenParser
             $uid = $item->getUID();
 
             $opener = $item->getText();
-            $closer = ((object) $item->getCloser())->text;
+            $closer = ((object)$item->getCloser())->text;
             $componentName = $item->getName();
             // $componentBody = $item->getContents($subject);
             $componentBody = $item->getInnerHTML();
@@ -125,6 +125,23 @@ final class OpenComponentsParser extends AbstractTokenParser
         $this->html = $subject;
     }
 
+    public static function doArgumentsToString(array $componentArgs): ?string
+    {
+        $result = '';
+
+        foreach ($componentArgs as $key => $value) {
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
+            $pair = '"' . $key . '" => "' . urlencode($value) . '", ';
+            if ($value[0] === '$') {
+                $pair = '"' . $key . '" => ' . $value . ', ';
+            }
+            $result .= $pair;
+        }
+        return ($result === '') ? null : '[' . $result . ']';
+    }
+
     private function argumentsKeys(array $componentArgs): ?array
     {
         $result = [];
@@ -146,22 +163,5 @@ final class OpenComponentsParser extends AbstractTokenParser
         }
 
         return " use (" . $args . ")";
-    }
-
-    public static function doArgumentsToString(array $componentArgs): ?string
-    {
-        $result = '';
-
-        foreach ($componentArgs as $key => $value) {
-            if (is_array($value)) {
-                $value = json_encode($value);
-            }
-            $pair = '"' . $key . '" => "' . urlencode($value) . '", ';
-            if ($value[0] === '$') {
-                $pair = '"' . $key . '" => ' . $value . ', ';
-            }
-            $result .= $pair;
-        }
-        return ($result === '') ? null : '[' . $result . ']';
     }
 }

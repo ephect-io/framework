@@ -42,11 +42,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $this->declaration;
     }
 
-    public function resetDeclaration(): void
-    {
-        $this->declaration = null;
-    }
-
     protected function setDeclaration(): void
     {
         $fqName = ComponentRegistry::read($this->uid);
@@ -64,6 +59,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $decl = new ComponentDeclaration($struct);
 
         $this->declaration = $decl;
+    }
+
+    public function resetDeclaration(): void
+    {
+        $this->declaration = null;
     }
 
     public function getEntity(): ?ComponentEntity
@@ -97,12 +97,21 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     public function getFullyQualifiedFunction(): ?string
     {
         if ($this->function === null) return null;
-        return $this->namespace  . '\\' . $this->function;
+        return $this->namespace . '\\' . $this->function;
     }
 
     public function getFunction(): ?string
     {
         return $this->function;
+    }
+
+    public function composedOfUnique(): ?array
+    {
+        $result = $this->composedOf();
+
+        if ($result === null) return null;
+
+        return array_unique($result);
     }
 
     public function composedOf(): ?array
@@ -122,15 +131,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         }
 
         return $names;
-    }
-
-    public function composedOfUnique(): ?array
-    {
-        $result = $this->composedOf();
-
-        if ($result === null) return null;
-
-        return array_unique($result);
     }
 
     public function findComponent(string $componentName, string $motherUID): array
@@ -204,9 +204,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     protected function format(string $html): string
     {
         $config = [
-            'indent'      => true,
+            'indent' => true,
             'output-html' => true,
-            'wrap'        => 200
+            'wrap' => 200
         ];
 
         $tidy = new tidy;

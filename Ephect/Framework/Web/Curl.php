@@ -28,8 +28,8 @@ class Curl
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
         }
-         curl_setopt($ch, CURLOPT_HEADER, 0);
-         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
         $content = curl_exec($ch);
         $error = curl_error($ch);
@@ -37,16 +37,16 @@ class Curl
 
         $info = curl_getinfo($ch);
 
-         $header = (isset($info['request_header'])) ? $info['request_header'] : '';
+        $header = (isset($info['request_header'])) ? $info['request_header'] : '';
 
-         if ($errno > 0) {
-             throw new \Exception($error, $errno);
-         }
-         if ($header == '') {
-             throw new \Exception("Curl is not working fine for some reason. Are you using Android ?");
-         }
+        if ($errno > 0) {
+            throw new \Exception($error, $errno);
+        }
+        if ($header == '') {
+            throw new \Exception("Curl is not working fine for some reason. Are you using Android ?");
+        }
 
-         $code = (int) $info['http_code'];
+        $code = (int)$info['http_code'];
         curl_close($ch);
 
         $result = [$code, $header, $content];

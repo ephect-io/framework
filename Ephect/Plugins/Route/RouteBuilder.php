@@ -34,9 +34,9 @@ class RouteBuilder extends AbstractBuilder
         $translated = $rule;
 
         $c = count($matches);
-        for($i = 0; $i < $c; $i++) {
+        for ($i = 0; $i < $c; $i++) {
             $match = preg_quote($matches[$i][0]);
-            $argn = $i+1;
+            $argn = $i + 1;
             $translated = preg_replace('/' . $match . '/m', '\\$' . $argn, $translated, 1);
         }
 
@@ -53,10 +53,10 @@ class RouteBuilder extends AbstractBuilder
         }
 
         $struct = new RouteStructure([
-            'method' => $route->getMethod(), 
+            'method' => $route->getMethod(),
             'rule' => $rule,
             'normalized' => $rule,
-            'redirect' => $route->getRedirect(), 
+            'redirect' => $route->getRedirect(),
             'translation' => $translated,
             'error' => $route->getError(),
             'exact' => $route->isExact()
@@ -87,10 +87,10 @@ class RouteBuilder extends AbstractBuilder
         $translated = $rule;
 
         $c = count($matches);
-        for($i = 0; $i < $c; $i++) {
-            $argn = $i+1;
+        for ($i = 0; $i < $c; $i++) {
+            $argn = $i + 1;
             $match = preg_quote($matches[$i][2]);
-            $subst = ($i === 0 ? '?':'&') . $matches[$i][3] . '=\\$' . $argn;
+            $subst = ($i === 0 ? '?' : '&') . $matches[$i][3] . '=\\$' . $argn;
             $translated = preg_replace('@' . $match . '@m', $subst, $translated, 1);
         }
 

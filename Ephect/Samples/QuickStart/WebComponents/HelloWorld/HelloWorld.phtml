@@ -16,7 +16,7 @@
         constructor() {
             super();
 
-            <Properties/>
+            this.word
             this.attachShadow({mode: 'open'});
             this.shadowRoot.innerHTML = document.getElementById('HelloWorld').innerHTML
 
@@ -29,24 +29,24 @@
 
         }
 
-    static get observeAttributes() {
+        static get observeAttributes() {
             /**
-            * Attributes passed inline to the component
-            */
+             * Attributes passed inline to the component
+             */
             return ['word']
         }
-    get word() {
+
+        get word() {
             return this.getAttribute('word') ?? null
         }
-        
+
 
         async connectedCallback() {
             /**
              * The magic starts here
              */
             const base = new HelloWorld()
-            base.
-            <Entrypoint/>()
+            base.hello()
         }
     }
 

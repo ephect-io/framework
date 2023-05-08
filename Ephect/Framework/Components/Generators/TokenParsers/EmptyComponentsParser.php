@@ -18,7 +18,7 @@ class EmptyComponentsParser extends AbstractTokenParser
 
         foreach ($matches as $match) {
             $contents = trim($match[4]);
-            if($contents === '') {
+            if ($contents === '') {
                 $this->result = true;
                 $subst = '<$1$2/>';
                 $tag = $match[1];
@@ -28,7 +28,7 @@ class EmptyComponentsParser extends AbstractTokenParser
 
                 // Replace only the first occurrence of $tag
                 $this->html = preg_replace($re, $subst, $subject, 1);
-            } 
+            }
 
         }
 

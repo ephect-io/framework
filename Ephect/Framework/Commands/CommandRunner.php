@@ -10,9 +10,10 @@ class CommandRunner extends Element
 {
 
     public function __construct(
-        private Application $_application,
+        private Application                $_application,
         private CommandCollectionInterface $_commands
-    ) {
+    )
+    {
     }
 
     public function run(): void
@@ -72,6 +73,7 @@ class CommandRunner extends Element
                     ||----w |
                     ||     ||
 
-        COWSAY);
+        COWSAY
+        );
     }
 }

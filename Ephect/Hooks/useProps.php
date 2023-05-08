@@ -41,7 +41,7 @@ function useProps(Closure $callback, ?object $props = null): void
 
             if (!isset($newProps->$prop)) {
                 // $newProps->$prop = $defaults[$prop];
-                $newArgs[] =  $defaults[$prop];
+                $newArgs[] = $defaults[$prop];
             } else {
                 $newProps->$prop = $props->$prop;
                 $newArgs[] = $props->$prop;

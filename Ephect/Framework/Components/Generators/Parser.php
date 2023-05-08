@@ -22,6 +22,25 @@ class Parser implements ParserInterface
         }
     }
 
+    public function doUncache(): bool
+    {
+        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->component->getMotherUID());
+        return CodeRegistry::uncache();
+    }
+
+    public static function doArgumentsToString(array $componentArgs): ?string
+    {
+        $result = '';
+
+        foreach ($componentArgs as $key => $value) {
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
+            $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
+        }
+        return ($result === '') ? null : '[' . $result . ']';
+    }
+
     public function getHtml(): ?string
     {
         return $this->html;
@@ -30,12 +49,6 @@ class Parser implements ParserInterface
     public function doCache(): bool
     {
         return CodeRegistry::cache();
-    }
-
-    public function doUncache(): bool
-    {
-        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->component->getMotherUID());
-        return CodeRegistry::uncache();
     }
 
     public function doArguments(string $componentArgs): ?array
@@ -61,19 +74,6 @@ class Parser implements ParserInterface
         }
 
         return $result;
-    }
-
-    public static function doArgumentsToString(array $componentArgs): ?string
-    {
-        $result = '';
-
-        foreach ($componentArgs as $key => $value) {
-            if (is_array($value)) {
-                $value = json_encode($value);
-            }
-            $result .= '"' . $key . '" => "' . urlencode($value) . '", ';
-        }
-        return ($result === '') ? null : '[' . $result . ']';
     }
 
 }

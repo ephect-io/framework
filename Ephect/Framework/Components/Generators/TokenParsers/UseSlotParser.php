@@ -24,11 +24,11 @@ final class UseSlotParser extends AbstractTokenParser
         $this->doTranslation($parameter);
         $this->doDeclaration($parameter);
     }
-    
+
     private function doTranslation(null|string|array $parameter = null): void
     {
         $re = '/useSlot\(function[ ]*\(((\$props|\$children),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
-            
+
         $str = $this->html;
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
@@ -76,7 +76,7 @@ final class UseSlotParser extends AbstractTokenParser
 
         if ($declVars === true) {
             $this->result = '';
-            return;            
+            return;
         }
 
         $this->useVariables = $declVars;

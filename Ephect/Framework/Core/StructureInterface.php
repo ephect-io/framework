@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Core;
 
-interface StructureInterface 
+interface StructureInterface
 {
-    public function toArray() : array;
+    public function toArray(): array;
 }

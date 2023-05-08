@@ -62,14 +62,126 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $this->bindNode();
     }
 
+    public function bindNode(): void
+    {
+        if ($this->elementList === false || $this->elementList === null) {
+            return;
+        }
+
+        $this->elementList = array_map(function ($child) {
+            return new ComponentEntity(new ComponentStructure($child));
+        }, $this->elementList);
+    }
+
+    public static function buildFromArray(?array $list): ?ComponentEntity
+    {
+        $result = null;
+
+        if ($list === null) {
+            return null;
+        }
+
+        $depthIds = static::listIdsByDepth($list);
+
+        $c = count($list);
+
+        for ($j = 0; $j < $c; $j++) {
+            $i = $depthIds[$j];
+            if ($list[$i]['parentId'] === -1) {
+                continue;
+            }
+            $pId = $list[$i]['parentId'];
+
+            if (!is_array($list[$pId]['node'])) {
+                $list[$pId]['node'] = [];
+            }
+            $list[$pId]['node'][] = $list[$i];
+            unset($list[$i]);
+        }
+
+        if (count($list) === 1) {
+            $result = new ComponentEntity(new ComponentStructure($list[0]));
+        } elseif (count($list) > 1) {
+            $result = self::_makeFragment();
+            foreach ($list as $item) {
+                $entity = new ComponentEntity(new ComponentStructure($item));
+                $result->add($entity);
+            }
+        }
+
+        return $result;
+    }
+
+    private static function listIdsByDepth(?array $list): ?array
+    {
+        if ($list === null) {
+            return null;
+        }
+
+        $result = [];
+
+        $depths = [];
+
+        foreach ($list as $match) {
+
+            $struct = new ComponentStructure($match);
+            $depths[$struct->depth] = 1;
+        }
+
+        $maxDepth = count($depths);
+        for ($i = $maxDepth; $i > -1; $i--) {
+            foreach ($list as $match) {
+                if ($match["depth"] == $i) {
+                    $result[] = $match['id'];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private static function _makeFragment(): ComponentEntityInterface
+    {
+        $json = <<<JSON
+            {
+                "closer": {
+                    "id": 1,
+                    "parentId": 0,
+                    "text": "<\/>",
+                    "startsAt": 0,
+                    "endsAt": 0,
+                    "contents": {
+                        "startsAt": 0,
+                        "endsAt": 0
+                    }
+                },
+                "uid": "00000000-0000-0000-0000-000000000000",
+                "id": 0,
+                "name": "FakeFragment",
+                "class": null,
+                "component": "Ephect",
+                "text": "<>",
+                "method": "echo",
+                "startsAt": 0,
+                "endsAt": 0,
+                "props": [],
+                "node": false,
+                "hasCloser": true,
+                "isSibling": false,
+                "parentId": -1,
+                "depth": 0
+            }
+        JSON;
+
+        $fragment = json_decode($json, JSON_OBJECT_AS_ARRAY);
+
+        return new ComponentEntity(new ComponentStructure($fragment));
+
+    }
+
     public function getParentId(): int
     {
         return $this->parentId;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     public function getText(): string
@@ -117,74 +229,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $this->end;
     }
 
-    private static function listIdsByDepth(?array $list): ?array
-    {
-        if ($list === null) {
-            return null;
-        }
-
-        $result = [];
-
-        $depths = [];
-
-        foreach ($list as $match) {
-
-            $struct = new ComponentStructure($match);
-            $depths[$struct->depth] = 1;
-        }
-
-        $maxDepth = count($depths);
-        for ($i = $maxDepth; $i > -1; $i--) {
-            foreach ($list as $match) {
-                if ($match["depth"] == $i) {
-                    $result[] = $match['id'];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    public static function buildFromArray(?array $list): ?ComponentEntity
-    {
-        $result = null;
-
-        if ($list === null) {
-            return null;
-        }
-
-        $depthIds = static::listIdsByDepth($list);
-
-        $c = count($list);
-
-        for ($j = 0; $j < $c; $j++) {
-            $i = $depthIds[$j];
-            if ($list[$i]['parentId'] === -1) {
-                continue;
-            }
-            $pId = $list[$i]['parentId'];
-
-            if (!is_array($list[$pId]['node'])) {
-                $list[$pId]['node'] = [];
-            }
-            $list[$pId]['node'][] = $list[$i];
-            unset($list[$i]);
-        }
-
-        if (count($list) === 1) {
-            $result = new ComponentEntity(new ComponentStructure($list[0]));
-        }
-        elseif (count($list) > 1) {
-            $result = self::_makeFragment();
-            foreach ($list as $item) {
-                $entity = new ComponentEntity(new ComponentStructure($item));
-                $result->add($entity);
-            }
-        }
-
-        return $result;
-    }
-
     public function composedOf(): array
     {
         $names = [];
@@ -197,15 +241,9 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return $names;
     }
 
-    public function bindNode(): void
+    public function getName(): string
     {
-        if ($this->elementList === false || $this->elementList === null) {
-            return;
-        }
-
-        $this->elementList = array_map(function ($child) {
-            return new ComponentEntity(new ComponentStructure($child));
-        }, $this->elementList);
+        return $this->name;
     }
 
     public function toArray(): array
@@ -227,11 +265,11 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return null;
     }
 
-    public function getInnerHTML(): string 
+    public function getInnerHTML(): string
     {
         $result = '';
 
-        if(!isset($this->closer['contents']['text'])) {
+        if (!isset($this->closer['contents']['text'])) {
             return $result;
         }
 
@@ -240,44 +278,5 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $result = base64_decode($result);
 
         return $result;
-    }
-
-    private static function _makeFragment(): ComponentEntityInterface
-    {
-        $json = <<<JSON
-            {
-                "closer": {
-                    "id": 1,
-                    "parentId": 0,
-                    "text": "<\/>",
-                    "startsAt": 0,
-                    "endsAt": 0,
-                    "contents": {
-                        "startsAt": 0,
-                        "endsAt": 0
-                    }
-                },
-                "uid": "00000000-0000-0000-0000-000000000000",
-                "id": 0,
-                "name": "FakeFragment",
-                "class": null,
-                "component": "Ephect",
-                "text": "<>",
-                "method": "echo",
-                "startsAt": 0,
-                "endsAt": 0,
-                "props": [],
-                "node": false,
-                "hasCloser": true,
-                "isSibling": false,
-                "parentId": -1,
-                "depth": 0
-            }
-        JSON;
-
-        $fragment = json_decode($json, JSON_OBJECT_AS_ARRAY);
-
-        return new ComponentEntity(new ComponentStructure($fragment));
-
     }
 }

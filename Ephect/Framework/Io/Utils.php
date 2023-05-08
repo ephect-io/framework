@@ -20,14 +20,14 @@ class Utils
         if ($noDepth) {
             $iterator = dir($path);
 
-            while($file = $iterator->read()) {
+            while ($file = $iterator->read()) {
                 $fi = pathinfo($file);
 
-                
-                if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
+
+                if ($fi['basename'] == '.' || $fi['basename'] == '..') {
                     continue;
                 }
-                
+
                 if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
                     continue;
                 }
@@ -45,7 +45,7 @@ class Utils
             foreach ($iterator as $file) {
                 $fi = pathinfo($file->getPathName());
 
-                if ($fi['basename'] ==  '.' || $fi['basename'] == '..') {
+                if ($fi['basename'] == '.' || $fi['basename'] == '..') {
                     continue;
                 }
 

@@ -28,7 +28,7 @@ function Route($props)
         [$state, $setState] = useState();
         $routes = isset($state->routes) ? $state->routes : [];
 
-        array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code, ]);
+        array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,]);
         useState(['routes' => $routes]);
 
     });

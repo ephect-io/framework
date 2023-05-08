@@ -16,14 +16,14 @@ final class UsePropsParser extends AbstractTokenParser
 
     public function do(null|string|array $parameter = null): void
     {
-        if(!strpos($this->html, 'useProps')) {
+        if (!strpos($this->html, 'useProps')) {
             return;
         }
-        
+
         // $re = '/useProps\(function[ ]*\(\$(props|children), ((\s|.*?)+)\)[ ]*{/m';
         // $re = '/useProps\(function[ ]*\((\$(props|children),[ ]*)?((\s|.*?)+)\)[ ]+use[ ]*\(((\s|.*?)+)\)[ ]*{((\s|.*?)+)}\);/m';
         $re = '/useProps\(function[ ]*\(((\$props|\$children),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
-            
+
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -43,17 +43,17 @@ final class UsePropsParser extends AbstractTokenParser
             return $item !== '$props' && $item !== '$children' && trim($item) !== '';
         });
 
-        if(count($useslVars) > 0) {
+        if (count($useslVars) > 0) {
             $declVarTypes = array_merge($declVarTypes, $useslVars);
         }
 
-        $declVarValues = count($declVarTypes) === 0 ?: array_map(function($item) {
+        $declVarValues = count($declVarTypes) === 0 ?: array_map(function ($item) {
             return $this->declareTypedVariables($item);
         }, $declVarTypes);
 
         if ($declVarValues === true) {
             $this->result = '';
-            return;            
+            return;
         }
 
         $params = str_replace('$', '&$', $params);
@@ -64,11 +64,11 @@ final class UsePropsParser extends AbstractTokenParser
         // }, $declVarTypes);
 
         /**
-         * 
+         *
          * $this->html =  preg_replace($re, 'useProps(function() use ($1$3,$6) {$8}, [' . implode(', ', $declDefValues) . '], $2);', $this->html, 1);
          */
         $this->html = preg_replace($re, 'useProps(function() use ($1' . $params . ', ' . $uses . ') {$8}, $2);', $this->html, 1);
-            
+
         $decl2 = implode(' ', $declVarValues);
 
         $decl1 = substr($this->html, 0, $this->component->getBodyStart() + 1);

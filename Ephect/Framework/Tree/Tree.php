@@ -11,16 +11,6 @@ class Tree implements TreeInterface
         $this->elementList = $list;
     }
 
-    public function hasChildren(): bool 
-    {
-        return $this->count() > 0;
-    }
-
-    public function count(): int
-    {
-        return count($this->elementList);
-    }
-
     public function getIterator(): TreeIterator
     {
         return new TreeIterator($this->elementList);
@@ -34,22 +24,22 @@ class Tree implements TreeInterface
         return $this->elementList[$index];
     }
 
+    public function addArray($array): int
+    {
+        $result = 0;
+        foreach ($array as $item) {
+            $result = $this->add($item);
+        }
+
+        return $result;
+    }
+
     public function add($object): int
     {
         $index = count($this->elementList);
         $this->elementList[$index] = $object;
 
         return $index;
-    }
-
-    public function addArray($array): int
-    { 
-        $result = 0;
-        foreach($array as $item) {
-            $result = $this->add($item);
-        }
-
-        return $result;
     }
 
     public function insert($object, $index): bool
@@ -94,17 +84,6 @@ class Tree implements TreeInterface
         $this->elementList = [];
     }
 
-    public function forEach(callable $callback, TreeInterface $tree): void
-    {
-        foreach ($tree as $key => $item) {
-            call_user_func($callback, $item, $key);
-
-            if ($item->hasChildren()) {
-                $this->forEach($callback, $item, $key);
-            }
-        }
-    }
-
     public function forEachRecursive(callable $callback, TreeInterface $tree): void
     {
         foreach ($tree as $key => $item) {
@@ -113,6 +92,27 @@ class Tree implements TreeInterface
             }
 
             call_user_func($callback, $item, $key);
+        }
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->count() > 0;
+    }
+
+    public function count(): int
+    {
+        return count($this->elementList);
+    }
+
+    public function forEach(callable $callback, TreeInterface $tree): void
+    {
+        foreach ($tree as $key => $item) {
+            call_user_func($callback, $item, $key);
+
+            if ($item->hasChildren()) {
+                $this->forEach($callback, $item, $key);
+            }
         }
     }
 }

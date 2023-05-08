@@ -22,7 +22,7 @@ class MotherSlotsParser extends AbstractTokenParser
 
         [$source, $dest] = $slotParser->getResult();
 
-        if($source === "" || $source === null) {
+        if ($source === "" || $source === null) {
             return;
         }
 
@@ -31,7 +31,7 @@ class MotherSlotsParser extends AbstractTokenParser
         $motherUID = $this->component->getMotherUID();
         $doc = new ComponentDocument($this->component);
         $doc->matchAll();
-       
+
         $firstMatch = $doc->getNextMatch();
         if ($firstMatch === null || !$firstMatch->hasCloser()) {
             $this->result = null;
@@ -41,7 +41,7 @@ class MotherSlotsParser extends AbstractTokenParser
         $functionName = $firstMatch->getName();
 
         $parentComponent = new Component($functionName, $motherUID);
-        if(!$parentComponent->load()) {
+        if (!$parentComponent->load()) {
             $this->result = null;
             return;
         }
@@ -59,22 +59,22 @@ class MotherSlotsParser extends AbstractTokenParser
         $decl3 = substr($parentHtml, $parentComponent->getBodyStart() + 1);
 
         // Remove useSlot from child component
-        if($source !== "" && $source !== null && $dest !== "" && $dest !== null) {
+        if ($source !== "" && $source !== null && $dest !== "" && $dest !== null) {
             $this->html = str_replace($source, "", $this->html);
 
             $uses = '';
-            if(count($this->parent->getUses())) {
-                foreach($this->parent->getUses() as $use) {
+            if (count($this->parent->getUses())) {
+                foreach ($this->parent->getUses() as $use) {
                     $uses .= "\tuse " . $use . ";\n";
                 }
-    
+
                 $uses = "\n" . $uses;
             }
 
             $decl0 .= $uses;
 
             $decl1 = str_replace($parentNamespace, $decl0, $decl1);
-            
+
             // Add useSlot in mother component
             $parentHtml = $decl1 . "\n\t" . $dest . "\n" . $decl3;
         }

@@ -13,46 +13,10 @@ final class PhpInfo
         return ($asArray) ? $section['section']['values'] : $section->section->values;
     }
 
-    public static function getConfigurationSection(bool $asArray = false)
-    {
-        $section = self::getSection(INFO_CONFIGURATION, $asArray);
-        return ($asArray) ? $section['section']['values'] : $section->section->values;
-    }
-
-    public static function getModulesSection(bool $asArray = false)
-    {
-        $section = self::getSection(INFO_MODULES, $asArray);
-        return ($asArray) ? $section['section']['values'] : $section->section->values;
-    }
-
-    public static function getEnvironmentSection(bool $asArray = false)
-    {
-        $section = self::getSection(INFO_ENVIRONMENT, $asArray);
-        return ($asArray) ? $section['section']['values'] : $section->section->values;
-    }
-
-    public static function getPhpVariablesSection(bool $asArray = false)
-    {
-        $section = self::getSection(INFO_VARIABLES, $asArray);
-        return ($asArray) ? $section['section']['values'] : $section->section->values;
-    }
-
-    public static function getPhpCreditstSection(bool $asArray = false)
-    {
-        $section = self::getSection(INFO_CREDITS, $asArray);
-        return ($asArray) ? $section['section']['values'] : $section->section->values;
-    }
-
-    public static function getLicenseSection(bool $asArray = false)
-    {
-        $section = self::getSection(INFO_LICENSE, $asArray);
-        return ($asArray) ? $section['section']['values'] : $section->section->values;
-    }
-
     public static function getSection(int $section, bool $asArray = false)
     {
 
-        if(StateRegistry::exists('ini', $section)) {
+        if (StateRegistry::exists('ini', $section)) {
             return StateRegistry::read('ini', $section);
         }
 
@@ -139,6 +103,62 @@ final class PhpInfo
         return $root;
     }
 
+    private static function _formatKey(string $key): string
+    {
+        $key = trim($key);
+        $key = str_replace('(', '', $key);
+        $key = str_replace(')', '', $key);
+        $key = str_replace('/', '_', $key);
+        $key = str_replace(' ', '_', $key);
+        $key = str_replace('__', '_', $key);
+        $key = strtolower($key);
+
+        return $key;
+    }
+
+    private static function _formatValue(string $value): string
+    {
+        // $value = str_replace("\/", '/', $value);
+
+        return trim($value);
+    }
+
+    public static function getConfigurationSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_CONFIGURATION, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getModulesSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_MODULES, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getEnvironmentSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_ENVIRONMENT, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getPhpVariablesSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_VARIABLES, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getPhpCreditstSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_CREDITS, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getLicenseSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_LICENSE, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
     public static function displaySection(int $infoSection, bool $asJSON = false): void
     {
         $array = self::getSection($infoSection);
@@ -171,25 +191,5 @@ final class PhpInfo
             }
             echo '</ul>' . PHP_EOL;
         }
-    }
-
-    private static function _formatKey(string $key): string
-    {
-        $key = trim($key);
-        $key = str_replace('(', '', $key);
-        $key = str_replace(')', '', $key);
-        $key = str_replace('/', '_', $key);
-        $key = str_replace(' ', '_', $key);
-        $key = str_replace('__', '_', $key);
-        $key = strtolower($key);
-
-        return $key;
-    }
-
-    private static function _formatValue(string $value): string
-    {
-        // $value = str_replace("\/", '/', $value);
-
-        return trim($value);
     }
 }

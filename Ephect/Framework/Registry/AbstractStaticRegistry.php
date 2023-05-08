@@ -3,14 +3,8 @@
 namespace Ephect\Framework\Registry;
 
 abstract class AbstractStaticRegistry extends AbstractRegistry implements StaticRegistryInterface, AbstractRegistryInterface
-{    
-    public abstract static function getInstance(): AbstractRegistryInterface;
+{
     public abstract static function reset(): void;
-
-    public static function write(string $key, $item): void
-    {
-        static::getInstance()->_write($key, $item);
-    }
 
     public static function safeWrite(string $key, $item): bool
     {
@@ -19,6 +13,18 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
         }
 
         return $result;
+    }
+
+    public static function exists(string $key): bool
+    {
+        return static::getInstance()->_exists($key);
+    }
+
+    public abstract static function getInstance(): AbstractRegistryInterface;
+
+    public static function write(string $key, $item): void
+    {
+        static::getInstance()->_write($key, $item);
     }
 
     public static function read($key, $item = null)
@@ -45,11 +51,6 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
     {
         static::getInstance()->_delete($key);
     }
-    
-    public static function exists(string $key): bool
-    {
-        return static::getInstance()->_exists($key);
-    }
 
     public static function setCacheDirectory(string $directory): void
     {
@@ -60,8 +61,8 @@ abstract class AbstractStaticRegistry extends AbstractRegistry implements Static
     {
         return static::getInstance()->_getCacheFilename($asArray);
     }
-    
-    public static function getFlatFilename(): string 
+
+    public static function getFlatFilename(): string
     {
         return static::getInstance()->_getFlatFilename();
     }

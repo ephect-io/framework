@@ -35,7 +35,7 @@ class Application extends AbstractApplication
 
         $app = new Component('App');
         $app->render();
-        
+
         // $motherUID = $app->getMotherUID();
         // $compiler->buildWebcomponents($motherUID);
 
@@ -91,5 +91,5 @@ class Application extends AbstractApplication
         return $constants;
     }
 
-  
+
 }

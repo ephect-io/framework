@@ -4,8 +4,8 @@ namespace Ephect\Framework\Core;
 
 class Enumerator implements EnumeratorInterface
 {
-    protected int $value = 0;
     protected static Enumerator|null $instance = null;
+    protected int $value = 0;
 
     protected function __construct(int $value)
     {

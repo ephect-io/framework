@@ -19,34 +19,29 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
         $this->collectCommands();
     }
 
-    public function commands(): array
-    {
-        return $this->_commands;
-    }
-
     private function collectCommands(): void
     {
         $usage = [];
         $commandFiles = Utils::walkTreeFiltered(COMMANDS_ROOT, ['php']);
 
         $allFiles = [
-            (object) ["root" => COMMANDS_ROOT, "files" => $commandFiles],
+            (object)["root" => COMMANDS_ROOT, "files" => $commandFiles],
         ];
 
 
-        if(file_exists(CUSTOM_COMMANDS_ROOT)) {
+        if (file_exists(CUSTOM_COMMANDS_ROOT)) {
             $customCommandFiles = Utils::walkTreeFiltered(CUSTOM_COMMANDS_ROOT, ['php']);
-            $allFiles[] = (object) ["root" => CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles];
+            $allFiles[] = (object)["root" => CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles];
         }
 
 
         foreach ($allFiles as $entry) {
             $root_dir = $entry->root;
-            foreach($entry->files as $filename) {
+            foreach ($entry->files as $filename) {
                 [$namespace, $class] = ElementUtils::getClassDefinitionFromFile($root_dir . $filename);
                 $fqClass = "$namespace\\$class";
 
-                if($class !== 'Main') {
+                if ($class !== 'Main') {
                     continue;
                 }
 
@@ -61,7 +56,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 $desc = $commandArgs['desc'];
                 $isPhar = $commandArgs['isPhar'] ?? '';
 
-                if($isPhar) {
+                if ($isPhar) {
                     continue;
                 }
 
@@ -79,5 +74,10 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
         ksort($usage);
 
         StateRegistry::write('commands', $usage);
+    }
+
+    public function commands(): array
+    {
+        return $this->_commands;
     }
 }

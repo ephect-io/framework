@@ -22,8 +22,13 @@ function Home()
             <QuickStartCom message="Hello World!" from="the app" />
         </div>
         <Slot name="javascripts">
-            <script src="js/ephect.js"></script>
-            <script type="module" src="js/runtime/CodeWriter.mjs"></script>
+            <script type="module" src="/js/runtime/CodeWriter/CodeWriter.mjs"></script>
+            <script src="ajil.js"
+                data-init="doSomething"
+                data-depends="/js/fake-dep.js"
+                data-sources="/js/home.js"
+            >
+            </script>
         </Slot>
     </Mother>
     HTML);

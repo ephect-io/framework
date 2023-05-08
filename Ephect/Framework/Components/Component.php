@@ -10,7 +10,7 @@ class Component extends AbstractFileComponent implements FileComponentInterface
 
     public function makeComponent(string $filename, string &$html): void
     {
-        $info = (object) pathinfo($filename);
+        $info = (object)pathinfo($filename);
         $namespace = CONFIG_NAMESPACE;
         $function = $info->filename;
 
@@ -28,14 +28,14 @@ class Component extends AbstractFileComponent implements FileComponentInterface
 
         Utils::safeWrite(COPY_DIR . $filename, $html);
     }
-    
+
     public function parse(): void
     {
         parent::parse();
 
         $this->cacheHtml();
     }
-    
+
     public function analyse(): void
     {
         parent::analyse();

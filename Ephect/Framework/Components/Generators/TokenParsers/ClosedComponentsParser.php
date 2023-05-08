@@ -25,7 +25,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
         $subject = $this->html;
 
-        $closure = function (ComponentEntityInterface $item, int $index)  use (&$subject, &$result) {
+        $closure = function (ComponentEntityInterface $item, int $index) use (&$subject, &$result) {
 
             if ($item->hasCloser()) {
                 return;
@@ -58,7 +58,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
                     $tag = $manifest->getTag();
                     $text = str_replace($componentName, $tag, $component);
                     $text = str_replace('/>', '>', $text);
-                    $text .=  '</' . $tag . '>';
+                    $text .= '</' . $tag . '>';
                     Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $text);
                 }
             }

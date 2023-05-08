@@ -19,9 +19,9 @@ abstract class AbstractBuilder
     protected function buildEx(string $class): ElementInterface
     {
 
-        $struct  = (new PropsValidator($this->props, $this->struct))->validate();
+        $struct = (new PropsValidator($this->props, $this->struct))->validate();
 
         return new $class($struct);
     }
-    
+
 }

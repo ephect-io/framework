@@ -10,8 +10,8 @@ class Element extends StaticElement implements ElementInterface
 
     use ElementTrait;
 
-    private ?ReflectionClass $_reflection = null;
     protected array $children = [];
+    private ?ReflectionClass $_reflection = null;
 
     public function __construct(?ElementInterface $parent = null, ?string $id = null)
     {
@@ -19,12 +19,30 @@ class Element extends StaticElement implements ElementInterface
         $this->id = ($id === null) ? '_' . time() : $id;
     }
 
-    public function getReflection(): ?ReflectionClass
+    public static function getAttributesData(object $instance): array
     {
-        if ($this->_reflection == null) {
-            $this->_reflection = new ReflectionClass(get_class($this));
+        $result = [];
+        $temp = [];
+
+        $reflection = new ReflectionClass($instance);
+        $attributes = $reflection->getAttributes();
+
+        foreach ($attributes as $attribute) {
+            $name = $attribute->getName();
+            $args = $attribute->getArguments();
+
+            if (isset($temp[$name])) {
+                $temp[$name] = array_merge($temp[$name], $args);
+            } else {
+                $temp[$name] = $args;
+            }
         }
-        return $this->_reflection;
+
+        foreach ($temp as $key => $value) {
+            $result[] = ["name" => $key, "args" => $value];
+        }
+
+        return $result;
     }
 
     public function getMethodParameters($method): ?array
@@ -38,6 +56,14 @@ class Element extends StaticElement implements ElementInterface
         }
 
         return $params;
+    }
+
+    public function getReflection(): ?ReflectionClass
+    {
+        if ($this->_reflection == null) {
+            $this->_reflection = new ReflectionClass(get_class($this));
+        }
+        return $this->_reflection;
     }
 
     public function addChild(ElementInterface $child)
@@ -70,32 +96,5 @@ class Element extends StaticElement implements ElementInterface
     {
         $reflection = $this->getReflection();
         return $reflection->getFileName();
-    }
-
-
-    public static function getAttributesData(object $instance): array
-    {
-        $result = [];
-        $temp = [];
-
-        $reflection = new ReflectionClass($instance);
-        $attributes = $reflection->getAttributes();
-
-        foreach ($attributes as $attribute) {
-            $name = $attribute->getName();
-            $args = $attribute->getArguments();
-
-            if (isset($temp[$name])) {
-                $temp[$name] = array_merge($temp[$name], $args);
-            } else {
-                $temp[$name] = $args;
-            }
-        }
-
-        foreach ($temp as $key => $value) {
-            $result[] = ["name" => $key, "args" => $value];
-        }
-
-        return $result;
     }
 }

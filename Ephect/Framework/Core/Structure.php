@@ -12,9 +12,9 @@ class Structure implements StructureInterface
         if (!is_array($props) && !is_object($props)) {
             return null;
         }
-        
+
         foreach ($props as $key => $value) {
-            if(!property_exists($this, $key)) {
+            if (!property_exists($this, $key)) {
                 throw new Error("The property [$key] is not defined.");
             }
 
@@ -23,7 +23,7 @@ class Structure implements StructureInterface
         }
     }
 
-    public function toArray() : array
+    public function toArray(): array
     {
         return get_object_vars($this);
     }

@@ -16,7 +16,7 @@ final class ValuesParser extends AbstractTokenParser
         foreach ($matches as $match) {
             $variable = $match[1];
 
-            if($variable === '') {
+            if ($variable === '') {
                 continue;
             }
 
@@ -39,5 +39,5 @@ final class ValuesParser extends AbstractTokenParser
         }
 
     }
-    
+
 }

@@ -34,26 +34,6 @@ class ParserService implements ParserServiceInterface
     protected $openComponentList = [];
     protected $result = null;
 
-    public function getVariables(): ?array
-    {
-        return $this->useVariables;
-    }
-
-    public function getUses(): ?array
-    {
-        return $this->useTypes;
-    }
-
-    public function getResult(): null|string|array|bool
-    {
-        return $this->result;
-    }
-
-    public function getHtml(): string
-    {
-        return $this->html;
-    }
-
     public function getChildren(): ?object
     {
         return $this->children;
@@ -67,6 +47,11 @@ class ParserService implements ParserServiceInterface
         $this->result = $p->getResult();
     }
 
+    public function getResult(): null|string|array|bool
+    {
+        return $this->result;
+    }
+
     public function doChildSlots(FileComponentInterface $component): void
     {
         $p = new ChildSlotsParser($component);
@@ -75,11 +60,21 @@ class ParserService implements ParserServiceInterface
         $this->result = $p->getResult();
     }
 
+    public function getHtml(): string
+    {
+        return $this->html;
+    }
+
     public function doUses(FileComponentInterface $component): void
     {
         $p = new UsesParser($component);
         $p->do();
         $this->useTypes = array_merge($this->useTypes, $p->getUses());
+    }
+
+    public function getUses(): ?array
+    {
+        return $this->useTypes;
     }
 
     public function doUsesAs(FileComponentInterface $component): void
@@ -107,7 +102,7 @@ class ParserService implements ParserServiceInterface
     {
         $p = new ChildrenDeclarationParser($component);
         $p->do();
-        $this->children = (object) $p->getResult();
+        $this->children = (object)$p->getResult();
     }
 
     public function doValues(FileComponentInterface $component): void
@@ -116,6 +111,11 @@ class ParserService implements ParserServiceInterface
         $p->do($this->useVariables);
         $this->useVariables = $p->getVariables();
         $this->html = $p->getHtml();
+    }
+
+    public function getVariables(): ?array
+    {
+        return $this->useVariables;
     }
 
     public function doEchoes(FileComponentInterface $component): void

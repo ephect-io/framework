@@ -29,13 +29,28 @@ class Cache extends StaticElement
 
     public static function cachePath(string $filepath): string
     {
-        return  str_replace(DIRECTORY_SEPARATOR, '_', $filepath);
+        return str_replace(DIRECTORY_SEPARATOR, '_', $filepath);
     }
 
     public static function cacheFile($filename, $content): void
     {
         $filename = CACHE_DIR . $filename;
         file_put_contents($filename, $content);
+    }
+
+    public static function clearRuntime(): bool
+    {
+        $result = false;
+        try {
+            $result &= self::clearCache();
+            $result &= self::clearRuntimeDirs();
+            $result &= self::clearRuntimeJsDirs();
+        } catch (\Throwable $ex) {
+            Console::error($ex);
+
+            $result = false;
+        }
+        return $result;
     }
 
     public static function clearCache(): bool
@@ -62,21 +77,6 @@ class Cache extends StaticElement
         $result = false;
         if (file_exists(RUNTIME_JS_DIR)) {
             $result &= Utils::delTree(RUNTIME_JS_DIR);
-        }
-        return $result;
-    }
-
-    public static function clearRuntime(): bool
-    {
-        $result = false;
-        try {
-            $result &=  self::clearCache();
-            $result &=  self::clearRuntimeDirs();
-            $result &=  self::clearRuntimeJsDirs();
-        } catch (\Throwable $ex) {
-            Console::error($ex);
-
-            $result = false;
         }
         return $result;
     }

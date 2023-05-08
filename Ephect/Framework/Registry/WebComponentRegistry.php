@@ -6,7 +6,8 @@ class WebComponentRegistry extends AbstractStaticRegistry
 {
     private static $instance = null;
 
-    public static function reset(): void {
+    public static function reset(): void
+    {
         self::$instance = new WebComponentRegistry;
         unlink(self::$instance->getCacheFilename());
     }

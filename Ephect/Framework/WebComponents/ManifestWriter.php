@@ -24,8 +24,8 @@ class ManifestWriter
 
         $json = json_encode($this->struct->toArray(), JSON_PRETTY_PRINT);
 
-        $destDir .=  DIRECTORY_SEPARATOR;
+        $destDir .= DIRECTORY_SEPARATOR;
 
-        Utils::safeWrite($destDir . DIRECTORY_SEPARATOR . $name. '.manifest.json', $json);
+        Utils::safeWrite($destDir . DIRECTORY_SEPARATOR . $name . '.manifest.json', $json);
     }
 }
