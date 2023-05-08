@@ -26,7 +26,7 @@ class ManifestEntity extends Element implements ManifestEntityInterface
 
     public function getClassName(): string
     {
-        return  $this->className;
+        return $this->className;
     }
 
     public function getEntrypoint(): string

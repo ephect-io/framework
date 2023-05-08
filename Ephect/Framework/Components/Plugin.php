@@ -9,7 +9,7 @@ use Ephect\Framework\Registry\PluginRegistry;
 
 class Plugin extends AbstractFileComponent implements FileComponentInterface
 {
-    
+
     public function load(?string $filename = null): bool
     {
         $this->filename = $filename ?: '';
@@ -17,7 +17,7 @@ class Plugin extends AbstractFileComponent implements FileComponentInterface
         $this->code = Utils::safeRead(PLUGINS_ROOT . $this->filename);
 
         [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
-        if($this->function === null) {
+        if ($this->function === null) {
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getClassDefinition($this->code);
         }
         return $this->code !== null;

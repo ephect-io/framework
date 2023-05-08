@@ -9,7 +9,6 @@ use Ephect\Framework\StaticElement;
  *
  * @author david
  */
-
 class StateRegistry extends StaticElement
 {
     private static $_items = [];
@@ -17,7 +16,7 @@ class StateRegistry extends StaticElement
     /**
      * @param mixed $item Name of the key
      * @param array $params May one key/value pair or an array of pairs
-     * @return void 
+     * @return void
      */
     public static function write($item, ...$params): void
     {
@@ -25,9 +24,9 @@ class StateRegistry extends StaticElement
             self::$_items[$item] = [];
         }
 
-        if (is_array($params) && count($params) === 1 ) {
+        if (is_array($params) && count($params) === 1) {
             $param0 = $params[0];
-            if(is_object($param0)) {
+            if (is_object($param0)) {
                 $param0 = json_encode($param0);
                 $param0 = json_decode($param0, JSON_OBJECT_AS_ARRAY);
             }
@@ -43,25 +42,6 @@ class StateRegistry extends StaticElement
             $value = $params[1];
             self::$_items[$item][$key] = $value;
         }
-    }
-
-    public static function push($item, $key, $value): void
-    {
-        if (!isset(self::$_items[$item])) {
-            self::$_items[$item] = [];
-        }
-
-        if (!isset(self::$_items[$item][$key])) {
-            self::$_items[$item][$key] = $value;
-        }
-
-        if (isset(self::$_items[$item][$key]) && !is_array(self::$_items[$item][$key])) {
-            $tmp = self::$_items[$item][$key];
-            self::$_items[$item][$key] = [];
-            self::$_items[$item][$key][] = $tmp;
-        }
-
-        array_push(self::$_items[$item][$key], $value);
     }
 
     public static function unshift($item, $key, $value): void
@@ -81,6 +61,25 @@ class StateRegistry extends StaticElement
         }
 
         array_unshift(self::$_items[$item][$key], $value);
+    }
+
+    public static function push($item, $key, $value): void
+    {
+        if (!isset(self::$_items[$item])) {
+            self::$_items[$item] = [];
+        }
+
+        if (!isset(self::$_items[$item][$key])) {
+            self::$_items[$item][$key] = $value;
+        }
+
+        if (isset(self::$_items[$item][$key]) && !is_array(self::$_items[$item][$key])) {
+            $tmp = self::$_items[$item][$key];
+            self::$_items[$item][$key] = [];
+            self::$_items[$item][$key][] = $tmp;
+        }
+
+        array_push(self::$_items[$item][$key], $value);
     }
 
     public static function read($item, $key, $defaultValue = null)
@@ -112,6 +111,21 @@ class StateRegistry extends StaticElement
         }
     }
 
+    public static function exists($item, $key = null): bool
+    {
+        return isset(self::$_items[$item][$key]);
+    }
+
+    public static function clear(): void
+    {
+        StateRegistry::$_items = [];
+    }
+
+    public static function dump(string $key): void
+    {
+        self::getLogger()->dump('Registry key ' . $key, StateRegistry::item($key));
+    }
+
     public static function item($item, $value = null): ?array
     {
         if ($item === '' || $item === null) {
@@ -129,20 +143,5 @@ class StateRegistry extends StaticElement
             self::$_items[$item] = [];
             return self::$_items[$item];
         }
-    }
-
-    public static function exists($item, $key = null): bool
-    {
-        return isset(self::$_items[$item][$key]);
-    }
-
-    public static function clear(): void
-    {
-        StateRegistry::$_items = [];
-    }
-
-    public static function dump(string $key): void
-    {
-        self::getLogger()->dump('Registry key ' . $key, StateRegistry::item($key));
     }
 }

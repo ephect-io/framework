@@ -7,7 +7,7 @@ use Ephect\Framework\Registry\HooksRegistry;
 use Ephect\Framework\Registry\PharRegistry;
 
 define('LIBDIR_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
-define('FRAMEWORK_PATH',  dirname(__FILE__) . LIBDIR_SEPARATOR . 'Framework' . LIBDIR_SEPARATOR);
+define('FRAMEWORK_PATH', dirname(__FILE__) . LIBDIR_SEPARATOR . 'Framework' . LIBDIR_SEPARATOR);
 define('HOOKS_PATH', 'Hooks' . LIBDIR_SEPARATOR);
 
 include FRAMEWORK_PATH . 'Core' . LIBDIR_SEPARATOR . 'constants.php';
@@ -33,6 +33,6 @@ if (IS_PHAR_APP) {
 
 Autoloader::register();
 
-if(IS_WEB_APP) {
+if (IS_WEB_APP) {
     AjilBuilder::build();
 }

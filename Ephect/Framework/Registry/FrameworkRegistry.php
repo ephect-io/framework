@@ -9,7 +9,8 @@ class FrameworkRegistry extends AbstractStaticRegistry
 {
     private static $instance = null;
 
-    public static function reset(): void { 
+    public static function reset(): void
+    {
         self::$instance = new FrameworkRegistry;
         self::$instance->_setCacheDirectory(RUNTIME_DIR);
         unlink(self::$instance->getCacheFilename());
@@ -68,14 +69,14 @@ class FrameworkRegistry extends AbstractStaticRegistry
             self::registerUserClasses();
 
             FrameworkRegistry::cache(true);
-       
+
         }
     }
-    
+
     public static function registerUserClasses(): void
     {
-        if(!file_exists(SRC_ROOT)) return;
-        
+        if (!file_exists(SRC_ROOT)) return;
+
         $sourceFiles = Utils::walkTreeFiltered(SRC_ROOT, ['php']);
 
         foreach ($sourceFiles as $filename) {

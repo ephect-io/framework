@@ -100,7 +100,7 @@ if (!IS_WEB_APP) {
 
     if (IS_INNER_APP) {
         $script_root = dirname(APP_CWD) . DIRECTORY_SEPARATOR;
-        $src_root =dirname(dirname(dirname($script_root))) . DIRECTORY_SEPARATOR  . 'app' . DIRECTORY_SEPARATOR;
+        $src_root = dirname(dirname(dirname($script_root))) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
 
         $path = explode(DIRECTORY_SEPARATOR, APP_CWD);
         array_pop($path);
@@ -108,12 +108,11 @@ if (!IS_WEB_APP) {
         $appName = array_pop($path);
     } elseif (IS_TASK_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = $site_root . DIRECTORY_SEPARATOR  . 'app' . DIRECTORY_SEPARATOR;
+        $src_root = $site_root . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
     } elseif (IS_BIN_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = $site_root . DIRECTORY_SEPARATOR  . 'app' . DIRECTORY_SEPARATOR;
-    } 
-    elseif (IS_PHAR_APP) {
+        $src_root = $site_root . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
+    } elseif (IS_PHAR_APP) {
         $script_root = '.' . DIRECTORY_SEPARATOR;
         $src_root = APP_CWD . DIRECTORY_SEPARATOR;
     }
@@ -121,10 +120,10 @@ if (!IS_WEB_APP) {
     define('SRC_ROOT', $src_root);
     define('SCRIPT_ROOT', $script_root);
     define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
-    
+
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
     define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
-    define('EPHECT_ROOT', SITE_ROOT .  EPHECT . DIRECTORY_SEPARATOR);
+    define('EPHECT_ROOT', SITE_ROOT . EPHECT . DIRECTORY_SEPARATOR);
 
     $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR;
     $portable_dir = 'Epehct' . DIRECTORY_SEPARATOR;

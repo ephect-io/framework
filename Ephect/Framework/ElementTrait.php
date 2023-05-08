@@ -14,6 +14,12 @@ trait ElementTrait
     protected string $namespace = '';
     protected string $function = '';
 
+    public static function functionName($fullQualifiedName): string
+    {
+        $fqFunctionName = explode('\\', $fullQualifiedName);
+        return array_pop($fqFunctionName);
+    }
+
     public function getUID(): string
     {
         if ($this->uid === '') {
@@ -42,15 +48,6 @@ trait ElementTrait
         return $this->parent;
     }
 
-    public function getClass(): string
-    {
-        if ($this->class == '') {
-            $this->class = get_class($this);
-        }
-
-        return $this->class;
-    }
-
     public function getBaseclass(): string
     {
         return get_parent_class($this);
@@ -68,9 +65,12 @@ trait ElementTrait
         return $this->namespace;
     }
 
-    public static function functionName($fullQualifiedName): string
+    public function getClass(): string
     {
-        $fqFunctionName = explode('\\', $fullQualifiedName);
-        return array_pop($fqFunctionName);
+        if ($this->class == '') {
+            $this->class = get_class($this);
+        }
+
+        return $this->class;
     }
 }

@@ -11,7 +11,7 @@ final class NamespaceParser extends AbstractTokenParser
 
         $str = $this->html;
 
-        $this->html = preg_replace($re, $subst, $str);       
+        $this->html = preg_replace($re, $subst, $str);
     }
-    
+
 }

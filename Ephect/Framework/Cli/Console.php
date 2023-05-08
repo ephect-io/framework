@@ -26,12 +26,12 @@ class Console extends Element
         if (IS_WEB_APP) {
             return;
         }
-        
+
         $value = TextUtils::format($string, $params);
 
         echo $value . PHP_EOL;
     }
-    
+
     public static function readLine(string $prompt): string
     {
 
@@ -41,7 +41,7 @@ class Console extends Element
         return $result;
     }
 
-    public static function info(string|array|object $string, ...$params): void 
+    public static function info(string|array|object $string, ...$params): void
     {
         if (IS_WEB_APP) {
             self::getLogger()->info($string);
@@ -52,10 +52,10 @@ class Console extends Element
         echo $value . PHP_EOL;
     }
 
-    public static function log(string|array|object|null $string, ...$params): void 
+    public static function log(string|array|object|null $string, ...$params): void
     {
         $string = $string ?: '';
-        
+
         if (IS_WEB_APP) {
             self::getLogger()->debug($string);
             return;
@@ -71,8 +71,8 @@ class Console extends Element
             self::getLogger()->error($ex, $ex->getFile(), $ex->getLine());
             return;
         }
-        
-        $message =  self::formatException($ex);
+
+        $message = self::formatException($ex);
         print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
     }
 

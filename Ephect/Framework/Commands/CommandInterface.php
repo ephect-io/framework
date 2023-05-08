@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Framework\Commands;
 
 interface CommandInterface

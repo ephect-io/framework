@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Framework\Commands;
 
 use Ephect\Framework\CLI\Application;

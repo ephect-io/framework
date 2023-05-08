@@ -11,10 +11,10 @@ final class UseEffectParser extends AbstractTokenParser
 
     public function do(null|string|array $parameter = null): void
     {
-        if(!strpos($this->html, 'useEffect')) {
+        if (!strpos($this->html, 'useEffect')) {
             return;
         }
-        
+
         $this->doTranslation($parameter);
         $this->doDeclaration($parameter);
     }
@@ -22,10 +22,10 @@ final class UseEffectParser extends AbstractTokenParser
     private function doTranslation(null|string|array $parameter = null): void
     {
         $re = '/useEffect\(function[ ]*\(((\$props|\$children),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
-            
+
         $str = $this->html;
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-     
+
         $params = count($matches) === 0 ?: !isset($matches[0][3]) ?: $matches[0][3];
         $uses = count($matches) === 0 ?: !isset($matches[0][6]) ?: $matches[0][6];
 
@@ -59,13 +59,13 @@ final class UseEffectParser extends AbstractTokenParser
             return $item !== '$props' && $item !== '$children' && trim($item) !== '';
         });
 
-        $declVars = count($declVars) === 0 ?: array_map(function($item) {
+        $declVars = count($declVars) === 0 ?: array_map(function ($item) {
             return $this->declareTypedVariables($item);
         }, $declVars);
 
         if ($declVars === true) {
             $this->result = '';
-            return;            
+            return;
         }
 
         $decl2 = implode(' ', $declVars);

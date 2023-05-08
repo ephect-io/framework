@@ -42,7 +42,7 @@ abstract class AbstractTokenParser implements TokenParserInterface
     {
         return $this->useTypes;
     }
-    
+
     public function doCache(): bool
     {
         return CodeRegistry::cache();

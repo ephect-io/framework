@@ -13,6 +13,7 @@ class PharLib extends Element
 
     private EggLib $egg;
     private Phar $phar;
+
     /**
      * Constructor
      */
@@ -22,6 +23,12 @@ class PharLib extends Element
 
         $this->egg = new CommonLib($parent);
 
+    }
+
+    public function makeMasterPhar(): void
+    {
+        $ephectTree = $this->requireMaster();
+        $this->_makePhar($ephectTree);
     }
 
     public function requireMaster(): object
@@ -59,24 +66,7 @@ class PharLib extends Element
 
         $result = ['path' => $ephectDir, 'tree' => $tree];
 
-        return (object) $result;
-    }
-
-    public function addFileToPhar($file, $name): void
-    {
-        Console::writeLine("Adding %s", $name);
-        $this->phar->addFile($file, $name);
-    }
-
-    public function makeMasterPhar(): void
-    {
-        $ephectTree = $this->requireMaster();
-        $this->_makePhar($ephectTree);
-    }
-
-    public function makeVendorPhar(): void
-    {
-        $this->_makePhar();
+        return (object)$result;
     }
 
     private function _makePhar(): void
@@ -122,29 +112,29 @@ class PharLib extends Element
                 $filepath = $ephectTree->path . $file;
                 $filepath = realpath($filepath);
                 $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
- 
+
                 $this->addFileToPhar($filepath, $filename);
             }
 
             // $hooksTree = $this->_requireTree(HOOKS_ROOT);
-         
+
             // foreach ($hooksTree->tree as $file) {
             //     $filepath = $hooksTree->path . $file;
             //     $filepath = realpath($filepath);
             //     $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
- 
+
             //     $this->addFileToPhar($filepath, $filename);
             // }
-            
+
             // $pluginsTree = $this->_requireTree(PLUGINS_ROOT);
-         
+
             // foreach ($pluginsTree->tree as $file) {
             //     $filepath = $pluginsTree->path . $file;
             //     $filepath = realpath($filepath);
             //     $filename = str_replace(DIRECTORY_SEPARATOR, '_', $file);
- 
+
             //     $this->addFileToPhar($filepath, $filename);
-            // } 
+            // }
 
             // Create a custom stub to add the shebang
             $execHeader = "#!/usr/bin/env php \n";
@@ -186,6 +176,17 @@ class PharLib extends Element
         } catch (\Throwable $ex) {
             Console::error($ex);
         }
+    }
+
+    public function addFileToPhar($file, $name): void
+    {
+        Console::writeLine("Adding %s", $name);
+        $this->phar->addFile($file, $name);
+    }
+
+    public function makeVendorPhar(): void
+    {
+        $this->_makePhar();
     }
 
 }

@@ -11,11 +11,6 @@ class SetupService
 {
     private $_rewriteBase = '/';
 
-    public static function create(): SetupService
-    {
-        return new SetupService();
-    }
-
     public function __construct()
     {
         $rewriteBase = dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR;
@@ -90,6 +85,11 @@ class SetupService
         }
 
         return $ok;
+    }
+
+    public static function create(): SetupService
+    {
+        return new SetupService();
     }
 
     public function fixRewritBase(): ?string

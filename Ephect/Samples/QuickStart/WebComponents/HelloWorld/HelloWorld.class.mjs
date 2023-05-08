@@ -1,5 +1,4 @@
-export default class HelloWorld 
-{
+export default class HelloWorld {
 
     constructor() {
         this.foo = 'bar'

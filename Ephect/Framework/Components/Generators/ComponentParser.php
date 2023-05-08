@@ -33,118 +33,6 @@ class ComponentParser extends Parser implements ParserInterface
         return new ComponentDeclarationStructure($decl);
     }
 
-    public function getList(): array
-    {
-        return $this->list;
-    }
-
-    public function getHtml(): string
-    {
-        return $this->html;
-    }
-
-    public function getDepths(): array
-    {
-        return $this->depths;
-    }
-
-    public function getIdListByDepth(): array
-    {
-        return $this->idListByDepth;
-    }
-
-    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
-    public function doFunctionDeclaration(): ?array
-    {
-        $result = [];
-        $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
-
-        $str = $this->html;
-
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-
-            $args = $this->doFunctionArguments($match[3]);
-            $result = [$match[1], $match[2], $args];
-        }
-
-        return $result;
-    }
-
-    private function doFunctionArguments(string $arguments): ?array
-    {
-        $result = [];
-        $re = '/([\,]?[\.]?\$[\w]+)/s';
-
-        $str = $arguments;
-
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-            $result[] = $match[1];
-        }
-
-        return $result;
-    }
-
-
-    protected function isClosedTag(array $tag): bool
-    {
-        $text = $tag['text'];
-        if (empty($text) || $tag['name'] === 'Fragment') {
-            return false;
-        }
-
-        return substr($text, -2) === self::TERMINATOR . self::CLOSE_TAG;
-    }
-
-    protected function isCloseTag(array $tag): bool
-    {
-        $text = $tag['text'];
-        if (empty($text) || $text === '<>') {
-            return false;
-        }
-        return substr($text, 0, 2) === self::OPEN_TAG . self::TERMINATOR;
-    }
-
-    protected function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
-    {
-        $text = $tag['text'];
-        $name =  $tag['name'];
-
-        $i = count($this->list);
-        $item = [];
-
-        $fqName = '';
-        if (is_object($this->component)) {
-            $fqName = $this->component->getFullyQualifiedFunction();
-        }
-
-        $item['id'] = $tag['id'];
-        $item['name'] =  empty($name) ? 'Fragment' : $name;
-        $item['text'] = $text;
-        $item['startsAt'] = $tag['startsAt'];
-        $item['endsAt'] = $tag['endsAt'];
-        if (!$isCloser) {
-            $item['uid'] = Crypto::createUID();
-            $item['class'] = ComponentRegistry::read($item['name']);
-            $item['method'] = 'echo';
-            $item['component'] = $fqName;
-            $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
-            $item['depth'] = $depth;
-            $item['hasCloser'] = $hasCloser;
-            $item['node'] = false;
-            $item['isSingle'] = false;
-        }
-        if (!isset($parentIds[$depth])) {
-            $parentIds[$depth] = $i - 1;
-        }
-        $item['parentId'] = $parentIds[$depth];
-
-        return $item;
-    }
-
     public function doComponents(string $rule = "[A-Z]\w+"): void
     {
 
@@ -212,7 +100,7 @@ class ComponentParser extends Parser implements ParserInterface
             }
 
             if ($this->isClosedTag($tag) && $tag['name'] !== 'Eof') {
-                $item  = $this->makeTag($tag, $parentIds, $depth, false);
+                $item = $this->makeTag($tag, $parentIds, $depth, false);
                 $list[$item['id']] = $item;
                 unset($allTags[$i]);
 
@@ -284,5 +172,116 @@ class ComponentParser extends Parser implements ParserInterface
         }
 
         $this->list = $list;
+    }
+
+    protected function isClosedTag(array $tag): bool
+    {
+        $text = $tag['text'];
+        if (empty($text) || $tag['name'] === 'Fragment') {
+            return false;
+        }
+
+        return substr($text, -2) === self::TERMINATOR . self::CLOSE_TAG;
+    }
+
+    protected function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
+    {
+        $text = $tag['text'];
+        $name = $tag['name'];
+
+        $i = count($this->list);
+        $item = [];
+
+        $fqName = '';
+        if (is_object($this->component)) {
+            $fqName = $this->component->getFullyQualifiedFunction();
+        }
+
+        $item['id'] = $tag['id'];
+        $item['name'] = empty($name) ? 'Fragment' : $name;
+        $item['text'] = $text;
+        $item['startsAt'] = $tag['startsAt'];
+        $item['endsAt'] = $tag['endsAt'];
+        if (!$isCloser) {
+            $item['uid'] = Crypto::createUID();
+            $item['class'] = ComponentRegistry::read($item['name']);
+            $item['method'] = 'echo';
+            $item['component'] = $fqName;
+            $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
+            $item['depth'] = $depth;
+            $item['hasCloser'] = $hasCloser;
+            $item['node'] = false;
+            $item['isSingle'] = false;
+        }
+        if (!isset($parentIds[$depth])) {
+            $parentIds[$depth] = $i - 1;
+        }
+        $item['parentId'] = $parentIds[$depth];
+
+        return $item;
+    }
+
+    protected function isCloseTag(array $tag): bool
+    {
+        $text = $tag['text'];
+        if (empty($text) || $text === '<>') {
+            return false;
+        }
+        return substr($text, 0, 2) === self::OPEN_TAG . self::TERMINATOR;
+    }
+
+    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
+    public function doFunctionDeclaration(): ?array
+    {
+        $result = [];
+        $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
+
+        $str = $this->html;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+
+            $args = $this->doFunctionArguments($match[3]);
+            $result = [$match[1], $match[2], $args];
+        }
+
+        return $result;
+    }
+
+    private function doFunctionArguments(string $arguments): ?array
+    {
+        $result = [];
+        $re = '/([\,]?[\.]?\$[\w]+)/s';
+
+        $str = $arguments;
+
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $result[] = $match[1];
+        }
+
+        return $result;
+    }
+
+    public function getList(): array
+    {
+        return $this->list;
+    }
+
+    public function getHtml(): string
+    {
+        return $this->html;
+    }
+
+    public function getDepths(): array
+    {
+        return $this->depths;
+    }
+
+    public function getIdListByDepth(): array
+    {
+        return $this->idListByDepth;
     }
 }

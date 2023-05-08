@@ -4,7 +4,7 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 final class EchoParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null) : void
+    public function do(null|string|array $parameter = null): void
     {
         $this->useVariables = $parameter;
 

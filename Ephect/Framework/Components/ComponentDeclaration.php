@@ -45,7 +45,7 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
 
     public function getComposition(): ?ComponentEntity
     {
-        if($this->entity === null) {
+        if ($this->entity === null) {
             $this->entity = ComponentEntity::buildFromArray($this->flatComposition);
         }
 

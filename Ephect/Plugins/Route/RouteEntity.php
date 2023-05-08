@@ -24,7 +24,7 @@ class RouteEntity extends Element implements RouteInterface
         $this->normalized = $struct->normalized;
         $this->redirect = $struct->redirect;
         $this->translation = $struct->translation;
-        $this->error = (int) $struct->error;
+        $this->error = (int)$struct->error;
         $this->exact = $struct->exact !== 'true' ?: true;
 
     }
@@ -63,4 +63,4 @@ class RouteEntity extends Element implements RouteInterface
     {
         return $this->exact;
     }
- }
+}

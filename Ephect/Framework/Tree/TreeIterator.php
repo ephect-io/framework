@@ -36,6 +36,11 @@ class TreeIterator implements RecursiveIterator
         return $this->elementList[$this->index];
     }
 
+    public function valid(): bool
+    {
+        return isset($this->elementList[$this->index]);
+    }
+
     public function key(): int
     {
         return $this->index;
@@ -49,11 +54,6 @@ class TreeIterator implements RecursiveIterator
     public function rewind(): void
     {
         $this->index = 0;
-    }
-
-    public function valid(): bool
-    {
-        return isset($this->elementList[$this->index]);
     }
 
     public function getChildren(): TreeIterator

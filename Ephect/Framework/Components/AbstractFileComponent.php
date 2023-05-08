@@ -61,52 +61,20 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     }
 
-    public function getSourceFilename(): string
+    public function analyse(): void
     {
-        return $this->filename;
+        $parser = new ParserService;
+        $parser->doUses($this);
+        $parser->doUsesAs($this);
     }
 
-    public function getFlattenSourceFilename(): string
+    public function render(?array $functionArgs = null): void
     {
-        return static::getFlatFilename($this->filename);
+        [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
+
+        $html = $this->renderHTML($cacheFilename, $fqFunctionName, $functionArgs);
+        echo $html;
     }
-
-    public function getFlattenFilename(): string
-    {
-        return static::getFlatFilename($this->filename);
-    }
-
-    public static function getFlatFilename(string $basename): string
-    {
-        $basename = pathinfo($basename, PATHINFO_BASENAME);
-
-        return str_replace('/', '_', $basename);
-    }
-
-    public function load(?string $filename = null): bool
-    {
-        $filename = $filename ?: '';
-
-        $this->filename = ($filename !== '') ? $filename : $this->filename;
-
-        if ($this->filename === '') {
-            return false;
-        }
-
-        $this->code = Utils::safeRead(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
-        if ($this->code === null) {
-            $this->code = Utils::safeRead(COPY_DIR . $this->filename);
-        }
-
-        [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
-        if (!$this->bodyStartsAt) {
-            $this->makeComponent($this->filename, $this->code);
-            [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
-        }
-        return $this->code !== null;
-    }
-
-    public abstract function makeComponent(string $filename, string &$html): void;
 
     public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
     {
@@ -130,13 +98,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
 
         return [$fqFunctionName, $cacheFilename];
-    }
-
-    public function analyse(): void
-    {
-        $parser = new ParserService;
-        $parser->doUses($this);
-        $parser->doUsesAs($this);
     }
 
     public function parse(): void
@@ -207,12 +168,64 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         CodeRegistry::cache();
     }
 
-    public function render(?array $functionArgs = null): void
+    public function getFlattenSourceFilename(): string
     {
-        [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
+        return static::getFlatFilename($this->filename);
+    }
 
-        $html = $this->renderHTML($cacheFilename, $fqFunctionName, $functionArgs);
-        echo $html;
+    public static function getFlatFilename(string $basename): string
+    {
+        $basename = pathinfo($basename, PATHINFO_BASENAME);
+
+        return str_replace('/', '_', $basename);
+    }
+
+    public static function updateComponent(FileComponentInterface $component): string
+    {
+        $uid = $component->getUID();
+        $motherUID = $component->getMotherUID();
+        $filename = $component->getFlattenSourceFilename();
+
+        $comp = new Component($uid, $motherUID);
+        $comp->load($filename);
+        $parser = new ComponentParser($comp);
+        $struct = $parser->doDeclaration($uid);
+        $decl = $struct->toArray();
+
+        CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
+        CodeRegistry::cache();
+
+        return $filename;
+    }
+
+    public function load(?string $filename = null): bool
+    {
+        $filename = $filename ?: '';
+
+        $this->filename = ($filename !== '') ? $filename : $this->filename;
+
+        if ($this->filename === '') {
+            return false;
+        }
+
+        $this->code = Utils::safeRead(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
+        if ($this->code === null) {
+            $this->code = Utils::safeRead(COPY_DIR . $this->filename);
+        }
+
+        [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
+        if (!$this->bodyStartsAt) {
+            $this->makeComponent($this->filename, $this->code);
+            [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
+        }
+        return $this->code !== null;
+    }
+
+    public abstract function makeComponent(string $filename, string &$html): void;
+
+    public function getFlattenFilename(): string
+    {
+        return static::getFlatFilename($this->filename);
     }
 
     public function identifyComponents(array &$list, ?string $motherUID = null, ?FileComponentInterface $component = null): void
@@ -310,6 +323,11 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         }
     }
 
+    public function getSourceFilename(): string
+    {
+        return $this->filename;
+    }
+
     public function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string
     {
         if ($component === null) {
@@ -344,7 +362,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
             if ($fqFuncName === null) {
                 continue;
             }
-            $nextComponent =  !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
+            $nextComponent = !isset($list[$fqFuncName]) ? null : $list[$fqFuncName];
 
             $nextCopyFile = '';
             if ($nextComponent !== null) {
@@ -382,24 +400,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
         CodeRegistry::write($this->getFullyQualifiedFunction(), $decl);
         CodeRegistry::cache();
-    }
-
-    public static function updateComponent(FileComponentInterface $component): string
-    {
-        $uid = $component->getUID();
-        $motherUID = $component->getMotherUID();
-        $filename = $component->getFlattenSourceFilename();
-
-        $comp = new Component($uid, $motherUID);
-        $comp->load($filename);
-        $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration($uid);
-        $decl = $struct->toArray();
-
-        CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        CodeRegistry::cache();
-
-        return $filename;
     }
 
     protected function cacheHtml(): ?string

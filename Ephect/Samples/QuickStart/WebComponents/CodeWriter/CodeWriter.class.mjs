@@ -38,9 +38,9 @@ export default class CodeWriter {
             })
         }
 
-        async function addChar(c, removeLF  = false) {
+        async function addChar(c, removeLF = false) {
             let tail = reg.join("")
-            if(removeLF) {
+            if (removeLF) {
                 tail = tail.trim()
             }
 
@@ -191,7 +191,7 @@ export default class CodeWriter {
         decomposer.doComponents()
         nodes = [...decomposer.list]
 
-        workingText = decomposer.workingText.replace(LF + OPEN_TAG + 'Eof '  + TERMINATOR  + CLOSE_TAG, '')
+        workingText = decomposer.workingText.replace(LF + OPEN_TAG + 'Eof ' + TERMINATOR + CLOSE_TAG, '')
 
         const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
@@ -246,7 +246,7 @@ export default class CodeWriter {
 
             if (c === '/' && next5chars === TERMINATOR + CLOSE_TAG) {
 
-                if(node !== null && !node.hasCloser && node.endsAt === i + 4) {
+                if (node !== null && !node.hasCloser && node.endsAt === i + 4) {
                     c = TERMINATOR + CLOSE_TAG
                     shift()
                     await addChar(c);
@@ -260,11 +260,11 @@ export default class CodeWriter {
             // potentially closing a single parsed tag
             if (c === '&' && next4chars === CLOSE_TAG) {
 
-                if(node !== null && node.endsAt === i + 3) {
+                if (node !== null && node.endsAt === i + 3) {
                     shift()
 
                     await addChar(CLOSE_TAG)
-                    if(node.hasCloser) {
+                    if (node.hasCloser) {
                         nextUnshift()
                     }
                     i += 3
@@ -303,7 +303,7 @@ export default class CodeWriter {
             if (c === '&' && next4chars !== OPEN_TAG) {
 
                 const scpos = workingText.substring(i).indexOf(';')
-                if(scpos > 8) {
+                if (scpos > 8) {
                     await addChar(c)
                     continue
                 }
@@ -319,7 +319,7 @@ export default class CodeWriter {
 
                 // We don't take the next node if the last
                 // "lower than" character was not a parsed tag
-                if(node === null || (node !== null && node.dirty)) {
+                if (node === null || (node !== null && node.dirty)) {
                     node = nextNode()
                 }
 
@@ -359,7 +359,7 @@ export default class CodeWriter {
                     hasLF = node.closer.contents.text.indexOf(LF) > -1
 
                     // Is the tag name a bracket?
-                    if(translated) {
+                    if (translated) {
                         // Store the closing bracket 
                         // to write it after each new character
                         i = node.endsAt
@@ -378,7 +378,7 @@ export default class CodeWriter {
                 }
 
                 // The tag name is not a bracket
-                if(!translated) {
+                if (!translated) {
                     // We write the tag name and its attributes
                     // with a trailing "greater than" chaaracter
 
@@ -430,9 +430,7 @@ export default class CodeWriter {
         // Raise an event outside the shadow DOM 
         // when all is done and ready
         const finishedEvent = new CustomEvent("finishedWriting", {
-            bubbles: true,
-            composed: true,
-            detail: {
+            bubbles: true, composed: true, detail: {
                 content: html
             }
         })

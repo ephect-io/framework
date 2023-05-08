@@ -9,16 +9,16 @@ class Command
     public function execute(string $cmd, ...$args): void
     {
         \pcntl_exec($cmd, $args);
-        
+
     }
 
-    public function which($bin): ?string 
+    public function which($bin): ?string
     {
         $result = null;
 
         $cleanBin = preg_replace('/([\w]+)/', '$1', $bin);
 
-        if($cleanBin !== $bin) {
+        if ($cleanBin !== $bin) {
             return $result;
         }
 

@@ -25,36 +25,9 @@ class Logger
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);
     }
 
-    public function info(string $string, ...$params): void
-    {
-        $message = TextUtils::format($string, $params);
-        $this->_log(INFO_LOG, $message);
-    }
-
-
     public function debug(string|array|object $message, string $filename = '', int $line = -1): void
     {
         $this->_log(DEBUG_LOG, $message, $filename, $line);
-    }
-
-    public function sql(string|array|object $message, string $filename = '', int $line = -1): void
-    {
-        $this->_log(SQL_LOG, $message, $filename, $line);
-    }
-
-    public function error(\Throwable $ex,  string $filename = '', int $line = -1): void
-    {
-        $message = '';
-
-        if ($ex instanceof \ErrorException) {
-            $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
-        }
-        $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
-        $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
-        $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
-        $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
-
-        $this->_log(ERROR_LOG, $message, $filename, $line);
     }
 
     private function _log(string $filepath, string|array|object $message, string $filename = '', int $line = -1): void
@@ -73,6 +46,32 @@ class Logger
         $message = date('Y-m-d h:i:s') . (isset($filename) ? ":$filename" : '') . ($line > -1 ? ":$line" : '') . " : $message" . PHP_EOL;
         fwrite($handle, $message . PHP_EOL);
         fclose($handle);
+    }
+
+    public function info(string $string, ...$params): void
+    {
+        $message = TextUtils::format($string, $params);
+        $this->_log(INFO_LOG, $message);
+    }
+
+    public function sql(string|array|object $message, string $filename = '', int $line = -1): void
+    {
+        $this->_log(SQL_LOG, $message, $filename, $line);
+    }
+
+    public function error(\Throwable $ex, string $filename = '', int $line = -1): void
+    {
+        $message = '';
+
+        if ($ex instanceof \ErrorException) {
+            $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
+        }
+        $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
+        $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
+        $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
+        $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
+
+        $this->_log(ERROR_LOG, $message, $filename, $line);
     }
 
     public function getInfoLog(): string

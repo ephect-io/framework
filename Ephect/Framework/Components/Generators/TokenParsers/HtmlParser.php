@@ -14,5 +14,5 @@ final class HtmlParser extends AbstractTokenParser
 
         $this->result = !isset($matches[0]) ? '' : $matches[0][1];
     }
-    
+
 }

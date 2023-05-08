@@ -8,15 +8,15 @@ final class WebComponentParser extends AbstractTokenParser
     {
         $this->useVariables = $parameter;
 
-        $re = '/function[\w ]+\((\$slot)\)/m';            
+        $re = '/function[\w ]+\((\$slot)\)/m';
         $str = $this->html;
 
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
         $match = $matches[0] ?? null;
-        if($match && $match[1] === '$slot') {
+        if ($match && $match[1] === '$slot') {
             $this->useVariables['slot'] = '$slot';
         }
     }
-    
+
 }

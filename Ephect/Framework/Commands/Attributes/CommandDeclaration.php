@@ -11,7 +11,8 @@ class CommandDeclaration
         public string $verb = '',
         public string $subject = '',
         public string $desc = '',
-        public bool $isPhar = false
-    ) {
+        public bool   $isPhar = false
+    )
+    {
     }
 }

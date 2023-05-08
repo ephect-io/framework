@@ -9,9 +9,49 @@ use Ephect\Framework\Core\AbstractApplication;
 
 class Application extends AbstractApplication
 {
-    private $_phar = null;
     protected array $argv = [];
     protected int $argc = 0;
+    private $_phar = null;
+
+    public static function create(...$params): void
+    {
+        self::$instance = new Application();
+        self::$instance->run(...$params);
+    }
+
+    public function run(...$params): void
+    {
+        $argv = $params[0];
+        $argc = $params[1];
+
+        $this->argv = $argv;
+        $this->argc = $argc;
+
+        $this->appDirectory = APP_CWD;
+
+        $this->loadInFile();
+
+        self::setExecutionMode(Application::PROD_MODE);
+        self::useTransactions(true);
+
+        $this->init();
+
+        $this->execute();
+
+    }
+
+    public function init(): void
+    {
+
+    }
+
+    protected function execute(): void
+    {
+        $commands = new ApplicationCommands($this);
+        $runner = new CommandRunner($this, $commands);
+        $runner->run();
+
+    }
 
     /**
      * Get the CLI argv array
@@ -41,51 +81,11 @@ class Application extends AbstractApplication
      */
     public function getArgi(int $index, string $default = ''): null|string
     {
-        if($index > -1 && $this->argc > $index) {
+        if ($index > -1 && $this->argc > $index) {
             return $this->argv[$index];
         }
 
         return $default;
-    }
-
-    public function init(): void
-    {
-
-    }
-
-    public static function create(...$params): void
-    {
-        self::$instance = new Application();
-        self::$instance->run(...$params);
-    }
-
-    public function run(...$params): void
-    {
-        $argv = $params[0];
-        $argc = $params[1];
-
-        $this->argv = $argv;
-        $this->argc = $argc;
-
-        $this->appDirectory = APP_CWD;
-        
-        $this->loadInFile();
-
-        self::setExecutionMode(Application::PROD_MODE);
-        self::useTransactions(true);
-
-        $this->init();
-
-        $this->execute();
-
-    }
-
-    protected function execute(): void
-    {
-        $commands = new ApplicationCommands($this);
-        $runner = new CommandRunner($this, $commands);
-        $runner->run();
-        
     }
 
     public function displayConstants(): array

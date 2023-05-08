@@ -21,21 +21,6 @@ class RawHtmlParser implements RawHtmlParserInterface
         unset($parser);
     }
 
-    public function getInnerHtml(): array
-    {
-        $result = [];
-        if (count($this->list) === 0) {
-            return $result;
-        }
-        foreach ($this->list as $current) {
-            $struct = new ComponentStructure($current);
-            $entity = new ComponentEntity($struct);
-            $result[] = $entity->getInnerHTML();
-        }
-
-        return $result;
-    }
-
     public function getOuterHtml(): array
     {
         $result = [];
@@ -50,6 +35,21 @@ class RawHtmlParser implements RawHtmlParserInterface
             $html .= $current['closer']['text'] . PHP_EOL;
 
             $result[] = $html;
+        }
+
+        return $result;
+    }
+
+    public function getInnerHtml(): array
+    {
+        $result = [];
+        if (count($this->list) === 0) {
+            return $result;
+        }
+        foreach ($this->list as $current) {
+            $struct = new ComponentStructure($current);
+            $entity = new ComponentEntity($struct);
+            $result[] = $entity->getInnerHTML();
         }
 
         return $result;

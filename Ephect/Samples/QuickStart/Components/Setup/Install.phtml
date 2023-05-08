@@ -33,7 +33,7 @@ function Install($props)
                     'result' => ($ok) ? 'Javascript framework installation successful' : SERVER_ERROR,
                     'error' => !$ok
                 ]
-            );       
+            );
         }
 
         if ($action === 'index') {
@@ -45,7 +45,7 @@ function Install($props)
                     'result' => ($ok) ? 'Index created' : SERVER_ERROR,
                     'error' => !$ok
                 ]
-            );        
+            );
         }
 
         $hasResponse = ($response !== '');

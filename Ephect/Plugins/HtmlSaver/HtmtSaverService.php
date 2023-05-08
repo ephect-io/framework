@@ -15,7 +15,7 @@ class HtmlSaverService implements HtmlSaveServiceInterface
     public function canRender(): bool
     {
         $canRender = $this->children->getAttribute('render') ?? true;
-        
+
         return $canRender;
     }
 

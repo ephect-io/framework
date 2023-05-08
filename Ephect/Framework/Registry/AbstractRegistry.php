@@ -16,11 +16,6 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
     use ElementTrait;
 
-    public function _items(): array
-    {
-        return $this->entries;
-    }
-
     public function _write(string $key, $value): void
     {
         if (!isset($this->entries[$key])) {
@@ -67,7 +62,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         if ($asArray) {
             $result = TextUtils::jsonToPhpArray($result);
             $ephect_root = EPHECT_ROOT;
-            if(DIRECTORY_SEPARATOR === '\\') {
+            if (DIRECTORY_SEPARATOR === '\\') {
                 $ephect_root = str_replace('\\', '\\\\', EPHECT_ROOT);
             }
 
@@ -79,6 +74,25 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         $len = Utils::safeWrite($registryFilename, $result);
 
         return $len !== null;
+    }
+
+    public function _items(): array
+    {
+        return $this->entries;
+    }
+
+    public function _getCacheFileName(bool $asArray = false): string
+    {
+        if ($this->cacheFilename === '') {
+            $this->cacheFilename = $this->baseDirectory . $this->_getFlatFilename($asArray);
+        }
+
+        return $this->cacheFilename . ($asArray ? '.php' : '.json');
+    }
+
+    public function _getFlatFilename(): string
+    {
+        return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_', get_class($this)));
     }
 
     public function _uncache(bool $asArray = false): bool
@@ -95,33 +109,19 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
         if ($this->isLoaded && $asArray) {
 
-            $fn = function() use($registryFilename) {
+            $fn = function () use ($registryFilename) {
                 return include $registryFilename;
             };
 
             $dictionary = $fn();
 
             $this->entries = [];
-            foreach($dictionary as $key => $value) {
+            foreach ($dictionary as $key => $value) {
                 $this->entries[$key] = $value;
             }
         }
 
         return $this->isLoaded;
-    }
-
-    public function _getFlatFilename(): string
-    {
-        return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_',  get_class($this)));
-    }
-
-    public function _getCacheFileName(bool $asArray = false): string
-    {
-        if ($this->cacheFilename === '') {
-            $this->cacheFilename = $this->baseDirectory . $this->_getFlatFilename($asArray);
-        }
-
-        return $this->cacheFilename . ($asArray ? '.php' : '.json');
     }
 
     public function _setCacheDirectory(string $directory): void

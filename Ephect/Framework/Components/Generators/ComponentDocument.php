@@ -28,34 +28,9 @@ class ComponentDocument
         $this->text = $comp->getCode();
     }
 
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
-    public function getList(): array
-    {
-        return $this->list;
-    }
     public function getMatches(): array
     {
         return $this->matches;
-    }
-
-    public function getMatchById(int $id): ?ComponentEntity
-    {
-        if (!isset($this->list[$id])) {
-            return null;
-        }
-
-        $struct = new ComponentStructure($this->list[$id]);
-
-        return new ComponentEntity($struct);
-    }
-
-    public function getCount(): int
-    {
-        return $this->count;
     }
 
     public function fieldValue(int $i, string $field, string $value)
@@ -71,11 +46,6 @@ class ComponentDocument
     public function getDepthsOfMatches(): array
     {
         return $this->matchesByDepth;
-    }
-
-    public function getIDsOfMatches(): array
-    {
-        return $this->matchesById;
     }
 
     public function getKeysOfMatches(): array
@@ -101,16 +71,16 @@ class ComponentDocument
         return ($this->count > 0);
     }
 
-    public function sortMatchesByDepth(): array
+    public function getList(): array
     {
-        $maxDepth = count($this->depths);
+        return $this->list;
+    }
+
+    public function sortMatchesById(): array
+    {
         $result = [];
-        for ($i = $maxDepth; $i > -1; $i--) {
-            foreach ($this->list as $match) {
-                if ($match["depth"] == $i) {
-                    array_push($result, $match['id']);
-                }
-            }
+        foreach ($this->list as $match) {
+            $result[] = $match['id'];
         }
 
         return $result;
@@ -128,11 +98,16 @@ class ComponentDocument
         return $result;
     }
 
-    public function sortMatchesById(): array
+    public function sortMatchesByDepth(): array
     {
+        $maxDepth = count($this->depths);
         $result = [];
-        foreach ($this->list as $match) {
-            $result[] = $match['id'];
+        for ($i = $maxDepth; $i > -1; $i--) {
+            foreach ($this->list as $match) {
+                if ($match["depth"] == $i) {
+                    array_push($result, $match['id']);
+                }
+            }
         }
 
         return $result;
@@ -141,17 +116,6 @@ class ComponentDocument
     public function resetMatchId(): void
     {
         $this->currentMatchKey = -1;
-    }
-
-    public function getCurrentMatch(): ?ComponentEntity
-    {
-        $currentId = $this->matchesById[$this->currentMatchKey];
-        if ($this->match === null || $this->match->getId() !== $currentId) {
-            $struct =  new ComponentStructure($this->list[$currentId]);
-            $this->match = new ComponentEntity($struct);
-        }
-
-        return $this->match;
     }
 
     public function getNextMatch(): ?ComponentEntity
@@ -164,6 +128,17 @@ class ComponentDocument
         }
 
         return $this->getCurrentMatch();
+    }
+
+    public function getCurrentMatch(): ?ComponentEntity
+    {
+        $currentId = $this->matchesById[$this->currentMatchKey];
+        if ($this->match === null || $this->match->getId() !== $currentId) {
+            $struct = new ComponentStructure($this->list[$currentId]);
+            $this->match = new ComponentEntity($struct);
+        }
+
+        return $this->match;
     }
 
     public function replaceMatches(ComponentDocument $doc, string &$childText): string
@@ -224,7 +199,7 @@ class ComponentDocument
                     $start = $childMatch->getStart();
                     $closer = $childMatch->getCloser();
                     $length = $closer['endsAt'] - $childMatch->getStart() + 1;
-    
+
                     $childReplaced = substr($childText, $start, $length);
 
                 } else {
@@ -237,12 +212,38 @@ class ComponentDocument
                 break;
             }
 
-            if(!$matchesChildBlock) {
+            if (!$matchesChildBlock) {
                 $parentText = str_replace($parentReplaced, $parentReplacing, $parentText);
             }
         }
 
         return $parentText;
+    }
+
+    public function getIDsOfMatches(): array
+    {
+        return $this->matchesById;
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
+    public function getMatchById(int $id): ?ComponentEntity
+    {
+        if (!isset($this->list[$id])) {
+            return null;
+        }
+
+        $struct = new ComponentStructure($this->list[$id]);
+
+        return new ComponentEntity($struct);
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
     }
 
 }

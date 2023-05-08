@@ -51,7 +51,7 @@ class CommonLib extends Element
         $tree = Utils::walkTreeFiltered($treePath, ['php']);
         $result = ['path' => $treePath, 'tree' => $tree];
 
-        return (object) $result;
+        return (object)$result;
     }
 
     public function displayTree($path): void
@@ -61,5 +61,4 @@ class CommonLib extends Element
     }
 
 
-  
 }
