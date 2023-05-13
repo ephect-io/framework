@@ -7,13 +7,15 @@ export default class Decomposer {
     #text = ''
     #workingText = ''
 
-    constructor(html) {
+    constructor(html, doMarkUpQuotes = false) {
         this.#text = html
 
         this.#workingText = this.#text + "\n<Eof />"
 
         this.protect()
-        this.markupQuotes()
+        if(doMarkUpQuotes) {
+            this.markupQuotes()
+        }
     }
 
     get list() {
