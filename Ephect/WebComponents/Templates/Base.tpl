@@ -16,7 +16,7 @@
         constructor() {
             super();
 
-            <Properties/>
+            <Properties />
             this.attachShadow({mode: 'open'});
             this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
 
@@ -30,16 +30,16 @@
         }
 
     <ObserveAttributes />
-    <GetAttributes />
 
+    <GetAttributes />
         async connectedCallback() {
             /**
              * The magic starts here
              */
             const base = new Base()
-            base.<Entrypoint/>()
+            base.entrypoint()
         }
     }
 
-    customElements.define('<TagName />', BaseComponent);
+    customElements.define('tag-name', BaseComponent);
 </script>

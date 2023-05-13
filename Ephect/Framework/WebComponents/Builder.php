@@ -55,16 +55,16 @@ class Builder
         $classText = str_replace('entrypoint', $entrypoint, $classText);
         Utils::safeWrite($destDir . "$className.class.mjs", $classText);
 
-        $componentText = Utils::safeRead($srcDir . 'Base.phtml');
+        $componentText = Utils::safeRead($srcDir . 'Base.tpl');
         $componentText = str_replace('Base', $className, $componentText);
-        $componentText = str_replace('<TagName />', $tagName, $componentText);
-        $componentText = str_replace('<Entrypoint />', $entrypoint, $componentText);
+        $componentText = str_replace('tag-name', $tagName, $componentText);
+        $componentText = str_replace('entrypoint', $entrypoint, $componentText);
 
         if (count($arguments) > 0) {
             $properties = '';
             foreach ($arguments as $property) {
                 $properties .= <<< HTML
-                    this.$property\n
+                this.$property\n
                 HTML;
                 $properties .= '            ';
             }
@@ -78,7 +78,7 @@ class Builder
             $attributes = implode(", ", $attributes);
 
             $observeAttributes = <<< HTML
-            static get observeAttributes() {
+                static get observeAttributes() {
                         /**
                         * Attributes passed inline to the component
                         */
@@ -91,7 +91,7 @@ class Builder
             $getAttributes = '';
             foreach ($arguments as $attribute) {
                 $getAttributes .= <<< HTML
-                get $attribute() {
+                    get $attribute() {
                             return this.getAttribute('$attribute') ?? null
                         }\n
                 HTML;
