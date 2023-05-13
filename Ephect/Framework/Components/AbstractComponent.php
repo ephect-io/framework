@@ -12,7 +12,6 @@ use Ephect\Plugins\Router\RouterService;
 use Exception;
 use ReflectionFunction;
 use stdClass;
-use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
 {
@@ -162,6 +161,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();
+        // $funcName = $funcReflection->getShortName();
 
         $html = '';
 
@@ -192,9 +192,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $html = ob_get_clean();
         }
 
-        // $fqFunctionName = explode('\\', $functionName);
-        // $function = array_pop($fqFunctionName);
-        // if ($function === 'App') {
+        // if ($funcName === 'App') {
         //     $html = self::format($html);
         // }
 
@@ -209,7 +207,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             'wrap' => 200
         ];
 
-        $tidy = new tidy;
+        $tidy = new \tidy;
         $tidy->parseString($html, $config, 'utf8');
         $tidy->cleanRepair();
 
