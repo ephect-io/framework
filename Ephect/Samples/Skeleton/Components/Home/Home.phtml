@@ -18,10 +18,11 @@ function Home()
             <link rel="stylesheet" href="/css/app.css" />
         </Slot>
         <div class="App-content" >
+            <TextWriter source="/Com/Com.html"/>
             <QuickStartCom message="Hello World!" from="the app" />
         </div>
         <Slot name="javascripts">
-            <script src="js/ephect.js"></script>
+            <script type="module" src="/js/runtime/TextWriter/TextWriter.mjs"></script>
         </Slot>
     </Mother>
     HTML);
