@@ -110,7 +110,6 @@ export default class CodeWriter {
             return text
         }
 
-
         function nextNode() {
             let result = null
             if (!nodes.length) {
@@ -187,7 +186,7 @@ export default class CodeWriter {
         indents = parseIndents(text)
         text = deleteIndents(text)
 
-        const decomposer = new Decomposer(text)
+        const decomposer = new Decomposer(text, true)
         decomposer.doComponents()
         nodes = [...decomposer.list]
 
@@ -255,7 +254,6 @@ export default class CodeWriter {
                 }
             }
 
-
             // In case of a "greater than" character
             // potentially closing a single parsed tag
             if (c === '&' && next4chars === CLOSE_TAG) {
@@ -298,6 +296,7 @@ export default class CodeWriter {
                     continue
                 }
             }
+
             // In case of an ampersand character
             // potentially starting an HTML entity
             if (c === '&' && next4chars !== OPEN_TAG) {
@@ -313,6 +312,7 @@ export default class CodeWriter {
                 continue
 
             }
+
             // In case of a "lower than" character
             // potentially starting a parsed tag
             if (c === '&' && next4chars === OPEN_TAG) {
