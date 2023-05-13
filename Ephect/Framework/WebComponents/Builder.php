@@ -60,6 +60,9 @@ class Builder
         $componentText = str_replace('tag-name', $tagName, $componentText);
         $componentText = str_replace('entrypoint', $entrypoint, $componentText);
 
+        $arguments[] = 'styles';
+        $arguments[] = 'classes';
+
         if (count($arguments) > 0) {
             $properties = '';
             foreach ($arguments as $property) {

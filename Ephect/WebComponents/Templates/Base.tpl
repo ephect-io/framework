@@ -34,6 +34,23 @@
     <GetAttributes />
         async connectedCallback() {
             /**
+             * Integrate styles and apply classes
+             */
+            if(this.styles !== null && this.classes !== null) {
+                const $styleList = this.styles.split(',')
+
+                $styleList.forEach($item => {
+                    const style = document.createElement('style')
+                    style.innerHTML = `@import "${$item}"`
+
+                    this.shadowRoot.appendChild(style)
+                })
+
+                const parentDiv = this.shadowRoot.getElementById('Base')
+                parentDiv.setAttribute('class', this.classes)
+            }
+
+            /**
              * The magic starts here
              */
             const base = new Base()
