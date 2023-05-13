@@ -95,7 +95,7 @@ class Builder
                             return this.getAttribute('$attribute') ?? null
                         }\n
                 HTML;
-                $getAttributes .= '        ';
+                $getAttributes .= '    ';
 
             }
 
