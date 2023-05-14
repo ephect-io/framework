@@ -7,6 +7,7 @@ export default class Decomposer {
     #text = ''
     #workingText = ''
     #words = []
+    #mistakes = []
 
     constructor(html, doMarkUpQuotes = false) {
         this.#text = html
@@ -19,6 +20,10 @@ export default class Decomposer {
         }
 
         this.coollectWords(this.#workingText)
+        this.makeMistakes()
+        this.makeFaultyText()
+
+        console.log({workingText: this.#workingText})
     }
 
     get list() {
@@ -35,6 +40,10 @@ export default class Decomposer {
     
     get words() {
         return this.#words
+    }
+
+    get mistakes() {
+        return this.#mistakes
     }
 
     #createUID() {
@@ -291,12 +300,12 @@ export default class Decomposer {
             const start = list[i].index + 1
             const end = start + tag.length - 1
 
-            const newValue = Array.prototype.fill('', tag.length)
+            const spaces = " ".repeat(tag.length)
 
             const beginBlock = text.substring(0, start - 1)
             const endBlock = text.substring(end)
 
-            text = beginBlock + newValue + endBlock
+            text = beginBlock + spaces + endBlock
         }
 
         regex = /(\S+)/gm;
@@ -316,6 +325,32 @@ export default class Decomposer {
 
         this.#words = result
 
+    }
+
+    makeMistakes() {
+        const result = [...this.#words]
+
+        result.forEach(item => {
+            const needleCharPos = Math.ceil(Math.random() * item.text.length) - 1 
+            const mistake = String.fromCharCode(Math.ceil(Math.random() * 26) + 96)
+            const begin = item.text.substring(0, needleCharPos)
+            const end  = item.text.substring(needleCharPos + 1)
+            item.text = begin + mistake + end
+        })
+        this.#mistakes = result
+
+    }
+
+    makeFaultyText() {
+        let text = this.#workingText
+
+        this.#mistakes.forEach(item => {
+            const begin = text.substring(0, item.startsAt)
+            const end  = text.substring(item.endsAt + 1)
+            text = begin + item.text + end
+        })
+
+        this.#workingText = text
     }
 
     splitTags(allTags) {
