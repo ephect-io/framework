@@ -11,21 +11,5 @@
         "homepage": "https://ephect.io",
         "role": "Creator"
     }],
-    "autoload": {
-        "classmap": [
-            "Ephect/"
-        ],
-        "exclude-from-classmap": [],
-        "psr-4": {
-            "Ephect\\": "Ephect/"
-        },
-        "files": [
-            "Ephect/Framework/Core/constants.php",
-            "Ephect/Framework/Core/Autoloader.php"
-        ]
-    },
-    "include-path": [
-        "Ephect"
-    ],
     "require": {}
 }
