@@ -6,6 +6,7 @@ export default class Decomposer {
     #list = []
     #text = ''
     #workingText = ''
+    #words = []
 
     constructor(html, doMarkUpQuotes = false) {
         this.#text = html
@@ -16,6 +17,8 @@ export default class Decomposer {
         if(doMarkUpQuotes) {
             this.markupQuotes()
         }
+
+        this.coollectWords(this.#workingText)
     }
 
     get list() {
@@ -28,6 +31,10 @@ export default class Decomposer {
 
     get workingText() {
         return this.#workingText
+    }
+    
+    get words() {
+        return this.#words
     }
 
     #createUID() {
@@ -264,6 +271,53 @@ export default class Decomposer {
         return result
     }
 
+    coollectWords(text) {
+        const result = []
+        let list = []
+        let regex = /([&oqpglt;]{4})[\w \/]+([&cqppgt;]{4})/gm;
+        let matches
+
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            list.push(matches)
+        }
+
+        for (let i = list.length - 1; i > -1; i--) {
+            const tag = list[i][0]
+            const start = list[i].index + 1
+            const end = start + tag.length - 1
+
+            const newValue = Array.prototype.fill('', tag.length)
+
+            const beginBlock = text.substring(0, start - 1)
+            const endBlock = text.substring(end)
+
+            text = beginBlock + newValue + endBlock
+        }
+
+        regex = /(\S+)/gm;
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            const expression = {}
+            expression.text = matches[0]
+            expression.startsAt =  matches.index
+            expression.endsAt = expression.startsAt + matches[0].length - 1
+
+            result.push(expression)
+        }
+
+        this.#words = result
+
+    }
+
     splitTags(allTags) {
 
         let tags = [...allTags]
@@ -355,8 +409,6 @@ export default class Decomposer {
     }
 
     doComponents(rule = '[\\w]+') {
-
-
         let html = this.#workingText
         const allTags = this.collectTags(html, rule)
         const singleIdList = []
