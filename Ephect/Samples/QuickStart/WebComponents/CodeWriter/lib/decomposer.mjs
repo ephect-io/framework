@@ -7,13 +7,15 @@ export default class Decomposer {
     #text = ''
     #workingText = ''
 
-    constructor(html) {
-        this.#text = html
+    constructor(html, doMarkUpQuotes = false) {
+        this.#text = html.trim()
 
         this.#workingText = this.#text + "\n<Eof />"
 
         this.protect()
-        this.markupQuotes()
+        if(doMarkUpQuotes) {
+            this.markupQuotes()
+        }
     }
 
     get list() {
@@ -85,22 +87,20 @@ export default class Decomposer {
             attributes.push(matches)
         }
 
-        for (let i = attributes.length - 1; i > -1; i --) {
+        for (let i = attributes.length - 1; i > -1; i--) {
             const attr = attributes[i]
             const quote = attr[1]
             const quoted = attr[0]
-            let unQuoted = attr[2] 
-            const start =  attr.index + 1
+            let unQuoted = attr[2]
+            const start = attr.index + 1
             const end = start + quoted.length - 1
 
             let letter = ''
-            if(quote === '"') {
+            if (quote === '"') {
                 letter = 'R'
-            }
-            else if(quote === '\'') {
+            } else if (quote === '\'') {
                 letter = 'Q'
-            }
-            else if(quote === '`') {
+            } else if (quote === '`') {
                 letter = 'G'
             }
 
@@ -220,7 +220,7 @@ export default class Decomposer {
         text = text.replace(/<([\/\w])/g, OPEN_TAG + '$1')
         text = text.replace(/>/g, CLOSE_TAG)
 
-        this.#workingText = text 
+        this.#workingText = text
     }
 
     collectTags(text, rule = '[\\w]+') {
@@ -330,8 +330,7 @@ export default class Decomposer {
         return {regularTags, singleTags}
     }
 
-    replaceTags(text, tags)
-    {
+    replaceTags(text, tags) {
         let result = text
         const list = []
 
@@ -344,7 +343,7 @@ export default class Decomposer {
 
         for (let i = tags.length - 1; i > -1; i--) {
             const tag = tags[i]
-            tag.text = tag.text.substring(0, tag.text.length -4) + TERMINATOR + CLOSE_TAG;
+            tag.text = tag.text.substring(0, tag.text.length - 4) + TERMINATOR + CLOSE_TAG;
 
             const begin = result.substring(0, tag.startsAt)
             const end = result.substring(tag.endsAt + 1)
@@ -377,7 +376,7 @@ export default class Decomposer {
 
         let workTags = allTags
 
-        if(singleTags.length) {
+        if (singleTags.length) {
             singleTags.forEach(item => singleIdList.push(item.id))
             html = this.replaceTags(html, singleTags)
             workTags = this.collectTags(html, rule)

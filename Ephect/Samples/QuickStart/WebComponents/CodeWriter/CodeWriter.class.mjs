@@ -99,7 +99,7 @@ export default class CodeWriter {
         async function loadText(url) {
             let text = ''
             await fetch(url).then(response => response.text()).then((html) => {
-                text = html
+                text = html.trim()
             })
 
             return text
@@ -189,7 +189,7 @@ export default class CodeWriter {
         indents = parseIndents(text)
         text = deleteIndents(text)
 
-        const decomposer = new Decomposer(text)
+        const decomposer = new Decomposer(text, true)
         decomposer.doComponents()
         nodes = [...decomposer.list]
 

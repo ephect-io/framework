@@ -1,10 +1,10 @@
 <template id="CodeWriter">
     <div class="code-snippet">
         <div class="to-be-copied">
-            <pre id="to-copy"><code class="language-php"></code></pre>
+            <pre id="to-copy"><code></code></pre>
         </div>
         <div class="to-be-written">
-            <pre id="to-write"><code class="language-php"></code></pre>
+            <pre id="to-write"><code></code></pre>
         </div>
     </div>
 </template>
@@ -40,7 +40,7 @@
             /**
              * Attributes passed inline to the component
              */
-            return ['source', 'use-highlight-js']
+            return ['source', 'use-highlight-js', 'theme', 'language']
         }
 
         get source() {
@@ -48,28 +48,57 @@
         }
 
         get useHighlightJs() {
-            return this.getAttribute('use-highlight-js') ?? null
+            const result = this.getAttribute('use-highlight-js') ?? ''
+            return result.toLowerCase() === 'true' ? true : false
+        }
+
+        get theme() {
+            return this.getAttribute('theme') ?? null
+        }
+        get language() {
+            return this.getAttribute('language') ?? null
         }
 
         async connectedCallback() {
+            /**
+             * Integrate styles and apply classes
+             */
+
+            if(this.useHighlightJs) {
+                const $theme = this.theme ?? 'base16/monokai'
+                const $language = this.language ?? 'html'
+
+                const script = document.createElement('script')
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js'
+                this.shadowRoot.appendChild(script)
+
+                const $styleList = []
+                $styleList.push('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css')
+                $styleList.push('https://highlightjs.org/static/demo/styles/' + $theme + '.css')
+
+                $styleList.forEach($item => {
+                    const style = document.createElement('style')
+                    style.innerHTML = `@import "${$item}"`
+
+                    this.shadowRoot.appendChild(style)
+                })
+
+                const $parentDiv = await this.shadowRoot.querySelectorAll('code')
+                for(const node of $parentDiv) {
+                    node.setAttribute('class', 'language-' + $language)
+                }
+            }
+
             /**
              * The magic starts here
              */
             const cw = new CodeWriter(this)
             cw.writeLikeAHuman('to-copy', 'to-write')
-            const useHighlightJS = this.useHighlightJS
-
         }
     }
 
     customElements.define('code-writer', CodeWriterComponent);
 </script>
-<style>
-    @import "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
-</style>
-<style>
-    @import "https://highlightjs.org/static/demo/styles/base16/monokai.css"
-</style>
 <style>
     #to-copy {
         display: block;
