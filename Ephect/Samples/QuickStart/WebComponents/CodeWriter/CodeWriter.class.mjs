@@ -55,6 +55,15 @@ export default class CodeWriter {
             await delay(speed)
         }
 
+        async function delChar() {
+            let tail = reg.join("")
+
+            html = html.substring(0, html.length - 1)
+            targetComponent.innerHTML = html + tail
+
+            await delay(speed)
+        }
+
         function unshift(char) {
             reg.unshift(char)
         }
@@ -201,14 +210,47 @@ export default class CodeWriter {
         const firstIndent = indents[indentCount] ?? ''
         await addChar(firstIndent)
         indentCount++
-        node = null
 
         for (let i = 0; i < workingText.length; i++) {
 
             let c = workingText[i]
+
             if (c === OPEN_TAG) {
                 c = ENCODED_OPEN_TAG
                 await addChar(c)
+                continue
+            }
+
+            if(decomposer.phraseStarts.length && decomposer.phraseStarts[0] === i) {
+                const phraseLen = decomposer.phraseLengths[0]
+                for(let j = 0; j < phraseLen; j++) {
+                    const pos = i + j
+                    const mistakeIndex = decomposer.mistakeCursors.indexOf(pos)
+                    c = workingText[pos]
+                    if(mistakeIndex > -1) {
+                        await addChar(decomposer.mistakes[mistakeIndex])
+                    } else {
+                        await addChar(c)
+                    }
+
+                    if(decomposer.wordEnds.includes(pos) && decomposer.mistakeCursors.length) {
+                        const cursor = decomposer.mistakeCursors[0]
+                        if(cursor <= pos) {
+                            const subLen = pos - cursor + 1
+                            for(let k = 0; k < subLen; k++) {
+                                await delChar()
+                                j--
+                            }
+
+                            decomposer.mistakeCursors.shift()
+                        }
+                    }
+                }
+
+                decomposer.phraseStarts.shift()
+                decomposer.phraseLengths.shift()
+
+                i += phraseLen - 1
                 continue
             }
 
@@ -335,8 +377,8 @@ export default class CodeWriter {
                     continue
                 }
 
-                // The "lower than" character is 
-                // the start of an open parsed tag      
+                // The "lower than" character is
+                // the start of an open parsed tag
                 node.dirty = true
                 let hasLF = false
                 let unshifted = ''
@@ -362,7 +404,7 @@ export default class CodeWriter {
 
                     // Is the tag name a bracket?
                     if (translated) {
-                        // Store the closing bracket 
+                        // Store the closing bracket
                         // to write it after each new character
                         i = node.endsAt
                         if (hasLF) {
@@ -397,8 +439,8 @@ export default class CodeWriter {
                     }
                 }
 
-                // Write the actual string 
-                // and continue to the next character 
+                // Write the actual string
+                // and continue to the next character
                 await addChar(c)
                 continue
 
@@ -406,7 +448,7 @@ export default class CodeWriter {
 
             // In case of the line feed character
             if (c === LF) {
-                // Add the line feed 
+                // Add the line feed
                 // followed by the indent
                 // of the next line
 
@@ -429,7 +471,7 @@ export default class CodeWriter {
         // Set back the code text in pure HTML
         html = translate(html)
 
-        // Raise an event outside the shadow DOM 
+        // Raise an event outside the shadow DOM
         // when all is done and ready
         const finishedEvent = new CustomEvent("finishedWriting", {
             bubbles: true, composed: true, detail: {
@@ -437,7 +479,6 @@ export default class CodeWriter {
             }
         })
         this.#parent.dispatchEvent(finishedEvent)
-
     }
 
 }

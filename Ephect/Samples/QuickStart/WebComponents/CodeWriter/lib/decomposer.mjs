@@ -6,6 +6,12 @@ export default class Decomposer {
     #list = []
     #text = ''
     #workingText = ''
+    #words = []
+    #phraseStarts = []
+    #phraseLengths = []
+    #wordEnds = []
+    #mistakes = []
+    #mistakeCursors = []
 
     constructor(html, doMarkUpQuotes = false) {
         this.#text = html.trim()
@@ -16,6 +22,10 @@ export default class Decomposer {
         if(doMarkUpQuotes) {
             this.markupQuotes()
         }
+
+        this.collectWords(this.#workingText)
+        this.makeMistakes()
+
     }
 
     get list() {
@@ -28,6 +38,30 @@ export default class Decomposer {
 
     get workingText() {
         return this.#workingText
+    }
+
+    get words() {
+        return this.#words
+    }
+
+    get mistakes() {
+        return this.#mistakes
+    }
+
+    get mistakeCursors() {
+        return this.#mistakeCursors
+    }
+
+    get phraseStarts() {
+        return this.#phraseStarts
+    }
+
+    get phraseLengths() {
+        return this.#phraseLengths
+    }
+
+    get wordEnds() {
+        return this.#wordEnds
     }
 
     #createUID() {
@@ -264,6 +298,147 @@ export default class Decomposer {
         return result
     }
 
+    collectWords(text) {
+        let result = []
+        let list = []
+        let regex = /([&oqpg;]{4})[\w \/]+([&cqpp;]{4})/gm;
+        let matches
+
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            list.push(matches)
+        }
+
+        for (let i = list.length - 1; i > -1; i--) {
+            const tag = list[i][0]
+            const start = list[i].index + 1
+            const end = start + tag.length - 1
+
+            const spaces = "•".repeat(tag.length)
+
+            const beginBlock = text.substring(0, start - 1)
+            const endBlock = text.substring(end)
+
+            text = beginBlock + spaces + endBlock
+        }
+
+        regex = /([&lt;]{4})[\w \/]+([&gt;]{4})/gm;
+
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            list.push(matches)
+        }
+
+        for (let i = list.length - 1; i > -1; i--) {
+            const tag = list[i][0]
+            const start = list[i].index + 1
+            const end = start + tag.length - 1
+
+            const spaces = "•".repeat(tag.length)
+
+            const beginBlock = text.substring(0, start - 1)
+            const endBlock = text.substring(end)
+
+            text = beginBlock + spaces + endBlock
+        }
+
+        regex = /([&ltgt;]{4})/gm;
+
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            list.push(matches)
+        }
+
+        for (let i = list.length - 1; i > -1; i--) {
+            const tag = list[i][0]
+            const start = list[i].index + 1
+            const end = start + tag.length - 1
+
+            const spaces = "•".repeat(tag.length)
+
+            const beginBlock = text.substring(0, start - 1)
+            const endBlock = text.substring(end)
+
+            text = beginBlock + spaces + endBlock
+        }
+
+        regex = /((?!•)\S[^•\n]*)/g;
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            this.#phraseStarts.push(matches.index)
+            this.#phraseLengths.push(matches[0].length)
+        }
+
+        regex = /((?!•)\S[^•\n ]*)/g;
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            const expression = {}
+            expression.text = matches[0]
+            expression.startsAt =  matches.index
+            expression.endsAt = expression.startsAt + matches[0].length - 1
+
+            result.push(expression)
+            this.#wordEnds.push(expression.endsAt)
+        }
+
+        this.#words = result
+
+    }
+
+    makeMistakes() {
+
+        // Prevent always starting mistakes on first word
+        let i = Math.ceil(Math.random() * 2) - 2
+        // Select between 3 and 5 the probabitity of mistakes
+        let probability = Math.ceil(Math.random() * 3) + 2
+
+        this.#words.forEach(item => {
+            i++
+            if(i % probability !== 0 || item.text.length < 4) {
+                return
+            }
+            const needleCharPos = Math.ceil(Math.random() * item.text.length) - 1
+            const mistake = String.fromCharCode(Math.ceil(Math.random() * 26) + 96)
+
+            this.#mistakeCursors.push(item.startsAt + needleCharPos)
+            this.#mistakes.push(mistake)
+
+        })
+
+    }
+
+    makeFaultyText() {
+        let text = this.#workingText
+
+        this.#mistakes.forEach(item => {
+            const begin = text.substring(0, item.startsAt)
+            const end  = text.substring(item.endsAt + 1)
+            text = begin + item.text + end
+        })
+
+        this.#workingText = text
+    }
+
     splitTags(allTags) {
 
         let tags = [...allTags]
@@ -355,8 +530,6 @@ export default class Decomposer {
     }
 
     doComponents(rule = '[\\w]+') {
-
-
         let html = this.#workingText
         const allTags = this.collectTags(html, rule)
         const singleIdList = []
