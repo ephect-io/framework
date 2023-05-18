@@ -7,7 +7,11 @@ export default class Decomposer {
     #text = ''
     #workingText = ''
     #words = []
+    #phraseStarts = []
+    #phraseLengths = []
+    #wordEnds = []
     #mistakes = []
+    #mistakeCursors = []
 
     constructor(html, doMarkUpQuotes = false) {
         this.#text = html
@@ -19,11 +23,9 @@ export default class Decomposer {
             this.markupQuotes()
         }
 
-        this.coollectWords(this.#workingText)
+        this.collectWords(this.#workingText)
         this.makeMistakes()
-        this.makeFaultyText()
 
-        console.log({workingText: this.#workingText})
     }
 
     get list() {
@@ -44,6 +46,22 @@ export default class Decomposer {
 
     get mistakes() {
         return this.#mistakes
+    }
+
+    get mistakeCursors() {
+        return this.#mistakeCursors
+    }
+    
+    get phraseStarts() {
+        return this.#phraseStarts
+    }
+
+    get phraseLengths() {
+        return this.#phraseLengths
+    }
+
+    get wordEnds() {
+        return this.#wordEnds
     }
 
     #createUID() {
@@ -280,8 +298,8 @@ export default class Decomposer {
         return result
     }
 
-    coollectWords(text) {
-        const result = []
+    collectWords(text) {
+        let result = []
         let list = []
         let regex = /([&oqpglt;]{4})[\w \/]+([&cqppgt;]{4})/gm;
         let matches
@@ -300,7 +318,7 @@ export default class Decomposer {
             const start = list[i].index + 1
             const end = start + tag.length - 1
 
-            const spaces = " ".repeat(tag.length)
+            const spaces = "•".repeat(tag.length)
 
             const beginBlock = text.substring(0, start - 1)
             const endBlock = text.substring(end)
@@ -308,7 +326,18 @@ export default class Decomposer {
             text = beginBlock + spaces + endBlock
         }
 
-        regex = /(\S+)/gm;
+        regex = /((?!•)\S[^•\n]*)/g;
+        while ((matches = regex.exec(text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (matches.index === regex.lastIndex) {
+                regex.lastIndex++
+            }
+
+            this.#phraseStarts.push(matches.index)
+            this.#phraseLengths.push(matches[0].length)
+        }
+
+        regex = /((?!•)\S[^•\n ]*)/g;
         while ((matches = regex.exec(text)) !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (matches.index === regex.lastIndex) {
@@ -321,6 +350,7 @@ export default class Decomposer {
             expression.endsAt = expression.startsAt + matches[0].length - 1
 
             result.push(expression)
+            this.#wordEnds.push(expression.endsAt)
         }
 
         this.#words = result
@@ -328,16 +358,24 @@ export default class Decomposer {
     }
 
     makeMistakes() {
-        const result = [...this.#words]
 
-        result.forEach(item => {
+        // Prevent always starting mistakes on first word
+        let i = Math.ceil(Math.random() * 2) - 2
+        // Select between 3 and 5 the probabitity of mistakes
+        let probability = Math.ceil(Math.random() * 3) + 2
+
+        this.#words.forEach(item => {
+            i++
+            if(i % probability !== 0 || item.text.length < 4) {
+                return
+            }
             const needleCharPos = Math.ceil(Math.random() * item.text.length) - 1 
             const mistake = String.fromCharCode(Math.ceil(Math.random() * 26) + 96)
-            const begin = item.text.substring(0, needleCharPos)
-            const end  = item.text.substring(needleCharPos + 1)
-            item.text = begin + mistake + end
+
+            this.#mistakeCursors.push(item.startsAt + needleCharPos)
+            this.#mistakes.push(mistake)
+
         })
-        this.#mistakes = result
 
     }
 
