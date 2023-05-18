@@ -1,7 +1,9 @@
 import Decomposer from "./lib/decomposer.mjs"
 
-const OPEN_TAG = '&lt;'
-const CLOSE_TAG = '&gt;'
+const ENCODED_OPEN_TAG = '&lt;'
+const ENCODED_CLOSE_TAG = '&gt;'
+const OPEN_TAG = '<'
+const CLOSE_TAG = '>'
 const TERMINATOR = '/'
 const LF = "\n"
 
@@ -104,11 +106,12 @@ export default class CodeWriter {
         }
 
         function translate(text) {
-            text = text.replaceAll(OPEN_TAG, '<')
-            text = text.replaceAll(CLOSE_TAG, '>')
+            text = text.replaceAll(ENCODED_OPEN_TAG, OPEN_TAG)
+            text = text.replaceAll(ENCODED_CLOSE_TAG, CLOSE_TAG)
 
             return text
         }
+
 
         function nextNode() {
             let result = null
@@ -186,11 +189,11 @@ export default class CodeWriter {
         indents = parseIndents(text)
         text = deleteIndents(text)
 
-        const decomposer = new Decomposer(text, true)
+        const decomposer = new Decomposer(text)
         decomposer.doComponents()
         nodes = [...decomposer.list]
 
-        workingText = decomposer.workingText.replace(LF + OPEN_TAG + 'Eof ' + TERMINATOR + CLOSE_TAG, '')
+        workingText = decomposer.workingText.replace(LF + ENCODED_OPEN_TAG + 'Eof ' + TERMINATOR + ENCODED_CLOSE_TAG, '')
 
         const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
@@ -203,8 +206,8 @@ export default class CodeWriter {
         for (let i = 0; i < workingText.length; i++) {
 
             let c = workingText[i]
-            if (c === '<') {
-                c = OPEN_TAG
+            if (c === OPEN_TAG) {
+                c = ENCODED_OPEN_TAG
                 await addChar(c)
                 continue
             }
@@ -233,20 +236,20 @@ export default class CodeWriter {
 
             if (c === '&' && next4chars === '&pp;') {
                 i += 3
-                await addChar(OPEN_TAG)
+                await addChar(ENCODED_OPEN_TAG)
                 continue
             }
 
             if (c === '&' && next4chars === '&pg;') {
                 i += 3
-                await addChar(CLOSE_TAG)
+                await addChar(ENCODED_CLOSE_TAG)
                 continue
             }
 
-            if (c === '/' && next5chars === TERMINATOR + CLOSE_TAG) {
+            if (c === '/' && next5chars === TERMINATOR + ENCODED_CLOSE_TAG) {
 
                 if (node !== null && !node.hasCloser && node.endsAt === i + 4) {
-                    c = TERMINATOR + CLOSE_TAG
+                    c = TERMINATOR + ENCODED_CLOSE_TAG
                     shift()
                     await addChar(c);
                     i += 4
@@ -254,14 +257,15 @@ export default class CodeWriter {
                 }
             }
 
+
             // In case of a "greater than" character
             // potentially closing a single parsed tag
-            if (c === '&' && next4chars === CLOSE_TAG) {
+            if (c === '&' && next4chars === ENCODED_CLOSE_TAG) {
 
                 if (node !== null && node.endsAt === i + 3) {
                     shift()
 
-                    await addChar(CLOSE_TAG)
+                    await addChar(ENCODED_CLOSE_TAG)
                     if (node.hasCloser) {
                         nextUnshift()
                     }
@@ -274,7 +278,7 @@ export default class CodeWriter {
 
             // In case of a "lower than" character
             // potentially closing an open parsed tag
-            if (c === '&' && next5chars === OPEN_TAG + TERMINATOR) {
+            if (c === '&' && next5chars === ENCODED_OPEN_TAG + TERMINATOR) {
 
                 node = findLastNodeOfDepth(depth)
 
@@ -296,10 +300,9 @@ export default class CodeWriter {
                     continue
                 }
             }
-
             // In case of an ampersand character
             // potentially starting an HTML entity
-            if (c === '&' && next4chars !== OPEN_TAG) {
+            if (c === '&' && next4chars !== ENCODED_OPEN_TAG) {
 
                 const scpos = workingText.substring(i).indexOf(';')
                 if (scpos > 8) {
@@ -312,10 +315,9 @@ export default class CodeWriter {
                 continue
 
             }
-
             // In case of a "lower than" character
             // potentially starting a parsed tag
-            if (c === '&' && next4chars === OPEN_TAG) {
+            if (c === '&' && next4chars === ENCODED_OPEN_TAG) {
 
                 // We don't take the next node if the last
                 // "lower than" character was not a parsed tag
@@ -327,7 +329,7 @@ export default class CodeWriter {
                 // the start of a parsed tag
                 if (node.startsAt !== i) {
                     // Write it and prevent taking the next node
-                    await addChar(OPEN_TAG)
+                    await addChar(ENCODED_OPEN_TAG)
                     i += 3
                     node.dirty = false
                     continue
@@ -385,9 +387,9 @@ export default class CodeWriter {
                     // Does the tag string contain an LF character?
                     hasLF = node.text.indexOf(LF) > -1
 
-                    c = OPEN_TAG
+                    c = ENCODED_OPEN_TAG
                     i += 3
-                    unshifted = CLOSE_TAG
+                    unshifted = ENCODED_CLOSE_TAG
                     if (hasLF) {
                         unshift(LF + lastIndent + unshifted)
                     } else {

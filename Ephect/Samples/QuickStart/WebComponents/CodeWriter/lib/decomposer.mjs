@@ -6,24 +6,14 @@ export default class Decomposer {
     #list = []
     #text = ''
     #workingText = ''
-    #words = []
-    #mistakes = []
 
-    constructor(html, doMarkUpQuotes = false) {
+    constructor(html) {
         this.#text = html
 
         this.#workingText = this.#text + "\n<Eof />"
 
         this.protect()
-        if(doMarkUpQuotes) {
-            this.markupQuotes()
-        }
-
-        this.coollectWords(this.#workingText)
-        this.makeMistakes()
-        this.makeFaultyText()
-
-        console.log({workingText: this.#workingText})
+        this.markupQuotes()
     }
 
     get list() {
@@ -36,14 +26,6 @@ export default class Decomposer {
 
     get workingText() {
         return this.#workingText
-    }
-    
-    get words() {
-        return this.#words
-    }
-
-    get mistakes() {
-        return this.#mistakes
     }
 
     #createUID() {
@@ -103,20 +85,22 @@ export default class Decomposer {
             attributes.push(matches)
         }
 
-        for (let i = attributes.length - 1; i > -1; i--) {
+        for (let i = attributes.length - 1; i > -1; i --) {
             const attr = attributes[i]
             const quote = attr[1]
             const quoted = attr[0]
-            let unQuoted = attr[2]
-            const start = attr.index + 1
+            let unQuoted = attr[2] 
+            const start =  attr.index + 1
             const end = start + quoted.length - 1
 
             let letter = ''
-            if (quote === '"') {
+            if(quote === '"') {
                 letter = 'R'
-            } else if (quote === '\'') {
+            }
+            else if(quote === '\'') {
                 letter = 'Q'
-            } else if (quote === '`') {
+            }
+            else if(quote === '`') {
                 letter = 'G'
             }
 
@@ -236,7 +220,7 @@ export default class Decomposer {
         text = text.replace(/<([\/\w])/g, OPEN_TAG + '$1')
         text = text.replace(/>/g, CLOSE_TAG)
 
-        this.#workingText = text
+        this.#workingText = text 
     }
 
     collectTags(text, rule = '[\\w]+') {
@@ -278,79 +262,6 @@ export default class Decomposer {
         })
 
         return result
-    }
-
-    coollectWords(text) {
-        const result = []
-        let list = []
-        let regex = /([&oqpglt;]{4})[\w \/]+([&cqppgt;]{4})/gm;
-        let matches
-
-        while ((matches = regex.exec(text)) !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (matches.index === regex.lastIndex) {
-                regex.lastIndex++
-            }
-
-            list.push(matches)
-        }
-
-        for (let i = list.length - 1; i > -1; i--) {
-            const tag = list[i][0]
-            const start = list[i].index + 1
-            const end = start + tag.length - 1
-
-            const spaces = " ".repeat(tag.length)
-
-            const beginBlock = text.substring(0, start - 1)
-            const endBlock = text.substring(end)
-
-            text = beginBlock + spaces + endBlock
-        }
-
-        regex = /(\S+)/gm;
-        while ((matches = regex.exec(text)) !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (matches.index === regex.lastIndex) {
-                regex.lastIndex++
-            }
-
-            const expression = {}
-            expression.text = matches[0]
-            expression.startsAt =  matches.index
-            expression.endsAt = expression.startsAt + matches[0].length - 1
-
-            result.push(expression)
-        }
-
-        this.#words = result
-
-    }
-
-    makeMistakes() {
-        const result = [...this.#words]
-
-        result.forEach(item => {
-            const needleCharPos = Math.ceil(Math.random() * item.text.length) - 1 
-            const mistake = String.fromCharCode(Math.ceil(Math.random() * 26) + 96)
-            const begin = item.text.substring(0, needleCharPos)
-            const end  = item.text.substring(needleCharPos + 1)
-            item.text = begin + mistake + end
-        })
-        this.#mistakes = result
-
-    }
-
-    makeFaultyText() {
-        let text = this.#workingText
-
-        this.#mistakes.forEach(item => {
-            const begin = text.substring(0, item.startsAt)
-            const end  = text.substring(item.endsAt + 1)
-            text = begin + item.text + end
-        })
-
-        this.#workingText = text
     }
 
     splitTags(allTags) {
@@ -419,7 +330,8 @@ export default class Decomposer {
         return {regularTags, singleTags}
     }
 
-    replaceTags(text, tags) {
+    replaceTags(text, tags)
+    {
         let result = text
         const list = []
 
@@ -432,7 +344,7 @@ export default class Decomposer {
 
         for (let i = tags.length - 1; i > -1; i--) {
             const tag = tags[i]
-            tag.text = tag.text.substring(0, tag.text.length - 4) + TERMINATOR + CLOSE_TAG;
+            tag.text = tag.text.substring(0, tag.text.length -4) + TERMINATOR + CLOSE_TAG;
 
             const begin = result.substring(0, tag.startsAt)
             const end = result.substring(tag.endsAt + 1)
@@ -444,6 +356,8 @@ export default class Decomposer {
     }
 
     doComponents(rule = '[\\w]+') {
+
+
         let html = this.#workingText
         const allTags = this.collectTags(html, rule)
         const singleIdList = []
@@ -463,7 +377,7 @@ export default class Decomposer {
 
         let workTags = allTags
 
-        if (singleTags.length) {
+        if(singleTags.length) {
             singleTags.forEach(item => singleIdList.push(item.id))
             html = this.replaceTags(html, singleTags)
             workTags = this.collectTags(html, rule)
