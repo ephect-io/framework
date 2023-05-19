@@ -32,6 +32,7 @@ export default class TextWriter {
         let toUnshift = []
         let toUnshiftHasLF = []
         let indentCount = 0
+        let lastWordEnd = 0
 
         function delay(milliseconds) {
             return new Promise(resolve => {
@@ -46,6 +47,16 @@ export default class TextWriter {
             }
 
             html += c
+            targetComponent.innerHTML = html + tail
+
+            await delay(speed)
+        }
+
+        async function delChar() {
+            let tail = reg.join("")
+      
+
+            html = html.substring(0, html.length - 1)
             targetComponent.innerHTML = html + tail
 
             await delay(speed)
@@ -174,6 +185,21 @@ export default class TextWriter {
             return result
         }
 
+        async function doCorrection(index) {
+            const cursor = decomposer.mistakeCursors[0]
+            if(cursor < lastWordEnd) {
+                const subLen = lastWordEnd - cursor + 1
+                for(let j = 0; j < subLen; j++) {
+                    await delChar()
+                }
+                
+                decomposer.mistakeCursors.shift()
+
+            }
+
+            lastWordEnd = 0
+        }
+
         let codeSource = this.#parent.getAttribute("source") ?? ''
 
         text = await loadText(codeSource)
@@ -183,6 +209,7 @@ export default class TextWriter {
         text = deleteIndents(text)
 
         const decomposer = new Decomposer(text)
+        
         decomposer.doComponents()
         nodes = [...decomposer.list]
 
@@ -197,6 +224,44 @@ export default class TextWriter {
 
             let c = workingText[i]
 
+            if(decomposer.phraseStarts.length && decomposer.phraseStarts[0] === i) {
+
+                const phraseLen = decomposer.phraseLengths[0]
+                for(let j = 0; j < phraseLen; j++) {
+                    const pos = i + j
+                    const mistakeIndex = decomposer.mistakeCursors.indexOf(pos)
+                    c = workingText[pos]
+                    if(mistakeIndex > -1) {
+                        await addChar(decomposer.mistakes[mistakeIndex])
+
+                    } else {
+                        await addChar(c)
+                    }
+
+                    if(decomposer.wordEnds.includes(pos) && decomposer.mistakeCursors.length) {
+
+                        const cursor = decomposer.mistakeCursors[0]
+                        if(cursor <= pos) {
+                            const subLen = pos - cursor + 1
+                            for(let k = 0; k < subLen; k++) {
+                                await delChar()
+                                j--
+                            }
+                            
+                            decomposer.mistakeCursors.shift()
+            
+                        }
+                    }
+    
+                }
+       
+                decomposer.phraseStarts.shift()
+                decomposer.phraseLengths.shift()
+
+                i += phraseLen - 1
+                continue
+            }
+  
             const next4chars = workingText.substring(i, i + 4)
             const next5chars = workingText.substring(i, i + 5)
 
@@ -359,6 +424,7 @@ export default class TextWriter {
                     }
                 }
 
+
                 // Write the actual string
                 // and continue to the next character
                 await addChar(c)
@@ -383,9 +449,7 @@ export default class TextWriter {
                 await addChar(lastLineFeed, reg0 === nextString)
                 continue
             }
-
-            // Write any character not matching the cases above
-            await addChar(c)
+          
         }
 
         // Set back the code text in pure HTML

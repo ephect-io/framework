@@ -1,7 +1,9 @@
 import Decomposer from "./lib/decomposer.mjs"
 
-const OPEN_TAG = '&lt;'
-const CLOSE_TAG = '&gt;'
+const ENCODED_OPEN_TAG = '&lt;'
+const ENCODED_CLOSE_TAG = '&gt;'
+const OPEN_TAG = '<'
+const CLOSE_TAG = '>'
 const TERMINATOR = '/'
 const LF = "\n"
 
@@ -53,6 +55,15 @@ export default class CodeWriter {
             await delay(speed)
         }
 
+        async function delChar() {
+            let tail = reg.join("")
+
+            html = html.substring(0, html.length - 1)
+            targetComponent.innerHTML = html + tail
+
+            await delay(speed)
+        }
+
         function unshift(char) {
             reg.unshift(char)
         }
@@ -97,18 +108,19 @@ export default class CodeWriter {
         async function loadText(url) {
             let text = ''
             await fetch(url).then(response => response.text()).then((html) => {
-                text = html
+                text = html.trim()
             })
 
             return text
         }
 
         function translate(text) {
-            text = text.replaceAll(OPEN_TAG, '<')
-            text = text.replaceAll(CLOSE_TAG, '>')
+            text = text.replaceAll(ENCODED_OPEN_TAG, OPEN_TAG)
+            text = text.replaceAll(ENCODED_CLOSE_TAG, CLOSE_TAG)
 
             return text
         }
+
 
         function nextNode() {
             let result = null
@@ -190,7 +202,7 @@ export default class CodeWriter {
         decomposer.doComponents()
         nodes = [...decomposer.list]
 
-        workingText = decomposer.workingText.replace(LF + OPEN_TAG + 'Eof ' + TERMINATOR + CLOSE_TAG, '')
+        workingText = decomposer.workingText.replace(LF + ENCODED_OPEN_TAG + 'Eof ' + TERMINATOR + ENCODED_CLOSE_TAG, '')
 
         const emptyText = makeEmptyText(workingText)
         sourceComponent.innerHTML = emptyText
@@ -198,14 +210,47 @@ export default class CodeWriter {
         const firstIndent = indents[indentCount] ?? ''
         await addChar(firstIndent)
         indentCount++
-        node = null
 
         for (let i = 0; i < workingText.length; i++) {
 
             let c = workingText[i]
-            if (c === '<') {
-                c = OPEN_TAG
+
+            if (c === OPEN_TAG) {
+                c = ENCODED_OPEN_TAG
                 await addChar(c)
+                continue
+            }
+
+            if(decomposer.phraseStarts.length && decomposer.phraseStarts[0] === i) {
+                const phraseLen = decomposer.phraseLengths[0]
+                for(let j = 0; j < phraseLen; j++) {
+                    const pos = i + j
+                    const mistakeIndex = decomposer.mistakeCursors.indexOf(pos)
+                    c = workingText[pos]
+                    if(mistakeIndex > -1) {
+                        await addChar(decomposer.mistakes[mistakeIndex])
+                    } else {
+                        await addChar(c)
+                    }
+
+                    if(decomposer.wordEnds.includes(pos) && decomposer.mistakeCursors.length) {
+                        const cursor = decomposer.mistakeCursors[0]
+                        if(cursor <= pos) {
+                            const subLen = pos - cursor + 1
+                            for(let k = 0; k < subLen; k++) {
+                                await delChar()
+                                j--
+                            }
+
+                            decomposer.mistakeCursors.shift()
+                        }
+                    }
+                }
+
+                decomposer.phraseStarts.shift()
+                decomposer.phraseLengths.shift()
+
+                i += phraseLen - 1
                 continue
             }
 
@@ -233,20 +278,20 @@ export default class CodeWriter {
 
             if (c === '&' && next4chars === '&pp;') {
                 i += 3
-                await addChar(OPEN_TAG)
+                await addChar(ENCODED_OPEN_TAG)
                 continue
             }
 
             if (c === '&' && next4chars === '&pg;') {
                 i += 3
-                await addChar(CLOSE_TAG)
+                await addChar(ENCODED_CLOSE_TAG)
                 continue
             }
 
-            if (c === '/' && next5chars === TERMINATOR + CLOSE_TAG) {
+            if (c === '/' && next5chars === TERMINATOR + ENCODED_CLOSE_TAG) {
 
                 if (node !== null && !node.hasCloser && node.endsAt === i + 4) {
-                    c = TERMINATOR + CLOSE_TAG
+                    c = TERMINATOR + ENCODED_CLOSE_TAG
                     shift()
                     await addChar(c);
                     i += 4
@@ -254,14 +299,15 @@ export default class CodeWriter {
                 }
             }
 
+
             // In case of a "greater than" character
             // potentially closing a single parsed tag
-            if (c === '&' && next4chars === CLOSE_TAG) {
+            if (c === '&' && next4chars === ENCODED_CLOSE_TAG) {
 
                 if (node !== null && node.endsAt === i + 3) {
                     shift()
 
-                    await addChar(CLOSE_TAG)
+                    await addChar(ENCODED_CLOSE_TAG)
                     if (node.hasCloser) {
                         nextUnshift()
                     }
@@ -274,7 +320,7 @@ export default class CodeWriter {
 
             // In case of a "lower than" character
             // potentially closing an open parsed tag
-            if (c === '&' && next5chars === OPEN_TAG + TERMINATOR) {
+            if (c === '&' && next5chars === ENCODED_OPEN_TAG + TERMINATOR) {
 
                 node = findLastNodeOfDepth(depth)
 
@@ -296,10 +342,9 @@ export default class CodeWriter {
                     continue
                 }
             }
-
             // In case of an ampersand character
             // potentially starting an HTML entity
-            if (c === '&' && next4chars !== OPEN_TAG) {
+            if (c === '&' && next4chars !== ENCODED_OPEN_TAG) {
 
                 const scpos = workingText.substring(i).indexOf(';')
                 if (scpos > 8) {
@@ -312,10 +357,9 @@ export default class CodeWriter {
                 continue
 
             }
-
             // In case of a "lower than" character
             // potentially starting a parsed tag
-            if (c === '&' && next4chars === OPEN_TAG) {
+            if (c === '&' && next4chars === ENCODED_OPEN_TAG) {
 
                 // We don't take the next node if the last
                 // "lower than" character was not a parsed tag
@@ -327,14 +371,14 @@ export default class CodeWriter {
                 // the start of a parsed tag
                 if (node.startsAt !== i) {
                     // Write it and prevent taking the next node
-                    await addChar(OPEN_TAG)
+                    await addChar(ENCODED_OPEN_TAG)
                     i += 3
                     node.dirty = false
                     continue
                 }
 
-                // The "lower than" character is 
-                // the start of an open parsed tag      
+                // The "lower than" character is
+                // the start of an open parsed tag
                 node.dirty = true
                 let hasLF = false
                 let unshifted = ''
@@ -360,7 +404,7 @@ export default class CodeWriter {
 
                     // Is the tag name a bracket?
                     if (translated) {
-                        // Store the closing bracket 
+                        // Store the closing bracket
                         // to write it after each new character
                         i = node.endsAt
                         if (hasLF) {
@@ -385,9 +429,9 @@ export default class CodeWriter {
                     // Does the tag string contain an LF character?
                     hasLF = node.text.indexOf(LF) > -1
 
-                    c = OPEN_TAG
+                    c = ENCODED_OPEN_TAG
                     i += 3
-                    unshifted = CLOSE_TAG
+                    unshifted = ENCODED_CLOSE_TAG
                     if (hasLF) {
                         unshift(LF + lastIndent + unshifted)
                     } else {
@@ -395,8 +439,8 @@ export default class CodeWriter {
                     }
                 }
 
-                // Write the actual string 
-                // and continue to the next character 
+                // Write the actual string
+                // and continue to the next character
                 await addChar(c)
                 continue
 
@@ -404,7 +448,7 @@ export default class CodeWriter {
 
             // In case of the line feed character
             if (c === LF) {
-                // Add the line feed 
+                // Add the line feed
                 // followed by the indent
                 // of the next line
 
@@ -427,7 +471,7 @@ export default class CodeWriter {
         // Set back the code text in pure HTML
         html = translate(html)
 
-        // Raise an event outside the shadow DOM 
+        // Raise an event outside the shadow DOM
         // when all is done and ready
         const finishedEvent = new CustomEvent("finishedWriting", {
             bubbles: true, composed: true, detail: {
@@ -435,7 +479,6 @@ export default class CodeWriter {
             }
         })
         this.#parent.dispatchEvent(finishedEvent)
-
     }
 
 }

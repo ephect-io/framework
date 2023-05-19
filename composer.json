@@ -1,31 +1,15 @@
 {
     "name": "ephect-io/framework",
     "type": "library",
-    "description": "Effective!",
+    "description": "Effective PHP",
     "homepage": "https://ephect.io",
     "license": "GPL-3.0+",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "authors": [{
         "name": "David Blanchard",
         "email": "dpjb@hotmail.fr",
         "homepage": "https://ephect.io",
         "role": "Creator"
     }],
-    "autoload": {
-        "classmap": [
-            "Ephect/"
-        ],
-        "exclude-from-classmap": [],
-        "psr-4": {
-            "Ephect\\": "Ephect/"
-        },
-        "files": [
-            "Ephect/Framework/Core/constants.php",
-            "Ephect/Framework/Core/Autoloader.php"
-        ]
-    },
-    "include-path": [
-        "Ephect"
-    ],
     "require": {}
 }
