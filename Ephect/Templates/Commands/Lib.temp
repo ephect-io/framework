@@ -1,10 +1,12 @@
 <?php
 
-namespace Ephect\Commands\commandNamespace;
+namespace Ephect\Commands\<CommandNamespace />;
 
-class Lib
+use Ephect\Framework\Commands\AbstractCommandLib;
+
+class Lib extends AbstractCommandLib
 {
-    public function methodName(): void
+    public function <MethodName />(<Parameters />): void
     {
     }
 }

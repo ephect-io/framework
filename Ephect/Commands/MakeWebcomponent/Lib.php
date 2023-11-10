@@ -5,9 +5,7 @@ namespace Ephect\Commands\MakeWebComponent;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Framework\IO\Utils;
 use Ephect\Framework\WebComponents\Builder;
-use Ephect\Framework\WebComponents\ManifestStructure;
 use Exception;
 
 class Lib extends AbstractCommandLib
@@ -24,11 +22,11 @@ class Lib extends AbstractCommandLib
             $builder = new Builder;
             [$tagName, $className, $entrypoint, $arguments] = $this->readLine();
 
-            $destDir = SRC_ROOT . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR . $className . DIRECTORY_SEPARATOR;
+            $destDir = SRC_ROOT . 'WebComponents' . DIRECTORY_SEPARATOR . $className . DIRECTORY_SEPARATOR;
 
             $builder->saveManifest($tagName, $className, $entrypoint, $arguments, $destDir);
 
-            $srcDir = EPHECT_ROOT . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR;
+            $srcDir = EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR;
 
             $builder->copyTemplates($tagName, $className, $entrypoint, $arguments, $srcDir, $destDir);
 
@@ -50,7 +48,7 @@ class Lib extends AbstractCommandLib
         /**
          * Asking the tag name
          */
-        $tagName = Console::readLine("Tag name (kebab-case):");
+        $tagName = Console::readLine("Tag name (kebab-case): ");
         $tagName =  strtolower($tagName);
         if (trim($tagName) == '') {
             throw new Exception("WebComponent tag name must not be empty");
@@ -61,7 +59,7 @@ class Lib extends AbstractCommandLib
         /**
          * Asking for the class name
          */
-        $className = Console::readLine("Module class name (PascalCase):");
+        $className = Console::readLine("Module class name (PascalCase): ");
         if (trim($className) == '') {
             throw new Exception("WebComponent class name must not be empty");
         }
@@ -69,7 +67,7 @@ class Lib extends AbstractCommandLib
         /**
          * Asking for entrypoint
          */
-        $entrypoint = Console::readLine("Entrypoint in class (camelCase):");
+        $entrypoint = Console::readLine("Entrypoint in class (camelCase): ");
         if (trim($entrypoint) == '') {
             throw new Exception("WebComponent entrypoint must not be empty");
         }

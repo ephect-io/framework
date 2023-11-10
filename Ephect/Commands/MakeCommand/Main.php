@@ -1,18 +1,18 @@
 <?php
 
-namespace Ephect\Commands\<CommandNamespace />;
+namespace Ephect\Commands\MakeCommand;
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(<CommandAttributes />)]
-#[CommandDeclaration(desc: "<Description />")]
+#[CommandDeclaration(verb: "make", subject: "command")]
+#[CommandDeclaration(desc: "Create the base tree of a command.")]
 class Main extends AbstractCommand
 {
     public function run(): void
     {
-        <GetArgs />
         $lib = new Lib($this->application);
-        $lib-><MethodName />(<SetArgs />);
+        $lib->createCommandBase();
+        $this->application->clearRuntime();
     }
 }
