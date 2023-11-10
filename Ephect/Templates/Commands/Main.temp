@@ -1,0 +1,17 @@
+<?php
+
+namespace Ephect\Commands\commandNamespace;
+
+use Ephect\Framework\Commands\AbstractCommand;
+use Ephect\Framework\Commands\Attributes\CommandDeclaration;
+
+#[CommandDeclaration(commandAttributes)]
+#[CommandDeclaration(desc: "description")]
+class Main extends AbstractCommand
+{
+    public function run(): void
+    {
+        $lib = new Lib($this->application);
+        $lib->methodName();
+    }
+}

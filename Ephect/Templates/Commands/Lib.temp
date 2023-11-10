@@ -1,0 +1,11 @@
+<?php
+
+namespace Ephect\Commands\commandNamespace;
+
+class Lib
+{
+    public function methodName(): void
+    {
+    }
+}
+

@@ -28,14 +28,14 @@ class Lib extends AbstractCommandLib
 
             $builder->saveManifest($tagName, $className, $entrypoint, $arguments, $destDir);
 
-            $srcDir = EPHECT_ROOT . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR;
+            $srcDir = EPHECT_ROOT . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR;
 
             $builder->copyTemplates($tagName, $className, $entrypoint, $arguments, $srcDir, $destDir);
 
             Console::writeLine(ConsoleColors::getColoredString("WebComponent ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
             Console::writeLine("%s", $destDir);
         } catch (Exception $ex) {
-            Console::error($ex);
+            Console::writeLine(ConsoleColors::getColoredString("ERROR: " . $ex->getMessage(), ConsoleColors::RED));
         }
     }
 
