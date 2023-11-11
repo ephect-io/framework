@@ -1,10 +1,10 @@
 {
     "name": "ephect-io/framework",
     "type": "library",
-    "description": "Effective!",
+    "description": "Effective PHP",
     "homepage": "https://ephect.io",
     "license": "GPL-3.0+",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "authors": [{
         "name": "David Blanchard",
         "email": "dpjb@hotmail.fr",
