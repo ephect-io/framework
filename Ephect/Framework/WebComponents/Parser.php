@@ -36,11 +36,11 @@ class Parser extends RawHtmlParser
     public function getScript($name): string
     {
         $heredoc = <<<HTML
-      `
-      $this->style
-      $this->template
-      `
-      HTML;
+        `
+        $this->style
+        $this->template
+        `
+        HTML;
         $script = str_replace("document.getElementById('$name').innerHTML", $heredoc, $this->script);
 
         return $script;
