@@ -68,14 +68,14 @@ class Console extends Element
         echo $value . PHP_EOL;
     }
 
-    public static function error(\Throwable $ex, bool $messageOnly = false): void
+    public static function error(\Throwable $ex, ConsoleOptions $options): void
     {
         if (IS_WEB_APP) {
             self::getLogger()->error($ex);
             return;
         }
 
-        $message = $messageOnly ? $ex->getMessage() : self::formatException($ex);
+        $message = $options === ConsoleOptions::ErrorMessageOnly ? $ex->getMessage() : self::formatException($ex);
         print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
     }
 

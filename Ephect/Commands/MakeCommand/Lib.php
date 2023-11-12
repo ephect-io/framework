@@ -4,6 +4,7 @@ namespace Ephect\Commands\MakeCommand;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\ConsoleOptions;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Commands\Builder;
 use Exception;
@@ -33,7 +34,7 @@ class Lib extends AbstractCommandLib
             Console::writeLine(ConsoleColors::getColoredString("Command ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $commandName);
             Console::writeLine("%s", $destDir);
         } catch (Exception $ex) {
-            Console::writeLine(ConsoleColors::getColoredString("ERROR: " . $ex->getMessage(), ConsoleColors::RED));
+            Console::error($ex, ConsoleOptions::ErrorMessageOnly);
         }
     }
 
