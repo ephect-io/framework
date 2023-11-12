@@ -3,11 +3,11 @@
 ## What does Ephect stand for ?
 
 _Ephect is a_
-_Php_
-_High_
-_Efficiency_
-_Components_
-_Templating system_
+_Programming_
+_Hybrid_
+_Environment_ with
+_Components-based_
+_Templates_
 
 In other words, Ephect is a backend components templating system. It gathers some features from *ReactJS<sup>1</sup>* and *WebComponents<sup>2</sup>* like hooks and slots.
 
