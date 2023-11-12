@@ -10,7 +10,7 @@ class Console extends Element
 {
     use ElementTrait;
 
-    public static function write(string|array|object $string, ...$params): void
+    public static function write(string|array|object|null $string, ...$params): void
     {
         if (IS_WEB_APP) {
             return;
@@ -21,13 +21,14 @@ class Console extends Element
         echo $value;
     }
 
-    public static function writeLine(string|array|object $string, ...$params): void
+    public static function writeLine(string|array|object|null $string, ...$params): void
     {
         if (IS_WEB_APP) {
             return;
         }
 
-        $value = TextUtils::format($string, $params);
+
+        $value = $string == null ? '' :  TextUtils::format($string, $params);
 
         echo $value . PHP_EOL;
     }
@@ -41,8 +42,10 @@ class Console extends Element
         return $result;
     }
 
-    public static function info(string|array|object $string, ...$params): void
+    public static function info(string|array|object|null $string, ...$params): void
     {
+        $string = $string ?: '';
+
         if (IS_WEB_APP) {
             self::getLogger()->info($string);
             return;
@@ -65,14 +68,14 @@ class Console extends Element
         echo $value . PHP_EOL;
     }
 
-    public static function error(\Throwable $ex, $file = null, $line = null): void
+    public static function error(\Throwable $ex, bool $messageOnly = false): void
     {
         if (IS_WEB_APP) {
-            self::getLogger()->error($ex, $ex->getFile(), $ex->getLine());
+            self::getLogger()->error($ex);
             return;
         }
 
-        $message = self::formatException($ex);
+        $message = $messageOnly ? $ex->getMessage() : self::formatException($ex);
         print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
     }
 
