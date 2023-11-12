@@ -12,6 +12,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\EchoParser;
 use Ephect\Framework\Components\Generators\TokenParsers\EmptyComponentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\FragmentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\HeredocParser;
+use Ephect\Framework\Components\Generators\TokenParsers\HtmlParser;
 use Ephect\Framework\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Framework\Components\Generators\TokenParsers\OpenComponentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\PhpTagsParser;
@@ -96,6 +97,13 @@ class ParserService implements ParserServiceInterface
         $p = new PhpTagsParser($component);
         $p->do();
         $this->html = $p->getHtml();
+    }
+
+    public function doHtml(FileComponentInterface $component): void
+    {
+        $p = new HtmlParser($component);
+        $p->do();
+        $this->result = $p->getResult();
     }
 
     public function doChildrenDeclaration(FileComponentInterface $component): void

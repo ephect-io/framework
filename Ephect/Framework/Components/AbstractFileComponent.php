@@ -61,6 +61,13 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     }
 
+    public static function createByHtml(string $html) {
+        $new = new static();
+        $new->code = $html;
+
+        return $new;
+    }
+
     public function analyse(): void
     {
         $parser = new ParserService;
