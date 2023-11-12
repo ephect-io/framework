@@ -18,7 +18,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     use ElementTrait;
 
     protected ?string $code;
-    protected ?string $parentHTML;
     protected ?stdClass $children = null;
     protected ?ComponentDeclaration $declaration = null;
     protected ?ComponentEntity $entity = null;
