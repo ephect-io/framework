@@ -21,6 +21,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ValuesParser;
+use Ephect\Framework\Components\Generators\TokenParsers\View\InlineCodeParser;
 use Ephect\Framework\Components\Generators\TokenParsers\WebComponentParser;
 use Ephect\Framework\Registry\ComponentRegistry;
 
@@ -102,6 +103,13 @@ class ParserService implements ParserServiceInterface
     public function doHtml(FileComponentInterface $component): void
     {
         $p = new HtmlParser($component);
+        $p->do();
+        $this->result = $p->getResult();
+    }
+
+    public function doInlineCode(FileComponentInterface $component): void
+    {
+        $p = new InlineCodeParser($component);
         $p->do();
         $this->result = $p->getResult();
     }

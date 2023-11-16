@@ -6,7 +6,6 @@ final class HtmlParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-
         $subject = $this->html;
 
         $re = '/return \(<<< ?HTML((.|\s)+)HTML\);/m';
