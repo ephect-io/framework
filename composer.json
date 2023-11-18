@@ -4,12 +4,14 @@
     "description": "Effective PHP",
     "homepage": "https://ephect.io",
     "license": "GPL-3.0+",
-    "version": "0.5.3",
+    "version": "0.6.0",
     "authors": [{
         "name": "David Blanchard",
         "email": "dpjb@hotmail.fr",
         "homepage": "https://ephect.io",
         "role": "Creator"
     }],
-    "require": {}
+    "require": {
+        "php": "^8.2"
+    }
 }

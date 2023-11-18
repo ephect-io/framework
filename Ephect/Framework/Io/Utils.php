@@ -131,6 +131,14 @@ class Utils
         return (false === $contents = file_get_contents($filename)) ? null : $contents;
     }
 
+    public static function safeReadLines(string $filename): ?array
+    {
+        if (!file_exists($filename)) {
+            return null;
+        }
+        return (false === $contents = file($filename)) ? null : $contents;
+    }
+
     /**
      * Should be replaced by realpath()
      *
