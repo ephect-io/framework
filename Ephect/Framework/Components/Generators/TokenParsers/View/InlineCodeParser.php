@@ -2,9 +2,7 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers\View;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
-use Ephect\Framework\Components\Generators\TokenParsers\HtmlParser;
 
 final class InlineCodeParser extends AbstractTokenParser
 {
@@ -12,7 +10,13 @@ final class InlineCodeParser extends AbstractTokenParser
     {
         $phtml = [];
 
-        $lines = explode(PHP_EOL, $this->html);
+        $text = $this->html;
+        if($parameter !== null && is_array($parameter)) {
+            $text = $parameter['html'];
+            $this->useVariables = $parameter['useVariables'];
+        }
+
+        $lines = explode(PHP_EOL, $text);
 
         foreach($lines as $line) {
             $line = $this->doIf($line);
@@ -27,10 +31,13 @@ final class InlineCodeParser extends AbstractTokenParser
             $phtml[] = $line;
         }
 
-        $result = implode(PHP_EOL, $phtml);
-        $result = str_replace('<? ', '<?php ', $result);
+        $text = implode(PHP_EOL, $phtml);
+        $text = $this->doPhpTags($text);
 
-        $this->result = $result;
+        $text = $this->doEchoes($text);
+        $text = $this->doValues($text);
+
+        $this->result = $text;
     }
 
     public function doIf(string $html): string
@@ -89,4 +96,34 @@ final class InlineCodeParser extends AbstractTokenParser
         return $parser->getResult();
     }
 
+    public function doValues(string $html): string
+    {
+        $parser = new ValuesParser($this->component);
+        $parser->do([
+            "html" => $html,
+            "useVariables" => $this->useVariables,
+        ]);
+
+        $this->useVariables = $parser->getVariables();
+        return $parser->getResult();
+    }
+
+    public function doPhpTags(string $html): string
+    {
+        $parser = new PhpTagsParser($this->component);
+        $parser->do($html);
+        return $parser->getResult();
+    }
+
+    public function doEchoes(string $html): string
+    {
+        $parser = new EchoParser($this->component);
+        $parser->do([
+            "html" => $html,
+            "useVariables" => $this->useVariables,
+        ]);
+        $this->useVariables = $parser->getVariables();
+
+        return $parser->getResult();
+    }
 }

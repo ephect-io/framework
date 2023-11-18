@@ -15,13 +15,13 @@ use Ephect\Framework\Components\Generators\TokenParsers\HeredocParser;
 use Ephect\Framework\Components\Generators\TokenParsers\HtmlParser;
 use Ephect\Framework\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Framework\Components\Generators\TokenParsers\OpenComponentsParser;
-use Ephect\Framework\Components\Generators\TokenParsers\PhpTagsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseEffectParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ValuesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\View\InlineCodeParser;
+use Ephect\Framework\Components\Generators\TokenParsers\View\PhpTagsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\WebComponentParser;
 use Ephect\Framework\Registry\ComponentRegistry;
 
@@ -109,9 +109,22 @@ class ParserService implements ParserServiceInterface
 
     public function doInlineCode(FileComponentInterface $component): void
     {
+        $this->doHtml($component);
+        $text = $this->result;
+
         $p = new InlineCodeParser($component);
-        $p->do();
-        $this->result = $p->getResult();
+        $p->do([
+            "html" => $text,
+            "useVariables" => $this->useVariables,
+        ]);
+        $phtml = $p->getResult();
+
+//        $re = '/\?\>(.|\s+)\<\?php/m';
+//        $phtml = preg_replace($re, "$1", $phtml);
+
+        $this->html = str_replace($text,  $phtml, $this->html);
+        $this->useVariables = $p->getVariables();
+
     }
 
     public function doChildrenDeclaration(FileComponentInterface $component): void
@@ -121,25 +134,9 @@ class ParserService implements ParserServiceInterface
         $this->children = (object)$p->getResult();
     }
 
-    public function doValues(FileComponentInterface $component): void
-    {
-        $p = new ValuesParser($component);
-        $p->do($this->useVariables);
-        $this->useVariables = $p->getVariables();
-        $this->html = $p->getHtml();
-    }
-
     public function getVariables(): ?array
     {
         return $this->useVariables;
-    }
-
-    public function doEchoes(FileComponentInterface $component): void
-    {
-        $p = new EchoParser($component);
-        $p->do($this->useVariables);
-        $this->useVariables = $p->getVariables();
-        $this->html = $p->getHtml();
     }
 
     public function doArrays(FileComponentInterface $component): void

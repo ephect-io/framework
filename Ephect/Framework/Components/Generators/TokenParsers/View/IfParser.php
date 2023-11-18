@@ -8,7 +8,7 @@ final class IfParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/(\(if ?\(([\w &!=\'"+;<>@]+)\) +\{)/m';
+        $re = '/(\(if ?\(([\w @&!=\-\'"+;<>\(\)]+)\) +\{)/m';
         $subst = '<? $1 ?>';
         $result = preg_replace($re, $subst, $parameter);
 

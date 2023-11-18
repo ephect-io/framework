@@ -123,17 +123,11 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $parser->doHeredoc($this);
         $this->code = $parser->getHtml();
 
-        $parser->doPhpTags($this);
+        $parser->doInlineCode($this);
         $this->code = $parser->getHtml();
 
         $parser->doChildrenDeclaration($this);
         $this->children = $parser->getChildren();
-
-        $parser->doValues($this);
-        $this->code = $parser->getHtml();
-
-        $parser->doEchoes($this);
-        $this->code = $parser->getHtml();
 
         $parser->doArrays($this);
         $this->code = $parser->getHtml();
@@ -284,9 +278,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
             $parentHtml = preg_replace($re, $subst, $parentHtml);
         }
 
-
         foreach ($componentList as $entity) {
-
             $funcName = $entity->getName();
 
             $fqFuncName = ComponentRegistry::read($funcName);
@@ -398,7 +390,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     public function updateFile(): void
     {
-
         $cp = new ComponentParser($this);
         $struct = $cp->doDeclaration();
         $decl = $struct->toArray();
@@ -411,24 +402,18 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     protected function cacheHtml(): ?string
     {
-
-        $cache_file = static::getFlatFilename($this->filename);
-        $result = Utils::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
-
-        $cache = (($cache = CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
-
-        $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
-        CacheRegistry::write($this->motherUID, $cache);
-        CacheRegistry::cache();
-
-        return $result === null ? $result : $cache_file;
+        return  $this->cacheFile(CACHE_DIR);
     }
 
     protected function cacheJavascript(): ?string
     {
+        return  $this->cacheFile(RUNTIME_JS_DIR);
+    }
 
+    private function cacheFile($cacheDir): ?string
+    {
         $cache_file = static::getFlatFilename($this->filename);
-        $result = Utils::safeWrite(RUNTIME_JS_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
+        $result = Utils::safeWrite($cacheDir . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
 
         $cache = (($cache = CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
 
