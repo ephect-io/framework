@@ -3,12 +3,10 @@
 namespace Ephect\Framework\Components\Generators;
 
 use Ephect\Framework\Components\FileComponentInterface;
-use Ephect\Framework\Components\Generators\TokenParsers\ArgumentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ArraysParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ChildrenDeclarationParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ChildSlotsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ClosedComponentsParser;
-use Ephect\Framework\Components\Generators\TokenParsers\EchoParser;
 use Ephect\Framework\Components\Generators\TokenParsers\EmptyComponentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\FragmentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\HeredocParser;
@@ -19,9 +17,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\UseEffectParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseVariablesParser;
-use Ephect\Framework\Components\Generators\TokenParsers\ValuesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\View\InlineCodeParser;
-use Ephect\Framework\Components\Generators\TokenParsers\View\PhpTagsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\WebComponentParser;
 use Ephect\Framework\Registry\ComponentRegistry;
 
@@ -39,14 +35,6 @@ class ParserService implements ParserServiceInterface
     public function getChildren(): ?object
     {
         return $this->children;
-    }
-
-    public function doArguments(FileComponentInterface $component): void
-    {
-        $p = new ArgumentsParser($component);
-        $p->do();
-
-        $this->result = $p->getResult();
     }
 
     public function getResult(): null|string|array|bool
@@ -93,13 +81,6 @@ class ParserService implements ParserServiceInterface
         $this->html = $p->getHtml();
     }
 
-    public function doPhpTags(FileComponentInterface $component): void
-    {
-        $p = new PhpTagsParser($component);
-        $p->do();
-        $this->html = $p->getHtml();
-    }
-
     public function doHtml(FileComponentInterface $component): void
     {
         $p = new HtmlParser($component);
@@ -119,12 +100,9 @@ class ParserService implements ParserServiceInterface
         ]);
         $phtml = $p->getResult();
 
-//        $re = '/\?\>(.|\s+)\<\?php/m';
-//        $phtml = preg_replace($re, "$1", $phtml);
-
         $this->html = str_replace($text,  $phtml, $this->html);
-        $this->useVariables = $p->getVariables();
 
+        $this->useVariables = $p->getVariables();
     }
 
     public function doChildrenDeclaration(FileComponentInterface $component): void
@@ -150,13 +128,6 @@ class ParserService implements ParserServiceInterface
     public function doUseEffect(FileComponentInterface $component): void
     {
         $p = new UseEffectParser($component);
-        $p->do();
-        $this->html = $p->getHtml();
-    }
-
-    public function doUseSlot(FileComponentInterface $component): void
-    {
-        $p = new UseSlotParser($component);
         $p->do();
         $this->html = $p->getHtml();
     }

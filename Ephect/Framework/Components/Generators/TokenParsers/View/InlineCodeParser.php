@@ -32,10 +32,13 @@ final class InlineCodeParser extends AbstractTokenParser
         }
 
         $text = implode(PHP_EOL, $phtml);
+
         $text = $this->doPhpTags($text);
 
         $text = $this->doEchoes($text);
         $text = $this->doValues($text);
+
+        $text = $this->doPhpCleaner($text);
 
         $this->result = $text;
     }
@@ -111,6 +114,13 @@ final class InlineCodeParser extends AbstractTokenParser
     public function doPhpTags(string $html): string
     {
         $parser = new PhpTagsParser($this->component);
+        $parser->do($html);
+        return $parser->getResult();
+    }
+
+    public function doPhpCleaner(string $html): string
+    {
+        $parser = new PhpTagsCleaner($this->component);
         $parser->do($html);
         return $parser->getResult();
     }
