@@ -3,7 +3,6 @@
 namespace Ephect\Framework\Components\Generators;
 
 use Ephect\Framework\Components\FileComponentInterface;
-use Ephect\Framework\Components\Generators\TokenParsers\ArgumentsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ArraysParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ChildrenDeclarationParser;
 use Ephect\Framework\Components\Generators\TokenParsers\ChildSlotsParser;
@@ -14,7 +13,6 @@ use Ephect\Framework\Components\Generators\TokenParsers\HeredocParser;
 use Ephect\Framework\Components\Generators\TokenParsers\HtmlParser;
 use Ephect\Framework\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Framework\Components\Generators\TokenParsers\OpenComponentsParser;
-use Ephect\Framework\Components\Generators\TokenParsers\PhpTagsCleaner;
 use Ephect\Framework\Components\Generators\TokenParsers\UseEffectParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
@@ -37,14 +35,6 @@ class ParserService implements ParserServiceInterface
     public function getChildren(): ?object
     {
         return $this->children;
-    }
-
-    public function doArguments(FileComponentInterface $component): void
-    {
-        $p = new ArgumentsParser($component);
-        $p->do();
-
-        $this->result = $p->getResult();
     }
 
     public function getResult(): null|string|array|bool
@@ -138,13 +128,6 @@ class ParserService implements ParserServiceInterface
     public function doUseEffect(FileComponentInterface $component): void
     {
         $p = new UseEffectParser($component);
-        $p->do();
-        $this->html = $p->getHtml();
-    }
-
-    public function doUseSlot(FileComponentInterface $component): void
-    {
-        $p = new UseSlotParser($component);
         $p->do();
         $this->html = $p->getHtml();
     }
