@@ -27,6 +27,7 @@ final class InlineCodeParser extends AbstractTokenParser
             $line = $this->doFor($line);
             $line = $this->doWhile($line);
             $line = $this->doDo($line);
+            $line = $this->doBreaker($line);
 
             $phtml[] = $line;
         }
@@ -95,6 +96,13 @@ final class InlineCodeParser extends AbstractTokenParser
     public function doDo(string $html): string
     {
         $parser = new DoParser($this->component);
+        $parser->do($html);
+        return $parser->getResult();
+    }
+
+    public function doBreaker(string $html): string
+    {
+        $parser = new BreakerParser($this->component);
         $parser->do($html);
         return $parser->getResult();
     }

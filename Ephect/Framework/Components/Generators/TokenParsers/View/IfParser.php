@@ -16,6 +16,10 @@ final class IfParser extends AbstractTokenParser
             $result = str_replace('<if', 'if', $result);
         }
 
+        if(strpos($result,'?> <?') > -1) {
+            $result = str_replace('?> <?', '', $result);
+        }
+
         $this->result = $result;
     }
 
