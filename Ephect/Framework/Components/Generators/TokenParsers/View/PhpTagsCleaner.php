@@ -13,18 +13,13 @@ final class PhpTagsCleaner extends AbstractTokenParser
         $phtml = $parameter;
 
         $re = '/\?>( |\s+?)<\?php/m';
-        preg_match_all($re, $phtml, $matches, PREG_SET_ORDER, 0);
-
-        if(count($matches) == 0) {
-            $this->result = $phtml;
-            return;
-        }
-
         $phtml = preg_replace($re, "$1", $phtml);
 
-        if($phtml == '' || $phtml == null) {
-            $phtml = $parameter;
-        }
+        $re = '/\?>( |\s+?)<\?=(\$\w+) /m';
+        $phtml = preg_replace($re, "$1echo $2;", $phtml);
+
+        $re = '/<\?=(\$\w+)\ +\n/m';
+        $phtml = preg_replace($re, "<?php echo $1;\n", $phtml);
 
         $this->result = $phtml;
     }
