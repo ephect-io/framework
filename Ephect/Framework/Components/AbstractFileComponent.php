@@ -12,6 +12,7 @@ use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
+use Ephect\Framework\Web\Request;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
 define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
@@ -75,11 +76,11 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $parser->doUsesAs($this);
     }
 
-    public function render(?array $functionArgs = null): void
+    public function render(?array $functionArgs = null, ?Request $request = null): void
     {
         [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
 
-        $html = $this->renderHTML($cacheFilename, $fqFunctionName, $functionArgs);
+        $html = $this->renderHTML($cacheFilename, $fqFunctionName, $functionArgs, $request);
         echo $html;
     }
 
