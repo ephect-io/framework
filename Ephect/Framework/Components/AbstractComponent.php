@@ -12,6 +12,7 @@ use Ephect\Plugins\Router\RouterService;
 use Exception;
 use ReflectionFunction;
 use stdClass;
+use Ephect\Framework\Web\Request;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
 {
@@ -154,17 +155,21 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return [$fqFuncName, $filename, $isCached];
     }
 
-    public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null): string
+    public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null, ?Request $request = null): string
     {
         include_once CACHE_DIR . $cacheFilename;
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();
-        // $funcName = $funcReflection->getShortName();
+
+        $bodyProps = null;
+        if($request !== null && $request->headers->contains('application/json', 'content-type')) {
+            $bodyProps = json_decode($request->body);
+        }
 
         $html = '';
 
-        if ($funcParams === []) {
+        if ($funcParams === [] && $bodyProps === null) {
             ob_start();
             $fn = call_user_func($fqFunctionName);
             $fn();
@@ -183,6 +188,15 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
                     foreach ($routeProps as $field => $value) {
                         $props->{$field} = null;
                     }
+                }
+            }
+
+            if($bodyProps !== null) {
+                if($props === null) {
+                    $props = new stdClass;
+                }
+                foreach ($bodyProps as $field => $value) {
+                    $props->{$field} = $value;
                 }
             }
             ob_start();

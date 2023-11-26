@@ -3,7 +3,7 @@
 namespace Ephect\Plugins\Router;
 
 use Ephect\Framework\Components\Component;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Web\Request;
 use Ephect\Plugins\Route\RouteEntity;
 use Ephect\Plugins\Route\RouteInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
@@ -197,8 +197,10 @@ class RouterService implements RouterServiceInterface
             }
         }
 
+        $request = new Request();
+
         $comp = new Component($path);
-        $comp->render($query);
+        $comp->render($query, $request);
     }
 
     public function doRouting(): ?array
