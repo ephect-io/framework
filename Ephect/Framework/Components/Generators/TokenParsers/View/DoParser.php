@@ -8,7 +8,7 @@ final class DoParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/(\<do ?\{|} while\(([\w @&!=\-\'"+;<>\(\)]+)\)\>)/m';
+        $re = '/(\<do *?\{|} *?while\(([\w @&!=\'"+;\<\-\>\(\)\[\]]+)\)\>)/m';
         $subst = '<? $1 ?>';
         $result = preg_replace($re, $subst, $parameter);
 
