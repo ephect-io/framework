@@ -19,6 +19,12 @@ readonly class Headers {
      */
     public function contains($needle, $key):bool
     {
-        return strpos($this->list[$key], $needle) > -1;
+        $result = false;
+
+        if(isset($this->list[$key])) {
+            $result = strpos($this->list[$key], $needle) > -1;
+        }
+
+         return $result;
     }
 }
