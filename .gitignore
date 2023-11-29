@@ -1,11 +1,18 @@
+# IDE temporary files
 /.idea/
 /.vscode/
 /.devcontainer/
 /node_modules
 /nbproject/
-
-/docker/
-docker-compose.yml
 *.code-workspace
 
+# Docker files
+/docker/
+docker-compose.yml
+
+# Composer default directory
 /vendor/
+
+# Trash files
+.DS_Store
+php_errors.log
