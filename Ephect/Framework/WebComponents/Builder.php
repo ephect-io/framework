@@ -47,7 +47,7 @@ class Builder
      * @param string $destDir
      * @return void
      */
-    function copyTemplates(string $tagName, string $className, string $entrypoint, array $arguments, string $srcDir, string $destDir): void
+    function copyTemplates(string $tagName, string $className, bool $hasBackendProps, string $entrypoint, array $arguments, string $srcDir, string $destDir): void
     {
 
         $classText = Utils::safeRead($srcDir . 'Base.class.mjs');
@@ -129,6 +129,23 @@ class Builder
         $componentText = str_replace('<AttributeListAndResult />', $attributeListAndResult, $componentText);
 
         Utils::safeWrite($destDir . "$className.class.mjs", $classText);
+
+        if ($hasBackendProps) {
+            $namespace = CONFIG_NAMESPACE;
+
+            $componentText = <<< COMPONENT
+            <?php
+            namespace $namespace;
+
+            function $className() {
+            return (<<< HTML
+            $componentText
+            HTML);
+            }
+            COMPONENT;
+        }
+
         Utils::safeWrite($destDir . "$className.phtml", $componentText);
+
     }
 }
