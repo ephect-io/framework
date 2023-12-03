@@ -21,7 +21,7 @@ class Lib extends AbstractCommandLib
             Console::writeLine(ConsoleColors::getColoredString("Leave the answer blank to pass to the next question or to abort the process.", ConsoleColors::BROWN));
 
             $builder = new Builder;
-            [$tagName, $className, $entrypoint, $arguments] = $this->readLine();
+            [$tagName, $className, $hasBackendProps, $entrypoint, $arguments] = $this->readLine();
 
             $destDir = SRC_ROOT . 'WebComponents' . DIRECTORY_SEPARATOR . $className . DIRECTORY_SEPARATOR;
 
@@ -29,7 +29,7 @@ class Lib extends AbstractCommandLib
 
             $srcDir = EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'WebComponents' . DIRECTORY_SEPARATOR;
 
-            $builder->copyTemplates($tagName, $className, $entrypoint, $arguments, $srcDir, $destDir);
+            $builder->copyTemplates($tagName, $className, $hasBackendProps, $entrypoint, $arguments, $srcDir, $destDir);
 
             Console::writeLine(ConsoleColors::getColoredString("WebComponent ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
             Console::writeLine("%s", $destDir);
@@ -65,6 +65,8 @@ class Lib extends AbstractCommandLib
             throw new Exception("WebComponent class name must not be empty");
         }
 
+        $hasBackendProps = Console::readYesOrNo("Do you need to implement backend props?");
+
         /**
          * Asking for entrypoint
          */
@@ -90,7 +92,7 @@ class Lib extends AbstractCommandLib
             $argIndex++;
         }
 
-        return [$tagName, $className, $entrypoint, $arguments];
+        return [$tagName, $className, $hasBackendProps, $entrypoint, $arguments];
     }
 
    

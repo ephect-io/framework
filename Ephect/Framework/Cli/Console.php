@@ -37,10 +37,41 @@ class Console extends Element
     {
 
         $result = readline($prompt);
+        readline_add_history($prompt);
         readline_add_history($result);
 
         return $result;
     }
+
+    public static function readYesOrNo(string $question, string $yes = "y", string $no = "n", bool $defaultIsNegative = true): bool
+    {
+        $yes = strtolower(trim($yes));
+        $no = strtolower(trim($no));
+
+        $yes = !$defaultIsNegative ? strtoupper($yes) : $yes;
+        $no = $defaultIsNegative ? strtoupper($no) : $no;
+
+        $yesOrNoPrompt = "[$yes/$no]";
+        $prompt = $question . " $yesOrNoPrompt: ";
+        $answerYN = readline($prompt);
+
+        $startTime = time();
+        $answerYN = strtolower(trim($answerYN));
+        while($answerYN != 'y' && $answerYN != 'n' && $answerYN != '') {
+            $answerYN = readline($prompt);
+            $answerYN = strtolower(trim($answerYN));
+            $elapsedTime = time() - $startTime;
+            if($elapsedTime > 29) {
+                break;
+            }
+        }
+
+        readline_add_history($prompt);
+        readline_add_history($answerYN);
+
+        return $answerYN == $yes;
+    }
+
 
     public static function info(string|array|object|null $string, ...$params): void
     {

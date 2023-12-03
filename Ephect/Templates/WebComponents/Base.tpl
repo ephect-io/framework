@@ -1,12 +1,11 @@
 <template id="Base">
     <h1>
-        <slot/>
-        {{ foo }}
+        ${result}
     </h1>
+    <slot></slot>
 </template>
 <script>
     import Base from "./Base.class.mjs"
-
 
     /**
      * Rename the component
@@ -18,7 +17,7 @@
 
             <Properties />
             this.attachShadow({mode: 'open'});
-            this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
+            this.renderTemplate()
 
             const slots = this.shadowRoot.querySelectorAll('slot')
             if (slots.length) {
@@ -29,8 +28,23 @@
 
         }
 
+        renderTemplate() {
+            /**
+             * The magic starts here
+             */
+            const base = new Base()
+            const result = base.entrypoint(<AttributeList />)
+
+            this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
+        }
+
     <ObserveAttributes />
 
+        attributeChangedCallback(property, oldValue, newValue) {
+            if (oldValue === newValue) return;
+
+            this[property] = newValue;
+        }
     <GetAttributes />
         async connectedCallback() {
             /**
@@ -49,12 +63,6 @@
                 const parentDiv = this.shadowRoot.getElementById('Base')
                 parentDiv.setAttribute('class', this.classes)
             }
-
-            /**
-             * The magic starts here
-             */
-            const base = new Base()
-            base.entrypoint()
         }
     }
 
