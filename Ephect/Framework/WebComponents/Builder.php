@@ -137,11 +137,17 @@ class Builder
             <?php
             namespace $namespace;
 
-            function $className() {
+            use function Ephect\Hooks\useEffect;
+
+            function $className(\$slot) {
+
             return (<<< HTML
+            <WebComponent>
             $componentText
+            </WebComponent>
             HTML);
             }
+            
             COMPONENT;
         }
 
