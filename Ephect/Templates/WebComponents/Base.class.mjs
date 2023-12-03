@@ -1,12 +1,13 @@
-export default class Base {
+class Base
+{
 
-    constructor() {
-        this.foo = 'bar'
-    }
-
-    entrypoint(foo = null) {
-        const baz = foo ?? this.foo
-        return 'Something ' + baz
+    entrypoint(DeclaredAttributes) {
+        /**
+         * Do something with the parameters
+         */
+        return 'Something';
     }
 
 }
+
+export default Base
