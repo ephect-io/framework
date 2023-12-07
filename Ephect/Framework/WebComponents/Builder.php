@@ -4,6 +4,7 @@ namespace Ephect\Framework\WebComponents;
 
 use Ephect\Framework\IO\Utils;
 use Exception;
+use function Ephect\Hooks\useEffect;
 
 class Builder
 {
@@ -59,6 +60,8 @@ class Builder
         $componentText = str_replace('tag-name', $tagName, $componentText);
         $componentText = str_replace('entrypoint', $entrypoint, $componentText);
 
+        $baseElementText =   Utils::safeRead($srcDir . 'BaseElement.js');
+
         $parameters = $arguments;
         $arguments[] = 'styles';
         $arguments[] = 'classes';
@@ -66,11 +69,12 @@ class Builder
         if (count($arguments) == 0) {
             $classText = str_replace('(DeclaredAttributes)', "()", $classText);
 
-            $componentText = str_replace('<GetAttributes />', '', $componentText);
+            $baseElementText = str_replace('GetAttributes', '', $baseElementText);
             $componentText = str_replace('<Attributes />', '', $componentText);
 
             Utils::safeWrite($destDir . "$className.class.mjs", $classText);
             Utils::safeWrite($destDir . "$className.phtml", $componentText);
+            Utils::safeWrite($destDir . $className . "Element.js", $baseElementText);
 
             return;
         }
@@ -83,7 +87,7 @@ class Builder
             $properties .= '            ';
         }
 
-        $componentText = str_replace('<Properties />', $properties, $componentText);
+        $baseElementText = str_replace('Properties', $properties, $baseElementText);
 
         $attributes = array_map(function ($item) {
             return "'$item'";
@@ -98,7 +102,7 @@ class Builder
 
         $argumentListAndResult = $thisParameters;
         $argumentListAndResult[] = "result";
-        $attributeListAndResult = implode(", ", $argumentListAndResult);
+//        $attributeListAndResult = implode(", ", $argumentListAndResult);
         $thisAttributeList = implode(", ", $thisParameters);
 
         $observeAttributes = <<< HTML
@@ -110,7 +114,7 @@ class Builder
                     }
             HTML;
 
-        $componentText = str_replace('<ObserveAttributes />', $observeAttributes, $componentText);
+        $baseElementText = str_replace('ObserveAttributes', $observeAttributes, $baseElementText);
 
         $getAttributes = '';
         foreach ($arguments as $attribute) {
@@ -124,15 +128,17 @@ class Builder
 
         $classText = str_replace('(DeclaredAttributes)', "(" . $declaredAttributes . ")", $classText);
 
-        $componentText = str_replace('<GetAttributes />', $getAttributes, $componentText);
-        $componentText = str_replace('<AttributeList />', $thisAttributeList, $componentText);
-        $componentText = str_replace('<AttributeListAndResult />', $attributeListAndResult, $componentText);
+        $baseElementText = str_replace('GetAttributes', $getAttributes, $baseElementText);
+        $componentText = str_replace('AttributeList', $thisAttributeList, $componentText);
+//        $componentText = str_replace('<AttributeListAndResult />', $attributeListAndResult, $componentText);
 
         Utils::safeWrite($destDir . "$className.class.mjs", $classText);
+        Utils::safeWrite($destDir . $className . "Element.js", $baseElementText);
 
         if ($hasBackendProps) {
             $namespace = CONFIG_NAMESPACE;
 
+            $componentText = str_replace("</template>", "    <h2>{{ foo }}</h2>\n</template>", $componentText);
             $componentText = <<< COMPONENT
             <?php
             namespace $namespace;
@@ -140,6 +146,10 @@ class Builder
             use function Ephect\Hooks\useEffect;
 
             function $className(\$slot) {
+
+            useEffect(function (\$slot, /* string */ \$foo) {
+                \$foo = "It works!"; 
+            });
 
             return (<<< HTML
             <WebComponent>
