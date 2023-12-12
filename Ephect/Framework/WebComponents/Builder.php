@@ -61,6 +61,7 @@ class Builder
         $componentText = str_replace('entrypoint', $entrypoint, $componentText);
 
         $baseElementText =   Utils::safeRead($srcDir . 'BaseElement.js');
+        $baseElementText = str_replace('Base', $className, $baseElementText);
 
         $parameters = $arguments;
         $arguments[] = 'styles';
