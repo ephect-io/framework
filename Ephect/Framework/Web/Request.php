@@ -13,10 +13,13 @@ readonly class Request {
     public string $uri;
 
     public function __construct() {
+        parse_str(QUERY_STRING, $params);
+
         $this->headers = new Headers();
         $this->body = file_get_contents('php://input');
-        $this->parameters = QUERY_STRING;
         $this->method = REQUEST_METHOD;
         $this->uri = REQUEST_URI;
+        $this->parameters = $params;
+
     }
 }
