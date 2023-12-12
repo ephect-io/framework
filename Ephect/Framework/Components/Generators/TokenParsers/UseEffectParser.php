@@ -21,7 +21,7 @@ final class UseEffectParser extends AbstractTokenParser
 
     private function doTranslation(null|string|array $parameter = null): void
     {
-        $re = '/useEffect\(function[ ]*\(((\$props|\$children),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
+        $re = '/useEffect\(function[ ]*\(((\$props|\$children|\$slot),[ ]*)?((\s|.*?)+)\)[ ]+(use[ ]*\(((\s|.*?)+)\)[ ]*)?{((\s|.*?)+)}\);/m';
 
         $str = $this->html;
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
@@ -56,7 +56,7 @@ final class UseEffectParser extends AbstractTokenParser
 
         $useVars = explode(',', $match);
         $declVars = array_filter($useVars, function ($item) {
-            return $item !== '$props' && $item !== '$children' && trim($item) !== '';
+            return !in_array(trim($item), ['$props', '$children', '$slot', '']);
         });
 
         $declVars = count($declVars) === 0 ?: array_map(function ($item) {

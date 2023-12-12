@@ -23,7 +23,7 @@ class WebComponent extends AbstractFileComponent
         use function Ephect\Hooks\useEffect;
 
         function $function(\$slot) {
-    
+
         return (<<< HTML
         <WebComponent>
         $html

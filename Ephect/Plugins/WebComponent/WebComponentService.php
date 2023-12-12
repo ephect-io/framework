@@ -70,7 +70,7 @@ class WebComponentService implements WebComponentServiceInterface
 
         $runtimeDir = RUNTIME_JS_DIR . $name . DIRECTORY_SEPARATOR;
         Utils::safeMkDir($runtimeDir);
-        $finalJs = $runtimeDir . $name . MJS_EXTENSION;
+        $finalJs = $runtimeDir . $name . JS_EXTENSION;
         $classJs = $name . CLASS_MJS_EXTENSION;
         $elementJs = $name . "Element" . JS_EXTENSION;
 
