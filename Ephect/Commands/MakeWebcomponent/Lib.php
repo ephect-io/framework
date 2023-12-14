@@ -47,7 +47,7 @@ class Lib extends AbstractCommandLib
     function readLine(): array
     {
         /**
-         * Asking the tag name
+         * Asking the tag name.
          */
         $tagName = Console::readLine("Tag name (kebab-case): ");
         $tagName =  strtolower($tagName);
@@ -58,17 +58,20 @@ class Lib extends AbstractCommandLib
         Console::writeLine(ConsoleColors::getColoredString("The code of the webComponent will split into one JS module and one HTML template.", ConsoleColors::BLUE));
 
         /**
-         * Asking for the class name
+         * Asking for the class name.
          */
         $className = Console::readLine("Module class name (PascalCase): ");
         if (trim($className) == '') {
             throw new Exception("WebComponent class name must not be empty");
         }
 
+        /**
+         * Asking whether we encapsulate the webcomponent in a backend function or not.
+         */
         $hasBackendProps = Console::readYesOrNo("Do you need to implement backend props?");
 
         /**
-         * Asking for entrypoint
+         * Asking for entrypoint.
          */
         $entrypoint = Console::readLine("Entrypoint in class (camelCase): ");
         if (trim($entrypoint) == '') {
@@ -76,7 +79,7 @@ class Lib extends AbstractCommandLib
         }
 
         /**
-         * Asking for arguments
+         * Asking for entrypoint arguments.
          */
         $next = true;
         $argIndex = 1;

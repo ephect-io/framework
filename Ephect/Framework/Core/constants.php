@@ -57,7 +57,7 @@ if (IS_WEB_APP) {
     define('COOKIE', $_COOKIE);
     define('REQUEST_URI', $_SERVER['REQUEST_URI']);
     define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
-    define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
+    define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY) ?: '');
     define('SERVER_NAME', $_SERVER['SERVER_NAME']);
     define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
     define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80' && HTTP_PORT !== '443') ? ':' . HTTP_PORT : ''));

@@ -70,8 +70,9 @@ class WebComponentService implements WebComponentServiceInterface
 
         $runtimeDir = RUNTIME_JS_DIR . $name . DIRECTORY_SEPARATOR;
         Utils::safeMkDir($runtimeDir);
-        $finalJs = $runtimeDir . $name . MJS_EXTENSION;
+        $finalJs = $runtimeDir . $name . JS_EXTENSION;
         $classJs = $name . CLASS_MJS_EXTENSION;
+        $elementJs = $name . "Element" . JS_EXTENSION;
 
         $parser = new Parser($html);
         $parser->doTags();
@@ -79,6 +80,7 @@ class WebComponentService implements WebComponentServiceInterface
 
         Utils::safeWrite($finalJs, $script);
         copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $classJs, $runtimeDir . $classJs);
+        copy(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . $elementJs, $runtimeDir . $elementJs);
 
         if (file_exists(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . "lib")) {
             $libFiles = Utils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT . $name . DIRECTORY_SEPARATOR . "lib");

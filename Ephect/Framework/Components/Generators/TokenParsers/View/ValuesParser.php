@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers\View;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class ValuesParser extends AbstractTokenParser
@@ -15,26 +16,26 @@ final class ValuesParser extends AbstractTokenParser
             $this->useVariables = $parameter['useVariables'];
         }
 
-        $re = '/(&|@)([\w]+)/m';
+        $re = '/(&|@)([\w;]+)/m';
         preg_match_all($re, $text, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
             $variable = $match[2];
+            $entity = html_entity_decode($match[0]);
 
-            if ($variable === '') {
+            if ($variable === '' || $match[0] !== $entity) {
                 continue;
             }
 
             $useVar = $variable;
-
             if ($match[1] !== '@') {
                 $this->useVariables[$useVar] = '$' . $useVar;
             }
 
+            $text = str_replace($match[0], '$' . $useVar, $text);
         }
 
-        $subst = '\$$2';
-        $this->result = preg_replace($re, $subst, $text);
+        $this->result = $text;
 
     }
 

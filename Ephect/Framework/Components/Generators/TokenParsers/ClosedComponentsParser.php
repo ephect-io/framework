@@ -66,7 +66,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
             $subject = str_replace($component, $componentRender, $subject);
 
-            array_push($this->result, $componentName);
+            $this->result[] = $componentName;
 
             $filename = $this->component->getFlattenSourceFilename();
             Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
