@@ -88,17 +88,17 @@ final class OpenComponentsParser extends AbstractTokenParser
             $pkey = "\$children";
             if (count($propsKeys) === 1 && ($propsKeys[0] === "\$children" || $propsKeys[0] === "\$slot")) {
                 $pkey = $propsKeys[0];
-                $preComponentBody .= "\t\t\t<?php if(method_exists({$pkey}, 'props')) { ?>\n";
-                $preComponentBody .= "\t\t\t<?php   \$props = {$pkey}->props(); ?>\n";
-                $preComponentBody .= "\t\t\t<?php   foreach(\$props as \$key => \$value) { ?>\n";
-                $preComponentBody .= "\t\t\t<?php     $\$key = \"\$value\"; ?>\n";
-                $preComponentBody .= "\t\t\t<?php   } ?>\n";
-                $preComponentBody .= "\t\t\t<?php } ?>\n";
+                $preComponentBody .= "\t\t\t<?php if(method_exists({$pkey}, 'props')) {\n";
+                $preComponentBody .= "\t\t\t  \$props = {$pkey}->props();\n";
+                $preComponentBody .= "\t\t\t  foreach(\$props as \$key => \$value) {\n";
+                $preComponentBody .= "\t\t\t    $\$key = \$value;\n";
+                $preComponentBody .= "\t\t\t  }\n";
+                $preComponentBody .= "\t\t\t} ?>\n";
             }
 
-            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'motherUID' => '$motherUID', 'uid' => '$uid', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]); ?>\n";
-            $componentRender .= "\t\t\t<?php {$pkey} = new \\Ephect\\Framework\\Components\\Children(\$struct); ?>\n";
-            $componentRender .= "\t\t\t<?php \$fn = \\$fqComponentName({$pkey}); \$fn(); ?>\n";
+            $componentRender = "<?php \$struct = new \\Ephect\\Framework\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'motherUID' => '$motherUID', 'uid' => '$uid', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]);\n";
+            $componentRender .= "\t\t\t{$pkey} = new \\Ephect\\Framework\\Components\\Children(\$struct);\n";
+            $componentRender .= "\t\t\t\$fn = \\$fqComponentName({$pkey}); \$fn(); ?>\n";
 
             $subject = str_replace($componentBody, $componentRender, $subject);
 
