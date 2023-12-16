@@ -42,14 +42,17 @@ class RouteBuilder extends AbstractBuilder
 
         if ($translated === $rule && $translated !== '/') {
 
-            $re = '/([^\w]*)(\w+)(.*)/m';
+            $re = '/(\W*)(\w+)(.*)/m';
             $subst = '/$2';
 
             $translated = preg_replace($re, $subst, $rule);
 
-            if ($translated === $rule) {
-                return $route;
-            }
+            /**
+             * TODO: watch out how it behaves in more use cases
+             */
+//             if ($translated === $rule) {
+//                 return $route;
+//             }
         }
 
         $struct = new RouteStructure([
@@ -62,9 +65,7 @@ class RouteBuilder extends AbstractBuilder
             'exact' => $route->isExact()
         ]);
 
-        $newRoute = new RouteEntity($struct);
-
-        return $newRoute;
+        return new RouteEntity($struct);
     }
 
     private function translateNamedArgumentsRoute(RouteInterface $route): RouteInterface
