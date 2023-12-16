@@ -83,9 +83,9 @@ class Application extends AbstractApplication
 
         StateRegistry::write('console', 'buffer', $constants);
 
-        Console::writeLine('Application constants are :');
+        Console::Log('Application constants are :');
         foreach ($constants as $key => $value) {
-            Console::writeLine($key . ' => ' . $value);
+            Console::Log($key . ' => ' . $value);
         }
 
         return $constants;
