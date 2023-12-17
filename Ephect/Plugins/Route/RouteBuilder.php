@@ -73,7 +73,7 @@ class RouteBuilder extends AbstractBuilder
 
         $rule = $route->getRule();
 
-        $re = '/(\([\w]+\))/m';
+        $re = '/(\(\w+\))/m';
         $subst = '(\\\\S+)';
 
         $normalized = preg_replace($re, $subst, $rule);
@@ -82,7 +82,7 @@ class RouteBuilder extends AbstractBuilder
             return $route;
         }
 
-        $re = '/([^\(]+)?(\/\(([\w\-]+)\))/m';
+        $re = '/([^(]+)?(\/\(([\w\-]+)\))/m';
         preg_match_all($re, $rule, $matches, PREG_SET_ORDER, 0);
 
         $translated = $rule;
@@ -105,9 +105,7 @@ class RouteBuilder extends AbstractBuilder
             'exact' => $route->isExact()
         ]);
 
-        $newRoute = new RouteEntity($struct);
-
-        return $newRoute;
+        return new RouteEntity($struct);
     }
 
 }
