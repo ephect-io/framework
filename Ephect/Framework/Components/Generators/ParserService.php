@@ -150,7 +150,7 @@ class ParserService implements ParserServiceInterface
     public function doNamespace(FileComponentInterface $component): void
     {
         $p = new NamespaceParser($component);
-        $p->do();
+        $p->do($component->getMotherUID());
         $this->html = $p->getHtml();
     }
 
