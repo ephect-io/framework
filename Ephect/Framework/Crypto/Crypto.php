@@ -28,4 +28,9 @@ class Crypto
             mt_rand(0, 65535)
         );
     }
+
+    public static function createOID(): string
+    {
+        return str_replace('-', '', self::createUID());
+    }
 }

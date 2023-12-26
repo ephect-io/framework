@@ -203,7 +203,7 @@ class ComponentParser extends Parser implements ParserInterface
         $item['startsAt'] = $tag['startsAt'];
         $item['endsAt'] = $tag['endsAt'];
         if (!$isCloser) {
-            $item['uid'] = Crypto::createUID();
+            $item['uid'] = Crypto::createOID();
             $item['class'] = ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
             $item['component'] = $fqName;
