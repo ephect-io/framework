@@ -14,12 +14,12 @@ function HtmlSaver($children)
         <if(%service->canRender()) {
         {{ children }}
         }>
-        <? 
+        <% 
             if(!%service->isPending()) {
                 %service->markAsPending();
                 @html = { children };
                 %service->storeHTML(@html);
             }
-        ?>
+        %>
     HTML);
 }

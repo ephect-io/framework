@@ -27,14 +27,14 @@ function Router($children)
     });
 
     return (<<< HTML
-        <?
+        <%
             if(%hasRouted) { 
                 { html }
                 return;
             }
-        ?>
+        %>
         {{ children }}
-        <?            
+        <%            
             rename(RouteRegistry::getCacheFilename(), RouteRegistry::getMovedFilename());
             Builder::purgeCopies();
 
@@ -43,6 +43,6 @@ function Router($children)
                 { html }
             } 
 
-        ?>
+        %>
     HTML);
 }

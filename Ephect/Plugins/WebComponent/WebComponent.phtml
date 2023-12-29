@@ -25,12 +25,12 @@ function WebComponent($children)
 
     return (<<< HTML
         {{ body }}
-        <? 
+        <% 
             if(!%service->isPending()) {
                 %service->markAsPending();
                 @html = { children };
                 %service->splitHTML(@html);
             }
-        ?>
+        %>
     HTML);
 }
