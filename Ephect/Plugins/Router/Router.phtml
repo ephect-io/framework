@@ -28,7 +28,7 @@ function Router($children)
 
     return (<<< HTML
         <?
-            if(&hasRouted) { 
+            if(%hasRouted) { 
                 { html }
                 return;
             }
@@ -38,8 +38,8 @@ function Router($children)
             rename(RouteRegistry::getCacheFilename(), RouteRegistry::getMovedFilename());
             Builder::purgeCopies();
 
-            &service->findRoute(&html);
-            if(&html !== '') { 
+            %service->findRoute(%html);
+            if(%html !== '') { 
                 { html }
             } 
 

@@ -12,8 +12,8 @@ function ResponseHeader($props)
 
     return (<<< HTML
     <? 
-        if (&hasDirectives) {
-            foreach(&directives as @directive) {
+        if (%hasDirectives) {
+            foreach(%directives as @directive) {
                 header(@directive);
             }
         }
