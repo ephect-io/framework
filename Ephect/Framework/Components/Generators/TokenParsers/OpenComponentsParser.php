@@ -34,10 +34,11 @@ final class OpenComponentsParser extends AbstractTokenParser
             $uid = $item->getUID();
 
             $opener = $item->getText();
-            $closer = ((object)$item->getCloser())->text;
+            $theCloser = (object)$item->getCloser();
+            $closer = $theCloser->text;
             $componentName = $item->getName();
-            // $componentBody = $item->getContents($subject);
-            $componentBody = $item->getInnerHTML();
+            $componentBody = $item->getContents($subject);
+            //$componentBody = $item->getInnerHTML();
             $componentArgs = $this->useVariables;
             $componentArgs = $item->props() !== null ? array_merge($componentArgs, $item->props()) : $componentArgs;
 
@@ -70,7 +71,6 @@ final class OpenComponentsParser extends AbstractTokenParser
             $fqComponentName = ComponentRegistry::read($componentName);
             $filename = ComponentRegistry::read($fqComponentName);
 
-            $wcom = '';
             if ($filename === null) {
                 $filename = WebComponentRegistry::read($fqComponentName);
                 if ($filename !== null) {
@@ -104,9 +104,6 @@ final class OpenComponentsParser extends AbstractTokenParser
 
             $opener = preg_quote($opener, '/');
             $subject = preg_replace('/(' . $opener . ')/', '', $subject, 1);
-
-            $filename = $this->component->getFlattenSourceFilename();
-            Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $closer = preg_quote($closer, '/');
             $subject = preg_replace('/' . $closer . '(?!.*' . $closer . ')/', '', $subject, 1);
