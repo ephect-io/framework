@@ -5,11 +5,11 @@ namespace QuickStart;
 use function Ephect\Hooks\useEffect;
 use function Ephect\Hooks\useProps;
 
-function Matroichka0($props)
+function Matriochka0($props)
 {
 
-    useEffect(function($props, /* string */ $devochka) {
-        $devochka = $props->devochka;
+    useEffect(function($props, /* string */ $devotchka) {
+        $devotchka = $props->devotchka;
     });
 
     return (<<< HTML
@@ -21,20 +21,20 @@ function Matroichka0($props)
         </Slot>
         <div class="App-content" >
             <p>
-                {{ devochka }}
+                {{ devotchka }}
             </p>
-            <Matroichka1 id="zero" label="Zero">
+            <Matriochka1 id="zero" label="Zero">
                 inside 0<br>
-                <Matroichka1 id="one" label="One">
+                <Matriochka1 id="one" label="One">
                     inside 1<br>
-                    <Matroichka1 id="two" label="Two">
+                    <Matriochka1 id="two" label="Two">
                         inside 2<br>
-                        <Matroichka1 id="three" label="Three">
+                        <Matriochka1 id="three" label="Three">
                             inside 3<br>
-                        </Matroichka1>
-                    </Matroichka1>
-                </Matroichka1>
-            </Matroichka1>
+                        </Matriochka1>
+                    </Matriochka1>
+                </Matriochka1>
+            </Matriochka1>
         </div>
         <Slot name="javascripts">
             <script src="js/ephect.js"></script>
