@@ -283,6 +283,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
     public function getContents(?string $html = null): ?string
     {
+        if ($this->name === 'WebComponent') {
+            return $this->getInnerHTML();
+        }
+
         $result = '';
 
         if (!$this->hasCloser) {
@@ -290,10 +294,10 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         }
 
         $contents = $this->closer['contents'];
-        $s = $contents['startsAt'];
-        $e = $contents['endsAt'];
+        $start = $contents['startsAt'];
+        $end = $contents['endsAt'];
 
-        if ($e - $s < 1) {
+        if ($end - $start < 1) {
             return $result;
         }
 
@@ -302,15 +306,15 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         if ($compFile === null) {
             return $result;
         }
-        $t = $html ?: Utils::safeRead(COPY_DIR . $compFile);
+        $text = $html ?: Utils::safeRead(COPY_DIR . $compFile);
 
-        if (($p = (strpos($t, $this->text) + strlen($this->text))) > $s) {
-            $o =  $p - $s;
+        if (($pos = strpos($text, $this->text) + strlen($this->text)) > $start) {
+            $offset =  $pos - $start;
 
-            $s += $o;
-            $e += $o;
+            $start += $offset;
+            $end += $offset;
         }
 
-        return substr($t, $s, $e - $s + 1);
+        return substr($text, $start, $end - $start + 1);
     }
 }
