@@ -20,14 +20,7 @@ final class ValuesParser extends AbstractTokenParser
         preg_match_all($re, $text, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-            $variable = $match[2];
-            $entity = html_entity_decode($match[0]);
-
-            if ($variable === '' || $match[0] !== $entity) {
-                continue;
-            }
-
-            $useVar = $variable;
+            $useVar = $match[2];
             if ($match[1] !== '@') {
                 $this->useVariables[$useVar] = '$' . $useVar;
             }
