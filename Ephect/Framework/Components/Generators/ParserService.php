@@ -114,7 +114,7 @@ class ParserService implements ParserServiceInterface
         $this->children = (object)$p->getResult();
     }
 
-    public function geFuncVariables(): ?array
+    public function getFuncVariables(): ?array
     {
         return $this->funcVariables;
     }
