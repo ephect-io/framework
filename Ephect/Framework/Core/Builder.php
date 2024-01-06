@@ -296,7 +296,7 @@ class Builder
     public function buildByRoute($route = 'Default'): void
     {
 
-        $port = IOUtils::safeRead(CONFIG_DIR . 'dev_port') ?? '80';
+        $port = trim(IOUtils::safeRead(CONFIG_DIR . 'dev_port') ?? '80');
 
         if ($route === 'App') {
             return;

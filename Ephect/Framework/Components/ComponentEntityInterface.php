@@ -26,6 +26,8 @@ interface ComponentEntityInterface extends TreeInterface, ElementInterface, Stru
 
     public function getInnerHTML(): ?string;
 
+    public function getContents(?string $html = null): ?string;
+
     public function hasCloser(): bool;
 
     public function isSibling(): bool;

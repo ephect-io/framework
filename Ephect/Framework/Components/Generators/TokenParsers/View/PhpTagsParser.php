@@ -10,8 +10,11 @@ final class PhpTagsParser extends AbstractTokenParser
     {
         $phtml = $parameter;
 
-        $re = '/(<\?)(( +|\s+)?)/m';
-        $phtml = preg_replace($re, "<?php$2", $phtml);
+        $re = '/(<%)(( +|\s+)?)/m';
+        $phtml = preg_replace($re, '<?php' . "$2", $phtml);
+
+        $re = '/%>/m';
+        $phtml = preg_replace($re, "?>", $phtml);
 
         $this->result = $phtml;
     }

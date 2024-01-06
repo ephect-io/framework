@@ -52,7 +52,7 @@ function Install($props)
     });
 
     return (<<<HTML
-    <if (&hasResponse) {
+    <if (%hasResponse) {
         <ResponseHeader 
             directive[]="Content-Type: application/json"
             directive[]="Content-Encoding: utf-8"

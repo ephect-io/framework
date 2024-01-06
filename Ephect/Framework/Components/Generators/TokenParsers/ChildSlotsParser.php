@@ -12,7 +12,6 @@ class ChildSlotsParser extends AbstractTokenParser
     public function do(null|string|array $parameter = null): void
     {
         ComponentRegistry::uncache();
-        $functionFilename = null;
 
         $motherUID = $this->component->getMotherUID();
         $doc = new ComponentDocument($this->component);
@@ -33,7 +32,6 @@ class ChildSlotsParser extends AbstractTokenParser
         }
 
         $parentFilename = $parentComponent->getFlattenSourceFilename();
-        $functionFilename = $parentFilename;
         $parentDoc = new ComponentDocument($parentComponent);
         $parentDoc->matchAll();
 
@@ -48,6 +46,6 @@ class ChildSlotsParser extends AbstractTokenParser
             ComponentRegistry::cache();
         }
 
-        $this->result = $functionFilename;
+        $this->result = $parentFilename;
     }
 }

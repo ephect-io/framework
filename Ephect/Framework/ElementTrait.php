@@ -23,7 +23,7 @@ trait ElementTrait
     public function getUID(): string
     {
         if ($this->uid === '') {
-            $this->uid = Crypto::createUID();
+            $this->uid = Crypto::createOID();
         }
         return $this->uid;
     }

@@ -24,6 +24,7 @@ use Ephect\Framework\Registry\ComponentRegistry;
 class ParserService implements ParserServiceInterface
 {
     protected ?object $component = null;
+    protected array $funcVariables = [];
     protected array $useVariables = [];
     protected array $useTypes = [];
     protected string $html = '';
@@ -102,7 +103,8 @@ class ParserService implements ParserServiceInterface
 
         $this->html = str_replace($text,  $phtml, $this->html);
 
-        $this->useVariables = $p->getVariables();
+        $this->useVariables = $p->getUseVariables();
+        $this->funcVariables = $p->getFuncVariables();
     }
 
     public function doChildrenDeclaration(FileComponentInterface $component): void
@@ -112,7 +114,12 @@ class ParserService implements ParserServiceInterface
         $this->children = (object)$p->getResult();
     }
 
-    public function getVariables(): ?array
+    public function geFuncVariables(): ?array
+    {
+        return $this->funcVariables;
+    }
+
+    public function getUseVariables(): ?array
     {
         return $this->useVariables;
     }
@@ -121,7 +128,7 @@ class ParserService implements ParserServiceInterface
     {
         $p = new ArraysParser($component);
         $p->do($this->useVariables);
-        $this->useVariables = $p->getVariables();
+        $this->useVariables = $p->getUseVariables();
         $this->html = $p->getHtml();
     }
 
@@ -136,7 +143,7 @@ class ParserService implements ParserServiceInterface
     {
         $p = new UseVariablesParser($component);
         $p->do($this->useVariables);
-        $this->useVariables = $p->getVariables();
+        $this->useVariables = $p->getUseVariables();
         $this->html = $p->getHtml();
     }
 
@@ -144,13 +151,13 @@ class ParserService implements ParserServiceInterface
     {
         $p = new WebComponentParser($component);
         $p->do($this->useVariables);
-        $this->useVariables = $p->getVariables();
+        $this->useVariables = $p->getUseVariables();
     }
 
     public function doNamespace(FileComponentInterface $component): void
     {
         $p = new NamespaceParser($component);
-        $p->do();
+        $p->do($component->getMotherUID());
         $this->html = $p->getHtml();
     }
 

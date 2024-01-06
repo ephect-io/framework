@@ -155,6 +155,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return [$fqFuncName, $filename, $isCached];
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null, ?Request $request = null): string
     {
         include_once CACHE_DIR . $cacheFilename;

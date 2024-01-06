@@ -3,6 +3,8 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementTrait;
+use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Tree\Tree;
 
 /**
@@ -275,8 +277,44 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
         $result = $this->closer['contents']['text'];
         $result = substr($result, 9);
-        $result = base64_decode($result);
 
-        return $result;
+        return base64_decode($result);
+    }
+
+    public function getContents(?string $html = null): ?string
+    {
+        if ($this->name === 'WebComponent') {
+            return $this->getInnerHTML();
+        }
+
+        $result = '';
+
+        if (!$this->hasCloser) {
+            return $result;
+        }
+
+        $contents = $this->closer['contents'];
+        $start = $contents['startsAt'];
+        $end = $contents['endsAt'];
+
+        if ($end - $start < 1) {
+            return $result;
+        }
+
+        ComponentRegistry::uncache();
+        $compFile = ComponentRegistry::read($this->compName);
+        if ($compFile === null) {
+            return $result;
+        }
+        $text = $html ?: Utils::safeRead(COPY_DIR . $compFile);
+
+        if (($pos = strpos($text, $this->text) + strlen($this->text)) > $start) {
+            $offset =  $pos - $start;
+
+            $start += $offset;
+            $end += $offset;
+        }
+
+        return substr($text, $start, $end - $start + 1);
     }
 }

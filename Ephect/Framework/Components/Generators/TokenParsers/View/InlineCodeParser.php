@@ -38,6 +38,7 @@ final class InlineCodeParser extends AbstractTokenParser
 
         $text = $this->doEchoes($text);
         $text = $this->doValues($text);
+        $this->doVariables();
 
         $text = $this->doPhpCleaner($text);
 
@@ -115,8 +116,19 @@ final class InlineCodeParser extends AbstractTokenParser
             "useVariables" => $this->useVariables,
         ]);
 
-        $this->useVariables = $parser->getVariables();
+        $this->useVariables = $parser->getUseVariables();
         return $parser->getResult();
+    }
+
+    public function doVariables(): void
+    {
+        $parser = new VariablesParser($this->component);
+        $parser->do([
+            "useVariables" => $this->useVariables,
+        ]);
+
+        $this->funcVariables = $parser->getFuncVariables();
+        $this->useVariables = $parser->getUseVariables();
     }
 
     public function doPhpTags(string $html): string
@@ -140,7 +152,7 @@ final class InlineCodeParser extends AbstractTokenParser
             "html" => $html,
             "useVariables" => $this->useVariables,
         ]);
-        $this->useVariables = $parser->getVariables();
+        $this->useVariables = $parser->getUseVariables();
 
         return $parser->getResult();
     }
