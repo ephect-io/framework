@@ -16,14 +16,12 @@ final class ValuesParser extends AbstractTokenParser
             $this->useVariables = $parameter['useVariables'];
         }
 
-        $re = '/(%|@)([\w;]+)/m';
+        $re = '/%([\w]+)/m';
         preg_match_all($re, $text, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-            $useVar = $match[2];
-            if ($match[1] !== '@') {
-                $this->useVariables[$useVar] = '$' . $useVar;
-            }
+            $useVar = $match[1];
+            $this->useVariables[$useVar] = '$' . $useVar;
 
             $text = str_replace($match[0], '$' . $useVar, $text);
         }

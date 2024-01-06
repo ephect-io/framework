@@ -28,8 +28,8 @@ function WebComponent($children)
         <% 
             if(!%service->isPending()) {
                 %service->markAsPending();
-                @html = { children };
-                %service->splitHTML(@html);
+                %html = { children };
+                %service->splitHTML(%html);
             }
         %>
     HTML);

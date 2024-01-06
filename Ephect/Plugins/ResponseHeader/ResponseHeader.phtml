@@ -13,8 +13,8 @@ function ResponseHeader($props)
     return (<<< HTML
     <% 
         if (%hasDirectives) {
-            foreach(%directives as @directive) {
-                header(@directive);
+            foreach(%directives as %directive) {
+                header(%directive);
             }
         }
     %>
