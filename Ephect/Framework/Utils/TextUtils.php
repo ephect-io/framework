@@ -34,20 +34,19 @@ class TextUtils
 
     public static function format(string|array|object $string, ...$params): string
     {
+        $result = $string;
 
         if (is_object($string)) {
-            $string = json_encode($string, JSON_PRETTY_PRINT);
+            $result = json_encode($string, JSON_PRETTY_PRINT);
         }
         if (is_array($string)) {
-            $string = print_r($string, true);
+            $result = print_r($string, true);
         }
-        $result = $string;
-        if (count($params) > 0 && is_array($params[0])) {
-            return vsprintf($string, $params[0]);
+        if (count($params) > 0 && count($params[0]) > 0) {
+            $result = vsprintf($string, $params[0]);
         }
-        if (count($params) > 0 && is_array($params)) {
-            return vsprintf($string, $params);
-        }
+
+        return $result;
     }
 
     public static function jsonToPhpArray(string $json): string
