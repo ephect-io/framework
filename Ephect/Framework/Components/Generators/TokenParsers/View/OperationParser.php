@@ -4,12 +4,12 @@ namespace Ephect\Framework\Components\Generators\TokenParsers\View;
 
 use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
-final class ElseIfParser extends AbstractTokenParser
+final class OperationParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/@else *if +(([\w @%&!=\'"+\*\/;\<\-\>\(\)\[\]]+)) +do/m';
-        $subst = '<%} elseif ($1) {%>';
+        $re = '/@op +(.*)$/m';
+        $subst = "<% $1; %>";
         $result = preg_replace($re, $subst, $parameter);
 
         $this->result = $result;

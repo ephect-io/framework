@@ -8,13 +8,9 @@ final class ForParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/(\<%for *?\(([\w @%&!=\'"+\*\/;\<\-\>]+)\) *?\{)/m';
-        $subst = '<% $1 %>';
+        $re = '/@for +([\\w @%&!=\'"+\*\/;\<\-\>]+) +do/m';
+        $subst = '<% for ($1) {%>';
         $result = preg_replace($re, $subst, $parameter);
-
-        if(strpos($result,'<% <%for') > -1) {
-            $result = str_replace('<%for', 'for', $result);
-        }
 
         $this->result = $result;
     }

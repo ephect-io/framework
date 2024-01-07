@@ -11,9 +11,9 @@ function HtmlSaver($children)
     });
 
     return (<<< HTML
-        <%if(%service->canRender()) {
+        @if %service->canRender() do
         {{ children }}
-        }%>
+        @done
         <% 
             if(!%service->isPending()) {
                 %service->markAsPending();

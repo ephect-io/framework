@@ -8,8 +8,8 @@ final class ElseParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/(} *?else *?\{)/m';
-        $subst = '<% $1 %>';
+        $re = '/@else *$/m';
+        $subst = '<%} else {%>';
         $result = preg_replace($re, $subst, $parameter);
 
         $this->result = $result;

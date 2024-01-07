@@ -8,13 +8,9 @@ final class EndParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/(}%\>)/m';
-        $subst = '<% $1 %>';
-        $result = preg_replace($re, $subst, $parameter);
-
-        if(strpos($result,'<% }%> %>') > -1) {
-            $result = str_replace('}%>', '}', $result);
-        }
+        $re = '/@done/m';
+        $subst = '<% } %>';
+        $result = preg_replace($re, $subst, $parameter, 1);
 
         $this->result = $result;
     }

@@ -8,8 +8,8 @@ final class BreakerParser extends AbstractTokenParser
 {
     public function do(null|string|array $parameter = null): void
     {
-        $re = '/(break;|continue;)/m';
-        $subst = '<% $1 %>';
+        $re = '/@(break|continue)/m';
+        $subst = '<% $1; %>';
         $result = preg_replace($re, $subst, $parameter);
 
 /*        if(strpos($result,'?> <?') > -1) {*/
