@@ -54,6 +54,11 @@ class Builder
                 $this->describeCustomComponent(SRC_ROOT, $compFile);
             }
 
+            $pagesList = IOUtils::walkTreeFiltered(CUSTOM_PAGES_ROOT, ['phtml']);
+            foreach ($pagesList as $key => $pageFile) {
+                $this->describeCustomComponent(CUSTOM_PAGES_ROOT, $pageFile);
+            }
+
             $componentsList = IOUtils::walkTreeFiltered(CUSTOM_COMPONENTS_ROOT, ['phtml']);
             foreach ($componentsList as $key => $compFile) {
                 $this->describeCustomComponent(CUSTOM_COMPONENTS_ROOT, $compFile);
