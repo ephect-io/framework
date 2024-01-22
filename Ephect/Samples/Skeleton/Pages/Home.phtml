@@ -6,7 +6,7 @@ use Com as QuickStartCom;
 
 use function Ephect\Hooks\useState;
 
-function Home(): string
+function Home()
 {
     useState(['m' => ['n' => 'with a']]);
 
@@ -18,11 +18,11 @@ function Home(): string
             <link rel="stylesheet" href="/css/app.css" />
         </Slot>
         <div class="App-content" >
-            <text-writer source="/Com/Com.html" styles="/css/app.css" classes="App-content" ></text-writer>
+            <TextWriter source="/Com/Com.html" styles="/css/app.css" classes="App-content" />
             <QuickStartCom message="Hello World!" from="the app" />
         </div>
         <Slot name="javascripts">
-            <script type="module" src="/modules/human-writes.min.js"></script>
+            <script type="module" src="/js/runtime/TextWriter/TextWriter.js"></script>
         </Slot>
     </Mother>
     HTML);
