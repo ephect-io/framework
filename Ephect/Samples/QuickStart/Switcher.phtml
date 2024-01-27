@@ -8,8 +8,8 @@ function Switcher()
     <Router>
         <Route method="GET" rule='/' exact="true" redirect="Home" />
         <Route method="GET" rule='/hello/(name)/(lname)' exact="true" redirect="Hello" />
-        <Route method="GET" rule='/world\\?name=(.*)&lname=(.*)' exact="true" redirect="Second" />
-        <Route method="GET" rule='/world/?' exact="true" redirect="Second" />
+        <Route method="GET" rule='/world\\?name=(.*)&lname=(.*)' exact="true" redirect="World" />
+        <Route method="GET" rule='/world/?' exact="true" redirect="World" />
         <Route method="GET" rule='/matriochka/(devotchka)' exact="true" redirect="Matriochka0" />
         <Route method="GET" rule='/matriochka/?' exact="true" redirect="Matriochka0" />
         <Route method="GET" rule='/info/?' exact="true" redirect="Info" />
