@@ -1,52 +1,47 @@
+<?php
+namespace QuickStart;
+
+use function Ephect\Hooks\useEffect;
+
+function HelloWorld($slot) {
+
+useEffect(function ($slot, /* string */ $foo) {
+    $foo = "It works!"; 
+});
+
+return (<<< HTML
+<WebComponent>
 <template id="HelloWorld">
     <h1>
-        <slot/>
-        {{ foo }}
+        ${result}
     </h1>
+    <slot></slot>
+    <h2>{{ foo }}</h2>
 </template>
 <script>
     import HelloWorld from "./HelloWorld.class.mjs"
+    import HelloWorldElement from "./HelloWorldElement.js"
 
     /**
      * Rename the component
      */
-    class HelloWorldComponent extends HTMLElement {
+    class HelloWorldComponent extends HelloWorldElement {
 
-        constructor() {
-            super();
-
-            this.word
-            this.attachShadow({mode: 'open'});
-            this.shadowRoot.innerHTML = document.getElementById('HelloWorld').innerHTML
-
-            const slots = this.shadowRoot.querySelectorAll('slot')
-            if (slots.length) {
-                slots[0].addEventListener('slotchange', event => {
-                    console.dir(slots[0].assignedNodes())
-                })
-            }
-
-        }
-
-        static get observeAttributes() {
-            /**
-             * Attributes passed inline to the component
-             */
-            return ['word']
-        }
-
-        get word() {
-            return this.getAttribute('word') ?? null
-        }
-
-        async connectedCallback() {
+        renderTemplate() {
             /**
              * The magic starts here
              */
             const base = new HelloWorld()
-            base.hello()
+            const result = base.sayHello(this.word)
+
+            this.shadowRoot.innerHTML = document.getElementById('HelloWorld').innerHTML
         }
+
     }
 
     customElements.define('hello-world', HelloWorldComponent);
 </script>
+
+</WebComponent>
+HTML);
+}
