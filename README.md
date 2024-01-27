@@ -1,23 +1,22 @@
 ![Ephect](assets/images/salamandra.png)
 
-## What does Ephect stand for ?
+## What is Ephect ?
 
-_Ephect is a_
-_Programming_
-_Hybrid_
-_Environment_ with
-_Components-based_
-_Templates_
+**E**phect is a **P**rogramming **H**ybrid **E**nvironment with **C**omponent-based **T**emplates.
 
-In other words, Ephect is a backend components templating system. It gathers some features from *ReactJS<sup>1</sup>* and *WebComponents<sup>2</sup>* like hooks and slots.
+It's a comprehensive solution that combines a lightweight PHP framework and a JavaScript library.
+
+Ephect allows you to design backend pages and components a fluent way as well as web components.
+
+It integrates a build process based on webpack.
 
 ## Featured concepts
 
 ### The components
 
-Basically, components are custom HTML tags. All concepts of HTML tags on backend side are applicable to components except the naming convention: a component name must begin with a capital letter. 
+Basically, components are custom HTML tags. All concepts of HTML tags on backend side are applicable to components except the naming convention: a component name must begin with a capital letter.
 
-The logic of the component is coded in a simple function returning a template.
+The logic of the component is coded in a simple funcion returning a template.
 
 #### Example 1
 
@@ -183,7 +182,7 @@ function Home()
 }
 ```
 
-It will render: 
+It will render:
 
 ```html
     <!DOCTYPE html>
@@ -219,33 +218,35 @@ It will render:
 
 ## CLI tool *egg*
 
-**Ephect** comes with a CLI tool called *egg*. The main feature of **egg** is to pre-compile the code of the whole application at once. This is done in one command: *php egg compile*. The benefits of this approach are the error managment and the increase of velocity of the application.
+**Ephect** comes with a CLI tool called *egg*. The main feature of **egg** is to build the code of the whole application at once. This is done in one command: *php egg build*. The benefits of this approach are the errors management and the increase of velocity of the application.
 
 ### Error handling
 
-Every syntax error is handled as a fatal error which stops the compilation process. An explicit message is displayed on the console output to help you fixing it quickly.
+Every syntax error is handled as a fatal error which stops the compilation process. An explicit message is displayed on the console output to help you fix it quickly.
 
 ### Headless page generator
 
-The compiler parses the templates of every components owned by a page comprising the cascading components. Each component is translated from **Ephect** template code to pure functional **PHP** code and cached. The code of each component is light and fast to run. 
+The compiler parses the templates of every component owned by a page comprising the cascading components. Each component is translated from **Ephect** template code to pure functional **PHP** code and cached. The code of each component is light and fast to run.
 
 Once the pages are prepared in cache, browsing them is as fast as possible. The only bottleneck that you should be aware of is the data resources calls.
 
 ## Requirements
 
-To take adavantage of all the CLI features you need a thread-safe version of **PHP** also called **ZTS** with **Parallel** extension. It is not mandatory but recommended to enable **ZTS** in the **PHP** engine. Otherwise you can compile pages dynamically by calling your application in the browser.
+The minimal version of PHP needed for Ephect is 8.2.
 
-To enable ZTS see [enable-zts section](https://ephect.io/enable-zts) on *ephect.io*.
+You may also need to install some PHP extensions, if it's not done yes, like PDO/Sqlite, cUrl, Iconv, etc.
 
 ## Install the framework
 
-There's a dedicated project you can find here **[ephect-io/create-app](https://github.com/ephect-io/create-app)** that helps you installing all you need for a quick start. 
+It's recommended to use the composer create-project command in order to get all the needed stuff.
 
-Using Composer just do:
+There's a dedicated project you can find here **[ephect-io/create-app](https://github.com/ephect-io/create-app)** that will help you for a quick start.
+
+Just do:
 
     composer create-project ephect-io/create-app myproject
 
-where *myproject* is the name of your project. 
+where *myproject* is the name of your project.
 
 ## Install the sample application
 
@@ -253,72 +254,98 @@ Move to *myproject* directory and type:
 
     php egg make:quickstart
 
-You will see a **src** directory in which you will find the standard structure of an ephect application. Ephect doesn't really care of the actual structure provided that it is under **src** directory. It means you can organize your application tree as you wish.
+You will see a **app** directory in which you will find the standard structure of an Ephect application and a **public** directory in which is stored the index.php.
 
-## Pre-compile the application
+## Build the application
 
-If you setup **PHP-ZTS**, good choice, you can generate your application without browser by typing:
+### Using the PHP only context
+
+If no issue is popping up on the console then you can generate your application outside the browser.
+
+However, you first need to launch the embedded web server.
+
+If you're running Windows, you need to type this:
+
+    php -S localhost:8888 -t src/public
+
+otherwise, MacOS and Linux accept this syntax:
+
+    php egg serve
+
+Open another terminal or another tab in your terminal and type:
 
     php egg build
 
-You will find the generated application under the directory *cache*.
+If you installed the QuickStart application as said previously, you should see something like this:
 
-## Launch the sample
+    Compiling App ... 059ms
+    Compiling Home, querying http://localhost:8000/ ... 193ms
+    Compiling Hello, querying http://localhost:8000/hello/1/2 ... 027ms
+    Compiling World, querying http://localhost:8000/world?name=$1&lname=$2 ... 019ms
+    Compiling Matriochka0, querying http://localhost:8000/matriochka/1 ... 105ms
+    Compiling Info, querying http://localhost:8000/info ... 009ms
+    Compiling Callback, querying http://localhost:8000/callback ... 069ms
 
-You can test the sample application by using the PHP embedded web server:
+You will find the generated application in the directory *cache*.
 
-    php -S localhost:8000 -t public
+The build process follows the routes with GET HTTP method, all other methods routes are built on web browser call.
 
-## The sample pages 
+### Using the hybrid context: PHP + JavaScript
 
-The available page routes are :
- - http://localhost:8888/
- - http://localhost:8888/second?name=myname
- - http://localhost:8888/hello/name
- - http://localhost:8888/matroichka
- - http://localhost:8888/info
+First, ensure NodeJS is installed and running with version 20 as a miminum. LTS/Iron is a good choice.
 
-The main route shows how to use useEffect and useState hooks all in nesting several components in cascade.
+Once it's done, run:
 
-The Second route shows how to use useSlot Hook to bind a variable nested inside the parent context. You can also see how to manage arguments of the query string using the hook useQueryArgument.
+    npm install
+    npm run dev
 
-The Hello route shows how to manage named arguments in the pathname, ideal for dealing with API.
+If you installed the QuickStart application as said previously, you should see something like this:
 
-The Matroichka route shows how to embed components in cascade.
+    > logo@1.0.0 dev
+    > sh scripts/dev.sh all
 
-The Info route shows how to make the most simple component without hooks.
+    Building web components...
+    asset app.min.js 2.31 KiB [emitted] (name: main)
+    runtime modules 274 bytes 1 module
+    ./app/JavaScripts/index.js 212 bytes [built] [code generated]
+    webpack 5.89.0 compiled successfully in 325 ms
+    'app/Assets/css/app.css' -> 'public/css/app.css'
+    'app/Assets/css/index.css' -> 'public/css/index.css'
+    'app/Assets/css/setup.css' -> 'public/css/setup.css'
+    'app/Assets/img/css/app.css' -> 'public/img/css/app.css'
+    'app/Assets/img/css/index.css' -> 'public/img/css/index.css'
+    'app/Assets/img/css/setup.css' -> 'public/img/css/setup.css'
+    'app/Assets/img/salamandra.png' -> 'public/img/salamandra.png'
+    'node_modules/human-writes/dist/web/human-writes.min.js' -> 'public/modules/human-writes.min.js'
+    Compiling App ... 059ms
+    Compiling Home, querying http://localhost:8000/ ... 193ms
+    Compiling Hello, querying http://localhost:8000/hello/1/2 ... 027ms
+    Compiling World, querying http://localhost:8000/world?name=$1&lname=$2 ... 019ms
+    Compiling Matriochka0, querying http://localhost:8000/matriochka/1 ... 105ms
+    Compiling Info, querying http://localhost:8000/info ... 009ms
+    Compiling Callback, querying http://localhost:8000/callback ... 069ms
 
-### Yarn support
+## The sample pages
 
-If you're used to using yarn, **Ephect** comes with yarn support.
+The available page routes are:
 
-## Installation
+A simple page with 2 children components; the first passes values to the second with useState hook.
+- http://localhost:8000/
 
-It's simple as:
+A sample to show how to manage parameters passed in the URL path.
+- http://localhost:8000/hello/arg1/arg2
 
-    npm i
+A sample to show how to manage parameters passed in the query string with a parent component for the style.
+- http://localhost:8000/world?name=arg1&lname=arg2
 
-## Available commands from yarn
+A sample to show how to use the same component in cascade.
+- http://localhost:8000/matriochka/arg1
 
-You can replace php by yarn
+A sample to show PHP info
+- http://localhost:8000/info
 
-    yarn egg help
+A sample to show how to make a JavaScript callback with a PHP JSON response.
+- http://localhost:8000/callback
 
-is identical to
 
-    php egg help
-
-but yarn has some shortcuts too:
-
- - *yarn build* replaces *php egg compile*
- - *yarn serve* launches the PHP embedded server
-
-## Notes
-
-**Ephect** framework is in work in progress stage. This means that there's a lot to do. Breaking changes are yet to come.
-
-<sup>1</sup>. The concept of hooks in **ReactJS** is explained at [ReactJS hooks reference](https://reactjs.org/docs/hooks-reference.html).
-
-<sup>2</sup>. The concept of slots in **WebComponents** is explained at [MDN -  The Web Component Slot element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot).
-
-Happy coding again! :)
+## To be continued...

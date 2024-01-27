@@ -9,13 +9,12 @@ function Switcher()
         <Route method="GET" rule='/' exact="true" redirect="Home" />
         <Route method="GET" rule='/hello/(name)/(lname)' exact="true" redirect="Hello" />
         <Route method="GET" rule='/world\\?name=(.*)&lname=(.*)' exact="true" redirect="World" />
-        <Route method="GET" rule='/start/?' exact="true" redirect="Start" />
-        <Route method="POST" rule='/start/(action)' exact="true" redirect="Install" />
-        <Route method="GET" rule='/info/?' exact="true" redirect="Info" />
-        <Route method="GET" rule='/second\\?name=(.*)&lname=(.*)' exact="true" redirect="Second" />
-        <Route method="GET" rule='/second/?' exact="true" redirect="Second" />
+        <Route method="GET" rule='/world/?' exact="true" redirect="World" />
         <Route method="GET" rule='/matriochka/(devotchka)' exact="true" redirect="Matriochka0" />
         <Route method="GET" rule='/matriochka/?' exact="true" redirect="Matriochka0" />
+        <Route method="GET" rule='/info/?' exact="true" redirect="Info" />
+        <Route method="GET" rule='/callback' exact="true" redirect="Callback" />
+        <Route method="POST" rule='/response' exact="true" redirect="Response" />
     </Router>
     HTML);
 }

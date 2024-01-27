@@ -1,0 +1,38 @@
+<?php
+namespace QuickStart;
+
+function Callback()
+{
+    return (<<< HTML
+    <Mother>
+        <Slot name="title">Ephect in action!</Slot>
+        <Slot name="stylesheets">
+          <link rel="stylesheet" href="/css/index.css" />
+          <link rel="stylesheet" href="/css/app.css" />
+        </Slot>
+        
+        <div class="App-content" >
+            <h1></h1>
+        </div>
+
+        <Slot name="javascripts">
+            <script>
+                fetch('/response', {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                  },
+                  body: JSON.stringify({
+                      myNameIs: "World"
+                  }),
+                  mode: "cors",
+                  cache: "default",
+                }).then(response => response.json())
+                .then(response => {
+                    document.querySelector('.App-content h1').innerHTML = response.answer
+                })
+            </script>
+        </Slot>
+    </Mother>
+    HTML);
+}
