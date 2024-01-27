@@ -12,7 +12,7 @@ function Callback()
         </Slot>
         
         <div class="App-content" >
-            <strong></strong>
+            <h1></h1>
         </div>
 
         <Slot name="javascripts">
@@ -30,7 +30,7 @@ function Callback()
                   cache: "default",
                 }).then(response => response.json())
                 .then(response => {
-                    document.querySelector('.App-content strong').innerHTML = response.answer
+                    document.querySelector('.App-content h1').innerHTML = response.answer
                 })
             </script>
         </Slot>
