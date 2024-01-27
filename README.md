@@ -254,7 +254,7 @@ Move to *myproject* directory and type:
 
     php egg make:quickstart
 
-You will see a **app** directory in which you will find the standard structure of an ephect application and a **public** directory in which is stored the index.php. Ephect doesn't really care of the actual project pstructure provided that all componenets are under **app** directory. It means you can organize your application tree as you wish.
+You will see a **app** directory in which you will find the standard structure of an Ephect application and a **public** directory in which is stored the index.php.
 
 ## Build the application
 
@@ -271,6 +271,10 @@ If you're running Windows, you need to type this:
 otherwise, MacOS and Linux accept this syntax:
 
     php egg serve
+
+Open another terminal or another tab in your terminal and type:
+
+    php egg build
 
 If you installed the QuickStart application as said previously, you should see something like this:
 
