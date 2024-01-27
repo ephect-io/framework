@@ -1,12 +1,13 @@
-export default class HelloWorld {
+class HelloWorld
+{
 
-    constructor() {
-        this.foo = 'bar'
-    }
-
-    hello(foo = null) {
-        const baz = foo ?? this.foo
-        return 'Something ' + baz
+    sayHello(word) {
+        /**
+         * Do something with the parameters
+         */
+        return 'Hello ' + word;
     }
 
 }
+
+export default HelloWorld

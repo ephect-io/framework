@@ -1,7 +1,7 @@
 {
     "tag": "hello-world",
     "class": "HelloWorld",
-    "entrypoint": "hello",
+    "entrypoint": "sayHello",
     "arguments": [
         "word"
     ]
