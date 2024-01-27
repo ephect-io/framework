@@ -12,7 +12,7 @@ function Response($props)
 {
     useEffect(function($props, /* array */ $response) {
         $proposition = $props->myNameIs;
-        $response = json_encode(["answer" => "Hello $proposition"]);
+        $response = json_encode(["answer" => "Hello $proposition!"]);
     });
 
     return (<<<HTML
