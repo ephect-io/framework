@@ -1,18 +1,18 @@
 <?php
 
-namespace Ephect\Commands\<CommandNamespace />;
+namespace Ephect\Commands\{{CommandNamespace}};
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(<CommandAttributes />)]
-#[CommandDeclaration(desc: "<Description />")]
+#[CommandDeclaration({{CommandAttributes}})]
+#[CommandDeclaration(desc: "{{Description}}")]
 class Main extends AbstractCommand
 {
     public function run(): void
     {
-        <GetArgs />
+        {{GetArgs}}
         $lib = new Lib($this->application);
-        $lib-><MethodName />(<SetArgs />);
+        $lib->{{MethodName}}({{SetArgs}});
     }
 }

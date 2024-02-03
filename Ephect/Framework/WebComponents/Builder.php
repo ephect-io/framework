@@ -51,27 +51,27 @@ class Builder
     function copyTemplates(string $tagName, string $className, bool $hasBackendProps, string $entrypoint, array $arguments, string $srcDir, string $destDir): void
     {
 
-        $classText = Utils::safeRead($srcDir . 'Base.class.mjs');
-        $classText = str_replace('Base', $className, $classText);
-        $classText = str_replace('entrypoint', $entrypoint, $classText);
+        $classText = Utils::safeRead($srcDir . 'Base.class.tpl');
+        $classText = str_replace('{{Base}}', $className, $classText);
+        $classText = str_replace('{{entrypoint}}', $entrypoint, $classText);
 
         $componentText = Utils::safeRead($srcDir . 'Base.tpl');
-        $componentText = str_replace('Base', $className, $componentText);
-        $componentText = str_replace('tag-name', $tagName, $componentText);
-        $componentText = str_replace('entrypoint', $entrypoint, $componentText);
+        $componentText = str_replace('{{Base}}', $className, $componentText);
+        $componentText = str_replace('{{tag-name}}', $tagName, $componentText);
+        $componentText = str_replace('{{entrypoint}}', $entrypoint, $componentText);
 
-        $baseElementText =   Utils::safeRead($srcDir . 'BaseElement.js');
-        $baseElementText = str_replace('Base', $className, $baseElementText);
+        $baseElementText =   Utils::safeRead($srcDir . 'BaseElement.tpl');
+        $baseElementText = str_replace('{{Base}}', $className, $baseElementText);
 
         $parameters = $arguments;
         $arguments[] = 'styles';
         $arguments[] = 'classes';
 
         if (count($arguments) == 0) {
-            $classText = str_replace('(DeclaredAttributes)', "()", $classText);
+            $classText = str_replace('({{DeclaredAttributes}})', "()", $classText);
 
-            $baseElementText = str_replace('GetAttributes', '', $baseElementText);
-            $componentText = str_replace('<Attributes />', '', $componentText);
+            $baseElementText = str_replace('{{GetAttributes}}', '', $baseElementText);
+            $componentText = str_replace('{{Attributes}}', '', $componentText);
 
             Utils::safeWrite($destDir . "$className.class.mjs", $classText);
             Utils::safeWrite($destDir . "$className.phtml", $componentText);
@@ -88,7 +88,7 @@ class Builder
             $properties .= '            ';
         }
 
-        $baseElementText = str_replace('Properties', $properties, $baseElementText);
+        $baseElementText = str_replace('{{Properties}}', $properties, $baseElementText);
 
         $attributes = array_map(function ($item) {
             return "'$item'";
@@ -102,8 +102,6 @@ class Builder
         $attributes = implode(", ", $attributes);
 
         $argumentListAndResult = $thisParameters;
-        $argumentListAndResult[] = "result";
-//        $attributeListAndResult = implode(", ", $argumentListAndResult);
         $thisAttributeList = implode(", ", $thisParameters);
 
         $observeAttributes = <<< HTML
@@ -115,7 +113,7 @@ class Builder
                     }
             HTML;
 
-        $baseElementText = str_replace('ObserveAttributes', $observeAttributes, $baseElementText);
+        $baseElementText = str_replace('{{ObserveAttributes}}', $observeAttributes, $baseElementText);
 
         $getAttributes = '';
         foreach ($arguments as $attribute) {
@@ -127,11 +125,10 @@ class Builder
             $getAttributes .= '    ';
         }
 
-        $classText = str_replace('(DeclaredAttributes)', "(" . $declaredAttributes . ")", $classText);
+        $classText = str_replace('({{DeclaredAttributes}})', "(" . $declaredAttributes . ")", $classText);
 
-        $baseElementText = str_replace('GetAttributes', $getAttributes, $baseElementText);
-        $componentText = str_replace('AttributeList', $thisAttributeList, $componentText);
-//        $componentText = str_replace('<AttributeListAndResult />', $attributeListAndResult, $componentText);
+        $baseElementText = str_replace('{{GetAttributes}}', $getAttributes, $baseElementText);
+        $componentText = str_replace('{{AttributeList}}', $thisAttributeList, $componentText);
 
         Utils::safeWrite($destDir . "$className.class.mjs", $classText);
         Utils::safeWrite($destDir . $className . "Element.js", $baseElementText);

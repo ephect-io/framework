@@ -1,9 +1,9 @@
-class BaseElement extends HTMLElement {
+class {{Base}}Element extends HTMLElement {
 
     constructor() {
         super();
 
-        Properties
+        {{Properties}}
         this.attachShadow({mode: 'open'});
         this.renderTemplate()
 
@@ -16,14 +16,14 @@ class BaseElement extends HTMLElement {
 
     }
 
-    ObserveAttributes
+    {{ObserveAttributes}}
 
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue) return;
 
         this[property] = newValue;
     }
-    GetAttributes
+    {{GetAttributes}}
     async connectedCallback() {
         /**
          * Integrate styles and apply classes
@@ -44,4 +44,4 @@ class BaseElement extends HTMLElement {
     }
 }
 
-export default BaseElement
+export default {{Base}}Element
