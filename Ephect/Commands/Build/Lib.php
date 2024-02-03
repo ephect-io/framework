@@ -20,11 +20,7 @@ class Lib extends AbstractCommandLib
         $builder->describeComponents();
         $builder->prepareRoutedComponents();
 
-        // $compiler->performAgain();
-
         $builder->buildAllRoutes();
-
-//        $builder->buildWebcomponents();
     }
 }
 

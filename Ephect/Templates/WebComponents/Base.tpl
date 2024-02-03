@@ -1,29 +1,29 @@
-<template id="Base">
+<template id="{{Base}}">
     <h1>
         ${result}
     </h1>
     <slot></slot>
 </template>
 <script>
-    import Base from "./Base.class.mjs"
-    import BaseElement from "./BaseElement.js"
+    import {{Base}} from "./{{Base}}.class.mjs"
+    import {{Base}}Element from "./{{Base}}Element.js"
 
     /**
      * Rename the component
      */
-    class BaseComponent extends BaseElement {
+    class {{Base}}Component extends {{Base}}Element {
 
         renderTemplate() {
             /**
              * The magic starts here
              */
-            const base = new Base()
-            const result = base.entrypoint(AttributeList)
+            const base = new {{Base}}()
+            const result = base.entrypoint({{AttributeList}})
 
-            this.shadowRoot.innerHTML = document.getElementById('Base').innerHTML
+            this.shadowRoot.innerHTML = document.getElementById('{{Base}}').innerHTML
         }
 
     }
 
-    customElements.define('tag-name', BaseComponent);
+    customElements.define('{{tag-name}}', {{Base}}Component);
 </script>

@@ -1,7 +1,7 @@
-class Base
+class {{Base}}
 {
 
-    entrypoint(DeclaredAttributes) {
+    entrypoint({{DeclaredAttributes}}) {
         /**
          * Do something with the parameters
          */
@@ -10,4 +10,4 @@ class Base
 
 }
 
-export default Base
+export default {{Base}}

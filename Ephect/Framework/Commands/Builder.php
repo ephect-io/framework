@@ -26,15 +26,15 @@ class Builder
         $commandAttributes = 'verb: "' . $verb . '"';
         $commandAttributes = $subject !== "" ? $commandAttributes . ', subject: "' . $subject . '"' : $commandAttributes;
 
-        $mainText = Utils::safeRead($srcDir . 'Main.temp');
-        $mainText = str_replace('<CommandNamespace />', $commandNamespace, $mainText);
-        $mainText = str_replace('<CommandAttributes />', $commandAttributes, $mainText);
-        $mainText = str_replace('<Description />', $description, $mainText);
-        $mainText = str_replace('<MethodName />', $methodName, $mainText);
+        $mainText = Utils::safeRead($srcDir . 'Main.tpl');
+        $mainText = str_replace('{{CommandNamespace}}', $commandNamespace, $mainText);
+        $mainText = str_replace('{{CommandAttributes}}', $commandAttributes, $mainText);
+        $mainText = str_replace('{{Description}}', $description, $mainText);
+        $mainText = str_replace('{{MethodName}}', $methodName, $mainText);
 
-        $libText = Utils::safeRead($srcDir . 'Lib.temp');
-        $libText = str_replace('<CommandNamespace />', $commandNamespace, $libText);
-        $libText = str_replace('<MethodName />', $methodName, $libText);
+        $libText = Utils::safeRead($srcDir . 'Lib.tpl');
+        $libText = str_replace('{{CommandNamespace}}', $commandNamespace, $libText);
+        $libText = str_replace('{{MethodName}}', $methodName, $libText);
 
         if (count($arguments) > 0) {
 
@@ -59,13 +59,13 @@ class Builder
 
             $parameters = implode(', ', $properties);
 
-            $mainText = str_replace('<GetArgs />', $getargs, $mainText);
-            $mainText = str_replace('<SetArgs />', $setargs, $mainText);
-            $libText = str_replace('<Parameters />', $parameters, $libText);
+            $mainText = str_replace('{{GetArgs}}', $getargs, $mainText);
+            $mainText = str_replace('{{SetArgs}}', $setargs, $mainText);
+            $libText = str_replace('{{Parameters}}', $parameters, $libText);
         } else {
-            $mainText = str_replace('<GetArgs />','', $mainText);
-            $mainText = str_replace('<SetArgs />', '', $mainText);
-            $libText = str_replace('<Parameters />', '', $libText);
+            $mainText = str_replace('{{GetArgs}}','', $mainText);
+            $mainText = str_replace('{{SetArgs}}', '', $mainText);
+            $libText = str_replace('{{Parameters}}', '', $libText);
         }
 
         Utils::safeWrite($destDir . "Main.php", $mainText);
