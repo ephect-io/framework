@@ -11,10 +11,12 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Display the tree of the Ephect framework.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         Console::writeLine(EPHECT_ROOT);
         $egg = new CommonLib($this->application);
         $egg->displayTree(EPHECT_ROOT);
+
+        return 0;
     }
 }

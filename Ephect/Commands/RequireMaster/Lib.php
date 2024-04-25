@@ -4,12 +4,16 @@ namespace Ephect\Commands\RequireMaster;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\Curl;
+use Exception;
 
 class Lib extends AbstractCommandLib
 {
 
+    /**
+     * @throws Exception
+     */
     public function requireMaster(): object
     {
 
@@ -23,7 +27,7 @@ class Lib extends AbstractCommandLib
 
         $master = $libRoot . 'main';
         $filename = $master . '.zip';
-        $ephectDir = $master . DIRECTORY_SEPARATOR . 'framework-main' . DIRECTORY_SEPARATOR . 'Ephect' . DIRECTORY_SEPARATOR . 'Framework' . DIRECTORY_SEPARATOR;
+        $ephectDir = $master . DIRECTORY_SEPARATOR . 'framework-main' . DIRECTORY_SEPARATOR . 'Ephect\Framework' . DIRECTORY_SEPARATOR . 'Framework' . DIRECTORY_SEPARATOR;
 
         $tree = [];
 
@@ -42,7 +46,7 @@ class Lib extends AbstractCommandLib
         }
 
         if (file_exists($filename)) {
-            $tree = Utils::walkTreeFiltered($ephectDir, ['php']);
+            $tree = File::walkTreeFiltered($ephectDir, ['php']);
         }
 
         unlink($filename);

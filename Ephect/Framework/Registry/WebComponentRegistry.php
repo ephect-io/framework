@@ -4,7 +4,7 @@ namespace Ephect\Framework\Registry;
 
 class WebComponentRegistry extends AbstractStaticRegistry
 {
-    private static $instance = null;
+    private static ?AbstractRegistryInterface $instance = null;
 
     public static function reset(): void
     {

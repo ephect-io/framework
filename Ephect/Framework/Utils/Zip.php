@@ -3,11 +3,12 @@
 namespace Ephect\Framework\Utils;
 
 use ZipArchive;
+use function mkdir;
 
 class Zip
 {
     //put your code here
-    function inflate($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true)
+    function inflate($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true): bool
     {
         $zip = new ZipArchive;
 
@@ -20,7 +21,7 @@ class Zip
 
         // Create the directories to the destination dir if they don't already exist
         if (!file_exists($dest_dir)) {
-            \mkdir($dest_dir, 0777, true);
+            mkdir($dest_dir, 0777, true);
         }
 
         // For every file in the zip-packet

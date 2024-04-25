@@ -6,7 +6,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class WhileParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $re = '/@while ([\w @%&!=\'"+\*\/;\<\-\>\(\)\[\]]+) do/m';
         $subst = '<% while($1) { %>';

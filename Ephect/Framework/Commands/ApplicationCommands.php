@@ -5,7 +5,7 @@ namespace Ephect\Framework\Commands;
 use Ephect\Framework\Core\AbstractApplication;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\StateRegistry;
 
 class ApplicationCommands extends Element implements CommandCollectionInterface
@@ -22,7 +22,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
     private function collectCommands(): void
     {
         $usage = [];
-        $commandFiles = Utils::walkTreeFiltered(COMMANDS_ROOT, ['php']);
+        $commandFiles = File::walkTreeFiltered(COMMANDS_ROOT, ['php']);
 
         $allFiles = [
             (object)["root" => COMMANDS_ROOT, "files" => $commandFiles],
@@ -30,7 +30,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 
 
         if (file_exists(CUSTOM_COMMANDS_ROOT)) {
-            $customCommandFiles = Utils::walkTreeFiltered(CUSTOM_COMMANDS_ROOT, ['php']);
+            $customCommandFiles = File::walkTreeFiltered(CUSTOM_COMMANDS_ROOT, ['php']);
             $allFiles[] = (object)["root" => CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles];
         }
 
@@ -48,7 +48,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 include $root_dir . $filename;
                 $object = new $fqClass($this->_application);
 
-                $attr = Element::getAttributesData($object);
+                $attr = Element::getClassAttributesData($object);
                 $commandArgs = $attr[0]['args'];
 
                 $verb = $commandArgs['verb'];

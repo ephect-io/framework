@@ -9,8 +9,10 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Display this help")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $this->application->help();
+
+        return 0;
     }
 }

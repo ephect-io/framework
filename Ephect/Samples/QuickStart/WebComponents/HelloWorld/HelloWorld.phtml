@@ -3,7 +3,8 @@ namespace QuickStart;
 
 use function Ephect\Hooks\useEffect;
 
-function HelloWorld($slot) {
+function HelloWorld($slot): string
+{
 
 useEffect(function ($slot, /* string */ $foo) {
     $foo = "It works!"; 

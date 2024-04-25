@@ -10,9 +10,11 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Clear all logs.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $data = $this->application->clearLogs();
         Console::writeLine($data);
+
+        return 0;
     }
 }

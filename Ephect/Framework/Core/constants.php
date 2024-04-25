@@ -38,14 +38,14 @@ if (IS_WEB_APP) {
     define('REWRITE_BASE', $rewrite_base);
 
     $scheme = 'http';
-    if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
+    if (str_contains($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
         $scheme = ($_SERVER['HTTPS'] == 'off') ? 'http' : 'https';
-    } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
+    } elseif (str_contains($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
         $scheme = $_SERVER['REQUEST_SCHEME'];
-    } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'lighttpd')) {
-        $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
-    } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
-        $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
+    } elseif (str_contains($_SERVER['SERVER_SOFTWARE'], 'lighttpd')) {
+        $scheme = str_contains($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
+    } elseif (str_contains($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
+        $scheme = str_contains($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
     }
 
     define('HTTP_PROTOCOL', $scheme);
@@ -92,30 +92,7 @@ if (!IS_WEB_APP) {
     $script_root = $script_dir . DIRECTORY_SEPARATOR;
     $src_root = $script_root . 'app' . DIRECTORY_SEPARATOR;
 
-    define('APP_CWD', IS_PHAR_APP ? getcwd() . DIRECTORY_SEPARATOR : str_replace($script_name, '', $app_path));
-
-    define('IS_INNER_APP', false !== strpos(APP_CWD, 'Framework' . DIRECTORY_SEPARATOR . 'Ephect' . DIRECTORY_SEPARATOR . 'Apps'));
-    define('IS_TASK_APP', false !== strpos(APP_CWD . $script_name, $script_dir . DIRECTORY_SEPARATOR . 'bootstrap.php'));
-    define('IS_BIN_APP', false !== strpos(APP_CWD . $script_name, 'bin' . DIRECTORY_SEPARATOR . $script_name));
-
-    if (IS_INNER_APP) {
-        $script_root = dirname(APP_CWD) . DIRECTORY_SEPARATOR;
-        $src_root = dirname(dirname(dirname($script_root))) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
-
-        $path = explode(DIRECTORY_SEPARATOR, APP_CWD);
-        array_pop($path);
-        array_pop($path);
-        $appName = array_pop($path);
-    } elseif (IS_TASK_APP) {
-        $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = $site_root . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
-    } elseif (IS_BIN_APP) {
-        $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = $site_root . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
-    } elseif (IS_PHAR_APP) {
-        $script_root = '.' . DIRECTORY_SEPARATOR;
-        $src_root = APP_CWD . DIRECTORY_SEPARATOR;
-    }
+    define('APP_CWD',  str_replace($script_name, '', $app_path));
 
     define('SRC_ROOT', $src_root);
     define('SCRIPT_ROOT', $script_root);
@@ -140,7 +117,6 @@ if (!IS_WEB_APP) {
 
     if (!IS_PHAR_APP) {
 
-        if (IS_INNER_APP) {
             if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
                 $ephect_dir = $portable_dir;
             }
@@ -148,15 +124,7 @@ if (!IS_WEB_APP) {
             $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
 
             $ephect_root = SITE_ROOT . $ephect_vendor_lib;
-        } else {
-            if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
-                $ephect_dir = $portable_dir;
-            }
-            $ephect_vendor_lib = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
-            $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
-
-            $ephect_root = SITE_ROOT . $ephect_vendor_lib;
-        }
+        
     }
 
     define('EPHECT_VENDOR_SRC', $ephect_dir);

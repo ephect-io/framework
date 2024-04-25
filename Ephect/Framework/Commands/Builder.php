@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Commands;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 
 class Builder
 {
@@ -14,6 +14,7 @@ class Builder
      *
      * @param string $verb
      * @param string $subject
+     * @param string $description
      * @param string $methodName
      * @param array $arguments
      * @param string $srcDir
@@ -26,13 +27,13 @@ class Builder
         $commandAttributes = 'verb: "' . $verb . '"';
         $commandAttributes = $subject !== "" ? $commandAttributes . ', subject: "' . $subject . '"' : $commandAttributes;
 
-        $mainText = Utils::safeRead($srcDir . 'Main.tpl');
+        $mainText = File::safeRead($srcDir . 'Main.tpl');
         $mainText = str_replace('{{CommandNamespace}}', $commandNamespace, $mainText);
         $mainText = str_replace('{{CommandAttributes}}', $commandAttributes, $mainText);
         $mainText = str_replace('{{Description}}', $description, $mainText);
         $mainText = str_replace('{{MethodName}}', $methodName, $mainText);
 
-        $libText = Utils::safeRead($srcDir . 'Lib.tpl');
+        $libText = File::safeRead($srcDir . 'Lib.tpl');
         $libText = str_replace('{{CommandNamespace}}', $commandNamespace, $libText);
         $libText = str_replace('{{MethodName}}', $methodName, $libText);
 
@@ -68,7 +69,7 @@ class Builder
             $libText = str_replace('{{Parameters}}', '', $libText);
         }
 
-        Utils::safeWrite($destDir . "Main.php", $mainText);
-        Utils::safeWrite($destDir . "Lib.php", $libText);
+        File::safeWrite($destDir . "Main.php", $mainText);
+        File::safeWrite($destDir . "Lib.php", $libText);
     }
 }

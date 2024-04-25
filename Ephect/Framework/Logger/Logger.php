@@ -2,7 +2,11 @@
 
 namespace Ephect\Framework\Logger;
 
-use Ephect\Framework\Utils\TextUtils;
+use Ephect\Framework\Utils\Text;
+use ErrorException;
+use Throwable;
+use function file_exists;
+use function file_get_contents;
 
 class Logger
 {
@@ -50,7 +54,7 @@ class Logger
 
     public function info(string $string, ...$params): void
     {
-        $message = TextUtils::format($string, $params);
+        $message = Text::format($string, $params);
         $this->_log(INFO_LOG, $message);
     }
 
@@ -59,11 +63,11 @@ class Logger
         $this->_log(SQL_LOG, $message, $filename, $line);
     }
 
-    public function error(\Throwable $ex, string $filename = '', int $line = -1): void
+    public function error(Throwable $ex, string $filename = '', int $line = -1): void
     {
         $message = '';
 
-        if ($ex instanceof \ErrorException) {
+        if ($ex instanceof ErrorException) {
             $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
         }
         $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
@@ -76,42 +80,42 @@ class Logger
 
     public function getInfoLog(): string
     {
-        if (!\file_exists(INFO_LOG)) {
+        if (!file_exists(INFO_LOG)) {
             return '';
         }
-        return \file_get_contents(INFO_LOG);
+        return file_get_contents(INFO_LOG);
     }
 
     public function getDebugLog(): string
     {
-        if (!\file_exists(DEBUG_LOG)) {
+        if (!file_exists(DEBUG_LOG)) {
             return '';
         }
-        return \file_get_contents(DEBUG_LOG);
+        return file_get_contents(DEBUG_LOG);
     }
 
     public function getErrorLog(): string
     {
-        if (!\file_exists(ERROR_LOG)) {
+        if (!file_exists(ERROR_LOG)) {
             return '';
         }
-        return \file_get_contents(ERROR_LOG);
+        return file_get_contents(ERROR_LOG);
     }
 
     public function getSqlLog(): string
     {
-        if (!\file_exists(SQL_LOG)) {
+        if (!file_exists(SQL_LOG)) {
             return '';
         }
-        return \file_get_contents(SQL_LOG);
+        return file_get_contents(SQL_LOG);
     }
 
     public function getPhpErrorLog(): string
     {
-        if (!\file_exists(DOCUMENT_ROOT . 'php_error_log')) {
+        if (!file_exists(DOCUMENT_ROOT . 'php_error_log')) {
             return '';
         }
-        return \file_get_contents(DOCUMENT_ROOT . 'php_error_log');
+        return file_get_contents(DOCUMENT_ROOT . 'php_error_log');
     }
 
     public function clearAll(): void

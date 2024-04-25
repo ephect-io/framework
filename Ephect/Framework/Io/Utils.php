@@ -2,14 +2,13 @@
 
 namespace Ephect\Framework\IO;
 
-use Directory;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 class Utils
 {
-    public static function walkTreeFiltered($path, $filter = [], $noDepth = false)
+    public static function walkTreeFiltered($path, $filter = [], $noDepth = false): array
     {
         $result = [];
 
@@ -63,7 +62,7 @@ class Utils
         return $result;
     }
 
-    public static function walkTree(string $path, array &$tree = [])
+    public static function walkTree(string $path, array &$tree = []): int
     {
         $class_func = array(__CLASS__, __FUNCTION__);
         return is_file($path) ?

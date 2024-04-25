@@ -3,8 +3,8 @@
 namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\IO\Utils;
-use Ephect\Framework\Utils\TextUtils;
+use Ephect\Framework\Utils\File;
+use Ephect\Framework\Utils\Text;
 
 abstract class AbstractRegistry implements AbstractRegistryInterface
 {
@@ -18,9 +18,6 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
     public function _write(string $key, $value): void
     {
-        if (!isset($this->entries[$key])) {
-            $this->entries[$key] = null;
-        }
         $this->entries[$key] = $value;
     }
 
@@ -60,7 +57,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         $result = json_encode($entries, JSON_PRETTY_PRINT);
 
         if ($asArray) {
-            $result = TextUtils::jsonToPhpArray($result);
+            $result = Text::jsonToPhpReturnedArray($result);
             $ephect_root = EPHECT_ROOT;
             if(DIRECTORY_SEPARATOR === '\\') {
                 $ephect_root = str_replace('\\', '\\\\', EPHECT_ROOT);
@@ -71,7 +68,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         }
 
         $registryFilename = $this->_getCacheFileName($asArray);
-        $len = Utils::safeWrite($registryFilename, $result);
+        $len = File::safeWrite($registryFilename, $result);
 
         return $len !== null;
     }
@@ -100,7 +97,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         $this->isLoaded = false;
 
         $registryFilename = $this->_getCacheFileName($asArray);
-        $text = Utils::safeRead($registryFilename);
+        $text = File::safeRead($registryFilename);
         $this->isLoaded = $text !== null;
 
         if ($this->isLoaded && !$asArray) {

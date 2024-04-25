@@ -3,11 +3,11 @@
 namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 
 class FrameworkRegistry extends AbstractStaticRegistry
 {
-    private static $instance = null;
+    private static ?AbstractRegistryInterface $instance = null;
 
     public static function reset(): void
     {
@@ -30,7 +30,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     {
         if (!FrameworkRegistry::uncache(true)) {
 
-            $frameworkFiles = Utils::walkTreeFiltered(EPHECT_ROOT, ['php']);
+            $frameworkFiles = File::walkTreeFiltered(EPHECT_ROOT, ['php']);
 
             foreach ($frameworkFiles as $filename) {
                 if (
@@ -41,14 +41,14 @@ class FrameworkRegistry extends AbstractStaticRegistry
                     continue;
                 }
 
-                if (false !== strpos($filename, 'Interface')) {
+                if (str_contains($filename, 'Interface')) {
                     list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
-                if (false !== strpos($filename, 'Trait')) {
+                if (str_contains($filename, 'Trait')) {
                     list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
@@ -77,17 +77,17 @@ class FrameworkRegistry extends AbstractStaticRegistry
     {
         if (!file_exists(SRC_ROOT)) return;
 
-        $sourceFiles = Utils::walkTreeFiltered(SRC_ROOT, ['php']);
+        $sourceFiles = File::walkTreeFiltered(SRC_ROOT, ['php']);
 
         foreach ($sourceFiles as $filename) {
-            if (false !== strpos($filename, 'Interface')) {
+            if (str_contains($filename, 'Interface')) {
                 list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $interface;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
-            if (false !== strpos($filename, 'Trait')) {
+            if (str_contains($filename, 'Trait')) {
                 list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $trait;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);

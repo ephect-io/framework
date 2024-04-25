@@ -12,8 +12,8 @@ define('HOOKS_PATH', 'Hooks' . LIBDIR_SEPARATOR);
 
 include FRAMEWORK_PATH . 'Core' . LIBDIR_SEPARATOR . 'constants.php';
 include FRAMEWORK_PATH . 'Core' . LIBDIR_SEPARATOR . 'Autoloader.php';
-include FRAMEWORK_PATH . 'Io' . LIBDIR_SEPARATOR . 'Utils.php';
-include FRAMEWORK_PATH . 'Utils' . LIBDIR_SEPARATOR . 'TextUtils.php';
+include FRAMEWORK_PATH . 'Utils' . LIBDIR_SEPARATOR . 'File.php';
+include FRAMEWORK_PATH . 'Utils' . LIBDIR_SEPARATOR . 'Text.php';
 include FRAMEWORK_PATH . 'ElementTrait.php';
 include FRAMEWORK_PATH . 'ElementUtils.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractRegistryInterface.php';

@@ -3,7 +3,7 @@ namespace Ephect\Plugins;
 
 use function Ephect\Hooks\useEffect;
 
-function ResponseHeader($props)
+function ResponseHeader($props): string
 {
     useEffect(function () use ($props, /* bool */ &$hasDirectives, /* string */ &$directives) {
         $directives = $props->directive;

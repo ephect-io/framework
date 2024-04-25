@@ -4,7 +4,17 @@ namespace Ephect\Framework\Registry;
 
 class RouteRegistry extends AbstractStaticRegistry
 {
-    private static $instance = null;
+    private static ?AbstractRegistryInterface $instance = null;
+
+    public static function addMiddleware(string $middleware): void
+    {
+        self::getInstance()->_addMiddleware($middleware);
+    }
+
+    public function _addMiddleware(string $middleware): void
+    {
+        $this->_write('middlewares', $middleware);
+    }
 
     public static function reset(): void
     {
@@ -25,9 +35,8 @@ class RouteRegistry extends AbstractStaticRegistry
     {
         $result = null;
 
-        if (file_exists(CACHE_DIR . 'routes.json')) {
-            $json = file_get_contents(CACHE_DIR . 'routes.json');
-            $result = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        if (self::hasMoved()) {
+            $result = require self::getMovedPhpFilename();
         }
 
         return $result;
@@ -35,11 +44,16 @@ class RouteRegistry extends AbstractStaticRegistry
 
     public static function hasMoved(): bool
     {
-        return file_exists(self::getMovedFilename());
+        return file_exists(self::getMovedPhpFilename());
     }
 
     public static function getMovedFilename(): string
     {
         return CACHE_DIR . 'routes.json';
+    }
+
+    public static function getMovedPhpFilename(): string
+    {
+        return CACHE_DIR . 'routes.php';
     }
 }

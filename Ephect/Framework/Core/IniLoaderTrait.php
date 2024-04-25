@@ -3,6 +3,7 @@
 namespace Ephect\Framework\Core;
 
 use Ephect\Framework\Registry\StateRegistry;
+use function pathinfo;
 
 trait IniLoaderTrait
 {
@@ -30,7 +31,7 @@ trait IniLoaderTrait
             $dataDir = dir($dataPath);
 
             while (($entry = $dataDir->read()) !== false) {
-                $info = (object)\pathinfo($entry);
+                $info = (object)pathinfo($entry);
 
                 if ($info->extension == 'json') {
                     $conf = file_get_contents($dataPath . DIRECTORY_SEPARATOR . $entry);

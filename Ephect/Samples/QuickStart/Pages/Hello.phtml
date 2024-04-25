@@ -4,7 +4,8 @@ namespace QuickStart;
 
 use function Ephect\Hooks\useEffect;
 
-function Hello($props) {
+function Hello($props): string
+{
 
     useEffect(function($props, /* string */ $name, /* string */ $lname) {
         $name = $props->name;

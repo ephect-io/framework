@@ -2,7 +2,7 @@
 
 namespace Ephect\Commands\MakeQuickStart;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 
 class Lib
 {
@@ -11,17 +11,17 @@ class Lib
     {
         $sample = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'QuickStart';
 
-        Utils::safeMkDir(SRC_ROOT);
+        File::safeMkDir(SRC_ROOT);
         $destDir = realpath(SRC_ROOT);
 
         if (!file_exists($sample) || !file_exists($destDir)) {
             return;
         }
 
-        $tree = Utils::walkTreeFiltered($sample);
+        $tree = File::walkTreeFiltered($sample);
 
         foreach ($tree as $filePath) {
-            Utils::safeWrite($destDir . $filePath, '');
+            File::safeWrite($destDir . $filePath, '');
             copy($sample . $filePath, $destDir . $filePath);
         }
     }

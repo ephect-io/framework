@@ -4,9 +4,9 @@ namespace Ephect\Framework\Registry;
 
 interface AbstractRegistryInterface
 {
-    function _write(string $key, $item): void;
+    function _write(string $key, $value): void;
 
-    function _read($key, $item = null);
+    function _read($key, $value = null);
 
     function _items(): array;
 

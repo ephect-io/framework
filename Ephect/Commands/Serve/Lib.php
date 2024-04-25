@@ -7,7 +7,7 @@ use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\System\Command;
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 
 class Lib extends AbstractCommandLib
 {
@@ -17,7 +17,7 @@ class Lib extends AbstractCommandLib
         $egg = new CommonLib($this->parent);
         $port = $this->getPort();
 
-        Utils::safeWrite(CONFIG_DIR . 'dev_port', $port);
+        File::safeWrite(CONFIG_DIR . 'dev_port', $port);
 
         $cmd = new Command();
         $php = $cmd->which('php');

@@ -14,4 +14,5 @@ class RouteStructure extends Structure
     public string $translation = '';
     public string $error = '';
     public string $exact = '';
+    public array $middlewares = [];
 }

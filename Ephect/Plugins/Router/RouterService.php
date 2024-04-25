@@ -3,13 +3,13 @@
 namespace Ephect\Plugins\Router;
 
 use Ephect\Framework\Components\Component;
-use Ephect\Framework\Web\Request;
-use Ephect\Plugins\Route\RouteEntity;
 use Ephect\Plugins\Route\RouteInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\HttpErrorRegistry;
 use Ephect\Framework\Registry\RouteRegistry;
-
+use Ephect\Framework\Web\Request;
+use Ephect\Framework\Utils\File;
+use Ephect\Framework\Utils\Text;
 use function Ephect\Hooks\useState;
 
 class RouterService implements RouterServiceInterface
@@ -46,7 +46,7 @@ class RouterService implements RouterServiceInterface
         });
 
         if (count($allroutes) === 0) {
-            return $result;
+            return null;
         }
 
         sort($allroutes);
@@ -54,12 +54,12 @@ class RouterService implements RouterServiceInterface
         $query = parse_url('https://localhost' . $allroutes[0]['translate'], PHP_URL_QUERY);
 
         if ($query === null || $query === false) {
-            return $result;
+            return null;
         }
 
         parse_str($query, $result);
 
-        return $result;
+        return (array)$result;
     }
 
     public static function findRouteNames(): ?array
@@ -98,7 +98,7 @@ class RouterService implements RouterServiceInterface
         });
 
         if (count($allroutes) === 0) {
-            return $result;
+            return null;
         }
 
         sort($allroutes);
@@ -131,7 +131,7 @@ class RouterService implements RouterServiceInterface
         });
 
         if (count($allroutes) === 0) {
-            return $result;
+            return null;
         }
 
         sort($allroutes);
@@ -175,16 +175,17 @@ class RouterService implements RouterServiceInterface
             $query = $route->query;
             $error = $route->error;
             $responseCode = $route->code;
+            $middlewares = $route->middlewares ?? [];
 
             if ($responseCode === 200) {
                 $i = $c;
             }
         }
 
-        $this->renderRoute($responseCode === 200, $path, $query, $error, $responseCode, $html);
+        $this->renderRoute($responseCode === 200, $path, $query, $error, $responseCode, $middlewares, $html);
     }
 
-    public function renderRoute(bool $pageFound, string $path, array $query, int $error, int $responseCode, string &$html): void
+    public function renderRoute(bool $pageFound, string $path, array $query, int $error, int $responseCode, array $middlewares, string &$html): void
     {
         if (!$pageFound) {
             http_response_code($responseCode);
@@ -192,13 +193,19 @@ class RouterService implements RouterServiceInterface
 
             if (ComponentRegistry::read($path) === null) {
                 $html = 'Page not found';
-                $html = ($responseCode === 401) ? 'Bad request' : $html;
+                $html = ($responseCode === 400) ? 'Bad request' : $html;
+                $html = ($responseCode === 401) ? 'Unauthorized' : $html;
                 return;
             }
         }
 
         $request = new Request();
 
+        if(count($middlewares)) {
+            foreach ($middlewares as $middleware) {
+                call_user_func($middleware);
+            }
+        }
         $comp = new Component($path);
         $comp->render($query, $request);
     }
@@ -209,10 +216,9 @@ class RouterService implements RouterServiceInterface
             return null;
         }
 
-        $json = file_get_contents(CACHE_DIR . 'routes.json');
-        $routes = json_decode($json);
+        $routes = require RouteRegistry::getMovedPhpFilename();
         $method = REQUEST_METHOD;
-        $methodRoutes = !isset($routes->$method) ? null : $routes->$method;
+        $methodRoutes = !isset($routes[$method]) ? null : $routes[$method];
 
         if (null === $methodRoutes) {
             return null;
@@ -221,12 +227,14 @@ class RouterService implements RouterServiceInterface
         $redirect = '';
         $parameters = [];
 
-        foreach ($methodRoutes as $rule => $stuff) {
+        foreach ($methodRoutes as $rule => $settings) {
 
+            $stuff = (object) $settings;
             $redirect = $stuff->redirect;
             $translation = $stuff->translate;
             $isExact = $stuff->exact;
             $error = $stuff->error;
+            $middlewares = $stuff->middlewares;
 
             [$redirect, $parameters, $code] = $this->matchRouteEx($method, $rule, $redirect, $translation, $isExact);
 
@@ -237,7 +245,7 @@ class RouterService implements RouterServiceInterface
             break;
         }
 
-        return [$redirect, $parameters, $error, $code];
+        return [$redirect, $parameters, $error, $code, $middlewares];
     }
 
     private function matchRouteEx(string $method, string $rule, string $redirect, string $translation, bool $isExact): ?array
@@ -281,6 +289,23 @@ class RouterService implements RouterServiceInterface
     public function addRoute(RouteInterface $route): void
     {
         $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
+        if (array_key_exists($route->getRule(), $methodRegistry)) {
+            $currentRoute = $methodRegistry[$route->getRule()];
+            $middlewares = $currentRoute['middlewares'];
+
+            if(!empty($middlewares)) {
+                $methodRegistry[$route->getRule()] = [
+                    'rule' => $route->getRule(),
+                    'redirect' => $route->getRedirect(),
+                    'normal' => $route->getNormalized(),
+                    'translate' => $route->getTranslation(),
+                    'error' => $route->getError(),
+                    'exact' => $route->isExact(),
+                    'middlewares' => $middlewares,
+                ];
+                RouteRegistry::write($route->getMethod(), $methodRegistry);
+            }
+        }
 
         if (!array_key_exists($route->getRule(), $methodRegistry)) {
             $methodRegistry[$route->getRule()] = [
@@ -290,9 +315,11 @@ class RouterService implements RouterServiceInterface
                 'translate' => $route->getTranslation(),
                 'error' => $route->getError(),
                 'exact' => $route->isExact(),
+                'middlewares' =>$route->getMiddlewares(),
             ];
             RouteRegistry::write($route->getMethod(), $methodRegistry);
         }
+
 
         if (($error = $route->getError()) !== 0) {
             HttpErrorRegistry::write($error, $route->getRedirect());
@@ -304,14 +331,24 @@ class RouterService implements RouterServiceInterface
         return RouteRegistry::cache() && HttpErrorRegistry::cache();
     }
 
-    public function matchRoute(RouteEntity $route): ?array
+    public function moveCache(): void
+    {
+        $json = File::safeRead(RouteRegistry::getCacheFilename());
+        $phpRoutes = Text::jsonToPhpReturnedArray($json);
+        File::safeWrite(RouteRegistry::getMovedPhpFilename(), $phpRoutes);
+        rename(RouteRegistry::getCacheFilename(), RouteRegistry::getMovedFilename());
+    }
+
+    public function matchRoute(RouteInterface $route): ?array
     {
         return $this->matchRouteEx(
             $route->getMethod(),
             $route->getRule(),
             $route->getRedirect(),
             $route->getTranslation(),
-            $route->isExact()
+            $route->isExact(),
         );
     }
+
+
 }

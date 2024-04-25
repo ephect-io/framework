@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Registry;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 
 class HooksRegistry
 {
@@ -10,6 +10,15 @@ class HooksRegistry
 
     private function __construct()
     {
+    }
+
+    public static function create(): HooksRegistry
+    {
+        if (self::$instance === null) {
+            self::$instance = new HooksRegistry;
+        }
+
+        return self::$instance;
     }
 
     public static function register(): void
@@ -29,18 +38,18 @@ class HooksRegistry
                     continue;
                 }
 
-                array_push($hooks, str_replace(DIRECTORY_SEPARATOR, '_', HOOKS_PATH . $filename));
+                array_push($hooks, str_replace(DIRECTORY_SEPARATOR, '_' , HOOKS_PATH . $filename));
 
                 include EPHECT_ROOT . HOOKS_PATH . $filename;
             }
 
             $hooksRegistry = ['Hooks' => $hooks];
 
-            Utils::safeWrite(RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
+            File::safeWrite(RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
         }
 
         if (IS_PHAR_APP) {
-            $hooksRegistry = Utils::safeRead(RUNTIME_DIR . 'HooksRegistry.json');
+            $hooksRegistry = File::safeRead(RUNTIME_DIR . 'HooksRegistry.json');
 
             $hooks = json_decode($hooksRegistry);
             $hooks = $hooks->hooks;
@@ -51,12 +60,4 @@ class HooksRegistry
         }
     }
 
-    public static function create(): HooksRegistry
-    {
-        if (self::$instance === null) {
-            self::$instance = new HooksRegistry;
-        }
-
-        return self::$instance;
-    }
 }

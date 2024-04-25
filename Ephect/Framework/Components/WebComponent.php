@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 
@@ -32,7 +32,7 @@ class WebComponent extends AbstractFileComponent
         }
         COMPONENT;
 
-        Utils::safeWrite(COPY_DIR . $filename, $html);
+        File::safeWrite(COPY_DIR . $filename, $html);
 
     }
 

@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\Element;
 use Ephect\Framework\ElementInterface;
 
 interface ComponentDeclarationInterface extends ElementInterface

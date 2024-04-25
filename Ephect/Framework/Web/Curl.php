@@ -2,10 +2,15 @@
 
 namespace Ephect\Framework\Web;
 
+use Exception;
+
 class Curl
 {
     //put your code here
 
+    /**
+     * @throws Exception
+     */
     public function request($uri, $headers = [], $data = []): array
     {
 
@@ -40,10 +45,10 @@ class Curl
         $header = (isset($info['request_header'])) ? $info['request_header'] : '';
 
         if ($errno > 0) {
-            throw new \Exception($error, $errno);
+            throw new Exception($error, $errno);
         }
         if ($header == '') {
-            throw new \Exception("Curl is not working fine for some reason. Are you using Android ?");
+            throw new Exception("Curl is not working fine for some reason. Are you using Android ?");
         }
 
         $code = (int)$info['http_code'];
