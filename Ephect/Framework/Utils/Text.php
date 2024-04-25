@@ -68,7 +68,7 @@ class Text
         $indentsLengths = [];
         $convert = '';
 
-        $re = '/(.*)(\[.*]=>)(\n)( +)/';
+        $re = '/(.*)(\[[\w"-\/\\\\]+]=>)(\n)( +)/';
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
@@ -81,7 +81,7 @@ class Text
             $indentsLengths[] = count($match) > 1 ? strlen($match[0]) : 0;
         }
 
-        $entryRx = '/( ?+)+(\[(.*)]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)\n)/';
+        $entryRx = '/( ?+)+(\[([\w"-\/\\\\]+)]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)\n)/';
         $closeArrayRx = '/^( ?+)+}/';
 
         $l = count($indentsLengths);
