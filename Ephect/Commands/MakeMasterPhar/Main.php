@@ -11,9 +11,11 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(isPhar: IS_PHAR_APP)]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $phar = new PharLib($this->application);
         $phar->makeMasterPhar();
+
+        return 0;
     }
 }

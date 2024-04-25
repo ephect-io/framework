@@ -60,5 +60,5 @@ abstract class AbstractTokenParser implements TokenParserInterface
         return CodeRegistry::uncache();
     }
 
-    abstract public function do(null|string|array $parameter = null): void;
+    abstract public function do(null|string|array|object $parameter = null): void;
 }

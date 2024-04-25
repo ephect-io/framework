@@ -4,7 +4,7 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\Component;
 use Ephect\Framework\Components\Generators\ComponentDocument;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 use JetBrains\PhpStorm\Deprecated;
 
@@ -14,7 +14,7 @@ use JetBrains\PhpStorm\Deprecated;
 #[Deprecated("It's useless for now", "useEffect", "0.3")]
 class MotherSlotsParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
 
         $slotParser = new UseSlotParser($this->component, $this->parent);
@@ -59,7 +59,7 @@ class MotherSlotsParser extends AbstractTokenParser
         $decl3 = substr($parentHtml, $parentComponent->getBodyStart() + 1);
 
         // Remove useSlot from child component
-        if ($source !== "" && $source !== null && $dest !== "" && $dest !== null) {
+        if ($dest !== "" && $dest !== null) {
             $this->html = str_replace($source, "", $this->html);
 
             $uses = '';
@@ -80,8 +80,8 @@ class MotherSlotsParser extends AbstractTokenParser
         }
 
         if ($parentHtml !== '') {
-            Utils::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
-            Utils::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getFlattenFilename(), $this->html);
+            File::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
+            File::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getFlattenFilename(), $this->html);
         }
 
         if ($doc->getCount() > 0) {

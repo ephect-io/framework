@@ -4,15 +4,17 @@ namespace Ephect\Framework\Components;
 
 use BadFunctionCallException;
 use Ephect\Framework\ElementTrait;
+use Ephect\Plugins\Router\RouterService;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Tree\Tree;
-use Ephect\Plugins\Router\RouterService;
+use Ephect\Framework\Web\Request;
 use Exception;
+use ReflectionException;
 use ReflectionFunction;
 use stdClass;
-use Ephect\Framework\Web\Request;
+use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
 {
@@ -41,6 +43,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $this->declaration;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function setDeclaration(): void
     {
         $fqName = ComponentRegistry::read($this->uid);
@@ -65,6 +70,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         $this->declaration = null;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getEntity(): ?ComponentEntity
     {
         if ($this->entity === null) {
@@ -77,7 +85,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     /**
      * @throws Exception
      */
-    protected function setEntity()
+    protected function setEntity(): void
     {
         $decl = $this->getDeclaration();
         $this->entity = $decl->getComposition();
@@ -95,7 +103,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
     public function getFullyQualifiedFunction(): ?string
     {
-        if ($this->function === null) return null;
         return $this->namespace . '\\' . $this->function;
     }
 
@@ -156,7 +163,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function renderHTML(string $cacheFilename, string $fqFunctionName, ?array $functionArgs = null, ?Request $request = null): string
     {
@@ -175,8 +182,6 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         if ($funcParams === [] && $bodyProps === null) {
             ob_start();
             $fn = call_user_func($fqFunctionName);
-            $fn();
-            $html = ob_get_clean();
         } else {
             $props = null;
             if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
@@ -204,9 +209,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             }
             ob_start();
             $fn = call_user_func($fqFunctionName, $props);
-            $fn();
-            $html = ob_get_clean();
         }
+        $fn();
+        $html = ob_get_clean();
 
         // if ($funcName === 'App') {
         //     $html = self::format($html);
@@ -223,7 +228,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             'wrap' => 200
         ];
 
-        $tidy = new \tidy;
+        $tidy = new tidy;
         $tidy->parseString($html, $config, 'utf8');
         $tidy->cleanRepair();
 

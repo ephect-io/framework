@@ -9,9 +9,11 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Watch the application.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $egg = new Lib($this->application);
         $egg->watch();
+
+        return 0;
     }
 }

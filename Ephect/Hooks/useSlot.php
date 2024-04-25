@@ -12,7 +12,7 @@ use JetBrains\PhpStorm\Deprecated;
  * @return void
  */
 #[Deprecated("Useless function", "useEffect", "0.3")]
-function useSlot($callback, ...$params)
+function useSlot($callback, ...$params): void
 {
     call_user_func($callback, ...$params);
 }

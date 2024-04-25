@@ -6,12 +6,12 @@ use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class InlineCodeParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $phtml = [];
 
         $text = $this->html;
-        if($parameter !== null && is_array($parameter)) {
+        if(is_array($parameter)) {
             $text = $parameter['html'];
             $this->useVariables = $parameter['useVariables'];
         }

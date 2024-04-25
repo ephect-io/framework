@@ -10,9 +10,11 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 class Main extends AbstractCommand
 {
 
-    public function run(): void
+    public function run(): int
     {
         $lib = new Lib($this->application);
         $lib->displayConstants();
+
+        return 0;
     }
 }

@@ -3,11 +3,10 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Registry\ComponentRegistry;
-use Ephect\Framework\Registry\FrameworkRegistry;
 
 final class UsesAsParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $compNamespace = $this->component->getNamespace();
 

@@ -10,9 +10,11 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Display the running application title.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $data = $this->application->getTitle();
         Console::writeLine($data);
+
+        return 0;
     }
 }

@@ -33,7 +33,7 @@ class ComponentDocument
         return $this->matches;
     }
 
-    public function fieldValue(int $i, string $field, string $value)
+    public function fieldValue(int $i, string $field, string $value): void
     {
         $this->list[$i][$field] = $value;
     }

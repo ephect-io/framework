@@ -6,6 +6,7 @@ use Ephect\Framework\Cache\Cache;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Element;
 use Ephect\Framework\Registry\StateRegistry;
+use Throwable;
 
 abstract class AbstractApplication extends Element
 {
@@ -21,12 +22,12 @@ abstract class AbstractApplication extends Element
 
     protected array $commands = [];
     protected array $callbacks = [];
-    protected string $appName = 'app';
+    protected string|null $appName = 'app';
     protected string $appTitle = '';
     protected string $scriptName = 'app.php';
     protected string $appDirectory = '';
     protected bool $canStop = false;
-    protected $dataConfName = '';
+    protected string $dataConfName = '';
     private string $_usage = '';
     private array $_appini = [];
 
@@ -66,7 +67,7 @@ abstract class AbstractApplication extends Element
         return self::$_verboseMode;
     }
 
-    public static function setVerboseMode($set = false)
+    public static function setVerboseMode($set = false): void
     {
         self::$_verboseMode = $set;
     }
@@ -108,7 +109,9 @@ abstract class AbstractApplication extends Element
         return $token;
     }
 
-    abstract public function run(...$params): void;
+    abstract public function run(...$params): int;
+
+    abstract protected function execute(): int;
 
     abstract public function displayConstants(): array;
 
@@ -119,7 +122,7 @@ abstract class AbstractApplication extends Element
             self::getLogger()->clearAll();
 
             $result = 'All logs cleared';
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             Console::error($ex);
 
             $result = 'Impossible to clear logs';
@@ -134,7 +137,7 @@ abstract class AbstractApplication extends Element
             Cache::clearRuntime();
 
             $result = 'All runtime files deleted';
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             Console::error($ex);
 
             $result = 'Impossible to delete runtime files';
@@ -149,7 +152,7 @@ abstract class AbstractApplication extends Element
             Cache::clearCache();
 
             $result = 'All cache files deleted';
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             Console::error($ex);
 
             $result = 'Impossible to delete cache files';
@@ -178,7 +181,7 @@ abstract class AbstractApplication extends Element
             $this->appName = StateRegistry::read('application', 'name');
             $this->appTitle = StateRegistry::read('application', 'title');
 
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             Console::error($ex);
         }
     }
@@ -195,7 +198,7 @@ abstract class AbstractApplication extends Element
         Console::writeLine($help);
     }
 
-    public function getName(): string
+    public function getName(): string|null
     {
         if (empty($this->appName) || $this->appName == 'app') {
             $this->appName = StateRegistry::ini('application', 'name');
@@ -214,7 +217,7 @@ abstract class AbstractApplication extends Element
         return $this->appDirectory;
     }
 
-    public function canStop()
+    public function canStop(): bool
     {
         return $this->canStop;
     }
@@ -224,8 +227,8 @@ abstract class AbstractApplication extends Element
         return PHP_OS;
     }
 
-    protected function execute(): void
-    {
-    }
+//    protected function execute(): int {
+//        return 0;
+//    }
 
 }

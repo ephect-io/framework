@@ -2,10 +2,10 @@
 
 namespace Ephect\Plugins\Route;
 
-use Ephect\Framework\Element;
 use Ephect\Framework\ElementTrait;
+use Ephect\Framework\Entity\Entity;
 
-class RouteEntity extends Element implements RouteInterface
+class RouteEntity extends Entity implements RouteInterface
 {
     use ElementTrait;
 
@@ -16,6 +16,7 @@ class RouteEntity extends Element implements RouteInterface
     private string $translation = '';
     private int $error = 0;
     private bool $exact = false;
+    private array $middlewares = [];
 
     public function __construct(RouteStructure $struct)
     {
@@ -26,6 +27,7 @@ class RouteEntity extends Element implements RouteInterface
         $this->translation = $struct->translation;
         $this->error = (int)$struct->error;
         $this->exact = $struct->exact !== 'true' ?: true;
+        $this->middlewares = $struct->middlewares;
 
     }
 
@@ -63,4 +65,11 @@ class RouteEntity extends Element implements RouteInterface
     {
         return $this->exact;
     }
+
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+
 }

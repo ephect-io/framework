@@ -6,10 +6,13 @@ use Ephect\Commands\CommonLib;
 use Ephect\Framework\CLI\Application;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Element;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Zip;
 use Ephect\Framework\Web\Curl;
+use Exception;
+use FilesystemIterator;
 use Phar;
+use Throwable;
 
 class PharLib extends Element
 {
@@ -34,6 +37,9 @@ class PharLib extends Element
         $this->_makePhar($ephectTree);
     }
 
+    /**
+     * @throws Exception
+     */
     public function requireMaster(): object
     {
         $result = [];
@@ -65,7 +71,7 @@ class PharLib extends Element
 
         if (file_exists($master)) {
             $php = ['php'];
-            $tree = Utils::walkTree($ephectDir, $php);
+            $tree = File::walkTree($ephectDir, $php);
         }
 
         $result = ['path' => $ephectDir, 'tree' => $tree];
@@ -94,9 +100,9 @@ class PharLib extends Element
                 mkdir($buildRoot);
             }
 
-            $this->phar = new \Phar(
+            $this->phar = new Phar(
                 $buildRoot . $pharName,
-                \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME,
+                FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME,
                 $pharName
             );
             // start buffering. Mandatory to modify stub.
@@ -160,7 +166,7 @@ class PharLib extends Element
 
             rename($buildRoot . APP_NAME . '.phar', $execname);
             chmod($execname, 0755);
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             Console::error($ex);
         }
     }
@@ -168,7 +174,7 @@ class PharLib extends Element
     public function addPharFiles(): void
     {
         try {
-            $tree = Utils::walkTreeFiltered(APP_CWD, ['php']);
+            $tree = File::walkTreeFiltered(APP_CWD, ['php']);
 
             if (isset($tree[APP_CWD . APP_NAME])) {
                 unset($tree[APP_CWD . APP_NAME]);
@@ -177,7 +183,7 @@ class PharLib extends Element
             foreach ($tree as $filename) {
                 $this->addFileToPhar(APP_CWD . $filename, $filename);
             }
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             Console::error($ex);
         }
     }

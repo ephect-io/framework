@@ -7,11 +7,10 @@ use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\HttpErrorRegistry;
 use Ephect\Framework\Registry\RouteRegistry;
-
 use function Ephect\Hooks\useEffect;
 use function Ephect\Hooks\useState;
 
-function Router($children)
+function Router($children): string
 {
     useEffect(function (/* bool */ $hasRouted, /* object */ $service, /* string */ $path, /* string */ $html) {
 
@@ -19,8 +18,8 @@ function Router($children)
 
         if (RouteRegistry::hasMoved()) {
 
-            [$path, $query, $error, $code] = $service->doRouting();
-            $service->renderRoute($code === 200, $path, $query, $error, $code, $html);
+            [$path, $query, $error, $code, $middlewares] = $service->doRouting();
+            $service->renderRoute($code === 200, $path, $query, $error, $code, $middlewares, $html);
 
             $hasRouted = true;
         }
@@ -35,7 +34,7 @@ function Router($children)
         %>
         {{ children }}
         <%            
-            rename(RouteRegistry::getCacheFilename(), RouteRegistry::getMovedFilename());
+            %service->moveCache();
             Builder::purgeCopies();
 
             %service->findRoute(%html);

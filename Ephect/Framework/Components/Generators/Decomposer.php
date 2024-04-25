@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpArrayWriteIsNotUsedInspection */
 
 namespace Ephect\Framework\Components\Generators;
 
@@ -25,7 +25,7 @@ class Decomposer extends Parser implements ParserInterface
         $this->markupQuotes();
     }
 
-    protected function protect()
+    protected function protect(): void
     {
         $text = trim($this->html);
         $text = str_replace('{{', '<D>', $text);
@@ -42,7 +42,7 @@ class Decomposer extends Parser implements ParserInterface
         $this->html = $text;
     }
 
-    protected function markupQuotes()
+    protected function markupQuotes(): void
     {
 
         $html = $this->html;
@@ -122,7 +122,6 @@ class Decomposer extends Parser implements ParserInterface
         }
 
         $l = count($workTags);
-        $i = 0;
         $isFinished = false;
         $spinner = 0;
         $spinnerMax = $l;
@@ -430,7 +429,7 @@ class Decomposer extends Parser implements ParserInterface
     private function doFunctionArguments(string $arguments): ?array
     {
         $result = [];
-        $re = '/([\,]?[\.]?\$[\w]+)/s';
+        $re = '/([\,]?[\.]?\$[\w]+)/';
 
         $str = $arguments;
 

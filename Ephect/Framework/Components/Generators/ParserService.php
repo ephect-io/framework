@@ -13,6 +13,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\HeredocParser;
 use Ephect\Framework\Components\Generators\TokenParsers\HtmlParser;
 use Ephect\Framework\Components\Generators\TokenParsers\NamespaceParser;
 use Ephect\Framework\Components\Generators\TokenParsers\OpenComponentsParser;
+use Ephect\Framework\Components\Generators\TokenParsers\ReturnTypeParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseEffectParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
@@ -29,9 +30,9 @@ class ParserService implements ParserServiceInterface
     protected array $useTypes = [];
     protected string $html = '';
     protected ?object $children = null;
-    protected $componentList = [];
-    protected $openComponentList = [];
-    protected $result = null;
+    protected array $componentList = [];
+    protected array $openComponentList = [];
+    protected string|array|bool|null $result = null;
 
     public function getChildren(): ?object
     {
@@ -73,6 +74,13 @@ class ParserService implements ParserServiceInterface
         $p = new UsesAsParser($component);
         $p->do();
         $this->useTypes = array_merge($this->useTypes, $p->getUses());
+    }
+
+    public function doReturnType(FileComponentInterface $component): void
+    {
+        $p = new ReturnTypeParser($component);
+        $p->do();
+        $this->html = $p->getHtml();
     }
 
     public function doHeredoc(FileComponentInterface $component): void

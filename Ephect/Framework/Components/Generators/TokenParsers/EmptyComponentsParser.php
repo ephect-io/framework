@@ -5,7 +5,7 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 class EmptyComponentsParser extends AbstractTokenParser
 {
 
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $this->result = false;
 

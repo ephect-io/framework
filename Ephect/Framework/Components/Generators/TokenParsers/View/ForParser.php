@@ -6,7 +6,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class ForParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $re = '/@for +([\\w @%&!=\'"+\*\/;\<\-\>]+) +do/m';
         $subst = '<% for ($1) {%>';

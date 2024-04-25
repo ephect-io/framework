@@ -4,7 +4,9 @@ namespace Ephect\Framework\CLI;
 
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\Utils\TextUtils;
+use Ephect\Framework\Utils\Text;
+use ErrorException;
+use Throwable;
 
 class Console extends Element
 {
@@ -16,7 +18,7 @@ class Console extends Element
             return;
         }
 
-        $value = TextUtils::format($string, $params);
+        $value = Text::format($string, $params);
 
         echo $value;
     }
@@ -28,7 +30,7 @@ class Console extends Element
         }
 
 
-        $value = $string == null ? '' :  TextUtils::format($string, $params);
+        $value = $string == null ? '' :  Text::format($string, $params);
 
         echo $value . PHP_EOL;
     }
@@ -82,7 +84,7 @@ class Console extends Element
             return;
         }
 
-        $value = TextUtils::format($string, $params);
+        $value = Text::format($string, $params);
         echo $value . PHP_EOL;
     }
 
@@ -95,11 +97,11 @@ class Console extends Element
             return;
         }
 
-        $value = TextUtils::format($string, $params);
+        $value = Text::format($string, $params);
         echo $value . PHP_EOL;
     }
 
-    public static function error(\Throwable $ex, ConsoleOptions $options): void
+    public static function error(Throwable $ex, ConsoleOptions $options): void
     {
         if (IS_WEB_APP) {
             self::getLogger()->error($ex);
@@ -110,11 +112,11 @@ class Console extends Element
         print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
     }
 
-    public static function formatException(\Throwable $ex): string
+    public static function formatException(Throwable $ex): string
     {
         $message = '';
 
-        if ($ex instanceof \ErrorException) {
+        if ($ex instanceof ErrorException) {
             $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
         }
         $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;

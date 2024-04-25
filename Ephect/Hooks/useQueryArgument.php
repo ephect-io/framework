@@ -2,15 +2,14 @@
 
 namespace Ephect\Hooks;
 
-function useQueryArgument($arg, $default = ''): string
+function useQueryArgument($arg, $default = ''): string|array
 {
-    $result = '';
 
     // mysql_escape_string
     if (isset($_POST[$arg])) {
-        $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
+        $result = htmlspecialchars( filter_input(INPUT_POST, $arg));
         if (is_array($_POST[$arg])) {
-            $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+            $result = filter_input(INPUT_POST, $arg, FILTER_REQUIRE_ARRAY);
         }
         return $result;
     }
@@ -20,8 +19,5 @@ function useQueryArgument($arg, $default = ''): string
         return $result;
     }
 
-    if ($result === '') {
-        $result = $default;
-    }
-    return $result;
+    return $default;
 }

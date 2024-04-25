@@ -13,7 +13,7 @@ interface RouterServiceInterface
 
     public function findRoute(string &$html): void;
 
-    public function renderRoute(bool $pageFound, string $path, array $query, int $error, int $responseCode, string &$html): void;
+    public function renderRoute(bool $pageFound, string $path, array $query, int $error, int $responseCode, array $middlewares, string &$html): void;
 
     public function doRouting(): ?array;
 

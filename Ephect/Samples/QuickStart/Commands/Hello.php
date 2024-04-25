@@ -10,7 +10,7 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Say hello.")]
 class Hello extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $data = 'world';
         $data = $this->application->getArgi(2, $data);

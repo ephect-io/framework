@@ -6,7 +6,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class BreakerParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $re = '/@(break|continue)/m';
         $subst = '<% $1; %>';

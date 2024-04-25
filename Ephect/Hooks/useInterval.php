@@ -2,7 +2,7 @@
 
 namespace Ephect\Hooks;
 
-function useInterval($callback, $ms, $max = 0)
+function useInterval($callback, $ms, $max = 0): void
 {
     $last = microtime(true);
     $seconds = $ms / 1000;

@@ -4,7 +4,7 @@ namespace Ephect\Plugins\HtmlSaver;
 
 use function Ephect\Hooks\useEffect;
 
-function HtmlSaver($children)
+function HtmlSaver($children): string
 {
     useEffect(function($children, $service) {
         $service = new HtmlSaverService($children);

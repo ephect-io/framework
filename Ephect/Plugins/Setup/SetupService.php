@@ -3,13 +3,15 @@
 namespace Ephect\Plugins\Setup;
 
 use Ephect\Framework\Core\PhpInfo;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Web\Curl;
+use Exception;
+use PharData;
 
 class SetupService
 {
-    private $_rewriteBase = '/';
+    private string $_rewriteBase = '/';
 
     public function __construct()
     {
@@ -41,7 +43,7 @@ class SetupService
                 unlink('.gitignore');
                 $github = '.github' . DIRECTORY_SEPARATOR;
                 if (file_exists($filepath . $phinkjs_dirname . $github)) {
-                    Utils::delTree($filepath . $phinkjs_dirname . $github);
+                    File::delTree($filepath . $phinkjs_dirname . $github);
                 }
 
                 chdir('..');
@@ -60,14 +62,14 @@ class SetupService
             $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.tar.gz');
             $ok = false !== file_put_contents($filename, $result->content);
 
-            $p = new \PharData($filename);
+            $p = new PharData($filename);
             $p->decompress();
 
             if (file_exists($filename)) {
                 unlink($filename);
             }
 
-            $phar = new \PharData($tarfilename);
+            $phar = new PharData($tarfilename);
             $phar->extractTo($filepath);
 
             if (file_exists($tarfilename)) {
@@ -78,7 +80,7 @@ class SetupService
             $ok = $ok && rename('PhinkJS-master', 'phinkjs');
             chmod('phinkjs', 0775);
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $ok = false;
             $log = Logger::create();
             $log->error($ex);
@@ -99,7 +101,7 @@ class SetupService
 
         if ($ok = file_exists('bootstrap.php')) {
 
-            $ok = $ok && false !== file_put_contents(CONFIG_DIR . 'rewrite_base', REWRITE_BASE);
+            $ok = false !== file_put_contents(CONFIG_DIR . 'rewrite_base', REWRITE_BASE);
 
             if (file_exists('.htaccess') && ($htaccess = file_get_contents('.htaccess'))) {
                 $htaccess = str_replace(PHP_EOL, ';', $htaccess);
@@ -193,7 +195,7 @@ BOOTSTRAP2;
 <?php
 include 'bootstrap.php';
 
-Ephect\Web\Application::create();
+Ephect\Framework\Web\Application::create();
 
 INDEX;
 

@@ -9,7 +9,7 @@ class RawHtmlParser implements RawHtmlParserInterface
 {
     private array $list;
 
-    public function __construct(private string $html)
+    public function __construct(private readonly string $html)
     {
     }
 

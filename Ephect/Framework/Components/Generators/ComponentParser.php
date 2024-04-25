@@ -59,7 +59,7 @@ class ComponentParser extends Parser implements ParserInterface
             $tag['text'] = $match[0][0];
             $tag['name'] = !isset($match[1]) ? 'Fragment' : $match[1][0];
             $tag['startsAt'] = $match[0][1];
-            $tag['endsAt'] = $match[0][1] + strlen($tag['text']) - 1;
+            $tag['endsAt'] = intval($match[0][1]) + strlen($tag['text']) - 1;
 
             unset($tag[0]);
             unset($tag[1]);
@@ -252,7 +252,7 @@ class ComponentParser extends Parser implements ParserInterface
     private function doFunctionArguments(string $arguments): ?array
     {
         $result = [];
-        $re = '/([\,]?[\.]?\$[\w]+)/s';
+        $re = '/([,]?[.]?\$[\w]+)/';
 
         $str = $arguments;
 

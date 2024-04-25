@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 
 class Component extends AbstractFileComponent implements FileComponentInterface
@@ -19,14 +19,15 @@ class Component extends AbstractFileComponent implements FileComponentInterface
 
         namespace $namespace;
 
-        function $function() {
+        function $function(): string
+        {
         return (<<< HTML
         $html
         HTML);
         }
         COMPONENT;
 
-        Utils::safeWrite(COPY_DIR . $filename, $html);
+        File::safeWrite(COPY_DIR . $filename, $html);
     }
 
     public function parse(): void

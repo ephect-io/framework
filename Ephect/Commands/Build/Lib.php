@@ -4,7 +4,6 @@ namespace Ephect\Commands\Build;
 
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Core\Builder;
-use Ephect\Framework\IO\Utils;
 
 class Lib extends AbstractCommandLib
 {

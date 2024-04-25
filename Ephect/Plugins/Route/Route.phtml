@@ -2,14 +2,26 @@
 
 namespace Ephect\Plugins\Route;
 
+use Ephect\Framework\Components\Children;
 use Ephect\Plugins\Router\RouterService;
-
+use stdClass;
 use function Ephect\Hooks\useEffect;
 use function Ephect\Hooks\useState;
 
-function Route($props)
+function Route($children): string
 {
-    useEffect(function ($props, /* bool */ $onError, /* string */ $html) {
+    useEffect(function ($children, /* bool */ $onError, /* string */ $html) {
+
+        $props = $children;
+        if(method_exists($children, "props")) {
+            $args = $children->props();
+
+            $props = new stdClass;
+            foreach ($args as $field => $value) {
+                $props->{$field} = urldecode($value);
+            }
+        }
+
         $routeBuilder = new RouteBuilder($props);
         $route = $routeBuilder->build();
 
@@ -26,7 +38,7 @@ function Route($props)
         [$path, $query, $code] = $router->matchRoute($route);
 
         [$state, $setState] = useState();
-        $routes = isset($state->routes) ? $state->routes : [];
+        $routes = $state->routes ?? [];
 
         array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,]);
         useState(['routes' => $routes]);

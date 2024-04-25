@@ -2,22 +2,31 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
+use Ephect\Plugins\Route\RouteEntity;
+use Ephect\Plugins\Route\RouteStructure;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\RouteRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\WebComponents\ManifestReader;
+use ReflectionFunction;
 
 final class ClosedComponentsParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $this->result = [];
 
         $comp = $this->component;
         $decl = $comp->getDeclaration();
         $cmpz = $decl->getComposition();
+        $parent = null;
+        $child = null;
+        if($parameter != null) {
+            [$parent, $child] = $parameter;
+        }
+        $muid = $comp->getMotherUID();
 
         if ($cmpz === null) {
             return;
@@ -25,7 +34,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
         $subject = $this->html;
 
-        $closure = function (ComponentEntityInterface $item, int $index) use (&$subject, &$result) {
+        $closure = function (ComponentEntityInterface $item, int $index) use (&$subject, &$result, $parent, $muid) {
 
             if ($item->hasCloser()) {
                 return;
@@ -59,23 +68,67 @@ final class ClosedComponentsParser extends AbstractTokenParser
                     $text = str_replace($componentName, $tag, $component);
                     $text = str_replace('/>', '>', $text);
                     $text .= '</' . $tag . '>';
-                    Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $text);
+                    File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $text);
                 }
             }
 
-
             $subject = str_replace($component, $componentRender, $subject);
+
+            if($parent !== null && $parent->getName() == 'Route') {
+
+                $filename = $muid . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
+
+                $route = new RouteEntity( new RouteStructure($parent->props()) );
+                $middlewareHtml = "function() {\n\tinclude_once CACHE_DIR . '$filename';\n\t\$fn = \\{$funcName}($args); \$fn();\n}\n";
+                include_once CACHE_DIR . $filename;
+                $reflection = new ReflectionFunction($funcName);
+                $attrs = $reflection->getAttributes();
+
+                $isMiddleware = false;
+                foreach ($attrs as $attr) {
+                    $isMiddleware = $attr->getName() == \Ephect\Plugins\Route\Attributes\RouteMiddleware::class;
+                    if ($isMiddleware) {
+                        break;
+                    }
+                }
+                if(!count($attrs) || !$isMiddleware) {
+                    throw new \Exception("$funcName is not a route middleware");
+                }
+                RouteRegistry::uncache();
+                $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
+
+                $existingRoute = $methodRegistry[$route->getRule()];
+                if(!empty($existingRoute)) {
+                    $existingRoute['middlewares'][] = $middlewareHtml;
+                    $methodRegistry[$route->getRule()] = $existingRoute;
+                } else {
+                    $methodRegistry[$route->getRule()] = [
+                        'rule' => $route->getRule(),
+                        'redirect' => $route->getRedirect(),
+                        'error' => $route->getError(),
+                        'exact' => $route->isExact(),
+                        'middlewares' => [$middlewareHtml,],
+                        'translate' => $route->getRule(),
+                        'normal' => $route->getRule(),
+                    ];
+                }
+
+                RouteRegistry::write($route->getMethod(), $methodRegistry);
+
+                RouteRegistry::cache();
+            }
 
             $this->result[] = $componentName;
 
             $filename = $this->component->getFlattenSourceFilename();
-            Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+            File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
         };
 
-        if (!$cmpz->hasChildren()) {
+        if($child != null) {
+            $closure($child, 0);
+        } else if (!$cmpz->hasChildren()) {
             $closure($cmpz, 0);
-        }
-        if ($cmpz->hasChildren()) {
+        } else if ($cmpz->hasChildren()) {
             $cmpz->forEach($closure, $cmpz);
         }
 

@@ -7,7 +7,7 @@ use Ephect\Framework\Registry\FrameworkRegistry;
 
 final class UsesParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $re = '/use[ ]+([A-Za-z0-9\\\\ ]*)\\\\([A-Za-z0-9]*)([ ]*)?;/m';
 

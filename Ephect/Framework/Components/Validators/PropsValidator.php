@@ -5,7 +5,6 @@ namespace Ephect\Framework\Components\Validators;
 use Ephect\Framework\Core\Structure;
 use ErrorException;
 use Exception;
-use InvalidArgumentException;
 
 class PropsValidator
 {
@@ -18,6 +17,9 @@ class PropsValidator
         $this->structClass = $structClass;
     }
 
+    /**
+     * @throws ErrorException
+     */
     public function validate(): ?Structure
     {
         $result = null;
