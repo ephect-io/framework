@@ -104,7 +104,14 @@ final class OpenComponentsParser extends AbstractTokenParser
             $componentRender .= "\t\t\t{$pkey} = new \\Ephect\\Framework\\Components\\Children(\$struct);\n";
             $componentRender .= "\t\t\t\$fn = \\$fqComponentName({$pkey}); \$fn(); ?>\n";
 
-            $subject = str_replace($componentBody, $componentRender, $subject);
+            $startsAt = $theCloser['contents']['startsAt'];
+            $endsAt = $theCloser['contents']['endsAt'];
+
+            $above = substr($subject, 0, $startsAt - 1);
+            $below = substr($subject, $endsAt + 1);
+
+//            $subject = str_replace($componentBody, $componentRender, $subject);
+            $subject = $above . $componentRender . $below;
 
             $opener = preg_quote($opener, '/');
             $subject = preg_replace('/(' . $opener . ')/', '', $subject, 1);
