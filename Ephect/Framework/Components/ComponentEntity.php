@@ -66,7 +66,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
     public function bindNode(): void
     {
-        if ($this->elementList === false) {
+        if ($this->elementList === false || $this->elementList === null) {
             return;
         }
 
@@ -161,7 +161,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
                 "id": 0,
                 "name": "FakeFragment",
                 "class": null,
-                "component": "Ephect\Framework",
+                "component": "Ephect",
                 "text": "<>",
                 "method": "echo",
                 "startsAt": 0,
