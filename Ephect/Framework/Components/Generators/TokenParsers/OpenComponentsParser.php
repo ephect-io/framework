@@ -3,9 +3,9 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\WebComponents\ManifestReader;
 
 final class OpenComponentsParser extends AbstractTokenParser
@@ -104,20 +104,28 @@ final class OpenComponentsParser extends AbstractTokenParser
             $componentRender .= "\t\t\t{$pkey} = new \\Ephect\\Framework\\Components\\Children(\$struct);\n";
             $componentRender .= "\t\t\t\$fn = \\$fqComponentName({$pkey}); \$fn(); ?>\n";
 
-            $startsAt = $theCloser['contents']['startsAt'];
-            $endsAt = $theCloser['contents']['endsAt'];
+            $preg_opener = preg_quote($opener, '/');
+            $preg_closer = preg_quote($closer, '/');
 
-            $above = substr($subject, 0, $startsAt - 1);
-            $below = substr($subject, $endsAt + 1);
+            if(empty($componentBody)) {
+                preg_match('/(' . $preg_opener . '[\r\n]?)/U', $subject, $matches, PREG_OFFSET_CAPTURE);
+                $token = $matches[0][0];
+                $startsAt = strlen($token) + intval($matches[0][1]);
 
-//            $subject = str_replace($componentBody, $componentRender, $subject);
-            $subject = $above . $componentRender . $below;
+                preg_match('/' . $preg_closer . '(?!.*' . $preg_closer . ')/U', $subject, $matches, PREG_OFFSET_CAPTURE);
+                $endsAt = intval($matches[0][1]);
 
-            $opener = preg_quote($opener, '/');
-            $subject = preg_replace('/(' . $opener . ')/', '', $subject, 1);
+                $above = substr($subject, 0, $startsAt);
+                $below = substr($subject, $endsAt);
 
-            $closer = preg_quote($closer, '/');
-            $subject = preg_replace('/' . $closer . '(?!.*' . $closer . ')/', '', $subject, 1);
+                $subject = $above . $componentRender . $below;
+
+            } else {
+                $subject = str_replace($componentBody, $componentRender, $subject);
+            }
+
+            $subject = preg_replace('/(' . $preg_opener . ')/', '', $subject, 1);
+            $subject = preg_replace('/' . $preg_closer . '(?!.*' . $preg_closer . ')/', '', $subject, 1);
 
             $filename = $this->component->getFlattenSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
