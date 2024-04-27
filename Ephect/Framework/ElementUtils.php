@@ -29,7 +29,7 @@ final class ElementUtils
     public static function getFunctionDefinition($contents): ?array
     {
 
-        $re = '/namespace *?([\w\\\\]+);[\w\W\\\\]*function *?([$\w]+)\(([\w\W]*)\)\W*:? *?(\w+)?\W*(\{)/U';
+        $re = '/namespace *?([\w\\\\]+);[\w\W\\\\]*function *?([$\w]+) *?\(([\w\W]*)\)\W*:? *?(\w+)?\W*(\{)/U';
         
         preg_match($re, $contents, $matches, PREG_OFFSET_CAPTURE, 0);
 

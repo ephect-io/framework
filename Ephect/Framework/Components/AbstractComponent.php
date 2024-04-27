@@ -14,7 +14,7 @@ use Exception;
 use ReflectionException;
 use ReflectionFunction;
 use stdClass;
-use tidy;
+//use tidy;
 
 abstract class AbstractComponent extends Tree implements ComponentInterface
 {
@@ -182,6 +182,8 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         if ($funcParams === [] && $bodyProps === null) {
             ob_start();
             $fn = call_user_func($fqFunctionName);
+            $fn();
+            $html = ob_get_clean();
         } else {
             $props = null;
             if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
@@ -209,9 +211,10 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             }
             ob_start();
             $fn = call_user_func($fqFunctionName, $props);
+            $fn();
+            $html = ob_get_clean();
         }
-        $fn();
-        $html = ob_get_clean();
+
 
         // if ($funcName === 'App') {
         //     $html = self::format($html);
@@ -220,18 +223,18 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $html;
     }
 
-    protected function format(string $html): string
-    {
-        $config = [
-            'indent' => true,
-            'output-html' => true,
-            'wrap' => 200
-        ];
-
-        $tidy = new tidy;
-        $tidy->parseString($html, $config, 'utf8');
-        $tidy->cleanRepair();
-
-        return $tidy->value;
-    }
+//    protected function format(string $html): string
+//    {
+//        $config = [
+//            'indent' => true,
+//            'output-html' => true,
+//            'wrap' => 200
+//        ];
+//
+//        $tidy = new tidy;
+//        $tidy->parseString($html, $config, 'utf8');
+//        $tidy->cleanRepair();
+//
+//        return $tidy->value;
+//    }
 }
