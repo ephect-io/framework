@@ -1,0 +1,33 @@
+<?php
+
+namespace Appliance;
+
+use function Bolero\Forms\Hooks\useEffect;
+use function Bolero\Forms\Hooks\useState;
+
+function Com($props): string
+{
+    useEffect(function ($props, /* string */ $b, /* string */ $c, /* string */ $d, /* string */ $m) {
+
+        $b = 'It is a';
+        $c = 'functional component';
+        $d = $props->from;
+        [$state, $setState] = useState();
+
+        $m = $state->m->n;
+
+        $setState(['p' => ['n' => 'q']]);
+
+    });
+
+return (<<< HTML
+<HtmlSaver render="false" >
+<h1>{{ props->message }}</h1>
+<sub>from {{ d }}</sub>
+<h2>{{ b }}</h2>
+<h3>{{ c }}</h3>
+<h3>{{ m }}</h3>
+<Dummy />
+</HtmlSaver>
+HTML);
+}
