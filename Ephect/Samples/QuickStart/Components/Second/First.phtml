@@ -1,0 +1,38 @@
+<?php
+
+namespace Appliance;
+
+function First($children): string
+{
+    return (<<< HTML
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            <Slot name="title">Welcome!</Slot>
+        </title>
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <Slot name="stylesheets"></Slot>
+    </head>
+
+    <body>
+        <div class="App">
+        <HeaderAndFooter>
+
+        <div class="App-content">
+            <Slot name="main"></Slot>
+            {{ children }}
+            <Slot name="second"></Slot>
+        </div>
+
+        </HeaderAndFooter>
+        </div>
+    </body>
+
+    </html>
+    HTML);
+}
