@@ -109,13 +109,13 @@ final class OpenComponentsParser extends AbstractTokenParser
 
             preg_match('/(' . $preg_opener . ')/', $subject, $matches, PREG_OFFSET_CAPTURE);
             $startsAt = intval($matches[0][1]);
-            preg_match('/(?s:.*\s)?\K' . $preg_closer . '(?!.*' . $preg_closer . ')/', $subject, $matches, PREG_OFFSET_CAPTURE);
-            $endsAt = intval($matches[0][1]);
+            $offset = $startsAt + strlen($opener) + strlen($componentBody);
 
+            preg_match('/(' . $preg_closer . ')/', $subject, $matches, PREG_OFFSET_CAPTURE, $offset);
+            $endsAt = intval($matches[0][1]);
             $length = $endsAt - $startsAt + strlen($closer);
 
             $outerComponentBody = substr($subject, $startsAt, $length);
-
             $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
             $filename = $this->component->getFlattenSourceFilename();
