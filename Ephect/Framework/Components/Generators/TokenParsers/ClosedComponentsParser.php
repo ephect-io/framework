@@ -97,10 +97,8 @@ final class ClosedComponentsParser extends AbstractTokenParser
                 RouteRegistry::uncache();
                 $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
 
-                $existingRoute = $methodRegistry[$route->getRule()];
-                if(!empty($existingRoute)) {
-                    $existingRoute['middlewares'][] = $middlewareHtml;
-                    $methodRegistry[$route->getRule()] = $existingRoute;
+                if(isset($methodRegistry[$route->getRule()])) {
+                    $methodRegistry[$route->getRule()]['middlewares'][] = $middlewareHtml;
                 } else {
                     $methodRegistry[$route->getRule()] = [
                         'rule' => $route->getRule(),
@@ -114,7 +112,6 @@ final class ClosedComponentsParser extends AbstractTokenParser
                 }
 
                 RouteRegistry::write($route->getMethod(), $methodRegistry);
-
                 RouteRegistry::cache();
             }
 
