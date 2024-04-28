@@ -107,25 +107,16 @@ final class OpenComponentsParser extends AbstractTokenParser
             $preg_opener = preg_quote($opener, '/');
             $preg_closer = preg_quote($closer, '/');
 
-            if(empty($componentBody)) {
-                preg_match('/(' . $preg_opener . '[\r\n]?)/U', $subject, $matches, PREG_OFFSET_CAPTURE);
-                $token = $matches[0][0];
-                $startsAt = strlen($token) + intval($matches[0][1]);
+            preg_match('/(' . $preg_opener . ')/', $subject, $matches, PREG_OFFSET_CAPTURE);
+            $startsAt = intval($matches[0][1]);
+            preg_match('/(?s:.*\s)?\K' . $preg_closer . '(?!.*' . $preg_closer . ')/', $subject, $matches, PREG_OFFSET_CAPTURE);
+            $endsAt = intval($matches[0][1]);
 
-                preg_match('/' . $preg_closer . '(?!.*' . $preg_closer . ')/U', $subject, $matches, PREG_OFFSET_CAPTURE);
-                $endsAt = intval($matches[0][1]);
+            $length = $endsAt - $startsAt + strlen($closer);
 
-                $above = substr($subject, 0, $startsAt);
-                $below = substr($subject, $endsAt);
+            $outerComponentBody = substr($subject, $startsAt, $length);
 
-                $subject = $above . $componentRender . $below;
-
-            } else {
-                $subject = str_replace($componentBody, $componentRender, $subject);
-            }
-
-            $subject = preg_replace('/(' . $preg_opener . ')/', '', $subject, 1);
-            $subject = preg_replace('/' . $preg_closer . '(?!.*' . $preg_closer . ')/', '', $subject, 1);
+            $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
             $filename = $this->component->getFlattenSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
