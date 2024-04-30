@@ -3,6 +3,7 @@
 namespace Ephect\Hooks;
 
 use Closure;
+use ReflectionException;
 use ReflectionFunction;
 use stdClass;
 
@@ -13,6 +14,7 @@ use stdClass;
  * @param Closure $callback
  * @param object|null $props
  * @return void
+ * @throws ReflectionException
  */
 #[Deprecated("Useless function", "useEffect", "0.3")]
 function useProps(Closure $callback, ?object $props = null): void
@@ -24,7 +26,7 @@ function useProps(Closure $callback, ?object $props = null): void
     $defaults = $params;
     // $params = $ref->getParameters();
 
-    $hasProps = $props !== null || (is_array($props) && count($props) > 0);
+    $hasProps = $props !== null;
 
     $newProps = !$hasProps ? new stdClass : $props;
     $newArgs = [];

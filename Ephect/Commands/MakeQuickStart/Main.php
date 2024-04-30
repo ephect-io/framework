@@ -10,12 +10,14 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Create the quickstart application tree.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $egg = new CommonLib($this->application);
         $egg->createCommonTrees();
 
         $lib = new Lib($this->application);
         $lib->createQuickstart();
+
+        return 0;
     }
 }

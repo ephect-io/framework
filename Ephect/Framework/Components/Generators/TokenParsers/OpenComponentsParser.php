@@ -3,14 +3,14 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\IO\Utils;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\WebComponents\ManifestReader;
 
 final class OpenComponentsParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $this->result = [];
         $this->useVariables = $parameter;
@@ -26,9 +26,15 @@ final class OpenComponentsParser extends AbstractTokenParser
 
         $subject = $this->html;
 
-        $closure = function (ComponentEntityInterface $item, int $index) use (&$subject, &$result) {
+        $previous = null;
+        $parent = null;
+        $closure = function (ComponentEntityInterface $item, int $index) use ($comp, &$subject, &$result, &$previous, &$parent) {
+            $parent = $previous != null && $previous->getDepth() < $item->getDepth() ? $previous : null;
 
             if (!$item->hasCloser()) {
+                $p = new ClosedComponentsParser($comp);
+                $p->do([$parent, $item]);
+
                 return;
             }
             $uid = $item->getUID();
@@ -42,22 +48,22 @@ final class OpenComponentsParser extends AbstractTokenParser
             $componentArgs = $this->useVariables;
             $componentArgs = $item->props() !== null ? array_merge($componentArgs, $item->props()) : $componentArgs;
 
-            if ($componentName === 'FakeFragment') {
+            if ($componentName == 'FakeFragment') {
                 return;
             }
 
-            if ($componentName === 'Fragment') {
+            if ($componentName == 'Fragment') {
                 return;
             }
 
-            if ($componentName === 'Slot') {
+            if ($componentName == 'Slot') {
                 return;
             }
 
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
 
-            $propsArgs = $componentArgs === null ?: self::doArgumentsToString($componentArgs);
+            $propsArgs = self::doArgumentsToString($componentArgs);
             $props = (($propsArgs === null) ? "[]" : $propsArgs);
 
             $propsKeys = $this->argumentsKeys($this->useVariables);
@@ -74,13 +80,11 @@ final class OpenComponentsParser extends AbstractTokenParser
             if ($filename === null) {
                 $filename = WebComponentRegistry::read($fqComponentName);
                 if ($filename !== null) {
-
-                    // $uid = WebComponentRegistry::read($filename);
                     $reader = new ManifestReader($motherUID, $componentName);
                     $manifest = $reader->read();
                     $tag = $manifest->getTag();
                     $wcom = str_replace($componentName, $tag, $opener . $componentBody . $closer);
-                    Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $wcom);
+                    File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $wcom);
                 }
             }
 
@@ -100,22 +104,32 @@ final class OpenComponentsParser extends AbstractTokenParser
             $componentRender .= "\t\t\t{$pkey} = new \\Ephect\\Framework\\Components\\Children(\$struct);\n";
             $componentRender .= "\t\t\t\$fn = \\$fqComponentName({$pkey}); \$fn(); ?>\n";
 
-            $subject = str_replace($componentBody, $componentRender, $subject);
+            $preg_opener = preg_quote($opener, '/');
+            $preg_closer = preg_quote($closer, '/');
 
-            $opener = preg_quote($opener, '/');
-            $subject = preg_replace('/(' . $opener . ')/', '', $subject, 1);
+            preg_match('/(' . $preg_opener . ')/', $subject, $matches, PREG_OFFSET_CAPTURE);
+            $startsAt = intval($matches[0][1]);
+            $offset = $startsAt + strlen($opener) + strlen($componentBody);
 
-            $closer = preg_quote($closer, '/');
-            $subject = preg_replace('/' . $closer . '(?!.*' . $closer . ')/', '', $subject, 1);
+            preg_match('/(' . $preg_closer . ')/', $subject, $matches, PREG_OFFSET_CAPTURE, $offset);
+            $endsAt = intval($matches[0][1]);
+            $length = $endsAt - $startsAt + strlen($closer);
+
+            $outerComponentBody = substr($subject, $startsAt, $length);
+            $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
             $filename = $this->component->getFlattenSourceFilename();
-            Utils::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+            File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->result[] = $componentName;
+
+            $previous = $item;
+
         };
 
         $closure($cmpz, 0);
         if ($cmpz->hasChildren()) {
+            $parent = $cmpz;
             $cmpz->forEach($closure, $cmpz);
         }
 

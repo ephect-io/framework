@@ -3,7 +3,7 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 
@@ -14,9 +14,9 @@ class Plugin extends AbstractFileComponent implements FileComponentInterface
     {
         $this->filename = $filename ?: '';
 
-        $this->code = Utils::safeRead(PLUGINS_ROOT . $this->filename);
+        $this->code = File::safeRead(PLUGINS_ROOT . $this->filename);
 
-        [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
+        [$this->namespace, $this->function, $parameters, $returnType, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         if ($this->function === null) {
             [$this->namespace, $this->function, $this->bodyStartsAt] = ElementUtils::getClassDefinition($this->code);
         }

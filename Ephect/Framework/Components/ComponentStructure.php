@@ -14,7 +14,7 @@ class ComponentStructure extends Structure
     public string $name = '';
     public string $method = '';
     public string $text = '';
-    public string $parentId = '';
+    public int $parentId = 0;
     public int $depth = 0;
     public int $startsAt = 0;
     public int $endsAt = 0;
@@ -22,6 +22,6 @@ class ComponentStructure extends Structure
     public bool $hasCloser = false;
     public ?array $closer = null;
     public array $props = [];
-    public bool|array|null $node = null;
+    public false|array $node = [];
     public bool $isSingle = false;
 }

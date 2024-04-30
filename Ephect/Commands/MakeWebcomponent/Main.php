@@ -9,9 +9,11 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Create the base tree of a webComponent.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $lib = new Lib($this->application);
         $lib->createWebComponentBase();
+
+        return 0;
     }
 }

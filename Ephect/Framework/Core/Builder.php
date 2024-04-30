@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Core;
 
-use DateTime;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Components\Component;
@@ -13,14 +12,16 @@ use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Components\Generators\ParserService;
 use Ephect\Framework\Components\Plugin;
 use Ephect\Framework\Components\WebComponent;
-use Ephect\Framework\IO\Utils as IOUtils;
+use Ephect\Framework\Utils\File;
 use Ephect\Plugins\Route\RouteBuilder;
+use Ephect\Plugins\Router\RouterService;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Web\Curl;
-use Ephect\Plugins\Router\RouterService;
+use DateTime;
+use Exception;
 use Throwable;
 
 class Builder
@@ -31,7 +32,7 @@ class Builder
 
     public static function purgeCopies(): void
     {
-        IOUtils::delTree(COPY_DIR);
+        File::delTree(COPY_DIR);
     }
 
     /**
@@ -42,24 +43,24 @@ class Builder
     public function describeComponents(): void
     {
         if (!ComponentRegistry::uncache()) {
-            IOUtils::safeMkDir(CACHE_DIR);
-            IOUtils::safeMkDir(COPY_DIR);
-            IOUtils::safeMkDir(UNIQUE_DIR);
-            IOUtils::safeMkDir(STATIC_DIR);
+            File::safeMkDir(CACHE_DIR);
+            File::safeMkDir(COPY_DIR);
+            File::safeMkDir(UNIQUE_DIR);
+            File::safeMkDir(STATIC_DIR);
 
             CodeRegistry::uncache();
 
-            $bootstrapList = IOUtils::walkTreeFiltered(SRC_ROOT, ['phtml'], true);
+            $bootstrapList = File::walkTreeFiltered(SRC_ROOT, ['phtml'], true);
             foreach ($bootstrapList as $key => $compFile) {
                 $this->describeCustomComponent(SRC_ROOT, $compFile);
             }
 
-            $pagesList = IOUtils::walkTreeFiltered(CUSTOM_PAGES_ROOT, ['phtml']);
+            $pagesList = File::walkTreeFiltered(CUSTOM_PAGES_ROOT, ['phtml']);
             foreach ($pagesList as $key => $pageFile) {
                 $this->describeCustomComponent(CUSTOM_PAGES_ROOT, $pageFile);
             }
 
-            $componentsList = IOUtils::walkTreeFiltered(CUSTOM_COMPONENTS_ROOT, ['phtml']);
+            $componentsList = File::walkTreeFiltered(CUSTOM_COMPONENTS_ROOT, ['phtml']);
             foreach ($componentsList as $key => $compFile) {
                 $this->describeCustomComponent(CUSTOM_COMPONENTS_ROOT, $compFile);
             }
@@ -69,7 +70,7 @@ class Builder
         }
 
         if (!PluginRegistry::uncache()) {
-            $pluginList = IOUtils::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
+            $pluginList = File::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
             foreach ($pluginList as $key => $pluginFile) {
                 $this->describePlugin(PLUGINS_ROOT, $pluginFile);
             }
@@ -79,7 +80,7 @@ class Builder
 
         if (file_exists(CUSTOM_WEBCOMPONENTS_ROOT)) {
             if (!WebComponentRegistry::uncache()) {
-                $webcomponentList = IOUtils::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
+                $webcomponentList = File::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
                 foreach ($webcomponentList as $key => $webcomponentFile) {
                     $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
                 }
@@ -102,7 +103,7 @@ class Builder
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            IOUtils::safeWrite(COPY_DIR . $cachedSourceViewFile, $html);
+            File::safeWrite(COPY_DIR . $cachedSourceViewFile, $html);
             $comp->load($cachedSourceViewFile);
         }
 
@@ -190,7 +191,7 @@ class Builder
                 $rb = new RouteBuilder($props);
                 $re = $rb->build();
 
-                array_push($result, $re->getRedirect());
+                $result[] = $re->getRedirect();
             }
         }
 
@@ -293,15 +294,18 @@ class Builder
             Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
         }
 
-        IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+        File::safeWrite(STATIC_DIR . $filename, $html);
 
         return $comp->getMotherUID();
     }
 
+    /**
+     * @throws Exception
+     */
     public function buildByRoute($route = 'Default'): void
     {
 
-        $port = trim(IOUtils::safeRead(CONFIG_DIR . 'dev_port') ?? '80');
+        $port = trim(File::safeRead(CONFIG_DIR . 'dev_port') ?? '80');
 
         if ($route === 'App') {
             return;
@@ -339,9 +343,9 @@ class Builder
 
         ob_start();
         [$code, $header, $html] = $curl->request(CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
-        IOUtils::safeWrite(STATIC_DIR . $filename, $html);
+        File::safeWrite(STATIC_DIR . $filename, $html);
         $output = ob_get_clean();
-        IOUtils::safeWrite(LOG_PATH . $outputFilename, $output);
+        File::safeWrite(LOG_PATH . $outputFilename, $output);
 
         $time_end = microtime(true);
 

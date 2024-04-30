@@ -3,12 +3,16 @@
 namespace Ephect\Plugins\Route;
 
 use Ephect\Framework\Components\Builders\AbstractBuilder;
+use Ephect\Framework\Components\Children;
 
 class RouteBuilder extends AbstractBuilder
 {
+    private Children|null $children = null;
 
     public function __construct(object $props)
     {
+
+
         parent::__construct($props, RouteStructure::class);
     }
 

@@ -11,7 +11,7 @@ class Parser extends RawHtmlParser
     private string $script = '';
     private string $style = '';
 
-    public function __construct(private string $html)
+    public function __construct(private readonly string $html)
     {
         parent::__construct($html);
     }

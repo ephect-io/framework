@@ -39,18 +39,14 @@ class Children extends Tree implements ChildrenInterface
 
     public function getBuffer(): string
     {
-        $fn = $this->buffer;
-
         ob_start();
-        $fn();
+        ($this->buffer)();
         return ob_get_clean();
     }
 
     public function render(): void
     {
-        $fn = $this->buffer;
-
-        $fn();
+        ($this->buffer)();
     }
 
     public function getAttributes(): string
@@ -69,7 +65,7 @@ class Children extends Tree implements ChildrenInterface
     public function getAttribute(string $attribute): string|bool|null
     {
         $props = $this->getAllProps();
-        $value = isset($props->$attribute) ? $props->$attribute : null;
+        $value = $props->$attribute ?? null;
 
         if ($value === 'false') {
             $value = false;

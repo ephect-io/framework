@@ -2,21 +2,24 @@
 
 namespace Ephect\Framework\WebComponents;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Exception;
 
 class ManifestWriter
 {
-    public function __construct(private ManifestStructure $struct, private string $directory)
+    public function __construct(private readonly ManifestStructure $struct, private readonly string $directory)
     {
     }
 
+    /**
+     * @throws Exception
+     */
     public function write(): void
     {
         $destDir = $this->directory;
         $name = $this->struct->class;
 
-        if (!Utils::safeMkDir($destDir)) {
+        if (!File::safeMkDir($destDir)) {
             throw new Exception("$destDir creation failed");
         }
 
@@ -26,6 +29,6 @@ class ManifestWriter
 
         $destDir .= DIRECTORY_SEPARATOR;
 
-        Utils::safeWrite($destDir . DIRECTORY_SEPARATOR . $name . '.manifest.json', $json);
+        File::safeWrite($destDir . DIRECTORY_SEPARATOR . $name . '.manifest.json', $json);
     }
 }

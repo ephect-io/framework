@@ -9,7 +9,7 @@ final class UseEffectParser extends AbstractTokenParser
 
     use TypesParserTrait;
 
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         if (!strpos($this->html, 'useEffect')) {
             return;

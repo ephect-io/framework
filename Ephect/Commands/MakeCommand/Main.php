@@ -9,10 +9,12 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Create the base tree of a command.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $lib = new Lib($this->application);
         $lib->createCommandBase();
         $this->application->clearRuntime();
+
+        return 0;
     }
 }

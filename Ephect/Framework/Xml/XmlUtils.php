@@ -21,7 +21,7 @@ class XmlUtils
         return $xml;
     }
 
-    private static function convertArrayEx(array $array, string $node_name): string
+    private static function convertArrayEx(mixed $array, string $node_name): string
     {
         $xml = '';
 

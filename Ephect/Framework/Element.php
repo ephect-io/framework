@@ -2,8 +2,8 @@
 
 namespace Ephect\Framework;
 
-use DateTime;
-use \ReflectionClass;
+use ReflectionClass;
+use ReflectionException;
 
 class Element extends StaticElement implements ElementInterface
 {
@@ -19,7 +19,7 @@ class Element extends StaticElement implements ElementInterface
         $this->id = ($id === null) ? '_' . time() : $id;
     }
 
-    public static function getAttributesData(object $instance): array
+    public static function getClassAttributesData(object $instance): array
     {
         $result = [];
         $temp = [];
@@ -45,6 +45,9 @@ class Element extends StaticElement implements ElementInterface
         return $result;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function getMethodParameters($method): ?array
     {
         $ref = $this->getReflection();
@@ -66,7 +69,7 @@ class Element extends StaticElement implements ElementInterface
         return $this->_reflection;
     }
 
-    public function addChild(ElementInterface $child)
+    public function addChild(ElementInterface $child): void
     {
         $this->children[$child->getId()] = $child;
     }

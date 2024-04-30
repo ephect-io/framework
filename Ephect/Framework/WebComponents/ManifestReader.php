@@ -2,11 +2,11 @@
 
 namespace Ephect\Framework\WebComponents;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 
 class ManifestReader
 {
-    public function __construct(private string $motherUID, private string $name)
+    public function __construct(private readonly string $motherUID, private readonly string $name)
     {
     }
 
@@ -20,7 +20,7 @@ class ManifestReader
             copy(CUSTOM_WEBCOMPONENTS_ROOT . $this->name . DIRECTORY_SEPARATOR . $this->name . '.' . $manifestFilename, $manifestCache);
         }
 
-        $manifestJson = Utils::safeRead($manifestCache);
+        $manifestJson = File::safeRead($manifestCache);
         $manifest = json_decode($manifestJson, JSON_OBJECT_AS_ARRAY);
 
         $struct = new ManifestStructure($manifest);

@@ -19,4 +19,6 @@ interface RouteInterface extends ElementInterface
     public function getError(): int;
 
     public function isExact(): bool;
+
+    public function getMiddlewares(): array;
 }

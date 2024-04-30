@@ -4,8 +4,7 @@ declare(ticks=1);
 namespace Ephect\Framework\Components\FileSystem;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\IO\Utils;
-
+use Ephect\Framework\Utils\File;
 use function Ephect\Hooks\useInterval;
 
 class Watcher
@@ -36,6 +35,6 @@ class Watcher
 
     private function _listFiles(string $directory, array $filter): array
     {
-        return Utils::walkTreeFiltered($directory, $filter);
+        return File::walkTreeFiltered($directory, $filter);
     }
 }

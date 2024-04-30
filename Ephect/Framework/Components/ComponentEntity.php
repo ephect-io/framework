@@ -3,7 +3,7 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Tree\Tree;
 
@@ -167,7 +167,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
                 "startsAt": 0,
                 "endsAt": 0,
                 "props": [],
-                "node": false,
+                "node": [],
                 "hasCloser": true,
                 "isSibling": false,
                 "parentId": -1,
@@ -306,7 +306,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         if ($compFile === null) {
             return $result;
         }
-        $text = $html ?: Utils::safeRead(COPY_DIR . $compFile);
+        $text = $html ?: File::safeRead(COPY_DIR . $compFile);
 
         if (($pos = strpos($text, $this->text) + strlen($this->text)) > $start) {
             $offset =  $pos - $start;

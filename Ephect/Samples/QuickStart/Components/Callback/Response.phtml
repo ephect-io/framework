@@ -8,7 +8,7 @@ use function Ephect\Hooks\useEffect;
  * @return string
  */
 #[ResponseHeader(contentType: "application/json")]
-function Response($props)
+function Response($props): string
 {
     useEffect(function($props, /* array */ $response) {
         $proposition = $props->myNameIs;

@@ -11,8 +11,10 @@ use Phar;
 #[CommandDeclaration(desc: "Show Phar::running() output")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         Console::writeLine(Phar::running());
+
+        return 0;
     }
 }

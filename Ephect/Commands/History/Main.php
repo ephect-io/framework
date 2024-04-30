@@ -10,9 +10,11 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Display the commands history.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $history = readline_list_history();
         Console::writeLine($history);
+
+        return 0;
     }
 }

@@ -4,7 +4,7 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 final class HtmlParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $subject = $this->html;
 

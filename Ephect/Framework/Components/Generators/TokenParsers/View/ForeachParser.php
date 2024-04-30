@@ -6,7 +6,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class ForeachParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $re = '/@for +((%[\w\->()\[\]]+) +as +(%\w+( +=> +%\w+)?)) +do/m';
         $subst = "<% foreach($2 as $3) { %>";

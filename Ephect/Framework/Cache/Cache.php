@@ -3,8 +3,9 @@
 namespace Ephect\Framework\Cache;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\StaticElement;
+use Throwable;
 
 class Cache extends StaticElement
 {
@@ -45,7 +46,7 @@ class Cache extends StaticElement
             $result &= self::clearCache();
             $result &= self::clearRuntimeDirs();
             $result &= self::clearRuntimeJsDirs();
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             Console::error($ex);
 
             $result = false;
@@ -57,7 +58,7 @@ class Cache extends StaticElement
     {
         $result = false;
         if (file_exists(CACHE_DIR)) {
-            $result &= Utils::delTree(CACHE_DIR);
+            $result &= File::delTree(CACHE_DIR);
         }
 
         return $result;
@@ -67,7 +68,7 @@ class Cache extends StaticElement
     {
         $result = false;
         if (file_exists(RUNTIME_DIR)) {
-            $result &= Utils::delTree(RUNTIME_DIR);
+            $result &= File::delTree(RUNTIME_DIR);
         }
         return $result;
     }
@@ -76,7 +77,7 @@ class Cache extends StaticElement
     {
         $result = false;
         if (file_exists(RUNTIME_JS_DIR)) {
-            $result &= Utils::delTree(RUNTIME_JS_DIR);
+            $result &= File::delTree(RUNTIME_JS_DIR);
         }
         return $result;
     }

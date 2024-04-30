@@ -10,13 +10,13 @@ class CommandRunner extends Element
 {
 
     public function __construct(
-        private Application                $_application,
-        private CommandCollectionInterface $_commands
+        private readonly Application       $_application,
+        private readonly CommandCollectionInterface $_commands
     )
     {
     }
 
-    public function run(): void
+    public function run(): int
     {
         $callback = null;
 
@@ -41,25 +41,26 @@ class CommandRunner extends Element
                     $isFound = true;
 
                     if (isset($aav[$i + 1])) {
-                        if (substr($aav[$i + 1], 0, 1) !== '-') {
+                        if (!str_starts_with($aav[$i + 1], '-')) {
                             $arguments = $aav[$i + 1];
                         }
                     }
 
                     break;
                 }
-
             }
+
             if ($isFound) {
                 break;
             }
         }
 
+        $status = 1;
         if ($callback !== null && $isFound) {
-            $callback->run();
+            $status = $callback->run();
         }
 
-        if ($isFound) return;
+        if ($isFound) return $status;
 
         Console::writeLine(<<<COWSAY
          ___________________________

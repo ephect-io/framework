@@ -2,7 +2,8 @@
 
 namespace Ephect\Framework;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
+use function strlen;
 
 final class ElementUtils
 {
@@ -16,7 +17,7 @@ final class ElementUtils
 
     public static function getFunctionDefinitionFromFile($filepath): ?array
     {
-        $contents = Utils::safeRead($filepath);
+        $contents = File::safeRead($filepath);
 
         if ($contents === null) {
             return null;
@@ -27,11 +28,21 @@ final class ElementUtils
 
     public static function getFunctionDefinition($contents): ?array
     {
-        [$namespace, $pos] = self::grabKeywordName('namespace', $contents, ';');
-        [$functionName, $pos] = self::grabKeywordName("\nfunction", $contents, '(');
-        $pos = strpos($contents, '{', $pos);
 
-        return [$namespace, $functionName, $pos];
+        $re = '/namespace *?([\w\\\\]+);[\w\W\\\\]*function *?([$\w]+) *?\(([\w\W]*)\)\W*:? *?(\w+)?\W*(\{)/U';
+        
+        preg_match($re, $contents, $matches, PREG_OFFSET_CAPTURE, 0);
+
+        if(!count($matches)) {
+            return ['', '', '', '', -1];
+        }
+        $namespace = $matches[1][0];
+        $functionName = $matches[2][0];
+        $parameters = $matches[3][0];
+        $returnedType = $matches[4][0];
+        $pos = $matches[5][1];
+
+        return [$namespace, $functionName, $parameters, $returnedType, $pos];
     }
 
     public static function grabKeywordName(string $keyword, string $classText, string $delimiter): array
@@ -41,7 +52,7 @@ final class ElementUtils
         $end = -1;
         $start = strpos($classText, $keyword);
         if ($start > -1) {
-            $start += \strlen($keyword) + 1;
+            $start += strlen($keyword) + 1;
             $end = strpos($classText, $delimiter, $start);
             $result = trim(substr($classText, $start, $end - $start));
         }
@@ -51,7 +62,7 @@ final class ElementUtils
 
     public static function getTraitDefinitionFromFile($filepath): ?array
     {
-        $contents = Utils::safeRead($filepath);
+        $contents = File::safeRead($filepath);
 
         if ($contents === null) {
             return null;
@@ -74,7 +85,7 @@ final class ElementUtils
 
     public static function getInterfaceDefinitionFromFile($filepath): ?array
     {
-        $contents = Utils::safeRead($filepath);
+        $contents = File::safeRead($filepath);
 
         if ($contents === null) {
             return null;
@@ -97,7 +108,7 @@ final class ElementUtils
 
     public static function getClassDefinitionFromFile($filepath): ?array
     {
-        $contents = Utils::safeRead($filepath);
+        $contents = File::safeRead($filepath);
 
         if ($contents === null) {
             return null;

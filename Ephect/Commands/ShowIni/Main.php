@@ -11,9 +11,12 @@ use Ephect\Framework\Registry\StateRegistry;
 #[CommandDeclaration(desc: "Display the ini file if exists")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $this->application->loadInFile();
         $data = StateRegistry::item('ini');
-        Console::writeLine($data);    }
+        Console::writeLine($data);
+
+        return 0;
+    }
 }

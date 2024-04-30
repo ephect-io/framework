@@ -6,10 +6,10 @@ use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class EchoParser extends AbstractTokenParser
 {
-    public function do(null|string|array $parameter = null): void
+    public function do(null|string|array|object $parameter = null): void
     {
         $text = '';
-        if($parameter !== null && is_array($parameter)) {
+        if(is_array($parameter)) {
             $text = $parameter['html'];
             $this->useVariables = $parameter['useVariables'];
         }

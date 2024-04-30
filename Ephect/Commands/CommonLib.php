@@ -5,7 +5,7 @@ namespace Ephect\Commands;
 use Ephect\Framework\CLI\Application;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Element;
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 
 class CommonLib extends Element
 {
@@ -23,32 +23,32 @@ class CommonLib extends Element
         $common = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'Common';
         $src_dir = $common . DIRECTORY_SEPARATOR . 'config';
 
-        Utils::safeMkDir(CONFIG_DIR);
+        File::safeMkDir(CONFIG_DIR);
         $destDir = realpath(CONFIG_DIR);
 
-        $tree = Utils::walkTreeFiltered($src_dir);
+        $tree = File::walkTreeFiltered($src_dir);
 
         foreach ($tree as $filePath) {
-            Utils::safeWrite($destDir . $filePath, '');
+            File::safeWrite($destDir . $filePath, '');
             copy($src_dir . $filePath, $destDir . $filePath);
         }
 
         $src_dir = $common . DIRECTORY_SEPARATOR . 'public';
 
-        Utils::safeMkDir(CONFIG_DOCROOT);
+        File::safeMkDir(CONFIG_DOCROOT);
         $destDir = realpath(CONFIG_DOCROOT);
 
-        $tree = Utils::walkTreeFiltered($src_dir);
+        $tree = File::walkTreeFiltered($src_dir);
 
         foreach ($tree as $filePath) {
-            Utils::safeWrite($destDir . $filePath, '');
+            File::safeWrite($destDir . $filePath, '');
             copy($src_dir . $filePath, $destDir . $filePath);
         }
     }
 
     public function requireTree(string $treePath): object
     {
-        $tree = Utils::walkTreeFiltered($treePath, ['php']);
+        $tree = File::walkTreeFiltered($treePath, ['php']);
         $result = ['path' => $treePath, 'tree' => $tree];
 
         return (object)$result;
@@ -56,7 +56,7 @@ class CommonLib extends Element
 
     public function displayTree($path): void
     {
-        $tree = Utils::walkTreeFiltered($path);
+        $tree = File::walkTreeFiltered($path);
         Console::writeLine($tree);
     }
 

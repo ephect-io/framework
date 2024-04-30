@@ -2,9 +2,8 @@
 
 namespace Ephect\Framework\WebComponents;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Utils\File;
 use Exception;
-use function Ephect\Hooks\useEffect;
 
 class Builder
 {
@@ -20,6 +19,7 @@ class Builder
      * @param array $arguments
      * @param string $destDir
      * @return void
+     * @throws Exception
      */
     function saveManifest(string $tagName, string $className, string $entrypoint, array $arguments, string $destDir): void
     {
@@ -42,6 +42,7 @@ class Builder
      *
      * @param string $tagName
      * @param string $className
+     * @param bool $hasBackendProps
      * @param string $entrypoint
      * @param array $arguments
      * @param string $srcDir
@@ -51,31 +52,31 @@ class Builder
     function copyTemplates(string $tagName, string $className, bool $hasBackendProps, string $entrypoint, array $arguments, string $srcDir, string $destDir): void
     {
 
-        $classText = Utils::safeRead($srcDir . 'Base.class.mjs');
-        $classText = str_replace('Base', $className, $classText);
-        $classText = str_replace('entrypoint', $entrypoint, $classText);
+        $classText = File::safeRead($srcDir . 'Base.class.tpl');
+        $classText = str_replace('{{Base}}', $className, $classText);
+        $classText = str_replace('{{entrypoint}}', $entrypoint, $classText);
 
-        $componentText = Utils::safeRead($srcDir . 'Base.tpl');
-        $componentText = str_replace('Base', $className, $componentText);
-        $componentText = str_replace('tag-name', $tagName, $componentText);
-        $componentText = str_replace('entrypoint', $entrypoint, $componentText);
+        $componentText = File::safeRead($srcDir . 'Base.tpl');
+        $componentText = str_replace('{{Base}}', $className, $componentText);
+        $componentText = str_replace('{{tag-name}}', $tagName, $componentText);
+        $componentText = str_replace('{{entrypoint}}', $entrypoint, $componentText);
 
-        $baseElementText =   Utils::safeRead($srcDir . 'BaseElement.js');
-        $baseElementText = str_replace('Base', $className, $baseElementText);
+        $baseElementText =   File::safeRead($srcDir . 'BaseElement.tpl');
+        $baseElementText = str_replace('{{Base}}', $className, $baseElementText);
 
         $parameters = $arguments;
         $arguments[] = 'styles';
         $arguments[] = 'classes';
 
         if (count($arguments) == 0) {
-            $classText = str_replace('(DeclaredAttributes)', "()", $classText);
+            $classText = str_replace('({{DeclaredAttributes}})', "()", $classText);
 
-            $baseElementText = str_replace('GetAttributes', '', $baseElementText);
-            $componentText = str_replace('<Attributes />', '', $componentText);
+            $baseElementText = str_replace('{{GetAttributes}}', '', $baseElementText);
+            $componentText = str_replace('{{Attributes}}', '', $componentText);
 
-            Utils::safeWrite($destDir . "$className.class.mjs", $classText);
-            Utils::safeWrite($destDir . "$className.phtml", $componentText);
-            Utils::safeWrite($destDir . $className . "Element.js", $baseElementText);
+            File::safeWrite($destDir . "$className.class.mjs", $classText);
+            File::safeWrite($destDir . "$className.phtml", $componentText);
+            File::safeWrite($destDir . $className . "Element.js", $baseElementText);
 
             return;
         }
@@ -88,7 +89,7 @@ class Builder
             $properties .= '            ';
         }
 
-        $baseElementText = str_replace('Properties', $properties, $baseElementText);
+        $baseElementText = str_replace('{{Properties}}', $properties, $baseElementText);
 
         $attributes = array_map(function ($item) {
             return "'$item'";
@@ -102,8 +103,6 @@ class Builder
         $attributes = implode(", ", $attributes);
 
         $argumentListAndResult = $thisParameters;
-        $argumentListAndResult[] = "result";
-//        $attributeListAndResult = implode(", ", $argumentListAndResult);
         $thisAttributeList = implode(", ", $thisParameters);
 
         $observeAttributes = <<< HTML
@@ -115,7 +114,7 @@ class Builder
                     }
             HTML;
 
-        $baseElementText = str_replace('ObserveAttributes', $observeAttributes, $baseElementText);
+        $baseElementText = str_replace('{{ObserveAttributes}}', $observeAttributes, $baseElementText);
 
         $getAttributes = '';
         foreach ($arguments as $attribute) {
@@ -127,14 +126,13 @@ class Builder
             $getAttributes .= '    ';
         }
 
-        $classText = str_replace('(DeclaredAttributes)', "(" . $declaredAttributes . ")", $classText);
+        $classText = str_replace('({{DeclaredAttributes}})', "(" . $declaredAttributes . ")", $classText);
 
-        $baseElementText = str_replace('GetAttributes', $getAttributes, $baseElementText);
-        $componentText = str_replace('AttributeList', $thisAttributeList, $componentText);
-//        $componentText = str_replace('<AttributeListAndResult />', $attributeListAndResult, $componentText);
+        $baseElementText = str_replace('{{GetAttributes}}', $getAttributes, $baseElementText);
+        $componentText = str_replace('{{AttributeList}}', $thisAttributeList, $componentText);
 
-        Utils::safeWrite($destDir . "$className.class.mjs", $classText);
-        Utils::safeWrite($destDir . $className . "Element.js", $baseElementText);
+        File::safeWrite($destDir . "$className.class.mjs", $classText);
+        File::safeWrite($destDir . $className . "Element.js", $baseElementText);
 
         if ($hasBackendProps) {
             $namespace = CONFIG_NAMESPACE;
@@ -162,7 +160,7 @@ class Builder
             COMPONENT;
         }
 
-        Utils::safeWrite($destDir . "$className.phtml", $componentText);
+        File::safeWrite($destDir . "$className.phtml", $componentText);
 
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 
 class ComponentFactory

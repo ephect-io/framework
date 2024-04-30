@@ -4,7 +4,7 @@ namespace QuickStart;
 
 use function Ephect\Hooks\useEffect;
 
-function Matriochka1($children)
+function Matriochka1($children): string
 {
     useEffect(function ($children, /* string */ $id, /* string */ $label) {
         $id = $children->props()->id;

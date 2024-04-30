@@ -11,9 +11,11 @@ use Ephect\Framework\Registry\StateRegistry;
 #[CommandDeclaration(desc: "Display the data connections registered.")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         $data = StateRegistry::item('connections');
         Console::writeLine($data);
+
+        return 0;
     }
 }

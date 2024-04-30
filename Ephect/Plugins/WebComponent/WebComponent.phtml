@@ -4,7 +4,7 @@ namespace Ephect\Plugins\WebComponent;
 
 use function Ephect\Hooks\useEffect;
 
-function WebComponent($children)
+function WebComponent($children): string
 {
 
     useEffect(function ($children, /* string */ $tag, /* string */ $args, /* string */ $body, $service) {
