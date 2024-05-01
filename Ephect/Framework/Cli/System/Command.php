@@ -2,14 +2,21 @@
 
 namespace Ephect\Framework\CLI\System;
 
-use function pcntl_exec;
+use Ephect\Framework\CLI\Console;
+use Exception;
 
 class Command
 {
-    public function execute(string $cmd, ...$args): void
+    public function execute(string $cmd, ...$args): int
     {
-        pcntl_exec($cmd, $args);
+        $fqcmd = $cmd . ' '. implode(' ', $args);
+        $return = system($fqcmd, $returnCode);
 
+        if(false === $return) {
+            throw new Exception('Something went wrong while trying to execute: ' . $fqcmd  . '.');
+        }
+        Console::writeLine($return);
+        return $returnCode;
     }
 
     public function which($bin): ?string
@@ -22,8 +29,11 @@ class Command
             return null;
         }
 
-        $result = exec("which $bin", $output, $code);
+        $cmd = "which $bin";
+        if(PHP_OS == 'WINNT') {
+            $cmd = "cmd /c where $bin";
+        }
 
-        return $result;
+        return exec($cmd, $output, $code);
     }
 }
