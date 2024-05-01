@@ -2,7 +2,7 @@
 
 ## What is Ephect ?
 
-**E**phect is a **P**rogramming **H**ybrid **E**nvironment with **C**omponent-based **T**emplates.
+**E**ffective **P**rogramming in **H**ybrid **E**nvironment using **C**omponents-based **T**emplates.
 
 It's a comprehensive solution that combines a lightweight PHP framework and a JavaScript library.
 
