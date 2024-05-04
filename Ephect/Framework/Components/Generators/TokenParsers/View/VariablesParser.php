@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers\View;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\Generators\TokenParsers\AbstractTokenParser;
 
 final class VariablesParser extends AbstractTokenParser
@@ -16,16 +15,15 @@ final class VariablesParser extends AbstractTokenParser
 
         $html = $this->component->getCode();
 
-        $re = '/function \w+ *?\([\$\w, \(\)\/*]*\)([: \w]+)?(.|\s)? *?\{/';
+        $re = '/function \w+ *?\([\$\w, ]*\):? *?\w*?(.|\s|\R)? *?\{/U';
         preg_match_all($re, $html, $matches, PREG_OFFSET_CAPTURE, 0);
 
         $match = $matches[0];
-        $start = $match[0][1] + strlen($match[0][0]) + 1;
+        $start = intval($match[0][1]) + strlen($match[0][0]) + 1;
 
         $re = '/\(([\$\w ,]*)\)/';
         preg_match_all($re, $html, $matches, PREG_OFFSET_CAPTURE, 0);
 
-        Console::log($matches[1]);
         $match = $matches[1];
         $funcArguments = explode(', ', $match[0][0]);
 
