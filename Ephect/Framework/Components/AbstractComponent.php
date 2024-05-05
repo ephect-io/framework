@@ -4,6 +4,7 @@ namespace Ephect\Framework\Components;
 
 use BadFunctionCallException;
 use Ephect\Framework\ElementTrait;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Plugins\Router\RouterService;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
@@ -186,9 +187,9 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $html = ob_get_clean();
         } else {
             $props = null;
-            if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
+            if (count($functionArgs) > 0) {
                 $props = new stdClass;
-                foreach ($args as $field => $value) {
+                foreach ($functionArgs as $field => $value) {
                     $props->{$field} = urldecode($value);
                 }
             } else {

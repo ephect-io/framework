@@ -8,11 +8,9 @@ use Ephect\Plugins\Route\RouteEntity;
 use Ephect\Plugins\Route\RouteStructure;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\RouteRegistry;
-use Ephect\Framework\Registry\WebComponentRegistry;
-use Ephect\Framework\WebComponents\ManifestReader;
 use ReflectionFunction;
 
-final class ClosedComponentsParser extends AbstractTokenParser
+final class ClosedComponentsParser extends AbstractComponentParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
@@ -46,31 +44,20 @@ final class ClosedComponentsParser extends AbstractTokenParser
             $componentArgs = [];
             $componentArgs['uid'] = $uid;
 
-            $args = '';
+            $props = '';
             if ($item->props() !== null) {
                 $componentArgs = array_merge($componentArgs, $item->props());
-                $args = json_encode($componentArgs, JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG);
-                $args = "json_decode('$args')";
+                $propsArgs = self::doArgumentsToString($componentArgs);
+                $props = (($propsArgs === null) ? "[]" : $propsArgs);
+//                $props = json_encode($props, JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG);
+//                $props = "json_decode('$props')";
+                $props = "(object) $props";
             }
 
             $funcName = ComponentRegistry::read($componentName);
             $filename = ComponentRegistry::read($funcName);
 
-            $componentRender = "\t\t\t<?php \$fn = \\{$funcName}($args); \$fn(); ?>\n";
-
-            if ($filename === null) {
-                $filename = WebComponentRegistry::read($funcName);
-                if ($filename !== null) {
-
-                    $reader = new ManifestReader($this->component->getMotherUID(), $componentName);
-                    $manifest = $reader->read();
-                    $tag = $manifest->getTag();
-                    $text = str_replace($componentName, $tag, $component);
-                    $text = str_replace('/>', '>', $text);
-                    $text .= '</' . $tag . '>';
-                    File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $text);
-                }
-            }
+            $componentRender = "\t\t\t<?php \$fn = \\{$funcName}($props); \$fn(); ?>\n";
 
             $subject = str_replace($component, $componentRender, $subject);
 
@@ -79,7 +66,7 @@ final class ClosedComponentsParser extends AbstractTokenParser
                 $filename = $muid . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
 
                 $route = new RouteEntity( new RouteStructure($parent->props()) );
-                $middlewareHtml = "function() {\n\tinclude_once CACHE_DIR . '$filename';\n\t\$fn = \\{$funcName}($args); \$fn();\n}\n";
+                $middlewareHtml = "function() {\n\tinclude_once CACHE_DIR . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
                 include_once CACHE_DIR . $filename;
                 $reflection = new ReflectionFunction($funcName);
                 $attrs = $reflection->getAttributes();
@@ -131,4 +118,5 @@ final class ClosedComponentsParser extends AbstractTokenParser
 
         $this->html = $subject;
     }
+
 }

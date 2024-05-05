@@ -8,7 +8,7 @@ use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\WebComponents\ManifestReader;
 
-final class OpenComponentsParser extends AbstractTokenParser
+final class OpenComponentsParser extends AbstractComponentParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
@@ -62,7 +62,6 @@ final class OpenComponentsParser extends AbstractTokenParser
 
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
-
             $propsArgs = self::doArgumentsToString($componentArgs);
             $props = (($propsArgs === null) ? "[]" : $propsArgs);
 
@@ -136,22 +135,7 @@ final class OpenComponentsParser extends AbstractTokenParser
         $this->html = $subject;
     }
 
-    public static function doArgumentsToString(array $componentArgs): ?string
-    {
-        $result = '';
 
-        foreach ($componentArgs as $key => $value) {
-            if (is_array($value)) {
-                $value = json_encode($value);
-            }
-            $pair = '"' . $key . '" => "' . urlencode($value) . '", ';
-            if ($value[0] === '$') {
-                $pair = '"' . $key . '" => ' . $value . ', ';
-            }
-            $result .= $pair;
-        }
-        return ($result === '') ? null : '[' . $result . ']';
-    }
 
     private function argumentsKeys(array $componentArgs): ?array
     {

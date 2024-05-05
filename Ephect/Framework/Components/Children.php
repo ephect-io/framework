@@ -37,6 +37,11 @@ class Children extends Tree implements ChildrenInterface
         return $this->props;
     }
 
+    public function buffer(): ?object
+    {
+        return $this->buffer;
+    }
+
     public function getBuffer(): string
     {
         ob_start();
