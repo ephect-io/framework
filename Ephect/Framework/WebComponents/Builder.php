@@ -56,10 +56,12 @@ class Builder
         $classText = str_replace('{{Base}}', $className, $classText);
         $classText = str_replace('{{entrypoint}}', $entrypoint, $classText);
 
+        $objectName = lcfirst($className);
         $componentText = File::safeRead($srcDir . 'Base.tpl');
         $componentText = str_replace('{{Base}}', $className, $componentText);
         $componentText = str_replace('{{tag-name}}', $tagName, $componentText);
         $componentText = str_replace('{{entrypoint}}', $entrypoint, $componentText);
+        $componentText = str_replace('{{objectName}}', $objectName, $componentText);
 
         $baseElementText =   File::safeRead($srcDir . 'BaseElement.tpl');
         $baseElementText = str_replace('{{Base}}', $className, $baseElementText);

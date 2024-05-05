@@ -23,11 +23,8 @@ class ManifestWriter
             throw new Exception("$destDir creation failed");
         }
 
-        $destDir = realpath($destDir);
-
+        $destDir = realpath($destDir) . DIRECTORY_SEPARATOR;
         $json = json_encode($this->struct->toArray(), JSON_PRETTY_PRINT);
-
-        $destDir .= DIRECTORY_SEPARATOR;
 
         File::safeWrite($destDir . DIRECTORY_SEPARATOR . $name . '.manifest.json', $json);
     }

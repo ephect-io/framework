@@ -31,25 +31,21 @@ class WebComponentService implements WebComponentServiceInterface
 
     public function getBody(string $tag): ?string
     {
-        $uid = '';
-        if (!isset($this->children->props()->slot)) {
-            $uid = $this->children->getUID();
-        } else {
-            if (method_exists($this->children->props()->slot, 'getUID')) {
-                $uid = $this->children->props()->slot->getUID();
+        $componentArgsString = '';
+        $props = $this->children->props()->slot;
+        if ($props !== null) {
+            $componentArgs = [];
+            foreach ($props as $key => $value) {
+                if($key == 'uid') {
+                    continue;
+                }
+                $componentArgs[] = $key . '="' . $value . '"';
             }
-            if (isset($this->children->props()->slot->uid)) {
-                $uid = $this->children->props()->slot->uid;
-            }
+
+            $componentArgsString = ' ' . implode(" ", $componentArgs);
         }
-        $muid = $this->children->getMotherUID();
-        $name = $this->children->getName();
 
-        $textFilename = CACHE_DIR . $muid . DIRECTORY_SEPARATOR . $name . $uid . '.txt';
-
-        $body = File::safeRead($textFilename);
-
-        return $body;
+        return "<$tag$componentArgsString></$tag>";
 
     }
 

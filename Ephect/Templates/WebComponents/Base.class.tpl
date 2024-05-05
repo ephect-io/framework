@@ -1,7 +1,7 @@
 class {{Base}}
 {
 
-    entrypoint({{DeclaredAttributes}}) {
+    {{entrypoint}}({{DeclaredAttributes}}) {
         /**
          * Do something with the parameters
          */

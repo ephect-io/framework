@@ -14,17 +14,19 @@ function WebComponent($children): string
         $tag = $manifest->getTag();
 
         $body = $service->getBody($tag);
-        if ($body === null) {
-            $args = $children->getAttributes();
-            $body = <<< BODY
-            <$tag $args>
-            </$tag>
-            BODY;
-        }
+//        if ($body === null) {
+//            $args = $children->getAttributes();
+//            $body = <<< BODY
+//            <$tag $args>
+//            </$tag>
+//            BODY;
+//        }
     });
 
     return (<<< HTML
+        @if %tag != '' do
         {{ body }}
+        @done
         <% 
             if(!%service->isPending()) {
                 %service->markAsPending();

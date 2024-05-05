@@ -17,8 +17,8 @@
             /**
              * The magic starts here
              */
-            const base = new {{Base}}()
-            const result = base.entrypoint({{AttributeList}})
+            const {{objectName}} = new {{Base}}()
+            const result = {{objectName}}.{{entrypoint}}({{AttributeList}})
 
             this.shadowRoot.innerHTML = document.getElementById('{{Base}}').innerHTML
         }
