@@ -1,4 +1,4 @@
-![Ephect](assets/images/salamandra.png)
+**![Ephect](assets/images/salamandra.png)
 
 ## What is Ephect ?
 
@@ -232,7 +232,11 @@ Once the pages are prepared in cache, browsing them is as fast as possible. The 
 
 ## Requirements
 
-The minimal version of PHP needed for Ephect is 8.2.
+Since Ephect is an hybrid environment, you need both PHP and NodeJS installed.
+
+It's highly recommended to use the last versions.
+
+Ephect is compatible with PHP 8.3 and Node.js LTS 20.x.x.
 
 You may also need to install some PHP extensions, if it's not done yes, like PDO/Sqlite, cUrl, Iconv, etc.
 
@@ -258,72 +262,64 @@ You will see a **app** directory in which you will find the standard structure o
 
 ## Build the application
 
-### Using the PHP only context
+First, install all needed modules.
 
-If no issue is popping up on the console then you can generate your application outside the browser.
+```bash
+npm install
+```
 
-However, you first need to launch the embedded web server.
+To run the application without setting up a web server, you need to serve the application in a separate terminal.
 
-If you're running Windows, you need to type this:
+Open another terminal, move to your project directory and type:
 
-    php -S localhost:8888 -t src/public
+```bash
+php egg serve
+```
 
-otherwise, MacOS and Linux accept this syntax:
-
-    php egg serve
-
-Open another terminal or another tab in your terminal and type:
-
-    php egg build
-
-If you installed the QuickStart application as said previously, you should see something like this:
-
-    Compiling App ... 059ms
-    Compiling Home, querying http://localhost:8000/ ... 193ms
-    Compiling Hello, querying http://localhost:8000/hello/1/2 ... 027ms
-    Compiling World, querying http://localhost:8000/world?name=$1&lname=$2 ... 019ms
-    Compiling Matriochka0, querying http://localhost:8000/matriochka/1 ... 105ms
-    Compiling Info, querying http://localhost:8000/info ... 009ms
-    Compiling Callback, querying http://localhost:8000/callback ... 069ms
-
-You will find the generated application in the directory *cache*.
-
-The build process follows the routes with GET HTTP method, all other methods routes are built on web browser call.
-
-### Using the hybrid context: PHP + JavaScript
-
-First, ensure NodeJS is installed and running with version 20 as a miminum. LTS/Iron is a good choice.
-
-Once it's done, run:
-
-    npm install
-    npm run dev
+Come back to the first terminal and type
+```bash
+npm run dev
+```
 
 If you installed the QuickStart application as said previously, you should see something like this:
 
-    > logo@1.0.0 dev
-    > sh scripts/dev.sh all
 
-    Building web components...
-    asset app.min.js 2.31 KiB [emitted] (name: main)
-    runtime modules 274 bytes 1 module
-    ./app/JavaScripts/index.js 212 bytes [built] [code generated]
-    webpack 5.89.0 compiled successfully in 325 ms
-    'app/Assets/css/app.css' -> 'public/css/app.css'
-    'app/Assets/css/index.css' -> 'public/css/index.css'
-    'app/Assets/css/setup.css' -> 'public/css/setup.css'
-    'app/Assets/img/css/app.css' -> 'public/img/css/app.css'
-    'app/Assets/img/css/index.css' -> 'public/img/css/index.css'
-    'app/Assets/img/css/setup.css' -> 'public/img/css/setup.css'
-    'app/Assets/img/salamandra.png' -> 'public/img/salamandra.png'
-    'node_modules/human-writes/dist/web/human-writes.min.js' -> 'public/modules/human-writes.min.js'
-    Compiling App ... 059ms
-    Compiling Home, querying http://localhost:8000/ ... 193ms
-    Compiling Hello, querying http://localhost:8000/hello/1/2 ... 027ms
-    Compiling World, querying http://localhost:8000/world?name=$1&lname=$2 ... 019ms
-    Compiling Matriochka0, querying http://localhost:8000/matriochka/1 ... 105ms
-    Compiling Info, querying http://localhost:8000/info ... 009ms
-    Compiling Callback, querying http://localhost:8000/callback ... 069ms
+```bash
+> create-app@0.7.0 dev
+> run-script-os
+
+> create-app@0.7.0 dev:darwin:linux
+> bash scripts/unix/dev.sh all
+
+scripts/unix/dev.sh: line 13: warning: here-document at line 11 delimited by end-of-file (wanted `LIST')
+Running webpack...
+asset app.min.js 2.32 KiB [emitted] (name: main)
+runtime modules 274 bytes 1 module
+./app/JavaScripts/index.js 212 bytes [built] [code generated]
+webpack 5.91.0 compiled successfully in 306 ms
+
+Publishing assets...
+'app/Assets/bootstrap.php' -> 'public/bootstrap.php'
+'app/Assets/css/setup.css' -> 'public/css/setup.css'
+'app/Assets/css/index.css' -> 'public/css/index.css'
+'app/Assets/css/app.css' -> 'public/css/app.css'
+'app/Assets/favicon.ico' -> 'public/favicon.ico'
+'app/Assets/img/salamandra.png' -> 'public/img/salamandra.png'
+'app/Assets/index.php' -> 'public/index.php'
+'app/Assets/web.config' -> 'public/web.config'
+
+Sharing modules...
+'node_modules/human-writes/dist/web/human-writes.min.js' -> 'public/modules/human-writes.min.js'
+
+Building the app...
+Compiling App ... 037ms
+Compiling Home, querying http://localhost:8000/ ... 065ms
+Compiling Hello, querying http://localhost:8000/hello/1/2 ... 013ms
+Compiling World, querying http://localhost:8000/world ... 011ms
+Compiling Matriochka0, querying http://localhost:8000/matriochka/1 ... 052ms
+Compiling Info, querying http://localhost:8000/info ... 007ms
+Compiling Callback, querying http://localhost:8000/callback ... 037ms
+```
 
 ## The sample pages
 
