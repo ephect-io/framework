@@ -186,7 +186,7 @@ abstract class AbstractApplication extends Element
         }
     }
 
-    public function help(): void
+    public function help(): int
     {
         $help = '';
         Console::writeLine($this->getName());
@@ -196,6 +196,8 @@ abstract class AbstractApplication extends Element
             $help .= $desc;
         }
         Console::writeLine($help);
+
+        return 0;
     }
 
     public function getName(): string|null
