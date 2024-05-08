@@ -17,7 +17,7 @@ use Throwable;
 class PharLib extends Element
 {
 
-    private EggLib $egg;
+    private CommonLib $egg;
     private Phar $phar;
 
     /**
@@ -44,38 +44,44 @@ class PharLib extends Element
     {
         $result = [];
 
-        $libRoot = APP_CWD . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
+        try {
 
-        if (!file_exists($libRoot)) {
-            mkdir($libRoot);
+            $libRoot = APP_CWD . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
+
+            if (!file_exists($libRoot)) {
+                mkdir($libRoot);
+            }
+
+            $master = $libRoot . 'main';
+            $filename = $master . '.zip';
+            $ephectDir = $master . DIRECTORY_SEPARATOR . 'ephect-main' . DIRECTORY_SEPARATOR . 'Ephect' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+
+            $tree = [];
+
+            if (!file_exists($filename)) {
+                Console::writeLine('Downloading Ephect framework github main branch');
+                $curl = new Curl();
+                [$code, $header, $content] = $curl->request('https://codeload.github.com/ephect-io/framework/zip/main');
+                file_put_contents($filename, $content);
+
+            }
+
+            if (file_exists($filename)) {
+                Console::writeLine($filename);
+                Console::writeLine('Inflating Ephect framework archive');
+                $zip = new Zip();
+                $zip->inflate($filename);
+            }
+
+            if (file_exists($master)) {
+                $php = ['php'];
+                $tree = File::walkTreeFiltered($ephectDir, $php);
+            }
+
+            $result = ['path' => $ephectDir, 'tree' => $tree];
+        } catch (Throwable $exception) {
+            Console::formatException($exception);
         }
-
-        $master = $libRoot . 'master';
-        $filename = $master . '.zip';
-        $ephectDir = $master . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect' . DIRECTORY_SEPARATOR;
-
-        $tree = [];
-
-        if (!file_exists($filename)) {
-            Console::writeLine('Downloading ephect github master');
-            $curl = new Curl();
-            $result = $curl->request('https://codeload.github.com/CodePhoenixOrg/ephect/zip/master');
-            file_put_contents($filename, $result->content);
-        }
-
-        if (file_exists($filename)) {
-            Console::writeLine('Inflating ephect master archive');
-            $zip = new Zip();
-            $zip->inflate($filename);
-        }
-
-        if (file_exists($master)) {
-            $php = ['php'];
-            $tree = File::walkTree($ephectDir, $php);
-        }
-
-        $result = ['path' => $ephectDir, 'tree' => $tree];
-
         return (object)$result;
     }
 
@@ -174,7 +180,7 @@ class PharLib extends Element
     public function addPharFiles(): void
     {
         try {
-            $tree = File::walkTreeFiltered(APP_CWD, ['php']);
+            $tree = File::walkTreeFiltered(EPHECT_ROOT, ['php']);
 
             if (isset($tree[APP_CWD . APP_NAME])) {
                 unset($tree[APP_CWD . APP_NAME]);
