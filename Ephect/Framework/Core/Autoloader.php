@@ -21,6 +21,13 @@ class Autoloader
     {
         $classFilename = FrameworkRegistry::read($className);
 
+        /**
+         * Activate only for debug
+         */
+//        if(empty($classFilename)) {
+//            throw new \Exception("Class $className not found");
+//        }
+
         include $classFilename;
     }
 }
