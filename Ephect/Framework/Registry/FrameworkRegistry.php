@@ -42,20 +42,27 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 }
 
                 if (str_contains($filename, 'Interface')) {
-                    list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(EPHECT_ROOT . $filename);
+                    [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
+                if(str_contains($filename, 'Enum')) {
+                    [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(EPHECT_ROOT . $filename);
+                    $fqname = $namespace . '\\' . $enum;
+                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
+                    continue;
+                }
+
                 if (str_contains($filename, 'Trait')) {
-                    list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(EPHECT_ROOT . $filename);
+                    [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
-                list($namespace, $class) = ElementUtils::getClassDefinitionFromFile(EPHECT_ROOT . $filename);
+                [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(EPHECT_ROOT . $filename);
                 $fqname = $namespace . '\\' . $class;
                 if ($class === '') {
                     list($namespace, $function) = ElementUtils::getFunctionDefinitionFromFile(EPHECT_ROOT . $filename);
@@ -81,23 +88,30 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
         foreach ($sourceFiles as $filename) {
             if (str_contains($filename, 'Interface')) {
-                list($namespace, $interface) = ElementUtils::getInterfaceDefinitionFromFile(SRC_ROOT . $filename);
+                [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $interface;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
             if (str_contains($filename, 'Trait')) {
-                list($namespace, $trait) = ElementUtils::getTraitDefinitionFromFile(SRC_ROOT . $filename);
+                [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $trait;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
-            list($namespace, $class) = ElementUtils::getClassDefinitionFromFile(SRC_ROOT . $filename);
+            if(str_contains($filename, 'Enum')) {
+                [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(SRC_ROOT . $filename);
+                $fqname = $namespace . '\\' . $enum;
+                FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
+                continue;
+            }
+
+            [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(SRC_ROOT . $filename);
             $fqname = $namespace . '\\' . $class;
             if ($class === '') {
-                list($namespace, $function) = ElementUtils::getFunctionDefinitionFromFile(SRC_ROOT . $filename);
+                [$namespace, $function] = ElementUtils::getFunctionDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $function;
             }
             if ($fqname !== '\\') {
