@@ -12,6 +12,12 @@
         "role": "Creator"
     }],
     "require": {
-        "php": "^8.2"
+        "php": "^8.2",
+        "ext-curl": "*",
+        "ext-zip": "*",
+        "ext-readline": "*",
+        "ext-pdo": "*",
+        "ext-sqlite3": "*",
+        "ext-mysqli": "*"
     }
 }
