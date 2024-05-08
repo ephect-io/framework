@@ -60,6 +60,29 @@ final class ElementUtils
         return [$result, $end];
     }
 
+    public static function getEnumDefinitionFromFile($filepath): ?array
+    {
+        $contents = File::safeRead($filepath);
+
+        if ($contents === null) {
+            return null;
+        }
+
+        return self::getEnumDefinition($contents);
+    }
+
+    public static function getEnumDefinition($contents): ?array
+    {
+        [$namespace, $pos] = self::grabKeywordName('namespace', $contents, ';');
+        [$enumName, $pos] = self::grabKeywordName('enum', $contents, ' ');
+        $pos = strpos($contents, '{', $pos);
+
+        $enumName = trim($enumName, '{');
+        $enumName = trim($enumName);
+
+        return [$namespace, $enumName, $pos];
+    }
+
     public static function getTraitDefinitionFromFile($filepath): ?array
     {
         $contents = File::safeRead($filepath);
