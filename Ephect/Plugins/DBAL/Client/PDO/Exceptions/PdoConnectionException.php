@@ -1,0 +1,11 @@
+<?php
+namespace Ephect\Plugins\DBAL\CLient\PDO\Exceptions;
+use Exception;
+
+class PdoConnectionException extends Exception
+{
+    public function __construct(string $message = "" , int $code = 0, \Throwable $previous = NULL)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+}
