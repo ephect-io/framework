@@ -18,6 +18,6 @@
         "ext-readline": "*",
         "ext-pdo": "*",
         "ext-sqlite3": "*",
-        "ext-mysqli": "*"
+        "ext-mysqlnd": "*"
     }
 }

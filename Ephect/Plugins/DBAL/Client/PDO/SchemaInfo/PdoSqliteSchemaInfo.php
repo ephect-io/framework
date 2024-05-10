@@ -1,9 +1,10 @@
 <?php
 namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
 
+use Ephect\Framework\Logger\Logger;
 use SQLite3;
 
-class PdoSQLiteSchemaInfo extends CustomPdoSchemaInfo
+class PdoSQLiteSchemaInfo extends AbstractPdoSchemaInfo
 {
 
     public function getInfo($index): ?object
@@ -29,8 +30,8 @@ class PdoSQLiteSchemaInfo extends CustomPdoSchemaInfo
             $names = [];
             $types = [];
             while ($row = $this->result->fetchArray()) {
-                array_push($this->columnNames, $row[1]);
-                array_push($this->columnTypes, $row[2]);
+                $this->columnNames[] = $row[1];
+                $this->columnTypes[] = $row[2];
             }
         }
 
@@ -71,10 +72,7 @@ class PdoSQLiteSchemaInfo extends CustomPdoSchemaInfo
                 $type = $this->result->columnType($index);
                 $len = 32768;
             } catch (\PDOException $ex) {
-                $errno = $connection->lastErrorCode();
-                if ($errno > 0) {
-                    throw new \PDOException($connection->lastErrorMsg(), (int) $errno, $ex);
-                }
+                Logger::create()->error($ex);
             }
         }
 

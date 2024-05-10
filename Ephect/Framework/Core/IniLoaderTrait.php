@@ -26,7 +26,7 @@ trait IniLoaderTrait
         }
         unset($ini);
 
-        $dataPath = realpath($path . 'data');
+        $dataPath = realpath(dirname($path) . DIRECTORY_SEPARATOR . 'data');
         if (file_exists($dataPath)) {
             $dataDir = dir($dataPath);
 

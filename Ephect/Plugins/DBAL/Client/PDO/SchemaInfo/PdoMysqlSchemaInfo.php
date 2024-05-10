@@ -1,23 +1,19 @@
 <?php
 namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
 
-use mysqli;
+use Ephect\Plugins\DBAL\Client\PDO\PdoConnection;
+use PDO;
 
-class PdoMySQLSchemaInfo extends CustomPdoSchemaInfo
+class PdoMySQLSchemaInfo extends AbstractPdoSchemaInfo
 {
     public function getInfo($index): ?object
     {
         if ($this->result === null) {
             try {
-                $connection = new mysqli(
-                    $this->config->getHost(),
-                    $this->config->getUser(),
-                    $this->config->getPassword(),
-                    $this->config->getDatabaseName(),
-                    ($this->config->getPort() !== '') ? $this->config->getPort() : null
-                );
 
-                $this->result = $connection->query($this->sql);
+                $connection = new PdoConnection($this->config);
+
+                $this->result = $connection->query($this->query);
             } catch (\Exception $ex) {
                 return null;
             }

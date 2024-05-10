@@ -2,43 +2,48 @@
 namespace Ephect\Plugins\DBAL\Client\PDO;
 
 use Ephect\Framework\Element;
+use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\AbstractPdoSchemaInfo;
 use Ephect\Plugins\DBAL\DataStatementInterface;
 
+use Ephect\Plugins\DBAL\ServerTypeEnum;
+use Exception;
+use PDO;
 use PDOStatement;
 use PDOException;
+use Throwable;
 
 class PdoDataStatement extends Element implements DataStatementInterface
 {
-    private $_statement;
-    private $_values;
-    private $_fieldCount;
-    private $_rowCount;
-    private $_meta = array();
-    private $_colNames = [];
-    private $_schemaInfo = null;
-    private $_config = null;
-    private $_connection = null;
-    private $_native_connection = null;
-    private $_sql = '';
-    private $_driver;
-    private $_exception = null;
-    private $_hasException = false;
 
-    public function __construct(?PDOStatement $statement, ?PdoConnection $connection = null, ?string $sql = null, ?PDOException $error = null)
+    private array $_values;
+    private int $_fieldCount;
+    private int $_rowCount;
+    private array $_meta = [];
+    private array $_colNames = [];
+    private AbstractPdoSchemaInfo|null $_schemaInfo = null;
+    private PdoConfiguration|null $_config = null;
+    private PDO $_native_connection;
+    private ServerTypeEnum $_driver;
+    private bool $_hasException = false;
+
+    public function __construct(
+        private readonly ?PDOStatement  $_statement,
+        private readonly PdoConnection      $_connection,
+        private readonly string         $_sql = '',
+        private readonly Throwable|null $_exception = null,
+    )
     {
-        $this->_statement = $statement;
-        $this->_sql = $sql;
-        $this->_exception = $error;
-        $this->_hasException = ($error instanceof \PDOException);
+        parent::__construct($this);
 
-        if ($connection !== null) {
-            $this->_connection = $connection;
-            $this->_native_connection = $connection->getState();
-            $this->_config = $connection->getConfiguration();
+        $this->_hasException = ($this->_exception instanceof PDOException);
+
+        if ($this->_connection !== null) {
+            $this->_native_connection = $this->_connection->getState();
+            $this->_config = $this->_connection->getConfiguration();
             $this->_driver = $this->_config->getDriver();
-            $this->_schemaInfo = $connection->getSchemaInfo();
-            if ($sql !== null) {
-                $this->_schemaInfo->setQuery($sql);
+            $this->_schemaInfo = $this->_connection->getSchemaInfo();
+            if ($this->_sql !== null) {
+                $this->_schemaInfo->setQuery($this->_sql);
             }
         }
     }
@@ -48,7 +53,7 @@ class PdoDataStatement extends Element implements DataStatementInterface
         return $this->_hasException;
     }
 
-    public function getException(): ?\PDOException
+    public function getException(): Throwable|null
     {
         return $this->_exception;
     }
@@ -58,13 +63,13 @@ class PdoDataStatement extends Element implements DataStatementInterface
         return $this->_values[$i];
     }
 
-    public function fetch(int $mode = \PDO::FETCH_NUM): ?array
+    public function fetch(int $mode = PDO::FETCH_NUM): ?array
     {
         $this->_values = $this->_statement->fetch($mode);
         return (!$this->_values) ? null : $this->_values;
     }
 
-    public function fetchAll(int $mode = \PDO::FETCH_NUM): ?array
+    public function fetchAll(int $mode = PDO::FETCH_NUM): ?array
     {
         $this->_values = $this->_statement->fetchAll($mode);
         return (!$this->_values) ? null : $this->_values;
@@ -72,13 +77,13 @@ class PdoDataStatement extends Element implements DataStatementInterface
 
     public function fetchAssoc(): ?array
     {
-        $this->_values = $this->_statement->fetch(\PDO::FETCH_ASSOC);
+        $this->_values = $this->_statement->fetch(PDO::FETCH_ASSOC);
         return (!$this->_values) ? null : $this->_values;
     }
 
     public function fetchAllAssoc(): ?array
     {
-        $this->_values = $this->_statement->fetchAll(\PDO::FETCH_ASSOC);
+        $this->_values = $this->_statement->fetchAll(PDO::FETCH_ASSOC);
         return (!$this->_values) ? null : $this->_values;
     }
 
@@ -92,11 +97,11 @@ class PdoDataStatement extends Element implements DataStatementInterface
         if (!isset($this->_fieldCount)) {
             try {
                 $this->_fieldCount = $this->_statement->columnCount();
-            } catch (\Exception | \PDOException $ex) {
+            } catch (Exception | PDOException $ex) {
                 if (isset($this->_values[0])) {
                     $this->_fieldCount = count($this->_values[0]);
                 } else {
-                    throw new \Exception("Cannot count fields of a row before the resource is fetched", -1, $ex);
+                    throw new Exception("Cannot count fields of a row before the resource is fetched", -1, $ex);
                 }
             }
         }
@@ -113,11 +118,11 @@ class PdoDataStatement extends Element implements DataStatementInterface
 
                 try {
                     $this->_rowCount = $this->_statement->rowCount();
-                } catch (\Exception | \PDOException $ex) {
+                } catch (Exception | PDOException $ex) {
                     if (is_array($this->_values)) {
                         $this->_rowCount = count($this->_values);
                     } else {
-                        throw new \Exception("Cannot count rows of a result set before the resource is fetched", -1, $ex);
+                        throw new Exception("Cannot count rows of a result set before the resource is fetched", -1, $ex);
                     }
                 }
             }

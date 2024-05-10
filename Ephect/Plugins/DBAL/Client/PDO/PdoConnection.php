@@ -5,23 +5,19 @@ use Ephect\Framework\Configuration\AbstractConfiguration;
 use Ephect\Plugins\DBAL\CLient\PDO\Exceptions\PdoConnectionException;
 use Ephect\Plugins\DBAL\CrudQueriesTrait;
 use Ephect\Plugins\DBAL\SqlConnectionInterface;
-use Ephect\Plugins\DBAL\TServerType;
-use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\CustomPdoSchemaInfo;
+use Ephect\Plugins\DBAL\ServerTypeEnum;
+use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\AbstractPdoSchemaInfo;
 use Exception;
 use PDOException;
-
-
-
 use PDO;
 
 class PdoConnection extends AbstractConfiguration implements SqlConnectionInterface
 {
-    private $_state = null;
-    private $_config = null;
-    private $_dsn = '';
-    private $_params = null;
-    private $_statement = null;
-    private $_SchemaInfo = null;
+    private PDO $_state;
+    private PdoConfiguration $_config;
+    private string $_dsn = '';
+    private array|null $_params = null;
+    private AbstractPdoSchemaInfo $_SchemaInfo;
 
     use CrudQueriesTrait;
 
@@ -59,7 +55,7 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
         return $result;
     }
 
-    public function getSchemaInfo() : CustomPdoSchemaInfo
+    public function getSchemaInfo() : AbstractPdoSchemaInfo
     {
         return $this->_SchemaInfo;
     }
@@ -121,7 +117,7 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
                 $this->_state = new \PDO($this->_dsn, $this->_config->getUser(), $this->_config->getPassword(), []);
             }
         } catch (\PDOException $ex) {
-            $this->getlogger()->error($ex, __FILE__, __LINE__);
+            self::getlogger()->error($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;
@@ -131,16 +127,16 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
     {
         $this->_dsn = '';
         $this->_params = (array) null;
-        if ($this->_config->getDriver() == TServerType::MYSQL) {
+        if ($this->_config->getDriver() == ServerTypeEnum::MYSQL) {
             $this->_params = [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"];
             $this->_dsn = $this->_config->getDriver() . ':host=' . $this->_config->getHost() . ';dbname=' . $this->_config->getDatabaseName();
-        } elseif($this->_config->getDriver() == TServerType::SQLSERVER) {
+        } elseif($this->_config->getDriver() == ServerTypeEnum::SQLSERVER) {
             $this->_params = [PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_SYSTEM, PDO::SQLSRV_ATTR_DIRECT_QUERY => true];
             $this->_dsn = $this->_config->getDriver() . ':Server=' . $this->_config->getHost() . ';Database=' . $this->_config->getDatabaseName(); 
-        } elseif($this->_config->getDriver() == TServerType::SQLITE) {
+        } elseif($this->_config->getDriver() == ServerTypeEnum::SQLITE) {
             $this->_dsn = $this->_config->getDriver() . ':' . $this->_config->getDatabaseName(); 
         }
-        $this->_SchemaInfo = CustomPdoSchemaInfo::builder($this->_config);
+        $this->_SchemaInfo = AbstractPdoSchemaInfo::builder($this->_config);
     }
     
     public function query(string $sql = '', ?array $params = null): ?PdoDataStatement

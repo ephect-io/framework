@@ -1,21 +1,16 @@
 <?php
 namespace Ephect\Plugins\DBAL;
 
-class SqlParameters
+readonly class SqlParameters
 {
-    public $Host = '';
-    public $User = '';
-    public $Password = '';
-    public $DatabaseName = '';
-    public $ServerType = 0;
-
-    public function __construct(string $host, string $user, string $password, string $databaseName, string $serverType)
+    public function __construct(
+        public string         $Host = '',
+        public string         $User = '',
+        public string         $Password = '',
+        public string         $DatabaseName = '',
+        public ServerTypeEnum $ServerType = ServerTypeEnum::SQLITE,
+    )
     {
-        $this->Host = $host;
-        $this->User = $user;
-        $this->Password = $password;
-        $this->DatabaseName = $databaseName;
-        $this->ServerType = $serverType;
     }
 
 }

@@ -12,7 +12,7 @@ class DataAccess
 
         $databaseName = realpath(SITE_ROOT . 'data' . DIRECTORY_SEPARATOR . 'crypto.db');
 
-        $sqlConfig = new PdoConfiguration(TServerType::SQLITE, $databaseName);
+        $sqlConfig = new PdoConfiguration(ServerTypeEnum::SQLITE, $databaseName);
         $connection = new PdoConnection($sqlConfig);
 
         $isFound = (file_exists($databaseName));
@@ -38,7 +38,7 @@ class DataAccess
         if ($isFound) {
             $size = filesize($databaseName);
         }
-        $sqlConfig = new PdoConfiguration(TServerType::SQLITE, $databaseName);
+        $sqlConfig = new PdoConfiguration(ServerTypeEnum::SQLITE, $databaseName);
         $connection = new PdoConnection($sqlConfig);
 
         $connection->open();

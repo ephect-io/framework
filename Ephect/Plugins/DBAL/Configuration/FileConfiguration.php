@@ -6,7 +6,7 @@ use Ephect\Framework\Configuration\AbstractConfiguration;
 class FileConfiguration extends AbstractConfiguration
 {
     //put your code here
-    protected $innerList = [];
+    protected array $innerList = [];
     
     public function configure() : void
     {
@@ -15,13 +15,6 @@ class FileConfiguration extends AbstractConfiguration
 
     public function readLine() : \Iterator
     {
-        $result = yield $this->innerList;
-
-//        $result = each($this->innerList);
-//        if (!$result) {
-//            reset($this->innerList);
-//        }
-
-        return $result;
+        return yield $this->innerList;
     }
 }

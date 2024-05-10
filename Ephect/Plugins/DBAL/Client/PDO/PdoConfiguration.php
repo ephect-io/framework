@@ -1,40 +1,39 @@
 <?php
 namespace Ephect\Plugins\DBAL\Client\PDO;
 
+use Ephect\Framework\Registry\StateRegistry;
+use Ephect\Plugins\DBAL\Data\JsonConfiguration;
+use Ephect\Plugins\DBAL\ServerTypeEnum;
+
 class PdoConfiguration extends JsonConfiguration
 {
-    private $_driver = '';
-    private $_host = '';
-    private $_databaseName = '';
-    private $_user = '';
-    private $_password = '';
-    private $_port = '';
 
-    public function __construct(?string $driver = '', ?string $databaseName = '', ?string $host = '', ?string $user = '', ?string $password = '', ?string $port = '')
+    public function __construct(
+        private ServerTypeEnum $_driver = ServerTypeEnum::SQLITE,
+        private string $_host = '',
+        private string $_databaseName = '',
+        private string $_user = '',
+        private string $_password = '',
+        private string $_port = '',
+    )
     {
-        $this->_driver = $driver;
-        $this->_databaseName = $databaseName;
-        $this->_host = $host;
-        $this->_user = $user;
-        $this->_password = $password;
-        $this->_port = $port;
-
+        parent::__construct($this);
         $this->canConfigure = false;
     }
 
-    public function loadConfiguration(string $confname): bool
+    public function loadConfiguration(string $filename): bool
     {
         $result = false;
 
-        if (file_exists($confname)) {
-            $result = parent::loadConfiguration($confname);
+        if (file_exists($filename)) {
+            $result = parent::loadConfiguration($filename);
 
             return $result;
         }
 
-        if (TRegistry::exists('connections', $confname)) {
+        if (StateRegistry::exists('connections', $filename)) {
             $this->canConfigure = false;
-            $this->contents = TRegistry::read('connections', $confname);
+            $this->contents = StateRegistry::read('connections', $filename);
 
             $this->configure();
 
@@ -52,16 +51,16 @@ class PdoConfiguration extends JsonConfiguration
 
         $this->_driver = $this->contents['driver'];
         $this->_databaseName = $this->contents['database'];
-        if($this->_driver == TServerType::SQLITE) {
+        if($this->_driver == ServerTypeEnum::SQLITE) {
             $this->_databaseName = APP_DATA . $this->_databaseName;
         }
-        $this->_host = isset($this->contents['host']) ? $this->contents['host'] : '';
-        $this->_user = isset($this->contents['user']) ? $this->contents['user'] : '';
-        $this->_password = isset($this->contents['password']) ? $this->contents['password'] : '';
-        $this->_port = isset($this->contents['port']) ? $this->contents['port'] : '';
+        $this->_host = !isset($this->contents['host']) ? '' : $this->contents['host'];
+        $this->_user = !isset($this->contents['user']) ? '' : $this->contents['user'];
+        $this->_password = !isset($this->contents['password']) ? '' : $this->contents['password'];
+        $this->_port = !isset($this->contents['port']) ? '' : $this->contents['port'];
     }
 
-    public function getDriver(): string
+    public function getDriver(): ServerTypeEnum
     {
         return $this->_driver;
     }

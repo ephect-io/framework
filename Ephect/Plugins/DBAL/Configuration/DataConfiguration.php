@@ -5,35 +5,31 @@ use Ephect\Framework\Configuration\AbstractConfiguration;
 
 abstract class DataConfiguration extends AbstractConfiguration
 {
-    private $_driver = '';
-    private $_host = '';
-    private $_databaseName = '';
-    private $_user = '';
-    private $_password = '';
-    private $_port = 0;
 
-    public function __construct($driver, $databaseName, $host = '', $user = '', $password = '', $port = 0)
+    public function __construct(
+        private readonly string $_driver = '',
+        private readonly string $_host = '',
+        private readonly string $_databaseName = '',
+        private readonly string $_user = '',
+        private readonly string $_password = '',
+        private readonly int    $_port = 0,
+
+    )
     {
         parent::__construct($this);
 
-        $this->_driver = $driver;
-        $this->_databaseName = $databaseName;
-        $this->_host = $host;
-        $this->_user = $user;
-        $this->_password = $password;
-        $this->_port = $port;
     }
 
     public function configure() : void
     {
     }
 
-    public function getDriver()
+    public function getDriver(): string
     {
         return $this->_driver;
     }
     
-    public function getDatabaseName()
+    public function getDatabaseName(): string
     {
         return $this->_databaseName;
     }
@@ -41,22 +37,22 @@ abstract class DataConfiguration extends AbstractConfiguration
     /*
      * Following properties are default null string in constructor because they may not be used (eg: SQLite)
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->_host;
     }
 
-    public function getUser()
+    public function getUser(): string
     {
         return $this->_user;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->_password;
     }
 
-    public function getPort()
+    public function getPort(): int
     {
         return $this->_port;
     }

@@ -1,32 +1,34 @@
 <?php
 namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
 
+use Ephect\Framework\Configuration\ConfigurableInterface;
 use Ephect\Framework\Logger\Logger;
 use Ephect\Plugins\DBAL\Client\PDO\PdoConfiguration;
-use Ephect\Plugins\DBAL\TServerType;
+use Ephect\Plugins\DBAL\DataStatementInterface;
+use Ephect\Plugins\DBAL\ServerTypeEnum;
 
 use PDOException;
 
-abstract class CustomPdoSchemaInfo implements PdoSchemaInfoInterface
+abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
 {
-    protected $config = null;
-    protected $driver = '';
-    protected $statement;
-    protected $values;
-    protected $fieldCount;
-    protected $rowCount;
-    protected $meta = [];
-    protected $columnNames = null;
-    protected $columnTypes = null;
-    protected $query = '';
-    protected $result = null;
-    protected $native_types = [];
-    protected $native2php_assoc = [];
-    protected $native2php_num = [];
-    protected $typesMapper = null;
-    protected $cs = null;
-    protected $info = null;
-    protected $queryIsATable = false;
+    protected ConfigurableInterface|null $config = null;
+    protected ServerTypeEnum $driver = ServerTypeEnum::SQLITE;
+    protected DataStatementInterface $statement;
+    protected array $values;
+    protected int $fieldCount;
+    protected int $rowCount;
+    protected array $meta = [];
+    protected array|null $columnNames = null;
+    protected array|null $columnTypes = null;
+    protected string $query = '';
+    protected mixed $result;
+    protected array $native_types = [];
+    protected array $native2php_assoc = [];
+    protected array $native2php_num = [];
+    protected object|null $typesMapper = null;
+    protected string|null $cs = null;
+    protected object|null $info = null;
+    protected bool $queryIsATable = false;
 
     public function __construct(PdoConfiguration $config)
     {
@@ -34,16 +36,16 @@ abstract class CustomPdoSchemaInfo implements PdoSchemaInfoInterface
         $this->setTypes();
     }
 
-    public static function builder(PdoConfiguration $config): CustomPdoSchemaInfo
+    public static function builder(PdoConfiguration $config): AbstractPdoSchemaInfo
     {
         $result = null;
 
         try {
-            if ($config->getDriver() == TServerType::MYSQL) {
+            if ($config->getDriver() == ServerTypeEnum::MYSQL) {
                 $result = new PdoMySQLSchemaInfo($config);
             }
 
-            if ($config->getDriver() == TServerType::SQLITE) {
+            if ($config->getDriver() == ServerTypeEnum::SQLITE) {
                 $result = new PdoSQLiteSchemaInfo($config);
             }
         } catch (PDOException $ex) {
