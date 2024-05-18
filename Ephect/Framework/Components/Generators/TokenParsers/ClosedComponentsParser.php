@@ -4,6 +4,7 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
+use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Plugins\Route\RouteParserMiddleware;
@@ -57,12 +58,11 @@ final class ClosedComponentsParser extends AbstractComponentParser
 
 
             if($parent !== null) {
-// && $parent->getName() == 'Route'
-
                 $middlewaresList = StateRegistry::item('ComponentParserMiddlewares');
                 if(count($middlewaresList)) {
-                    foreach ($middlewaresList as $middlewareInfo) {
-                        [$filename, $middlewareClass] = $middlewareInfo;
+                    FrameworkRegistry::uncache();
+                    foreach ($middlewaresList as $middlewareClass) {
+                        $filename = FrameworkRegistry::read($middlewareClass);
                         include_once $filename;
                         if($middlewareClass instanceof ComponentParserMiddlewareInterface) {
                             $middleware = new $middlewareClass;
