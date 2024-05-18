@@ -2,7 +2,6 @@
 
 namespace Ephect\Plugins\Route;
 
-use Ephect\Framework\Components\Children;
 use Ephect\Plugins\Router\RouterService;
 use stdClass;
 use function Ephect\Hooks\useEffect;
@@ -16,6 +15,9 @@ function Route($children): string
         if(method_exists($children, "props")) {
             $props = $children->props();
         }
+
+        $routeService = new RouteService();
+        $routeService->aggregateMiddlewares();
 
         $routeBuilder = new RouteBuilder($props);
         $route = $routeBuilder->build();
