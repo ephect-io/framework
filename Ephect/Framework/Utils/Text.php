@@ -61,7 +61,7 @@ class Text
         return $result;
     }
 
-    public static function arrayToString(array $array): string
+    public static function arrayToString(array $array, bool $prettify = false): string
     {
         $dump = self::var_dump_r($array);
 
@@ -89,11 +89,10 @@ class Text
             $indentLen = $indentsLengths[$i];
             $indent = $indentLen > 0 ? str_repeat(' ', $indentLen) : '';
 
-
-
             if (preg_match($closeArrayRx, $buffer, $matches)) {
                 $convert .= $indent . ']' . ($indent == '' ? '' : ',');
                 $convert .= "\n";
+
                 $stringLen = strlen($matches[0]) + 1;
                 $buffer = substr($buffer, $stringLen);
                 $offset += $stringLen;
@@ -113,7 +112,7 @@ class Text
 
                     $value = substr($entries, $offset + $start, $len);
                     $quote = str_starts_with($value, 'function') ? '' : "'";
-                    $value = $quote == '' ? $value : str_replace("\\", "\\\\", $value);
+                    $value = $quote == '' ? $value : addslashes($value);
 
                     if ($j = substr_count($value, "\n")) {
                         $i += $j;
@@ -144,6 +143,10 @@ class Text
                 $convert .= "\n";
 
             }
+        }
+
+        if(!$prettify) {
+            $convert = str_replace("\n", "", $convert);
         }
 
         return $convert;

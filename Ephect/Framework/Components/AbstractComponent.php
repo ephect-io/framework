@@ -188,10 +188,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         } else {
             $props = null;
             if (count($functionArgs) > 0) {
-                $props = new stdClass;
-                foreach ($functionArgs as $field => $value) {
-                    $props->{$field} = urldecode($value);
-                }
+                $props = $functionArgs;
             } else {
                 $routeProps = RouterService::findRouteArguments($fqFunctionName);
                 if ($routeProps !== null) {
@@ -224,18 +221,5 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
         return $html;
     }
 
-//    protected function format(string $html): string
-//    {
-//        $config = [
-//            'indent' => true,
-//            'output-html' => true,
-//            'wrap' => 200
-//        ];
-//
-//        $tidy = new tidy;
-//        $tidy->parseString($html, $config, 'utf8');
-//        $tidy->cleanRepair();
-//
-//        return $tidy->value;
-//    }
+
 }
