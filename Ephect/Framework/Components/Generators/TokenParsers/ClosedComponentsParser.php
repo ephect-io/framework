@@ -4,11 +4,11 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
+use Ephect\Framework\Components\Generators\TokenParsers\Middleware\MiddlewareAttributeInterface;
 use Ephect\Framework\Registry\FrameworkRegistry;
-use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\File;
-use Ephect\Plugins\Route\RouteParserMiddleware;
 use Ephect\Framework\Registry\ComponentRegistry;
+use ReflectionFunction;
 
 final class ClosedComponentsParser extends AbstractComponentParser
 {
@@ -55,24 +55,36 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $componentRender = "\t\t\t<?php \$fn = \\{$funcName}($props); \$fn(); ?>\n";
 
             $subject = str_replace($component, $componentRender, $subject);
+            $filename = $muid . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
 
+            if($parent !== null && is_file(CACHE_DIR . $filename)) {
 
-            if($parent !== null) {
-                $middlewaresList = StateRegistry::item('ComponentParserMiddlewares');
-                if(count($middlewaresList)) {
-                    FrameworkRegistry::uncache();
-                    foreach ($middlewaresList as $middlewareClass) {
-                        $filename = FrameworkRegistry::read($middlewareClass);
-                        include_once $filename;
-                        if($middlewareClass instanceof ComponentParserMiddlewareInterface) {
-                            $middleware = new $middlewareClass;
-                            $middleware->parse($parent, $muid, $funcName, $props);
-                        }
+                include_once CACHE_DIR . $filename;
+
+                $reflection = new ReflectionFunction($funcName);
+                $attrs = $reflection->getAttributes();
+                $middlewaresList = [];
+                foreach ($attrs as $attr) {
+                    $attrNew = $attr->newInstance();
+                    if($attrNew instanceof MiddlewareAttributeInterface) {
+                        $attrMiddlewares = $attrNew->getMiddlewares();
+                        $middlewaresList = [...$middlewaresList, ...$attrMiddlewares];
                     }
                 }
 
-                $parserMiddleware = new RouteParserMiddleware();
-                $parserMiddleware->parse($parent, $muid, $funcName, $props);
+                 if(count($middlewaresList)) {
+                     FrameworkRegistry::uncache();
+                     foreach ($middlewaresList as $middlewareClass) {
+                         $filename = FrameworkRegistry::read($middlewareClass);
+
+                         include_once $filename;
+                         $middleware = new $middlewareClass;
+
+                         if($middleware instanceof ComponentParserMiddlewareInterface) {
+                             $middleware->parse($parent, $muid, $funcName, $props);
+                         }
+                     }
+                 }
             }
 
             $this->result[] = $componentName;
