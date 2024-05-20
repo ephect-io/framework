@@ -10,9 +10,9 @@ use ReflectionFunction;
 
 class RouteParserMiddleware implements ComponentParserMiddlewareInterface
 {
-    public function parse(ComponentEntityInterface $parent, string $motherUID, string $funcName, string $props): void
+    public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props): void
     {
-        if($parent->getName() != 'Route') {
+        if($parent == null || $parent->getName() != 'Route') {
             return;
         }
 
