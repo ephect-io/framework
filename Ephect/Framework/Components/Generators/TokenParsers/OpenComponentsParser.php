@@ -107,9 +107,9 @@ final class OpenComponentsParser extends AbstractComponentParser
             $filename = $this->component->getFlattenSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
-            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props);
-
             $this->result[] = $componentName;
+
+            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props);
 
             $previous = $item;
 

@@ -34,7 +34,7 @@ function Route($children): string
         [$state, $setState] = useState();
         $routes = $state->routes ?? [];
 
-        array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,]);
+        $routes[] = ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
         useState(['routes' => $routes]);
 
     });

@@ -52,12 +52,13 @@ final class ClosedComponentsParser extends AbstractComponentParser
 
             $subject = str_replace($component, $componentRender, $subject);
 
-            $this->declareMiddlewares($parent, $muid, $funcName, $props);
-
             $this->result[] = $componentName;
 
             $filename = $this->component->getFlattenSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+
+            $this->declareMiddlewares($parent, $muid, $funcName, $props);
+
         };
 
         if($child != null) {

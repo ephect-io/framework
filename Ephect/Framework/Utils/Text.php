@@ -49,13 +49,17 @@ class Text
         return $result;
     }
 
-    public static function jsonToPhpReturnedArray(string $json): string
+    public static function jsonToPhpReturnedArray(string $json, bool $prettify = true): string
     {
         $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
         $result = '<?php' . PHP_EOL;
         $result .= 'return ';
 
-        $result .= self::arrayToString($array);
+        if(!is_array($array)) {
+            $result .= "$array";
+        } else {
+            $result .= self::arrayToString($array, $prettify);
+        }
         $result .= ';' . PHP_EOL;
 
         return $result;
