@@ -4,7 +4,6 @@ namespace Ephect\Framework\Components;
 
 use BadFunctionCallException;
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\Logger\Logger;
 use Ephect\Plugins\Router\RouterService;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
@@ -211,12 +210,8 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $fn = call_user_func($fqFunctionName, $props);
             $fn();
             $html = ob_get_clean();
+
         }
-
-
-        // if ($funcName === 'App') {
-        //     $html = self::format($html);
-        // }
 
         return $html;
     }
