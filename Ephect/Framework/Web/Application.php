@@ -100,7 +100,7 @@ class Application extends AbstractApplication
         $constants['FULL_URI'] = FULL_URI;
         $constants['FULL_SSL_URI'] = FULL_SSL_URI;
 
-        StateRegistry::write('console', 'buffer', $constants);
+        StateRegistry::writeItem('console', 'buffer', $constants);
 
         Console::Log('Application constants are :');
         foreach ($constants as $key => $value) {

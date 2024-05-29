@@ -7,7 +7,7 @@ use Ephect\Framework\Registry\StateRegistry;
 function useState(array|object $state = null): array
 {
     $setState = function (array|object $state) {
-        StateRegistry::write('state', $state);
+        StateRegistry::writeItem('state', $state);
     };
 
     if ($state !== null) {

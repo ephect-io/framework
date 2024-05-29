@@ -6,13 +6,13 @@ use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 
-abstract class AbstractRegistry implements AbstractRegistryInterface
+abstract class AbstractRegistry implements RegistryInterface
 {
-    private array $entries = [];
-    private bool $isLoaded = false;
-    private string $baseDirectory = CACHE_DIR;
-    private string $cacheFilename = '';
-    private string $flatFilename = '';
+    protected array $entries = [];
+    protected bool $isLoaded = false;
+    protected string $baseDirectory = CACHE_DIR;
+    protected string $cacheFilename = '';
+    protected string $flatFilename = '';
 
     use ElementTrait;
 
@@ -50,8 +50,6 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
     public function _cache(bool $asArray = false): bool
     {
-        $result = '';
-
         $entries = $this->_items();
 
         $result = json_encode($entries, JSON_PRETTY_PRINT);
@@ -127,7 +125,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         $this->baseDirectory = $directory;
     }
 
-    private function _shortClassName(): string
+    protected function _shortClassName(): string
     {
         $fqname = get_class($this);
         $nameParts = explode('\\', $fqname);

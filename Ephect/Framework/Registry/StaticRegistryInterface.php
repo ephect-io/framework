@@ -4,7 +4,7 @@ namespace Ephect\Framework\Registry;
 
 interface StaticRegistryInterface
 {
-    static function getInstance(): AbstractRegistryInterface;
+    static function getInstance(): RegistryInterface;
 
     static function write(string $key, $item): void;
 

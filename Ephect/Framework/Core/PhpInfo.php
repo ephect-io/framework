@@ -17,7 +17,7 @@ final class PhpInfo
     {
 
         if (StateRegistry::exists('ini', $section)) {
-            return StateRegistry::read('ini', $section);
+            return StateRegistry::readItem('ini', $section);
         }
 
         $root = [];
@@ -98,7 +98,7 @@ final class PhpInfo
                 }
             }
         }
-        StateRegistry::write('ini', $section, $root);
+        StateRegistry::writeItem('ini', $section, $root);
 
         return $root;
     }

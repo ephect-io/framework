@@ -16,12 +16,16 @@ include FRAMEWORK_PATH . 'Utils' . LIBDIR_SEPARATOR . 'File.php';
 include FRAMEWORK_PATH . 'Utils' . LIBDIR_SEPARATOR . 'Text.php';
 include FRAMEWORK_PATH . 'ElementTrait.php';
 include FRAMEWORK_PATH . 'ElementUtils.php';
-include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractRegistryInterface.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'RegistryInterface.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StaticRegistryInterface.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StateRegistryInterface.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractRegistry.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StaticRegistryTrait.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractStaticRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'FrameworkRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'HooksRegistry.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractStateRegistry.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StateRegistry.php';
 
 HooksRegistry::register();
 

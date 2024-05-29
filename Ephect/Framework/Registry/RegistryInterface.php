@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Registry;
 
-interface AbstractRegistryInterface
+interface RegistryInterface
 {
     function _write(string $key, $value): void;
 

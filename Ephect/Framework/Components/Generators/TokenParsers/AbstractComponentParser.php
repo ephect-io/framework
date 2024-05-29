@@ -7,6 +7,7 @@ use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
 use Ephect\Framework\Components\Generators\TokenParsers\Middleware\MiddlewareAttributeInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\FrameworkRegistry;
+use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\Text;
 use ReflectionFunction;
 
@@ -70,6 +71,9 @@ abstract class AbstractComponentParser extends AbstractTokenParser
                 if($middleware instanceof ComponentParserMiddlewareInterface) {
                     $middleware->parse($parent, $motherUID, $funcName, $props);
                 }
+
+                StateRegistry::cacheByMotherUid($motherUID, true);
+
             }
         }
     }
