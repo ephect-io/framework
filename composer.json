@@ -13,6 +13,7 @@
     }],
     "require": {
         "php": "^8.2",
+        "ext-iconv": "*",
         "ext-curl": "*",
         "ext-zip": "*",
         "ext-readline": "*",
