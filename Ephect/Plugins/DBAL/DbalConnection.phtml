@@ -2,22 +2,14 @@
 
 namespace Ephect\Plugins\DBAL;
 
-use Ephect\Framework\Utils\File;
-use Ephect\Framework\Utils\Text;
+use Ephect\Plugins\DBAL\Client\PDO\PdoConnection;
 use function Ephect\Hooks\useState;
 
 function DbalConnection($props): string
 {
+    $conn = PdoConnection::opener($props->conf);
+    useState(["$props->conf" => $conn,]);
 
-    useState(["conf" => $props->conf]);
-
-    [$state] = useState();
-
-    $json = json_encode(["conf" => $state->conf]);
-
-    $text = Text::jsonToPhpReturnedArray($json, true);
-
-    File::safeWrite(CACHE_DIR . "Connection.txt", $text);
     return (<<< HTML
 
     HTML);
