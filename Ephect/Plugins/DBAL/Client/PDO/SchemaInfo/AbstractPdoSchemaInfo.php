@@ -5,14 +5,14 @@ use Ephect\Framework\Configuration\ConfigurableInterface;
 use Ephect\Framework\Logger\Logger;
 use Ephect\Plugins\DBAL\Client\PDO\PdoConfiguration;
 use Ephect\Plugins\DBAL\DataStatementInterface;
-use Ephect\Plugins\DBAL\ServerTypeEnum;
+use Ephect\Plugins\DBAL\ServerType;
 
 use PDOException;
 
 abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
 {
     protected ConfigurableInterface|null $config = null;
-    protected ServerTypeEnum $driver = ServerTypeEnum::SQLITE;
+    protected string $driver = ServerType::SQLITE;
     protected DataStatementInterface $statement;
     protected array $values;
     protected int $fieldCount;
@@ -41,11 +41,11 @@ abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
         $result = null;
 
         try {
-            if ($config->getDriver() == ServerTypeEnum::MYSQL) {
+            if ($config->getDriver() == ServerType::MYSQL) {
                 $result = new PdoMySQLSchemaInfo($config);
             }
 
-            if ($config->getDriver() == ServerTypeEnum::SQLITE) {
+            if ($config->getDriver() == ServerType::SQLITE) {
                 $result = new PdoSQLiteSchemaInfo($config);
             }
         } catch (PDOException $ex) {
