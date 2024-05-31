@@ -9,7 +9,7 @@ use Ephect\Framework\Utils\Text;
 abstract class AbstractStateRegistry extends AbstractRegistry implements RegistryInterface
 {
 
-    public function _cacheByMotherUid(string $motherUid, bool $asArray = false): void
+    public function _saveByMotherUid(string $motherUid, bool $asArray = false): void
     {
         $entries = $this->_items();
 
@@ -23,6 +23,12 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         $registryFilename =  $this->_getCacheFileName($asArray);
         $len = File::safeWrite($registryFilename, $result);
 
+    }
+
+    public function _loadByMotherUid(string $motherUid, bool $asArray = false): void
+    {
+        $this->_setCacheDirectory(CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
+        $this->_load($asArray);
     }
 
     public function _readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
@@ -132,7 +138,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
 
     public function _ini(string $section, string|null $key = null): string|null
     {
-        $section = self::read('ini', $section);
+        $section = $this->_readItem('ini', $section);
         $value = null;
 
         if ($key === null) {

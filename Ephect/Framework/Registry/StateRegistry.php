@@ -26,9 +26,14 @@ class StateRegistry extends AbstractStateRegistry implements StateRegistryInterf
         return self::$instance;
     }
 
-    public static function cacheByMotherUid(string $motherUid, bool $asArray = false): void
+    public static function saveByMotherUid(string $motherUid, bool $asArray = false): void
     {
-        static::getInstance()->_cacheByMotherUid($motherUid, $asArray);
+        static::getInstance()->_saveByMotherUid($motherUid, $asArray);
+    }
+
+    public static function loadByMotherUid(string $motherUid, bool $asArray = false): void
+    {
+        static::getInstance()->_loadByMotherUid($motherUid, $asArray);
     }
 
     public static function dump(string $key): void

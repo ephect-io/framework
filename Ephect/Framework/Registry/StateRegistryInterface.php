@@ -5,7 +5,9 @@ namespace Ephect\Framework\Registry;
 
 interface StateRegistryInterface extends RegistryInterface
 {
-    public function _cacheByMotherUid(string $motherUid, bool $asArray = false): void;
+    public function _saveByMotherUid(string $motherUid, bool $asArray = false): void;
+
+    public function _loadByMotherUid(string $motherUid, bool $asArray = false): void;
 
     public function _readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed;
 

@@ -61,7 +61,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         }
 
         if(count($middlewaresList)) {
-            FrameworkRegistry::uncache();
+            FrameworkRegistry::load();
             foreach ($middlewaresList as $middlewareClass) {
                 $filename = FrameworkRegistry::read($middlewareClass);
 
@@ -72,7 +72,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
                     $middleware->parse($parent, $motherUID, $funcName, $props);
                 }
 
-                StateRegistry::cacheByMotherUid($motherUID, true);
+                StateRegistry::saveByMotherUid($motherUID, true);
 
             }
         }

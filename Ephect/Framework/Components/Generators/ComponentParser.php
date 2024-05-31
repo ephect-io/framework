@@ -21,7 +21,7 @@ class ComponentParser extends Parser implements ParserInterface
     {
         parent::__construct($comp);
 
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
     }
 
     public function doDeclaration(string $uid): ComponentDeclarationStructure

@@ -12,9 +12,9 @@ interface StaticRegistryInterface
 
     static function items(): array;
 
-    static function cache(): bool;
+    static function save(): bool;
 
-    static function uncache(): bool;
+    static function load(): bool;
 
     static function delete(string $key): void;
 

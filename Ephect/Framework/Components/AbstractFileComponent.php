@@ -5,6 +5,7 @@ namespace Ephect\Framework\Components;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Components\Generators\ParserService;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
@@ -33,7 +34,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
             return;
         }
 
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
         $this->class = ComponentRegistry::read($id);
         if ($this->class !== null) {
             $this->filename = ComponentRegistry::read($this->class);
@@ -83,6 +84,10 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
      */
     public function render(?array $functionArgs = null, ?Request $request = null): void
     {
+        if($this->motherUID == $this->uid) {
+            StateRegistry::loadByMotherUid($this->motherUID, true);
+        }
+
         [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
 
         echo $this->renderHTML($cacheFilename, $fqFunctionName, $functionArgs, $request);
@@ -92,8 +97,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
     {
         [$fqFunctionName, $cacheFilename, $isCached] = $this->findComponent($functionName, $motherUID);
         if (!$isCached) {
-            ComponentRegistry::uncache();
-            WebComponentRegistry::uncache();
+            ComponentRegistry::load();
+            WebComponentRegistry::load();
 
             $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName, $motherUID);
@@ -113,8 +118,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
     public function parse(): void
     {
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
-        CodeRegistry::uncache();
-        WebComponentRegistry::uncache();
+        CodeRegistry::load();
+        WebComponentRegistry::load();
 
         $parser = new ParserService();
 
@@ -170,7 +175,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
             $this->code = $parser->getHtml();
         }
 
-        CodeRegistry::cache();
+        CodeRegistry::save();
     }
 
     public function getFlattenSourceFilename(): string
@@ -198,7 +203,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        CodeRegistry::cache();
+        CodeRegistry::save();
 
         return $filename;
     }
@@ -401,7 +406,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         File::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $filename, $this->code);
 
         CodeRegistry::write($this->getFullyQualifiedFunction(), $decl);
-        CodeRegistry::cache();
+        CodeRegistry::save();
     }
 
     protected function cacheHtml(): ?string
@@ -423,7 +428,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
         $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
         CacheRegistry::write($this->motherUID, $cache);
-        CacheRegistry::cache();
+        CacheRegistry::save();
 
         return $result === null ? $result : $cache_file;
     }

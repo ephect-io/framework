@@ -204,7 +204,7 @@ class ParserService implements ParserServiceInterface
     {
         $componentList = array_unique(array_merge($this->componentList, $this->openComponentList));
 
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
         $motherUID = $component->getMotherUID();
 
         foreach ($componentList as $componentName) {

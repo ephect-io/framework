@@ -37,14 +37,14 @@ trait StaticRegistryTrait
         return static::getInstance()->_items();
     }
 
-    public static function cache(bool $asArray = false): bool
+    public static function save(bool $asArray = false): bool
     {
-        return static::getInstance()->_cache($asArray);
+        return static::getInstance()->_save($asArray);
     }
 
-    public static function uncache(bool $asArray = false): bool
+    public static function load(bool $asArray = false): bool
     {
-        return static::getInstance()->_uncache($asArray);
+        return static::getInstance()->_load($asArray);
     }
 
     public static function delete(string $key): void

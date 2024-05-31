@@ -31,15 +31,15 @@ class Application extends AbstractApplication
     public function run(...$params): int
     {
         $this->loadInFile();
-        $compiler = new Builder;
-
-        if (!ComponentRegistry::uncache()) {
+        StateRegistry::load();
+        if (!ComponentRegistry::load()) {
+            $compiler = new Builder;
             $compiler->describeComponents();
             $compiler->prepareRoutedComponents();
         }
 
-        CacheRegistry::uncache();
-        PluginRegistry::uncache();
+        CacheRegistry::load();
+        PluginRegistry::load();
 
         $this->execute();
 

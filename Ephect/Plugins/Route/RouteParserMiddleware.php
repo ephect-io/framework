@@ -34,7 +34,7 @@ class RouteParserMiddleware implements ComponentParserMiddlewareInterface
         if(!count($attrs) || !$isMiddleware) {
             throw new \Exception("$funcName is not a route middleware");
         }
-        RouteRegistry::uncache();
+        RouteRegistry::load();
         $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
 
         if(isset($methodRegistry[$route->getRule()])) {
@@ -52,6 +52,6 @@ class RouteParserMiddleware implements ComponentParserMiddlewareInterface
         }
 
         RouteRegistry::write($route->getMethod(), $methodRegistry);
-        RouteRegistry::cache();
+        RouteRegistry::save();
     }
 }

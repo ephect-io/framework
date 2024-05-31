@@ -17,8 +17,8 @@ class RouterService implements RouterServiceInterface
 
     public function __construct()
     {
-        RouteRegistry::uncache();
-        HttpErrorRegistry::uncache();
+        RouteRegistry::load();
+        HttpErrorRegistry::load();
     }
 
     public static function findRouteArguments(string $route): ?array
@@ -328,7 +328,7 @@ class RouterService implements RouterServiceInterface
 
     public function saveRoutes(): bool
     {
-        return RouteRegistry::cache() && HttpErrorRegistry::cache();
+        return RouteRegistry::save() && HttpErrorRegistry::save();
     }
 
     public function moveCache(): void
