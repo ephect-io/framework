@@ -3,8 +3,8 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
 use Ephect\Framework\Components\Generators\TokenParsers\Middleware\MiddlewareAttributeInterface;
+use Ephect\Framework\Middlewares\ComponentParserMiddlewareInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\StateRegistry;
@@ -52,27 +52,33 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         $reflection = new ReflectionFunction($funcName);
         $attrs = $reflection->getAttributes();
         $middlewaresList = [];
+        $middlewaresArgsList = [];
         foreach ($attrs as $attr) {
             $attrNew = $attr->newInstance();
             if($attrNew instanceof MiddlewareAttributeInterface) {
-                $attrMiddlewares = $attrNew->getMiddlewares();
-                $middlewaresList = [...$middlewaresList, ...$attrMiddlewares];
+                $middlewaresList[$attr->getName()] = [
+                    $attr->getArguments(),
+                    $attrNew->getMiddlewares(),
+                ];
             }
         }
 
         if(count($middlewaresList)) {
             FrameworkRegistry::load();
-            foreach ($middlewaresList as $middlewareClass) {
-                $filename = FrameworkRegistry::read($middlewareClass);
+            foreach ($middlewaresList as $key => $value) {
+                [$arguments, $middlewares] = $value;
+                foreach ($middlewares as $middlewareClass) {
+                    $filename = FrameworkRegistry::read($middlewareClass);
+                    include_once $filename;
+                    $middleware = new $middlewareClass;
 
-                include_once $filename;
-                $middleware = new $middlewareClass;
+                    if($middleware instanceof ComponentParserMiddlewareInterface) {
+                        $middleware->parse($parent, $motherUID, $funcName, $props, $arguments);
+                    }
 
-                if($middleware instanceof ComponentParserMiddlewareInterface) {
-                    $middleware->parse($parent, $motherUID, $funcName, $props);
+                    StateRegistry::saveByMotherUid($motherUID, true);
+
                 }
-
-                StateRegistry::saveByMotherUid($motherUID, true);
 
             }
         }

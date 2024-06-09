@@ -1,8 +1,7 @@
 <?php
 
-namespace Ephect\Framework\Components;
+namespace Ephect\Framework\Aggregators;
 
-use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 

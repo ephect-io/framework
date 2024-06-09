@@ -1,16 +1,18 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace Ephect\Plugins\Route\Middlewares;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
+use Ephect\Framework\Middlewares\ComponentParserMiddlewareInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\RouteRegistry;
+use Ephect\Plugins\Route\RouteEntity;
+use Ephect\Plugins\Route\RouteStructure;
 use ReflectionFunction;
 
 class RouteParserMiddleware implements ComponentParserMiddlewareInterface
 {
-    public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props): void
+    public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props, array $arguments): void
     {
         if($parent == null || $parent->getName() != 'Route') {
             return;

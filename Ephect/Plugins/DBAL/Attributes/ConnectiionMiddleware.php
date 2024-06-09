@@ -10,6 +10,13 @@ use Ephect\Plugins\DBAL\Middlewares\ConnectionParserMiddleware;
 class ConnectionMiddleware implements MiddlewareAttributeInterface
 {
 
+    public function __construct(
+        private string $conf
+    )
+    {
+
+    }
+
     public function getMiddlewares(): array
     {
         return [

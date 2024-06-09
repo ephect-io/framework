@@ -146,6 +146,7 @@ define('CONFIG_HOSTNAME', file_exists(CONFIG_DIR . 'hostname') ? trim(file_get_c
 define('CONFIG_NAMESPACE', file_exists(CONFIG_DIR . 'namespace') ? trim(file_get_contents(CONFIG_DIR . 'namespace')) : APP_NAME);
 define('CONFIG_COMMANDS', file_exists(CONFIG_DIR . 'commands') ? trim(file_get_contents(CONFIG_DIR . 'commands')) : 'Commands');
 define('CONFIG_PAGES', file_exists(CONFIG_DIR . 'pages') ? trim(file_get_contents(CONFIG_DIR . 'pages')) : 'Pages');
+define('CONFIG_LIBRARY', file_exists(CONFIG_DIR . 'library') ? trim(file_get_contents(CONFIG_DIR . 'library')) : 'Library');
 define('CONFIG_COMPONENTS', file_exists(CONFIG_DIR . 'components') ? trim(file_get_contents(CONFIG_DIR . 'components')) : 'Components');
 define('CONFIG_WEBCOMPONENTS', file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : 'WebComponents');
 
@@ -164,10 +165,10 @@ define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
 define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
 
 define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
-define('APP_ROOT', SRC_ROOT . APP_DIR);
+define('APP_ROOT', SITE_ROOT . APP_DIR);
 define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
 define('APP_CLIENT', APP_ROOT . 'client' . DIRECTORY_SEPARATOR);
-define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
+define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
 define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
 define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
 define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);

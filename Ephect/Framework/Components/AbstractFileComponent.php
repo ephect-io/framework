@@ -12,6 +12,7 @@ use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
+use Ephect\Framework\Web\ApplicationIgniter;
 use Ephect\Framework\Web\Request;
 use Exception;
 use ReflectionException;
@@ -86,6 +87,9 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
     {
         if($this->motherUID == $this->uid) {
             StateRegistry::loadByMotherUid($this->motherUID, true);
+            $stateIgniter = new ApplicationIgniter;
+            $stateIgniter->ignite();
+
         }
 
         [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
