@@ -11,8 +11,12 @@ class ApplicationIgniter
     public function ignite(): void
     {
     
-        [$state, $setState] = useState();
+        [$state] = useState();
 
+        if($state === null || !isset($state['middlewares'])) {
+            return;
+        }
+        
         $middlewares = (object) $state['middlewares'];
         foreach ($middlewares as $className => $arguments) {
             $filename = FrameworkRegistry::read($className);

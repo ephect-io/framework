@@ -85,7 +85,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
      */
     public function render(?array $functionArgs = null, ?Request $request = null): void
     {
-        if($this->motherUID == $this->uid) {
+        if($this->motherUID == $this->uid && $this->id !== 'App') {
             StateRegistry::loadByMotherUid($this->motherUID, true);
             $stateIgniter = new ApplicationIgniter;
             $stateIgniter->ignite();
