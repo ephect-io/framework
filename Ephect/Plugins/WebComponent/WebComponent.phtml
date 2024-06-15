@@ -29,9 +29,9 @@ function WebComponent($children): string
         @done
         <% 
             if(!%service->isPending()) {
-                %service->markAsPending();
                 %html = { children };
                 %service->splitHTML(%html);
+                %service->markAsPending();
             }
         %>
     HTML);
