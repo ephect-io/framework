@@ -14,12 +14,7 @@ function Route($children): string
 
         $props = $children;
         if(method_exists($children, "props")) {
-            $args = $children->props();
-
-            $props = new stdClass;
-            foreach ($args as $field => $value) {
-                $props->{$field} = urldecode($value);
-            }
+            $props = $children->props();
         }
 
         $routeBuilder = new RouteBuilder($props);

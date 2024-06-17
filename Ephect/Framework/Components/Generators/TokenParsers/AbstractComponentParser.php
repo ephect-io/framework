@@ -2,6 +2,8 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
+use Ephect\Framework\Utils\Text;
+
 abstract class AbstractComponentParser extends AbstractTokenParser
 {
 
@@ -13,9 +15,11 @@ abstract class AbstractComponentParser extends AbstractTokenParser
 
         foreach ($componentArgs as $key => $value) {
             if (is_array($value)) {
-                $value = json_encode($value);
+                $arrayString = Text::arrayToString($value);
+                $pair = '"' . $key . '" => ' . $arrayString . ', ';
+            } else {
+                $pair = '"' . $key . '" => ' . (addslashes($value) != $value ?  "'" . addslashes($value) . "', " : "'" . $value . "', ");
             }
-            $pair = '"' . $key . '" => ' . (urlencode($value) != $value ?  'urldecode("' . urlencode($value) . '"), ' : '"' . $value . '", ');
             if ($value[0] === '$') {
                 $pair = '"' . $key . '" => ' . $value . ', ';
             }
