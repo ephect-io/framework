@@ -16,9 +16,9 @@ function HtmlSaver($children): string
         @done
         <% 
             if(!%service->isPending()) {
-                %service->markAsPending();
                 %html = { children };
                 %service->storeHTML(%html);
+                %service->markAsPending();
             }
         %>
     HTML);
