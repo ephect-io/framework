@@ -74,18 +74,6 @@ final class OpenComponentsParser extends AbstractComponentParser
             $classArgs = '[]';
 
             $fqComponentName = ComponentRegistry::read($componentName);
-            $filename = ComponentRegistry::read($fqComponentName);
-
-            if ($filename === null) {
-                $filename = WebComponentRegistry::read($fqComponentName);
-                if ($filename !== null) {
-                    $reader = new ManifestReader($motherUID, $componentName);
-                    $manifest = $reader->read();
-                    $tag = $manifest->getTag();
-                    $wcom = str_replace($componentName, $tag, $opener . $componentBody . $closer);
-                    File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $wcom);
-                }
-            }
 
             $preComponentBody = '';
             $pkey = "\$children";
