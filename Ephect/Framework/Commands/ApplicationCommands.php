@@ -73,7 +73,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 
         ksort($usage);
 
-        StateRegistry::write('commands', $usage);
+        StateRegistry::writeItem('commands', $usage);
     }
 
     public function commands(): array

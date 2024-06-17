@@ -301,7 +301,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
             return $result;
         }
 
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
         $compFile = ComponentRegistry::read($this->compName);
         if ($compFile === null) {
             return $result;

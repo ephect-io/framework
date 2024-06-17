@@ -31,15 +31,15 @@ class Application extends AbstractApplication
     public function run(...$params): int
     {
         $this->loadInFile();
-        $compiler = new Builder;
-
-        if (!ComponentRegistry::uncache()) {
+        StateRegistry::load();
+        if (!ComponentRegistry::load()) {
+            $compiler = new Builder;
             $compiler->describeComponents();
             $compiler->prepareRoutedComponents();
         }
 
-        CacheRegistry::uncache();
-        PluginRegistry::uncache();
+        CacheRegistry::load();
+        PluginRegistry::load();
 
         $this->execute();
 
@@ -100,7 +100,7 @@ class Application extends AbstractApplication
         $constants['FULL_URI'] = FULL_URI;
         $constants['FULL_SSL_URI'] = FULL_SSL_URI;
 
-        StateRegistry::write('console', 'buffer', $constants);
+        StateRegistry::writeItem('console', 'buffer', $constants);
 
         Console::Log('Application constants are :');
         foreach ($constants as $key => $value) {

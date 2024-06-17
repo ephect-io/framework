@@ -42,7 +42,7 @@ class WebComponent extends AbstractFileComponent
 
         WebComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
-        ComponentRegistry::cache();
+        ComponentRegistry::save();
     }
 
     public function parse(): void

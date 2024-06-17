@@ -42,13 +42,13 @@ class Builder
      */
     public function describeComponents(): void
     {
-        if (!ComponentRegistry::uncache()) {
+        if (!ComponentRegistry::load()) {
             File::safeMkDir(CACHE_DIR);
             File::safeMkDir(COPY_DIR);
             File::safeMkDir(UNIQUE_DIR);
             File::safeMkDir(STATIC_DIR);
 
-            CodeRegistry::uncache();
+            CodeRegistry::load();
 
             $bootstrapList = File::walkTreeFiltered(SRC_ROOT, ['phtml'], true);
             foreach ($bootstrapList as $key => $compFile) {
@@ -65,28 +65,28 @@ class Builder
                 $this->describeCustomComponent(CUSTOM_COMPONENTS_ROOT, $compFile);
             }
 
-            CodeRegistry::cache();
-            ComponentRegistry::cache();
+            CodeRegistry::save();
+            ComponentRegistry::save();
         }
 
-        if (!PluginRegistry::uncache()) {
+        if (!PluginRegistry::load()) {
             $pluginList = File::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
             foreach ($pluginList as $key => $pluginFile) {
                 $this->describePlugin(PLUGINS_ROOT, $pluginFile);
             }
-            PluginRegistry::cache();
-            ComponentRegistry::cache();
+            PluginRegistry::save();
+            ComponentRegistry::save();
         }
 
         if (file_exists(CUSTOM_WEBCOMPONENTS_ROOT)) {
-            if (!WebComponentRegistry::uncache()) {
+            if (!WebComponentRegistry::load()) {
                 $webcomponentList = File::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
                 foreach ($webcomponentList as $key => $webcomponentFile) {
                     $this->describeWebcomponent(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
                 }
-                CodeRegistry::cache();
-                WebComponentRegistry::cache();
-                ComponentRegistry::cache();
+                CodeRegistry::save();
+                WebComponentRegistry::save();
+                ComponentRegistry::save();
             }
         }
     }
@@ -160,8 +160,8 @@ class Builder
 
     public function prepareRoutedComponents(): void
     {
-        CodeRegistry::uncache();
-        ComponentRegistry::uncache();
+        CodeRegistry::load();
+        ComponentRegistry::load();
 
         $routes = $this->searchForRoutes();
 
@@ -256,7 +256,7 @@ class Builder
 
     public function buildByName(string $name): string
     {
-        PluginRegistry::uncache();
+        PluginRegistry::load();
 
         Console::write("Compiling %s ... ", ConsoleColors::getColoredString($name, ConsoleColors::LIGHT_CYAN));
         Console::getLogger()->info("Compiling %s ... ", $name);

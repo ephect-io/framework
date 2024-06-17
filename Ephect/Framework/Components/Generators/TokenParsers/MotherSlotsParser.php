@@ -26,7 +26,7 @@ class MotherSlotsParser extends AbstractTokenParser
             return;
         }
 
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
 
         $motherUID = $this->component->getMotherUID();
         $doc = new ComponentDocument($this->component);
@@ -85,7 +85,7 @@ class MotherSlotsParser extends AbstractTokenParser
         }
 
         if ($doc->getCount() > 0) {
-            ComponentRegistry::cache();
+            ComponentRegistry::save();
         }
 
         $this->result = $functionFilename;

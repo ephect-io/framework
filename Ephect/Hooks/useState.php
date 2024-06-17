@@ -12,16 +12,10 @@ function useState(array|object $state = null): array
 
     if ($state !== null) {
         $setState($state);
-
-        $json = json_encode($state);
-        $state = json_decode($json);
     }
 
     if ($state === null) {
-        $state = StateRegistry::item('state');
-
-        $json = json_encode($state);
-        $state = json_decode($json);
+        $state = StateRegistry::read('state');
     }
 
     return [$state, $setState];

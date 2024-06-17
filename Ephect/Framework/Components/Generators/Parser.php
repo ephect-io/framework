@@ -25,7 +25,7 @@ class Parser implements ParserInterface
     public function doUncache(): bool
     {
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->component->getMotherUID());
-        return CodeRegistry::uncache();
+        return CodeRegistry::load();
     }
 
     public static function doArgumentsToString(array $componentArgs): ?string
@@ -48,7 +48,7 @@ class Parser implements ParserInterface
 
     public function doCache(): bool
     {
-        return CodeRegistry::cache();
+        return CodeRegistry::save();
     }
 
     public function doArguments(string $componentArgs): ?array

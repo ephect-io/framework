@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Registry;
 
-interface AbstractRegistryInterface
+interface RegistryInterface
 {
     function _write(string $key, $value): void;
 
@@ -10,9 +10,9 @@ interface AbstractRegistryInterface
 
     function _items(): array;
 
-    function _cache(bool $asArray = false): bool;
+    function _save(bool $asArray = false): bool;
 
-    function _uncache(bool $asArray = false): bool;
+    function _load(bool $asArray = false): bool;
 
     function _exists(string $key): bool;
 

@@ -142,7 +142,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
     public function findComponent(string $componentName, string $motherUID): array
     {
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
         $uses = ComponentRegistry::items();
         $fqFuncName = $uses[$componentName] ?? null;
 
@@ -150,7 +150,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             throw new BadFunctionCallException('The component ' . $componentName . ' does not exist.');
         }
 
-        CacheRegistry::uncache();
+        CacheRegistry::load();
 
         if ($motherUID === '') {
             $filename = $uses[$fqFuncName];
