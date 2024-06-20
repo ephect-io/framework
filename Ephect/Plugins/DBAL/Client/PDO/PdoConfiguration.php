@@ -3,13 +3,13 @@ namespace Ephect\Plugins\DBAL\Client\PDO;
 
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Plugins\DBAL\Data\JsonConfiguration;
-use Ephect\Plugins\DBAL\ServerTypeEnum;
+use Ephect\Plugins\DBAL\ServerType;
 
 class PdoConfiguration extends JsonConfiguration
 {
 
     public function __construct(
-        private ServerTypeEnum $_driver = ServerTypeEnum::SQLITE,
+        private string $_driver = '',
         private string $_host = '',
         private string $_databaseName = '',
         private string $_user = '',
@@ -33,7 +33,7 @@ class PdoConfiguration extends JsonConfiguration
 
         if (StateRegistry::exists('connections', $filename)) {
             $this->canConfigure = false;
-            $this->contents = StateRegistry::read('connections', $filename);
+            $this->contents = StateRegistry::readItem('connections', $filename);
 
             $this->configure();
 
@@ -51,7 +51,7 @@ class PdoConfiguration extends JsonConfiguration
 
         $this->_driver = $this->contents['driver'];
         $this->_databaseName = $this->contents['database'];
-        if($this->_driver == ServerTypeEnum::SQLITE) {
+        if($this->_driver == ServerType::SQLITE) {
             $this->_databaseName = APP_DATA . $this->_databaseName;
         }
         $this->_host = !isset($this->contents['host']) ? '' : $this->contents['host'];
@@ -60,7 +60,7 @@ class PdoConfiguration extends JsonConfiguration
         $this->_port = !isset($this->contents['port']) ? '' : $this->contents['port'];
     }
 
-    public function getDriver(): ServerTypeEnum
+    public function getDriver(): string
     {
         return $this->_driver;
     }

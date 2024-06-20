@@ -1,0 +1,24 @@
+<?php
+
+namespace Ephect\Plugins\DBAL;
+
+use Ephect\Framework\Utils\File;
+use Ephect\Framework\Utils\Text;
+use function Ephect\Hooks\useState;
+
+function DbalConnection($props): string
+{
+
+    useState(["conf" => $props->conf]);
+
+    [$state] = useState();
+
+    $json = json_encode(["conf" => $state->conf]);
+
+    $text = Text::jsonToPhpReturnedArray($json, true);
+
+    File::safeWrite(CACHE_DIR . "Connection.txt", $text);
+    return (<<< HTML
+
+    HTML);
+}

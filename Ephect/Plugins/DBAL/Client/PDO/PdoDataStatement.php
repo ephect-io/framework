@@ -5,7 +5,7 @@ use Ephect\Framework\Element;
 use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\AbstractPdoSchemaInfo;
 use Ephect\Plugins\DBAL\DataStatementInterface;
 
-use Ephect\Plugins\DBAL\ServerTypeEnum;
+use Ephect\Plugins\DBAL\ServerType;
 use Exception;
 use PDO;
 use PDOStatement;
@@ -23,7 +23,7 @@ class PdoDataStatement extends Element implements DataStatementInterface
     private AbstractPdoSchemaInfo|null $_schemaInfo = null;
     private PdoConfiguration|null $_config = null;
     private PDO $_native_connection;
-    private ServerTypeEnum $_driver;
+    private ServerType $_driver;
     private bool $_hasException = false;
 
     public function __construct(

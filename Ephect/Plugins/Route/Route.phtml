@@ -16,9 +16,6 @@ function Route($children): string
             $props = $children->props();
         }
 
-        $routeService = new RouteService();
-        $routeService->aggregateMiddlewares();
-
         $routeBuilder = new RouteBuilder($props);
         $route = $routeBuilder->build();
 

@@ -8,7 +8,7 @@ use Ephect\Framework\Registry\PharRegistry;
 
 define('LIBDIR_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
 define('FRAMEWORK_PATH', dirname(__FILE__) . LIBDIR_SEPARATOR . 'Framework' . LIBDIR_SEPARATOR);
-define('HOOKS_PATH', 'Hooks' . LIBDIR_SEPARATOR);
+define('HOOKS_DIR', 'Hooks' . LIBDIR_SEPARATOR);
 
 include FRAMEWORK_PATH . 'Core' . LIBDIR_SEPARATOR . 'constants.php';
 include FRAMEWORK_PATH . 'Core' . LIBDIR_SEPARATOR . 'Autoloader.php';

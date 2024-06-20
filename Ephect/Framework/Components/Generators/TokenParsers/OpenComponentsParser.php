@@ -62,8 +62,7 @@ final class OpenComponentsParser extends AbstractComponentParser
 
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
-            $propsArgs = self::doArgumentsToString($componentArgs);
-            $props = (($propsArgs === null) ? "[]" : $propsArgs);
+            $props = self::doArgumentsToString($componentArgs) ?? "[]";
 
             $propsKeys = $this->argumentsKeys($this->useVariables);
 
@@ -109,6 +108,8 @@ final class OpenComponentsParser extends AbstractComponentParser
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->result[] = $componentName;
+
+//            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props);
 
             $previous = $item;
 

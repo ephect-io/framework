@@ -1,24 +1,26 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace Ephect\Plugins\Route\Middlewares;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
+use Ephect\Framework\Middlewares\ComponentParserMiddlewareInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\RouteRegistry;
+use Ephect\Plugins\Route\RouteEntity;
+use Ephect\Plugins\Route\RouteStructure;
 use ReflectionFunction;
 
 class RouteParserMiddleware implements ComponentParserMiddlewareInterface
 {
-    public function parse(ComponentEntityInterface $parent, string $motherUID, string $funcName, string $props): void
+    public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props, array $arguments): void
     {
-        if($parent->getName() != 'Route') {
+        if($parent == null || $parent->getName() != 'Route') {
             return;
         }
 
         $filename = $motherUID . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
 
-        $route = new RouteEntity( new RouteStructure($parent->props()) );
+        $route = new RouteEntity(new RouteStructure($parent->props()));
         $middlewareHtml = "function() {\n\tinclude_once CACHE_DIR . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
         include_once CACHE_DIR . $filename;
         $reflection = new ReflectionFunction($funcName);
@@ -34,7 +36,7 @@ class RouteParserMiddleware implements ComponentParserMiddlewareInterface
         if(!count($attrs) || !$isMiddleware) {
             throw new \Exception("$funcName is not a route middleware");
         }
-        RouteRegistry::uncache();
+        RouteRegistry::load();
         $methodRegistry = RouteRegistry::read($route->getMethod()) ?: [];
 
         if(isset($methodRegistry[$route->getRule()])) {
@@ -52,6 +54,6 @@ class RouteParserMiddleware implements ComponentParserMiddlewareInterface
         }
 
         RouteRegistry::write($route->getMethod(), $methodRegistry);
-        RouteRegistry::cache();
+        RouteRegistry::save();
     }
 }

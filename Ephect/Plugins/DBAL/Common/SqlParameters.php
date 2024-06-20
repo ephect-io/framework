@@ -8,7 +8,7 @@ readonly class SqlParameters
         public string         $User = '',
         public string         $Password = '',
         public string         $DatabaseName = '',
-        public ServerTypeEnum $ServerType = ServerTypeEnum::SQLITE,
+        public string $ServerType = ServerType::SQLITE,
     )
     {
     }

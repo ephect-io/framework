@@ -1,8 +1,6 @@
 <?php
 
-namespace Ephect\Framework\Components;
-
-use Ephect\Framework\Components\FileComponentInterface;
+namespace Ephect\Framework\Aggregators;
 
 interface MiddlewareAggregatorInterface
 {

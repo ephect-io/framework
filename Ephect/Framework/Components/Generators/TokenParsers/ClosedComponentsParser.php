@@ -3,11 +3,7 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
-use Ephect\Framework\Registry\FrameworkRegistry;
-use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\File;
-use Ephect\Plugins\Route\RouteParserMiddleware;
 use Ephect\Framework\Registry\ComponentRegistry;
 
 final class ClosedComponentsParser extends AbstractComponentParser
@@ -56,29 +52,13 @@ final class ClosedComponentsParser extends AbstractComponentParser
 
             $subject = str_replace($component, $componentRender, $subject);
 
-
-            if($parent !== null) {
-                $middlewaresList = StateRegistry::item('ComponentParserMiddlewares');
-                if(count($middlewaresList)) {
-                    FrameworkRegistry::uncache();
-                    foreach ($middlewaresList as $middlewareClass) {
-                        $filename = FrameworkRegistry::read($middlewareClass);
-                        include_once $filename;
-                        if($middlewareClass instanceof ComponentParserMiddlewareInterface) {
-                            $middleware = new $middlewareClass;
-                            $middleware->parse($parent, $muid, $funcName, $props);
-                        }
-                    }
-                }
-
-                $parserMiddleware = new RouteParserMiddleware();
-                $parserMiddleware->parse($parent, $muid, $funcName, $props);
-            }
-
             $this->result[] = $componentName;
 
             $filename = $this->component->getFlattenSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+
+//            $this->declareMiddlewares($parent, $muid, $funcName, $props);
+
         };
 
         if($child != null) {

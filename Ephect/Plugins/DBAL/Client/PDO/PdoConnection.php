@@ -5,7 +5,7 @@ use Ephect\Framework\Configuration\AbstractConfiguration;
 use Ephect\Plugins\DBAL\CLient\PDO\Exceptions\PdoConnectionException;
 use Ephect\Plugins\DBAL\CrudQueriesTrait;
 use Ephect\Plugins\DBAL\SqlConnectionInterface;
-use Ephect\Plugins\DBAL\ServerTypeEnum;
+use Ephect\Plugins\DBAL\ServerType;
 use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\AbstractPdoSchemaInfo;
 use Exception;
 use PDOException;
@@ -127,16 +127,16 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
     {
         $this->_dsn = '';
         $this->_params = (array) null;
-        if ($this->_config->getDriver() == ServerTypeEnum::MYSQL) {
+        if ($this->_config->getDriver() == ServerType::MYSQL) {
             $this->_params = [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"];
             $this->_dsn = $this->_config->getDriver() . ':host=' . $this->_config->getHost() . ';dbname=' . $this->_config->getDatabaseName();
-        } elseif($this->_config->getDriver() == ServerTypeEnum::SQLSERVER) {
+        } elseif($this->_config->getDriver() == ServerType::SQLSERVER) {
             $this->_params = [PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_SYSTEM, PDO::SQLSRV_ATTR_DIRECT_QUERY => true];
             $this->_dsn = $this->_config->getDriver() . ':Server=' . $this->_config->getHost() . ';Database=' . $this->_config->getDatabaseName(); 
-        } elseif($this->_config->getDriver() == ServerTypeEnum::SQLITE) {
+        } elseif($this->_config->getDriver() == ServerType::SQLITE) {
             $this->_dsn = $this->_config->getDriver() . ':' . $this->_config->getDatabaseName(); 
         }
-        $this->_SchemaInfo = AbstractPdoSchemaInfo::builder($this->_config);
+        // $this->_SchemaInfo = AbstractPdoSchemaInfo::builder($this->_config);
     }
     
     public function query(string $sql = '', ?array $params = null): ?PdoDataStatement
