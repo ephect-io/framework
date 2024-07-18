@@ -144,38 +144,34 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
     private static function _makeFragment(): ComponentEntityInterface
     {
-        $json = <<<JSON
-            {
-                "closer": {
-                    "id": 1,
-                    "parentId": 0,
-                    "text": "<\/>",
-                    "startsAt": 0,
-                    "endsAt": 0,
-                    "contents": {
-                        "startsAt": 0,
-                        "endsAt": 0
-                    }
-                },
-                "uid": "00000000-0000-0000-0000-000000000000",
-                "id": 0,
-                "name": "FakeFragment",
-                "class": null,
-                "component": "Ephect",
-                "text": "<>",
-                "method": "echo",
-                "startsAt": 0,
-                "endsAt": 0,
-                "props": [],
-                "node": [],
-                "hasCloser": true,
-                "isSibling": false,
-                "parentId": -1,
-                "depth": 0
-            }
-        JSON;
-
-        $fragment = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        $fragment = [
+            "closer" =>  [
+                "id" =>  1,
+                "parentId" =>  0,
+                "text" =>  "<\/>",
+                "startsAt" =>  0,
+                "endsAt" =>  0,
+                "contents" =>  [
+                    "startsAt" =>  0,
+                    "endsAt" =>  0
+                ]
+            ],
+            "uid" =>  "00000000-0000-0000-0000-000000000000",
+            "id" =>  0,
+            "name" =>  "FakeFragment",
+            "class" =>  null,
+            "component" =>  "Ephect",
+            "text" =>  "<>",
+            "method" =>  "echo",
+            "startsAt" =>  0,
+            "endsAt" =>  0,
+            "props" =>  [],
+            "node" =>  [],
+            "hasCloser" =>  true,
+            "isSibling" =>  false,
+            "parentId" =>  -1,
+            "depth" =>  0
+        ];
 
         return new ComponentEntity(new ComponentStructure($fragment));
 
