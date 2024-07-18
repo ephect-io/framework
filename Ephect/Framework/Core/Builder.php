@@ -35,6 +35,70 @@ class Builder
         File::delTree(COPY_DIR);
     }
 
+    public function makeCopies(bool $unique = false)
+    {
+        if($unique) {
+            File::safeMkDir(UNIQUE_DIR);
+        } else {
+            File::safeMkDir(COPY_DIR);
+        }
+
+        $bootstrapList = File::walkTreeFiltered(SRC_ROOT, ['phtml'], true);
+        foreach ($bootstrapList as $key => $compFile) {
+            if($unique) {
+                $this->copyUniqueComponent(SRC_ROOT, $key, $compFile);
+            } else {
+                $this->copyComponent(SRC_ROOT, $key, $compFile);
+            }
+        }
+
+        $pagesList = File::walkTreeFiltered(CUSTOM_PAGES_ROOT, ['phtml']);
+        foreach ($pagesList as $key => $pageFile) {
+            if($unique) {
+                $this->copyUniqueComponent(CUSTOM_PAGES_ROOT, $key, $pageFile);
+            } else {
+                $this->copyComponent(CUSTOM_PAGES_ROOT, $key, $pageFile);
+            }
+        }
+
+        $componentsList = File::walkTreeFiltered(CUSTOM_COMPONENTS_ROOT, ['phtml']);
+        foreach ($componentsList as $key => $compFile) {
+            if($unique) {
+                $this->copyUniqueComponent(CUSTOM_COMPONENTS_ROOT, $key, $compFile);
+            } else {
+                $this->copyComponent(CUSTOM_COMPONENTS_ROOT, $key, $compFile);
+            }
+        }
+    }
+
+    public function copyComponent(string $path, string $key, string $filename): void
+    {
+        $root = pathinfo($path, PATHINFO_FILENAME) . DIRECTORY_SEPARATOR;
+
+        if($root === APP_DIR) {
+            $root = DIRECTORY_SEPARATOR;
+        }
+
+        $dirname = pathinfo($filename, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR;
+        $basename = pathinfo($filename, PATHINFO_BASENAME);
+        File::safeMkDir(COPY_DIR . $root . $dirname);
+        copy($path . $dirname . $basename, COPY_DIR . $root . $dirname . $basename);
+    }
+
+    public function copyUniqueComponent(string $path, string $key, string $filename): void
+    {
+        $root = pathinfo($path, PATHINFO_FILENAME) . DIRECTORY_SEPARATOR;
+
+        if($root === APP_DIR) {
+            $root = DIRECTORY_SEPARATOR;
+        }
+
+        $dirname = pathinfo($filename, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR;
+        $basename = pathinfo($filename, PATHINFO_BASENAME);
+        File::safeMkDir(UNIQUE_DIR . $root . $dirname);
+        copy($path . $dirname . $basename, UNIQUE_DIR . $root . $dirname . $basename);
+    }
+
     /**
      * Register all components of the application
      *
@@ -45,8 +109,10 @@ class Builder
         if (!ComponentRegistry::load()) {
             File::safeMkDir(CACHE_DIR);
             File::safeMkDir(COPY_DIR);
-            File::safeMkDir(UNIQUE_DIR);
             File::safeMkDir(STATIC_DIR);
+
+//            $this->makeCopies();
+            $this->makeCopies(true);
 
             CodeRegistry::load();
 
@@ -93,18 +159,18 @@ class Builder
 
     private function describeCustomComponent(string $sourceDir, string $filename): void
     {
-        $cachedSourceViewFile = Component::getFlatFilename($filename);
-        copy($sourceDir . $filename, COPY_DIR . $cachedSourceViewFile);
+        File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
+        copy($sourceDir . $filename, COPY_DIR . $filename);
 
         $comp = new Component();
-        $comp->load($cachedSourceViewFile);
+        $comp->load($filename);
 
         $parser = new ParserService;
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            File::safeWrite(COPY_DIR . $cachedSourceViewFile, $html);
-            $comp->load($cachedSourceViewFile);
+            File::safeWrite(COPY_DIR . $filename, $html);
+            $comp->load($filename);
         }
 
         $comp->analyse();
@@ -115,7 +181,7 @@ class Builder
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        ComponentRegistry::write($cachedSourceViewFile, $uid);
+        ComponentRegistry::write($filename, $uid);
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
@@ -136,11 +202,11 @@ class Builder
 
     private function describeWebcomponent(string $sourceDir, string $filename): void
     {
-        $cachedSourceViewFile = WebComponent::getFlatFilename($filename);
-        copy($sourceDir . $filename, COPY_DIR . $cachedSourceViewFile);
+        File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
+        copy($sourceDir . $filename, COPY_DIR . $filename);
 
         $comp = new WebComponent();
-        $comp->load($cachedSourceViewFile);
+        $comp->load($filename);
         $comp->analyse();
 
         $uid = $comp->getUID();
@@ -149,7 +215,7 @@ class Builder
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        WebComponentRegistry::write($cachedSourceViewFile, $uid);
+        WebComponentRegistry::write($filename, $uid);
         WebComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);

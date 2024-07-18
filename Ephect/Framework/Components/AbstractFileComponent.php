@@ -67,7 +67,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     public static function createByHtml(string $html): static
     {
-        $new = new static();
+        $new = new static;
         $new->code = $html;
 
         return $new;
@@ -110,7 +110,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
             $motherUID = $component->getMotherUID();
 
-            $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getFlattenFilename();
+//            $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getFlattenFilename();
+            $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
         }
 
         return [$fqFunctionName, $cacheFilename];
@@ -158,7 +159,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
         $parser->doFragments($this);
         $this->code = $parser->getHtml();
-        $filename = $this->getFlattenSourceFilename();
+//        $filename = $this->getFlattenSourceFilename();
+        $filename = $this->getSourceFilename();
         File::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->code);
         $this->updateComponent($this);
 
@@ -189,7 +191,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     public static function getFlatFilename(string $basename): string
     {
-        $basename = pathinfo($basename, PATHINFO_BASENAME);
+//        $basename = pathinfo($basename, PATHINFO_BASENAME);
 
         return str_replace('/', '_', $basename);
     }
@@ -198,7 +200,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
     {
         $uid = $component->getUID();
         $motherUID = $component->getMotherUID();
-        $filename = $component->getFlattenSourceFilename();
+//        $filename = $component->getFlattenSourceFilename();
+        $filename = $component->getSourceFilename();
 
         $comp = new Component($uid, $motherUID);
         $comp->load($filename);
@@ -242,99 +245,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         return static::getFlatFilename($this->filename);
     }
 
-    public function identifyComponents(array &$list, ?string $motherUID = null, ?FileComponentInterface $component = null): void
-    {
-
-        $isRoute = false;
-        if ($component === null) {
-            $isRoute = true;
-            $component = $this;
-
-            $motherUID = $component->getMotherUID();
-
-            if (!file_exists(UNIQUE_DIR . $motherUID)) {
-                mkdir(UNIQUE_DIR . $motherUID, 0775);
-
-                $flatFilename = CodeRegistry::getFlatFilename() . '.json';
-                copy(CACHE_DIR . $flatFilename, UNIQUE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
-            }
-        }
-
-        $uid = $component->getUID();
-
-        $cachedir = UNIQUE_DIR . $motherUID . DIRECTORY_SEPARATOR;
-        $copyFile = $component->getFlattenSourceFilename();
-        $funcName = $component->getFunction();
-        $fqFuncName = $component->getFullyQualifiedFunction();
-        $parentHtml = $component->getCode();
-        $token = '_' . str_replace('-', '', $uid);
-
-        $cacheFile = $isRoute ? $cachedir . $funcName . $token . PREHTML_EXTENSION : $cachedir . $copyFile;
-
-        if (file_exists($cacheFile)) {
-            $parentHtml = file_get_contents($cacheFile);
-        }
-
-        $componentList = $component->composedOf();
-
-        if ($componentList === null) {
-            copy(COPY_DIR . $copyFile, $cacheFile);
-        }
-
-        if (!$isRoute) {
-            $copyFile = str_replace(PREHTML_EXTENSION, $token . PREHTML_EXTENSION, $copyFile);
-
-
-            $re = '/(function )(' . $funcName . ')([ ]*\(.*\))/m';
-            $subst = '$1$2' . $token . '$3';
-
-            $parentHtml = preg_replace($re, $subst, $parentHtml);
-        }
-
-        foreach ($componentList as $entity) {
-            $funcName = $entity->getName();
-
-            $fqFuncName = ComponentRegistry::read($funcName);
-
-            if ($fqFuncName === null) {
-                continue;
-            }
-            $nextComponent = $list[$fqFuncName];
-
-            $uid = $entity->getUID();
-            $nextComponent->uid = $uid;
-
-            $token = '_' . str_replace('-', '', $uid);
-
-            $isPlugin = null !== $nextCopyFile = PluginRegistry::read($fqFuncName);
-
-            if (!$isPlugin) {
-                $nextCopyFile = $nextComponent->getSourceFilename();
-                $nextCopyFile = str_replace(PREHTML_EXTENSION, $token . PREHTML_EXTENSION, $nextCopyFile);
-            }
-
-            $re = '/(<)(' . $funcName . ')(((?!_[A-F0-9]{32}).)*)(>)/';
-            $subst = '$1$2' . $token . '$3$5';
-
-            $parentHtml = preg_replace($re, $subst, $parentHtml, 1);
-
-            $re = '/(.*)(<\/)(' . $funcName . ')(>)/su';
-            $subst = '$1$2$3' . $token . '$4';
-
-            $parentHtml = preg_replace($re, $subst, $parentHtml, 1);
-
-            if ($nextComponent !== null) {
-                $component->identifyComponents($list, $motherUID, $nextComponent);
-            }
-        }
-
-        if ($isPlugin) {
-            copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
-        } else {
-            File::safeWrite($cachedir . $copyFile, $parentHtml);
-        }
-    }
-
     public function getSourceFilename(): string
     {
         return $this->filename;
@@ -355,7 +265,11 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
         $cachedir = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
         $componentList = $component->composedOf();
-        $copyFile = $component->getFlattenSourceFilename();
+//        $copyFile = $component->getFlattenSourceFilename();
+        $copyFile = $component->getSourceFilename();
+        $copyPath = pathinfo($copyFile, PATHINFO_DIRNAME);
+
+        File::safeMkDir($cachedir . $copyPath);
 
         if ($componentList === null) {
             if (!file_exists($cachedir . $copyFile)) {
@@ -378,7 +292,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
             $nextCopyFile = '';
             if ($nextComponent !== null) {
-                $nextCopyFile = $nextComponent->getFlattenSourceFilename();
+                $nextCopyFile = $nextComponent->getSourceFilename();
             }
 
             if ($nextComponent === null) {
@@ -406,7 +320,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $cp = new ComponentParser($this);
         $struct = $cp->doDeclaration();
         $decl = $struct->toArray();
-        $filename = $this->getFlattenSourceFilename();
+//        $filename = $this->getFlattenSourceFilename();
+        $filename = $this->getSourceFilename();
         File::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $filename, $this->code);
 
         CodeRegistry::write($this->getFullyQualifiedFunction(), $decl);
@@ -425,12 +340,14 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     private function cacheFile($cacheDir): ?string
     {
-        $cache_file = static::getFlatFilename($this->filename);
+//        $cache_file = static::getFlatFilename($this->filename);
+        $cache_file = $this->getSourceFilename();
         $result = File::safeWrite($cacheDir . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
 
         $cache = (($cache = CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
 
-        $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
+//        $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
+        $cache[$this->getFullyQualifiedFunction()] = $this->getSourceFilename();
         CacheRegistry::write($this->motherUID, $cache);
         CacheRegistry::save();
 
