@@ -2,6 +2,9 @@
 
 namespace Ephect\Framework\Utils;
 
+use ReflectionFunction;
+use SplFileObject;
+
 class Text
 {
     public static function slugify(string $text): ?string
@@ -63,6 +66,29 @@ class Text
         $result .= ';' . PHP_EOL;
 
         return $result;
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    private function callableToString(callable $controller): string
+    {
+        $ref = new ReflectionFunction($controller);
+
+        $file = new SplFileObject($ref->getFileName());
+        $file->seek($ref->getStartLine() - 1);
+
+        $code = '';
+        while ($file->key() < $ref->getEndLine()) {
+            $code .= $file->current();
+            $file->next();
+        }
+
+        $begin = strpos($code, 'function');
+        $end = strrpos($code, '}');
+        $code = substr($code, $begin, $end - $begin + 1);
+
+        return $code;
     }
 
     public static function arrayToString(array $array, bool $prettify = false): string
