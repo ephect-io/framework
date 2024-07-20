@@ -2,8 +2,8 @@
 
 namespace Ephect\Commands\Build;
 
+use Ephect\Apps\Builder\Builder;
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Framework\Core\Builder;
 
 class Lib extends AbstractCommandLib
 {

@@ -200,7 +200,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
     {
         $uid = $component->getUID();
         $motherUID = $component->getMotherUID();
-//        $filename = $component->getFlattenSourceFilename();
         $filename = $component->getSourceFilename();
 
         $comp = new Component($uid, $motherUID);
@@ -265,7 +264,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
         $cachedir = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
         $componentList = $component->composedOf();
-//        $copyFile = $component->getFlattenSourceFilename();
         $copyFile = $component->getSourceFilename();
         $copyPath = pathinfo($copyFile, PATHINFO_DIRNAME);
 
@@ -320,7 +318,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $cp = new ComponentParser($this);
         $struct = $cp->doDeclaration();
         $decl = $struct->toArray();
-//        $filename = $this->getFlattenSourceFilename();
         $filename = $this->getSourceFilename();
         File::safeWrite(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $filename, $this->code);
 
@@ -340,13 +337,11 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     private function cacheFile($cacheDir): ?string
     {
-//        $cache_file = static::getFlatFilename($this->filename);
         $cache_file = $this->getSourceFilename();
         $result = File::safeWrite($cacheDir . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
 
         $cache = (($cache = CacheRegistry::read($this->motherUID)) === null) ? [] : $cache;
 
-//        $cache[$this->getFullyQualifiedFunction()] = static::getFlatFilename($this->getSourceFilename());
         $cache[$this->getFullyQualifiedFunction()] = $this->getSourceFilename();
         CacheRegistry::write($this->motherUID, $cache);
         CacheRegistry::save();
