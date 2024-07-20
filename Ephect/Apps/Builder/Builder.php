@@ -3,13 +3,13 @@
 namespace Ephect\Apps\Builder;
 
 use DateTime;
-use Ephect\Apps\Builder\Copiers\CacheCopier;
+use Ephect\Apps\Builder\Copiers\FilesCopier;
 use Ephect\Apps\Builder\Descriptors\ComponentsDescriptor;
 use Ephect\Apps\Builder\Descriptors\PluginsDescriptor;
 use Ephect\Apps\Builder\Descriptors\WebComponentsDescriptor;
 use Ephect\Apps\Builder\Routes\Finder;
-use Ephect\Apps\Builder\Strategy\BuildByName;
-use Ephect\Apps\Builder\Strategy\BuildByRoute;
+use Ephect\Apps\Builder\Strategy\BuildByNameStrategy;
+use Ephect\Apps\Builder\Strategy\BuildByRouteStrategy;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
@@ -40,7 +40,7 @@ class Builder
             File::safeMkDir(COPY_DIR);
             File::safeMkDir(STATIC_DIR);
 
-            $copier = new CacheCopier;
+            $copier = new FilesCopier;
 
 //            $copier->makeCopies();
             $copier->makeCopies(true); // make unique copies
@@ -115,17 +115,19 @@ class Builder
         $this->routes = $routes;
     }
 
-    public function buildAllRoutes(): string
+    /**
+     * @throws \Exception
+     */
+    public function buildAllRoutes(): void
     {
 
-        $motherUID = (new BuildByName)->do('App');
+        (new BuildByNameStrategy)->build('App');
         $this->routes = RouterService::findRouteNames();
 
+        $buildByRoute = new BuildByRouteStrategy;
         foreach ($this->routes as $route) {
-            (new BuildByRoute)->do($route);
+            $buildByRoute->build($route);
         }
-
-        return $motherUID;
     }
 
 

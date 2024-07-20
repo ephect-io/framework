@@ -11,17 +11,17 @@ use Ephect\Framework\Utils\File;
 use Ephect\Plugins\Router\RouterService;
 use Throwable;
 
-class BuildByName
+class BuildByNameStrategy implements BuiderStrategyInterface
 {
 
-    public function do(string $name): string
+    public function build(string $route): void
     {
         PluginRegistry::load();
 
-        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($name, ConsoleColors::LIGHT_CYAN));
-        Console::getLogger()->info("Compiling %s ... ", $name);
+        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+        Console::getLogger()->info("Compiling %s ... ", $route);
 
-        $comp = new Component($name);
+        $comp = new Component($route);
         $filename = $comp->getFlattenSourceFilename();
 
         $html = '';
@@ -31,7 +31,7 @@ class BuildByName
 
             $time_start = microtime(true);
 
-            $functionArgs = $name === 'App' ? [] : RouterService::findRouteArguments($name);
+            $functionArgs = $route === 'App' ? [] : RouterService::findRouteArguments($route);
 
             ob_start();
             $comp->render($functionArgs);
@@ -55,7 +55,5 @@ class BuildByName
         }
 
         File::safeWrite(STATIC_DIR . $filename, $html);
-
-        return $comp->getMotherUID();
     }
 }

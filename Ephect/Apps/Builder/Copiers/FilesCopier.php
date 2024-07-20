@@ -4,7 +4,7 @@ namespace Ephect\Apps\Builder\Copiers;
 
 use Ephect\Framework\Utils\File;
 
-class CacheCopier
+class FilesCopier
 {
     public function makeCopies(bool $unique = false)
     {

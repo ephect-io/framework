@@ -10,12 +10,12 @@ use Ephect\Framework\Web\Curl;
 use Ephect\Plugins\Router\RouterService;
 use Exception;
 
-class BuildByRoute
+class BuildByRouteStrategy implements BuiderStrategyInterface
 {
     /**
      * @throws Exception
      */
-    public function do($route = 'Default'): void
+    public function build($route = 'Default'): void
     {
 
         $port = trim(File::safeRead(CONFIG_DIR . 'dev_port') ?? '80');
