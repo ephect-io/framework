@@ -27,6 +27,8 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
     public function __construct(?string $id = null, string $motherUID = '')
     {
+        parent::__construct([]);
+
         $this->id = $id ?: '';
         if ($id === null) {
             $this->getUID();
