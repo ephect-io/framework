@@ -3,7 +3,7 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Components\Generators\TokenParsers\Middleware\MiddlewareAttributeInterface;
+use Ephect\Framework\Middlewares\AttributeMiddlewareInterface;
 use Ephect\Framework\Middlewares\ComponentParserMiddlewareInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\FrameworkRegistry;
@@ -55,7 +55,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         $middlewaresArgsList = [];
         foreach ($attrs as $attr) {
             $attrNew = $attr->newInstance();
-            if($attrNew instanceof MiddlewareAttributeInterface) {
+            if($attrNew instanceof AttributeMiddlewareInterface) {
                 $middlewaresList[$attr->getName()] = [
                     $attr->getArguments(),
                     $attrNew->getMiddlewares(),

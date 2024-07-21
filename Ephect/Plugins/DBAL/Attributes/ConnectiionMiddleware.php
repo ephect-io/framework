@@ -3,11 +3,11 @@
 namespace Ephect\Plugins\DBAL\Attributes;
 
 use Attribute;
-use \Ephect\Framework\Components\Generators\TokenParsers\Middleware\MiddlewareAttributeInterface;
+use Ephect\Framework\Middlewares\AttributeMiddlewareInterface;
 use Ephect\Plugins\DBAL\Middlewares\ConnectionParserMiddleware;
 
 #[Attribute(Attribute::TARGET_FUNCTION)]
-class ConnectionMiddleware implements MiddlewareAttributeInterface
+class ConnectionMiddleware implements AttributeMiddlewareInterface
 {
 
     public function __construct(
