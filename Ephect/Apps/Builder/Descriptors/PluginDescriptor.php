@@ -6,7 +6,7 @@ use Ephect\Framework\Components\Plugin;
 use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Utils\File;
 
-class PluginsDescriptor implements DescriptorInterface
+class PluginDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {

@@ -2,11 +2,10 @@
 
 namespace Ephect\Apps\Builder;
 
-use DateTime;
 use Ephect\Apps\Builder\Copiers\FilesCopier;
-use Ephect\Apps\Builder\Descriptors\ComponentsDescriptor;
-use Ephect\Apps\Builder\Descriptors\PluginsDescriptor;
-use Ephect\Apps\Builder\Descriptors\WebComponentsDescriptor;
+use Ephect\Apps\Builder\Descriptors\ComponentListDescriptor;
+use Ephect\Apps\Builder\Descriptors\PluginListDescriptor;
+use Ephect\Apps\Builder\Descriptors\WebComponentListDescriptor;
 use Ephect\Apps\Builder\Routes\Finder;
 use Ephect\Apps\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Apps\Builder\Strategy\BuildByRouteStrategy;
@@ -47,48 +46,29 @@ class Builder
 
             CodeRegistry::load();
 
-            $descriptor = new ComponentsDescriptor;
-
-            $bootstrapList = File::walkTreeFiltered(SRC_ROOT, ['phtml'], true);
-            foreach ($bootstrapList as $key => $compFile) {
-                [$fqcn, $comp] = $descriptor->describe(SRC_ROOT, $compFile);
-                $this->list[$fqcn] = $comp;
-            }
-
-            $pagesList = File::walkTreeFiltered(CUSTOM_PAGES_ROOT, ['phtml']);
-            foreach ($pagesList as $key => $pageFile) {
-                [$fqcn, $comp] = $descriptor->describe(CUSTOM_PAGES_ROOT, $pageFile);
-                $this->list[$fqcn] = $comp;
-            }
-
-            $componentsList = File::walkTreeFiltered(CUSTOM_COMPONENTS_ROOT, ['phtml']);
-            foreach ($componentsList as $key => $compFile) {
-                [$fqcn, $comp] = $descriptor->describe(CUSTOM_COMPONENTS_ROOT, $compFile);
-                $this->list[$fqcn] = $comp;
-            }
+            $descriptor = new ComponentListDescriptor;
+            $components = $descriptor->describe();
+            $this->list = [...$this->list, ...$components];
 
             CodeRegistry::save();
             ComponentRegistry::save();
         }
 
         if (!PluginRegistry::load()) {
-            $descriptor = new PluginsDescriptor;
-            $pluginList = File::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
-            foreach ($pluginList as $key => $pluginFile) {
-                $descriptor->describe(PLUGINS_ROOT, $pluginFile);
-            }
+            $descriptor = new PluginListDescriptor;
+            $plugins = $descriptor->describe();
+            $this->list = [...$this->list, ...$plugins];
+
             PluginRegistry::save();
             ComponentRegistry::save();
         }
 
         if (file_exists(CUSTOM_WEBCOMPONENTS_ROOT)) {
             if (!WebComponentRegistry::load()) {
-                $descriptor = new WebComponentsDescriptor;
-                $webcomponentList = File::walkTreeFiltered(CUSTOM_WEBCOMPONENTS_ROOT, ['phtml']);
-                foreach ($webcomponentList as $key => $webcomponentFile) {
-                    [$fqcn, $comp] = $descriptor->describe(CUSTOM_WEBCOMPONENTS_ROOT, $webcomponentFile);
-                    $this->list[$fqcn] = $comp;
-                }
+                $descriptor = new WebComponentListDescriptor;
+                $webcomponents = $descriptor->describe();
+                $this->list = [...$this->list, ...$webcomponents];
+
                 CodeRegistry::save();
                 WebComponentRegistry::save();
                 ComponentRegistry::save();
@@ -129,8 +109,4 @@ class Builder
             $buildByRoute->build($route);
         }
     }
-
-
-
-
 }

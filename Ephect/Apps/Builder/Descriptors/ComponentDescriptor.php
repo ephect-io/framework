@@ -10,7 +10,7 @@ use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Utils\File;
 
-class ComponentsDescriptor implements DescriptorInterface
+class ComponentDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {

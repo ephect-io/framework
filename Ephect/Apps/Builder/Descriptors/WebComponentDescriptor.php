@@ -9,7 +9,7 @@ use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Utils\File;
 
-class WebComponentsDescriptor implements DescriptorInterface
+class WebComponentDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
