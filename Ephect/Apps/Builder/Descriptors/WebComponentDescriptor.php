@@ -4,10 +4,10 @@ namespace Ephect\Apps\Builder\Descriptors;
 
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
-use Ephect\Framework\Components\WebComponent;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Utils\File;
+use Ephect\Plugins\WebComponent\WebComponent;
 
 class WebComponentDescriptor implements DescriptorInterface
 {

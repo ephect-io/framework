@@ -2,12 +2,9 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use DateTime;
 use Ephect\Framework\Components\ChildrenInterface;
 use Ephect\Framework\Utils\File;
-use Ephect\Framework\WebComponents\ManifestEntity;
-use Ephect\Framework\WebComponents\ManifestReader;
-use Ephect\Framework\WebComponents\Parser;
-use DateTime;
 
 class WebComponentService implements WebComponentServiceInterface
 {

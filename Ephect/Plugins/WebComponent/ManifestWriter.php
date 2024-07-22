@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\WebComponents;
+namespace Ephect\Plugins\WebComponent;
 
 use Ephect\Framework\Utils\File;
 use Exception;

@@ -1,10 +1,11 @@
 <?php
 
-namespace Ephect\Framework\Components;
+namespace Ephect\Plugins\WebComponent;
 
-use Ephect\Framework\Utils\File;
+use Ephect\Framework\Components\AbstractFileComponent;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\WebComponentRegistry;
+use Ephect\Framework\Utils\File;
 
 class WebComponent extends AbstractFileComponent
 {
@@ -22,6 +23,7 @@ class WebComponent extends AbstractFileComponent
 
         use function Ephect\Hooks\useEffect;
 
+        #[WebComponentZeroConf]
         function $function(\$slot): string
         {
         return (<<< HTML
