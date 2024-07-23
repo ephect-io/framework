@@ -6,7 +6,7 @@ use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\ConsoleOptionsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Plugins\WebComponent\Builder;
+use Ephect\Plugins\WebComponent\Builder\Builder;
 use Exception;
 
 class Lib extends AbstractCommandLib

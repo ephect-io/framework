@@ -2,6 +2,8 @@
 
 namespace Ephect\Plugins\WebComponent;
 
+use Ephect\Plugins\WebComponent\Manifest\ManifestEntity;
+
 interface WebComponentServiceInterface
 {
 

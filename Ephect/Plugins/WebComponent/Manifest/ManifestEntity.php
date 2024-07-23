@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Plugins\WebComponent;
+namespace Ephect\Plugins\WebComponent\Manifest;
 
 use Ephect\Framework\Element;
 

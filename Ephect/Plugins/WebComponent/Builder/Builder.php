@@ -1,8 +1,10 @@
 <?php
 
-namespace Ephect\Plugins\WebComponent;
+namespace Ephect\Plugins\WebComponent\Builder;
 
 use Ephect\Framework\Utils\File;
+use Ephect\Plugins\WebComponent\Manifest\ManifestStructure;
+use Ephect\Plugins\WebComponent\Manifest\ManifestWriter;
 use Exception;
 
 class Builder
