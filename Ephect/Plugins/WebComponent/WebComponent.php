@@ -42,7 +42,7 @@ class WebComponent extends AbstractFileComponent
     {
         parent::analyse();
 
-        WebComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
+        ComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
         ComponentRegistry::save();
     }

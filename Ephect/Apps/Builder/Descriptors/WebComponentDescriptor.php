@@ -5,7 +5,7 @@ namespace Ephect\Apps\Builder\Descriptors;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Registry\CodeRegistry;
-use Ephect\Framework\Registry\WebComponentRegistry;
+use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Plugins\WebComponent\WebComponent;
 
@@ -26,8 +26,8 @@ class WebComponentDescriptor implements DescriptorInterface
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        WebComponentRegistry::write($filename, $uid);
-        WebComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
+        ComponentRegistry::write($filename, $uid);
+        ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
         $comp->add($entity);
