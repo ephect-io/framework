@@ -44,6 +44,15 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
 
     public function _writeItem(string|int $item, ...$params): void
     {
+        $concat = function (string|int $key, mixed $value) use ($item): mixed {
+            $result = $value;
+            if(isset($this->entries[$item][$key]) && is_array($this->entries[$item][$key]) && is_array($value)) {
+                $result = array_merge_recursive($this->entries[$item][$key], $value);
+            }
+
+            return $result;
+        };
+
         if (!isset($this->entries[$item])) {
             $this->entries[$item] = [];
         }
@@ -56,7 +65,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
             }
             if (is_array($param0) && count($param0) > 0) {
                 foreach ($param0 as $key => $value) {
-                    $this->entries[$item][$key] = $value;
+                    $this->entries[$item][$key] = $concat($key, $value);
                 }
             }
         }
@@ -64,7 +73,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         if (count($params) === 2) {
             $key = $params[0];
             $value = $params[1];
-            $this->entries[$item][$key] = $value;
+            $this->entries[$item][$key] = $concat($key, $value);
         }
     }
 
