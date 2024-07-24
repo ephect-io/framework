@@ -23,16 +23,6 @@ class ComponentFactory
             return $plugin;
         }
 
-        $isWebComponent = $filename === null && ($filename = WebComponentRegistry::read($fullyQualifiedName)) !== null;
-
-        if ($isWebComponent) {
-            $uid = WebComponentRegistry::read($filename);
-            $webComponent = new WebComponent($uid, $motherUID);
-            $webComponent->load($filename);
-
-            return $webComponent;
-        }
-
         $uid = ComponentRegistry::read($filename);
         $comp = new Component($uid, $motherUID);
         $comp->load($filename);

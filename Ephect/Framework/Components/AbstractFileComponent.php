@@ -45,15 +45,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
 
             $this->uid = ComponentRegistry::read($this->filename);
             $this->uid = $this->uid ?: '';
-        } else {
-            $this->class = WebComponentRegistry::read($id);
-            if ($this->class !== null) {
-                $this->filename = WebComponentRegistry::read($this->class);
-                $this->filename = $this->filename ?: '';
-
-                $this->uid = WebComponentRegistry::read($this->filename);
-                $this->uid = $this->uid ?: '';
-            }
         }
 
         if ($this->uid !== $this->id) {
