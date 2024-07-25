@@ -52,9 +52,12 @@ class Text
         return $result;
     }
 
-    public static function jsonToPhpReturnedArray(string $json, bool $prettify = true): string
+    public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string
     {
-        $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        $array = '';
+        if(!is_array($json)) {
+            $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        }
         $result = '<?php' . PHP_EOL;
         $result .= 'return ';
 
