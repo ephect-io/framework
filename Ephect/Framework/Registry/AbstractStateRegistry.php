@@ -80,7 +80,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
     public function _unshift(string|int $item, string|int $key, mixed $value): void
     {
         if (!isset($this->entries[$item])) {
-            self::push($item, $key, $value);
+            $this->push($item, $key, $value);
         }
 
         if (!isset($this->entries[$item][$key])) {
@@ -129,7 +129,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
     public function _item(string|int $item, string|null $value = null): ?array
     {
         if ($item === '' || $item === null) {
-            return $item;
+            return null;
         }
 
         if (isset($this->entries[$item])) {
