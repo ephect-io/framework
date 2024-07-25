@@ -12,7 +12,6 @@ use Ephect\Apps\Builder\Strategy\BuildByRouteStrategy;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
-use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Plugins\Router\RouterService;
 
@@ -64,13 +63,12 @@ class Builder
         }
 
         if (file_exists(CUSTOM_WEBCOMPONENTS_ROOT)) {
-            if (!WebComponentRegistry::load()) {
+            if (!ComponentRegistry::load()) {
                 $descriptor = new WebComponentListDescriptor;
                 $webcomponents = $descriptor->describe();
                 $this->list = [...$this->list, ...$webcomponents];
 
                 CodeRegistry::save();
-                WebComponentRegistry::save();
                 ComponentRegistry::save();
             }
         }
