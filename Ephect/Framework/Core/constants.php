@@ -17,9 +17,10 @@ if (IS_WEB_APP) {
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
 
-    define('EPHECT_CONFIG', trim(file_get_contents(CONFIG_DIR . 'framework')));
+    define('CONFIG_FRAMEWORK', file_exists(CONFIG_DIR . 'framework') ? trim(file_get_contents(CONFIG_DIR . 'framework')) : 'vendor/ephect-io/framework/Ephect');
+
     define('AJIL_CONFIG', trim(file_get_contents(CONFIG_DIR . 'javascripts')));
-    define('EPHECT_ROOT', SITE_ROOT . EPHECT_CONFIG . DIRECTORY_SEPARATOR);
+    define('EPHECT_ROOT', SITE_ROOT . CONFIG_FRAMEWORK . DIRECTORY_SEPARATOR);
     define('AJIL_ROOT', SITE_ROOT . AJIL_CONFIG . DIRECTORY_SEPARATOR);
 
     $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
@@ -99,8 +100,8 @@ if (!IS_WEB_APP) {
     define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
-    define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
-    define('EPHECT_ROOT', SITE_ROOT . EPHECT . DIRECTORY_SEPARATOR);
+    define('CONFIG_FRAMEWORK', file_exists(CONFIG_DIR . 'framework') ? trim(file_get_contents(CONFIG_DIR . 'framework')) : 'vendor/ephect-io/framework/Ephect');
+    define('EPHECT_ROOT', SITE_ROOT . CONFIG_FRAMEWORK . DIRECTORY_SEPARATOR);
 
     $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR;
     $portable_dir = 'Epehct' . DIRECTORY_SEPARATOR;

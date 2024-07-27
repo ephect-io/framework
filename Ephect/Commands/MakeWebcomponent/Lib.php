@@ -4,7 +4,7 @@ namespace Ephect\Commands\MakeWebComponent;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\CLI\ConsoleOptionsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\WebComponents\Builder;
 use Exception;
