@@ -143,6 +143,9 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
             $this->entries[$item] = [];
             return $this->entries[$item];
         }
+
+        return null;
+
     }
 
     public function _ini(string $section, string|null $key = null): string|null
