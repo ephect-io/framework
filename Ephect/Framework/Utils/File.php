@@ -26,6 +26,10 @@ class File
                     continue;
                 }
 
+                if(is_dir($file)) {
+                    continue;
+                }
+
                 if ($fi['extension'] === 'DS_Store') {
                     continue;
                 }
@@ -43,6 +47,10 @@ class File
                 $fi = pathinfo($file->getPathName());
 
                 if ($fi['basename'] == '.' || $fi['basename'] == '..') {
+                    continue;
+                }
+
+                if(is_dir($file->getPathName())) {
                     continue;
                 }
 
