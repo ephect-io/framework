@@ -92,7 +92,7 @@ if (!IS_WEB_APP) {
     $script_root = $script_dir . DIRECTORY_SEPARATOR;
 
     define('APP_CWD',  str_replace($script_name, '', $app_path));
-    define('SITE_ROOT', $script_root . DIRECTORY_SEPARATOR);
+    define('SITE_ROOT', $script_root);
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
     define('CONFIG_FRAMEWORK', file_exists(CONFIG_DIR . 'framework') ? trim(file_get_contents(CONFIG_DIR . 'framework')) : 'vendor/ephect-io/framework/Ephect');
