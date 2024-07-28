@@ -26,7 +26,7 @@ class File
                     continue;
                 }
 
-                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                if ($fi['extension'] === 'DS_Store') {
                     continue;
                 }
 
@@ -46,7 +46,7 @@ class File
                     continue;
                 }
 
-                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                if ($fi['extension'] === 'DS_Store') {
                     continue;
                 }
 
