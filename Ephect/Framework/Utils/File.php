@@ -30,13 +30,12 @@ class File
                     continue;
                 }
 
-                if ($fi['extension'] === 'DS_Store') {
+                if (isset($fi['extension']) && $fi['extension'] === 'DS_Store') {
                     continue;
                 }
 
-                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                if ((count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter)) || count($filter) === 0) {
                     $result[] = $file;
-
                 }
             }
         } else {
@@ -54,11 +53,11 @@ class File
                     continue;
                 }
 
-                if ($fi['extension'] === 'DS_Store') {
+                if (isset($fi['extension']) && $fi['extension'] === 'DS_Store') {
                     continue;
                 }
 
-                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                if ((count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter)) || count($filter) === 0) {
                     $result[] = substr($file->getPathName(), $l);
                 }
             }
