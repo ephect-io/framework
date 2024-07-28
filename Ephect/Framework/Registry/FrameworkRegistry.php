@@ -16,7 +16,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): AbstractStaticRegistry
     {
         if (self::$instance === null) {
             self::$instance = new FrameworkRegistry;
