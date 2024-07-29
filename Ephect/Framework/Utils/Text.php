@@ -126,14 +126,14 @@ class Text
                 $convert .= $indent . ']' . ($indent == '' ? '' : ',');
                 $convert .= "\n";
 
-                $stringLen = strlen($matches[0]) + 1;
+                $stringLen = strlen($matches[0]);
                 $buffer = substr($buffer, $stringLen);
                 $offset += $stringLen;
             } else if (preg_match($entryRx, $buffer, $matches)) {
                 $convert .= $indent;
                 if ($matches[5] == 'array') {
                     $convert .= !empty($matches[3]) ? "'" . trim($matches[3], '"') . "'" . ' => [' : '[';
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 } else if ($matches[5] == 'string') {
@@ -169,7 +169,7 @@ class Text
                     } else {
                         $convert .= $matches[6] . ',';
                     }
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 }
