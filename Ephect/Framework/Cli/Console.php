@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\CLI;
 
+use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Utils\Text;
@@ -101,14 +102,14 @@ class Console extends Element
         echo $value . PHP_EOL;
     }
 
-    public static function error(Throwable $ex, ConsoleOptions $options): void
+    public static function error(Throwable $ex, ConsoleOptionsEnum $options = ConsoleOptionsEnum::None): void
     {
         if (IS_WEB_APP) {
             self::getLogger()->error($ex);
             return;
         }
 
-        $message = $options === ConsoleOptions::ErrorMessageOnly ? $ex->getMessage() : self::formatException($ex);
+        $message = $options === ConsoleOptionsEnum::ErrorMessageOnly ? $ex->getMessage() : self::formatException($ex);
         print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
     }
 

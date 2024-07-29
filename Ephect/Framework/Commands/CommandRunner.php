@@ -32,6 +32,7 @@ class CommandRunner extends Element
             $subject = $struct->subject;
 
             $call = $subject != '' ? $verb . ':' . $subject : $verb;
+            $commandLabel = !isset($aav[1]) ? '' : $aav[1];
 
             $aac = $this->_application->getArgc();
             $aav = $this->_application->getArgv();
@@ -60,21 +61,10 @@ class CommandRunner extends Element
             $status = $callback->run();
         }
 
-        if ($isFound) return $status;
+        if (!$isFound) {
+            Console::writeLine("A command labelled %s was not found", $commandLabel);
+        }
 
-        Console::writeLine(<<<COWSAY
-         ___________________________
-        /       It looks like       \
-        | you don't know what to do |
-        \      Use php egg help     /
-         ---------------------------
-             \  ^__^
-              \ (oo)\________
-                (__)\        )\/\
-                    ||----w |
-                    ||     ||
-
-        COWSAY
-        );
+        return $status;
     }
 }

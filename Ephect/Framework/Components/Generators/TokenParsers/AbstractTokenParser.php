@@ -51,13 +51,13 @@ abstract class AbstractTokenParser implements TokenParserInterface
 
     public function doCache(): bool
     {
-        return CodeRegistry::cache();
+        return CodeRegistry::save();
     }
 
     public function doUncache(): bool
     {
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->component->getMotherUID());
-        return CodeRegistry::uncache();
+        return CodeRegistry::load();
     }
 
     abstract public function do(null|string|array|object $parameter = null): void;

@@ -9,10 +9,12 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "{{Description}}")]
 class Main extends AbstractCommand
 {
-    public function run(): void
+    public function run(): int
     {
         {{GetArgs}}
         $lib = new Lib($this->application);
         $lib->{{MethodName}}({{SetArgs}});
+
+        return 0;
     }
 }

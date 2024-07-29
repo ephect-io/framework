@@ -8,7 +8,7 @@ use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\WebComponents\ManifestReader;
 
-final class OpenComponentsParser extends AbstractTokenParser
+final class OpenComponentsParser extends AbstractComponentParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
@@ -62,9 +62,7 @@ final class OpenComponentsParser extends AbstractTokenParser
 
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
-
-            $propsArgs = self::doArgumentsToString($componentArgs);
-            $props = (($propsArgs === null) ? "[]" : $propsArgs);
+            $props = self::doArgumentsToString($componentArgs) ?? "[]";
 
             $propsKeys = $this->argumentsKeys($this->useVariables);
 
@@ -75,18 +73,6 @@ final class OpenComponentsParser extends AbstractTokenParser
             $classArgs = '[]';
 
             $fqComponentName = ComponentRegistry::read($componentName);
-            $filename = ComponentRegistry::read($fqComponentName);
-
-            if ($filename === null) {
-                $filename = WebComponentRegistry::read($fqComponentName);
-                if ($filename !== null) {
-                    $reader = new ManifestReader($motherUID, $componentName);
-                    $manifest = $reader->read();
-                    $tag = $manifest->getTag();
-                    $wcom = str_replace($componentName, $tag, $opener . $componentBody . $closer);
-                    File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $componentName . $uid . '.txt', $wcom);
-                }
-            }
 
             $preComponentBody = '';
             $pkey = "\$children";
@@ -118,10 +104,12 @@ final class OpenComponentsParser extends AbstractTokenParser
             $outerComponentBody = substr($subject, $startsAt, $length);
             $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
-            $filename = $this->component->getFlattenSourceFilename();
+            $filename = $this->component->getSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->result[] = $componentName;
+
+            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props);
 
             $previous = $item;
 
@@ -136,22 +124,7 @@ final class OpenComponentsParser extends AbstractTokenParser
         $this->html = $subject;
     }
 
-    public static function doArgumentsToString(array $componentArgs): ?string
-    {
-        $result = '';
 
-        foreach ($componentArgs as $key => $value) {
-            if (is_array($value)) {
-                $value = json_encode($value);
-            }
-            $pair = '"' . $key . '" => "' . urlencode($value) . '", ';
-            if ($value[0] === '$') {
-                $pair = '"' . $key . '" => ' . $value . ', ';
-            }
-            $result .= $pair;
-        }
-        return ($result === '') ? null : '[' . $result . ']';
-    }
 
     private function argumentsKeys(array $componentArgs): ?array
     {

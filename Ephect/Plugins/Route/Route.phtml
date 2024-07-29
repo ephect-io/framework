@@ -2,7 +2,6 @@
 
 namespace Ephect\Plugins\Route;
 
-use Ephect\Framework\Components\Children;
 use Ephect\Plugins\Router\RouterService;
 use stdClass;
 use function Ephect\Hooks\useEffect;
@@ -14,12 +13,7 @@ function Route($children): string
 
         $props = $children;
         if(method_exists($children, "props")) {
-            $args = $children->props();
-
-            $props = new stdClass;
-            foreach ($args as $field => $value) {
-                $props->{$field} = urldecode($value);
-            }
+            $props = $children->props();
         }
 
         $routeBuilder = new RouteBuilder($props);
@@ -40,7 +34,7 @@ function Route($children): string
         [$state, $setState] = useState();
         $routes = $state->routes ?? [];
 
-        array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,]);
+        $routes[] = ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
         useState(['routes' => $routes]);
 
     });

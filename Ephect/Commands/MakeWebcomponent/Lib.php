@@ -4,7 +4,7 @@ namespace Ephect\Commands\MakeWebComponent;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\CLI\ConsoleOptions;
+use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\WebComponents\Builder;
 use Exception;
@@ -34,7 +34,7 @@ class Lib extends AbstractCommandLib
             Console::writeLine(ConsoleColors::getColoredString("WebComponent ", ConsoleColors::BLUE) . "%s" .  ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
             Console::writeLine("%s", $destDir);
         } catch (Exception $ex) {
-            Console::error($ex, ConsoleOptions::ErrorMessageOnly);
+            Console::error($ex, ConsoleOptionsEnum::ErrorMessageOnly);
         }
     }
 

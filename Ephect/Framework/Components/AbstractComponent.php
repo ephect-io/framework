@@ -141,7 +141,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
 
     public function findComponent(string $componentName, string $motherUID): array
     {
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
         $uses = ComponentRegistry::items();
         $fqFuncName = $uses[$componentName] ?? null;
 
@@ -149,7 +149,7 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             throw new BadFunctionCallException('The component ' . $componentName . ' does not exist.');
         }
 
-        CacheRegistry::uncache();
+        CacheRegistry::load();
 
         if ($motherUID === '') {
             $filename = $uses[$fqFuncName];
@@ -186,11 +186,8 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $html = ob_get_clean();
         } else {
             $props = null;
-            if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
-                $props = new stdClass;
-                foreach ($args as $field => $value) {
-                    $props->{$field} = urldecode($value);
-                }
+            if (count($functionArgs) > 0) {
+                $props = $functionArgs;
             } else {
                 $routeProps = RouterService::findRouteArguments($fqFunctionName);
                 if ($routeProps !== null) {
@@ -213,28 +210,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $fn = call_user_func($fqFunctionName, $props);
             $fn();
             $html = ob_get_clean();
+
         }
-
-
-        // if ($funcName === 'App') {
-        //     $html = self::format($html);
-        // }
 
         return $html;
     }
 
-//    protected function format(string $html): string
-//    {
-//        $config = [
-//            'indent' => true,
-//            'output-html' => true,
-//            'wrap' => 200
-//        ];
-//
-//        $tidy = new tidy;
-//        $tidy->parseString($html, $config, 'utf8');
-//        $tidy->cleanRepair();
-//
-//        return $tidy->value;
-//    }
+
 }

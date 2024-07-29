@@ -2,6 +2,9 @@
 
 namespace Ephect\Framework\Utils;
 
+use ReflectionFunction;
+use SplFileObject;
+
 class Text
 {
     public static function slugify(string $text): ?string
@@ -49,19 +52,45 @@ class Text
         return $result;
     }
 
-    public static function jsonToPhpReturnedArray(string $json): string
+    public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string
     {
-        $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        $array = [];
+        if(!is_array($json)) {
+            $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        }
         $result = '<?php' . PHP_EOL;
         $result .= 'return ';
 
-        $result .= self::arrayToString($array);
+        $result .= self::arrayToString($array, $prettify);
         $result .= ';' . PHP_EOL;
 
         return $result;
     }
 
-    public static function arrayToString(array $array): string
+    /**
+     * @throws \ReflectionException
+     */
+    private function callableToString(callable $controller): string
+    {
+        $ref = new ReflectionFunction($controller);
+
+        $file = new SplFileObject($ref->getFileName());
+        $file->seek($ref->getStartLine() - 1);
+
+        $code = '';
+        while ($file->key() < $ref->getEndLine()) {
+            $code .= $file->current();
+            $file->next();
+        }
+
+        $begin = strpos($code, 'function');
+        $end = strrpos($code, '}');
+        $code = substr($code, $begin, $end - $begin + 1);
+
+        return $code;
+    }
+
+    public static function arrayToString(array $array, bool $prettify = false): string
     {
         $dump = self::var_dump_r($array);
 
@@ -89,19 +118,18 @@ class Text
             $indentLen = $indentsLengths[$i];
             $indent = $indentLen > 0 ? str_repeat(' ', $indentLen) : '';
 
-
-
             if (preg_match($closeArrayRx, $buffer, $matches)) {
                 $convert .= $indent . ']' . ($indent == '' ? '' : ',');
                 $convert .= "\n";
-                $stringLen = strlen($matches[0]) + 1;
+
+                $stringLen = strlen($matches[0]);
                 $buffer = substr($buffer, $stringLen);
                 $offset += $stringLen;
             } else if (preg_match($entryRx, $buffer, $matches)) {
                 $convert .= $indent;
                 if ($matches[5] == 'array') {
                     $convert .= !empty($matches[3]) ? "'" . trim($matches[3], '"') . "'" . ' => [' : '[';
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 } else if ($matches[5] == 'string') {
@@ -113,7 +141,7 @@ class Text
 
                     $value = substr($entries, $offset + $start, $len);
                     $quote = str_starts_with($value, 'function') ? '' : "'";
-                    $value = $quote == '' ? $value : str_replace("\\", "\\\\", $value);
+                    $value = $quote == '' ? $value : addslashes($value);
 
                     if ($j = substr_count($value, "\n")) {
                         $i += $j;
@@ -137,13 +165,17 @@ class Text
                     } else {
                         $convert .= $matches[6] . ',';
                     }
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 }
                 $convert .= "\n";
 
             }
+        }
+
+        if(!$prettify) {
+            $convert = str_replace("\n", "", $convert);
         }
 
         return $convert;

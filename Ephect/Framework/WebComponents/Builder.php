@@ -56,10 +56,12 @@ class Builder
         $classText = str_replace('{{Base}}', $className, $classText);
         $classText = str_replace('{{entrypoint}}', $entrypoint, $classText);
 
+        $objectName = lcfirst($className);
         $componentText = File::safeRead($srcDir . 'Base.tpl');
         $componentText = str_replace('{{Base}}', $className, $componentText);
         $componentText = str_replace('{{tag-name}}', $tagName, $componentText);
         $componentText = str_replace('{{entrypoint}}', $entrypoint, $componentText);
+        $componentText = str_replace('{{objectName}}', $objectName, $componentText);
 
         $baseElementText =   File::safeRead($srcDir . 'BaseElement.tpl');
         $baseElementText = str_replace('{{Base}}', $className, $baseElementText);
@@ -74,7 +76,7 @@ class Builder
             $baseElementText = str_replace('{{GetAttributes}}', '', $baseElementText);
             $componentText = str_replace('{{Attributes}}', '', $componentText);
 
-            File::safeWrite($destDir . "$className.class.mjs", $classText);
+            File::safeWrite($destDir . "$className.class.js", $classText);
             File::safeWrite($destDir . "$className.phtml", $componentText);
             File::safeWrite($destDir . $className . "Element.js", $baseElementText);
 
@@ -131,8 +133,8 @@ class Builder
         $baseElementText = str_replace('{{GetAttributes}}', $getAttributes, $baseElementText);
         $componentText = str_replace('{{AttributeList}}', $thisAttributeList, $componentText);
 
-        File::safeWrite($destDir . "$className.class.mjs", $classText);
-        File::safeWrite($destDir . $className . "Element.js", $baseElementText);
+        File::safeWrite($destDir . $className . CLASS_JS_EXTENSION, $classText);
+        File::safeWrite($destDir . $className . "Element" . JS_EXTENSION, $baseElementText);
 
         if ($hasBackendProps) {
             $namespace = CONFIG_NAMESPACE;

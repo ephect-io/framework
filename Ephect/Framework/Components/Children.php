@@ -12,7 +12,7 @@ class Children extends Tree implements ChildrenInterface
     protected ?object $props = null;
     protected array|object|null $parentProps = null;
     protected array|object|null $allProps = null;
-    protected ?object $buffer = null;
+    protected $buffer = null;
 
     protected ?string $name = null;
 
@@ -37,16 +37,23 @@ class Children extends Tree implements ChildrenInterface
         return $this->props;
     }
 
+    public function buffer(): callable
+    {
+        return $this->buffer;
+    }
+
     public function getBuffer(): string
     {
         ob_start();
-        ($this->buffer)();
+        $fn = $this->buffer;
+        call_user_func($fn);
         return ob_get_clean();
     }
 
     public function render(): void
     {
-        ($this->buffer)();
+        $fn = $this->buffer;
+        call_user_func($fn);
     }
 
     public function getAttributes(): string

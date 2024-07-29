@@ -21,11 +21,14 @@ class ComponentParser extends Parser implements ParserInterface
     {
         parent::__construct($comp);
 
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
     }
 
-    public function doDeclaration(string $uid): ComponentDeclarationStructure
+    public function doDeclaration(string $uid = ''): ComponentDeclarationStructure
     {
+        if($uid == '') {
+            $uid = Crypto::createUID();
+        }
         $this->doComponents();
         $func = $this->doFunctionDeclaration();
         $decl = ['uid' => $uid, 'type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];

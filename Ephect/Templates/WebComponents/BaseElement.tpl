@@ -38,7 +38,7 @@ class {{Base}}Element extends HTMLElement {
                 this.shadowRoot.appendChild(style)
             })
 
-            const parentDiv = this.shadowRoot.getElementById('Base')
+            const parentDiv = this.shadowRoot.getElementById('{{Base}}')
             parentDiv.setAttribute('class', this.classes)
         }
     }

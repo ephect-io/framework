@@ -4,7 +4,7 @@ namespace Ephect\Framework\Registry;
 
 class RouteRegistry extends AbstractStaticRegistry
 {
-    private static ?AbstractRegistryInterface $instance = null;
+    private static ?RegistryInterface $instance = null;
 
     public static function addMiddleware(string $middleware): void
     {
@@ -22,7 +22,7 @@ class RouteRegistry extends AbstractStaticRegistry
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): AbstractRegistryInterface
+    public static function getInstance(): RegistryInterface
     {
         if (self::$instance === null) {
             self::$instance = new RouteRegistry;

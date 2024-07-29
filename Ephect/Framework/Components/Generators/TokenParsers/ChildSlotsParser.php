@@ -11,7 +11,7 @@ class ChildSlotsParser extends AbstractTokenParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
-        ComponentRegistry::uncache();
+        ComponentRegistry::load();
 
         $motherUID = $this->component->getMotherUID();
         $doc = new ComponentDocument($this->component);
@@ -31,7 +31,7 @@ class ChildSlotsParser extends AbstractTokenParser
             return;
         }
 
-        $parentFilename = $parentComponent->getFlattenSourceFilename();
+        $parentFilename = $parentComponent->getSourceFilename();
         $parentDoc = new ComponentDocument($parentComponent);
         $parentDoc->matchAll();
 
@@ -39,11 +39,11 @@ class ChildSlotsParser extends AbstractTokenParser
 
         if ($parentHtml !== '') {
             File::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
-            File::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getFlattenFilename(), $this->html);
+            File::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getSourceFilename(), $this->html);
         }
 
         if ($doc->getCount() > 0) {
-            ComponentRegistry::cache();
+            ComponentRegistry::save();
         }
 
         $this->result = $parentFilename;

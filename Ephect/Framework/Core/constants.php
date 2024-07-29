@@ -13,13 +13,13 @@ if (IS_WEB_APP) {
     $site_root = dirname(DOCUMENT_ROOT) . DIRECTORY_SEPARATOR;
 
     define('SITE_ROOT', $site_root);
-    define('SRC_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
-
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
+    define('CONFIG_FRAMEWORK', file_exists(CONFIG_DIR . 'framework') ? trim(file_get_contents(CONFIG_DIR . 'framework')) : 'vendor/ephect-io/framework/Ephect');
+    define('CONFIG_APP', file_exists(CONFIG_DIR . 'app') ? trim(file_get_contents(CONFIG_DIR . 'app')) : 'app');
+    define('SRC_ROOT', SITE_ROOT . CONFIG_APP . DIRECTORY_SEPARATOR);
 
-    define('EPHECT_CONFIG', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('AJIL_CONFIG', trim(file_get_contents(CONFIG_DIR . 'javascripts')));
-    define('EPHECT_ROOT', SITE_ROOT . EPHECT_CONFIG . DIRECTORY_SEPARATOR);
+    define('EPHECT_ROOT', SITE_ROOT . CONFIG_FRAMEWORK . DIRECTORY_SEPARATOR);
     define('AJIL_ROOT', SITE_ROOT . AJIL_CONFIG . DIRECTORY_SEPARATOR);
 
     $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
@@ -90,17 +90,15 @@ if (!IS_WEB_APP) {
     $script_dir = pathinfo($app_path, PATHINFO_DIRNAME);
     $appName = pathinfo($script_name)['filename'];
     $script_root = $script_dir . DIRECTORY_SEPARATOR;
-    $src_root = $script_root . 'app' . DIRECTORY_SEPARATOR;
 
     define('APP_CWD',  str_replace($script_name, '', $app_path));
-
-    define('SRC_ROOT', $src_root);
-    define('SCRIPT_ROOT', $script_root);
-    define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
+    define('SITE_ROOT', $script_root);
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
-    define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
-    define('EPHECT_ROOT', SITE_ROOT . EPHECT . DIRECTORY_SEPARATOR);
+    define('CONFIG_FRAMEWORK', file_exists(CONFIG_DIR . 'framework') ? trim(file_get_contents(CONFIG_DIR . 'framework')) : 'vendor/ephect-io/framework/Ephect');
+    define('EPHECT_ROOT', SITE_ROOT . CONFIG_FRAMEWORK . DIRECTORY_SEPARATOR);
+    define('CONFIG_APP', file_exists(CONFIG_DIR . 'app') ? trim(file_get_contents(CONFIG_DIR . 'app')) : 'app');
+    define('SRC_ROOT', $script_root . CONFIG_APP . DIRECTORY_SEPARATOR);
 
     $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR;
     $portable_dir = 'Epehct' . DIRECTORY_SEPARATOR;
@@ -146,6 +144,7 @@ define('CONFIG_HOSTNAME', file_exists(CONFIG_DIR . 'hostname') ? trim(file_get_c
 define('CONFIG_NAMESPACE', file_exists(CONFIG_DIR . 'namespace') ? trim(file_get_contents(CONFIG_DIR . 'namespace')) : APP_NAME);
 define('CONFIG_COMMANDS', file_exists(CONFIG_DIR . 'commands') ? trim(file_get_contents(CONFIG_DIR . 'commands')) : 'Commands');
 define('CONFIG_PAGES', file_exists(CONFIG_DIR . 'pages') ? trim(file_get_contents(CONFIG_DIR . 'pages')) : 'Pages');
+define('CONFIG_LIBRARY', file_exists(CONFIG_DIR . 'library') ? trim(file_get_contents(CONFIG_DIR . 'library')) : 'Library');
 define('CONFIG_COMPONENTS', file_exists(CONFIG_DIR . 'components') ? trim(file_get_contents(CONFIG_DIR . 'components')) : 'Components');
 define('CONFIG_WEBCOMPONENTS', file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : 'WebComponents');
 
@@ -164,10 +163,10 @@ define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
 define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
 
 define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
-define('APP_ROOT', SRC_ROOT . APP_DIR);
+define('APP_ROOT', SITE_ROOT . APP_DIR);
 define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
 define('APP_CLIENT', APP_ROOT . 'client' . DIRECTORY_SEPARATOR);
-define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
+define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
 define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
 define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
 define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
@@ -206,7 +205,7 @@ define('HTML_EXTENSION', '.html');
 define('PREHTML_EXTENSION', '.phtml');
 define('CSS_EXTENSION', '.css');
 define('JS_EXTENSION', '.js');
-define('CLASS_MJS_EXTENSION', '.class.mjs');
+define('CLASS_JS_EXTENSION', '.class.js');
 define('MJS_EXTENSION', '.mjs');
 define('TPL_EXTENSION', '.tpl');
 define('TXT_EXTENSION', '.txt');
