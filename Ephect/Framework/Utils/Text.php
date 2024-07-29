@@ -54,18 +54,14 @@ class Text
 
     public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string
     {
-        $array = '';
+        $array = [];
         if(!is_array($json)) {
             $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
         }
         $result = '<?php' . PHP_EOL;
         $result .= 'return ';
 
-        if(!is_array($array)) {
-            $result .= "$array";
-        } else {
-            $result .= self::arrayToString($array, $prettify);
-        }
+        $result .= self::arrayToString($array, $prettify);
         $result .= ';' . PHP_EOL;
 
         return $result;
