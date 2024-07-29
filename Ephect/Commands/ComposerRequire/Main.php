@@ -11,10 +11,13 @@ class Main extends AbstractCommand
 {
     public function run(): int
     {
-        $package = $this->application->getArgi(2);
-        
+        $params = $this->application->getArgv();
+
+
+
+
         $lib = new Lib($this->application);
-        $lib->require($package);
+        $lib->composer($params);
 
         return 0;
     }
