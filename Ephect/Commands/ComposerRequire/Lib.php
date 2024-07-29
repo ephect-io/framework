@@ -12,18 +12,35 @@ class Lib extends AbstractCommandLib
     {
         exec("composer require {$package} {$version}", $output, $returnCode);
         if ($returnCode !== 0) {
-            foreach ($output as $item) {
-                Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::RED, ConsoleColors::WHITE));
+            if ($returnCode !== 0) {
+                foreach ($output as $item) {
+                    Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::RED, ConsoleColors::WHITE));
+                }
+            } else {
+                foreach ($output as $item) {
+                    Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::BLUE, ConsoleColors::WHITE));
+                }
             }
         }
 
         $binScript = SITE_ROOT . "/vendor/bin/" . str_replace('/', '_', $package) . '_install.sh';
-
-        Console::writeLine("Bin script: %s", $binScript);
+        $output = [];
         if(file_exists($binScript)) {
-            Console::writeLine("Bin script exists");
-            exec("$binScript", $output, $returnCode);
+            Console::writeLine(ConsoleColors::getColoredString("An install script was found", ConsoleColors::BLUE, ConsoleColors::WHITE));
+            if(Console::readYesOrNo("Do you want to run the script?")) {
+                exec("$binScript", $output, $returnCode);
+                if ($returnCode !== 0) {
+                    foreach ($output as $item) {
+                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::RED, ConsoleColors::WHITE));
+                    }
+                } else {
+                    foreach ($output as $item) {
+                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::BLUE, ConsoleColors::WHITE));
+                    }
+                }
+            }
         }
+
     }
 
 }

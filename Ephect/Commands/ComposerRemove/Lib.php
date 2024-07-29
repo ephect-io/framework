@@ -17,13 +17,27 @@ class Lib extends AbstractCommandLib
             Console::writeLine(ConsoleColors::getColoredString("An remove script was found", ConsoleColors::BLUE, ConsoleColors::WHITE));
             if(Console::readYesOrNo("Do you want to run the script?")) {
                 exec("$binScript -r", $output, $returnCode);
+                if ($returnCode !== 0) {
+                    foreach ($output as $item) {
+                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::RED, ConsoleColors::WHITE));
+                    }
+                } else {
+                    foreach ($output as $item) {
+                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::BLUE, ConsoleColors::WHITE));
+                    }
+                }
             }
         }
 
+        $output = [];
         exec("composer remove {$package} {$version}", $output, $returnCode);
         if ($returnCode !== 0) {
             foreach ($output as $item) {
                 Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::RED, ConsoleColors::WHITE));
+            }
+        } else {
+            foreach ($output as $item) {
+                Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::BLUE, ConsoleColors::WHITE));
             }
         }
 
