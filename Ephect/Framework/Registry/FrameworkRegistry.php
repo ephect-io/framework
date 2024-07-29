@@ -41,21 +41,21 @@ class FrameworkRegistry extends AbstractStaticRegistry
                     continue;
                 }
 
-                if (str_contains($filename, 'Interface')) {
+                if (str_ends_with($filename, 'Interface')) {
                     [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
-                if(str_contains($filename, 'Enum')) {
+                if(str_ends_with($filename, 'Enum')) {
                     [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $enum;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
                     continue;
                 }
 
-                if (str_contains($filename, 'Trait')) {
+                if (str_ends_with($filename, 'Trait')) {
                     [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
