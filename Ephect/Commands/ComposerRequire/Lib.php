@@ -23,9 +23,9 @@ class Lib extends AbstractCommandLib
             }
         }
 
-        $binScript = SITE_ROOT . "/vendor/bin/" . str_replace('/', '_', $package) . '_install.sh';
+        $binScript = SITE_ROOT . "vendor/bin/" . str_replace('/', '_', $package) . '_install.sh';
         if(PHP_OS == 'WINNT') {
-            $binScript = SITE_ROOT . "\\vendor\\bin\\" . str_replace('\\', '_', $package) . '_install.bat';
+            $binScript = SITE_ROOT . "vendor\\bin\\" . str_replace('/', '_', $package) . '_install.bat';
         }
 
         $output = [];
