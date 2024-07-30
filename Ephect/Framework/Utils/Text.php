@@ -110,8 +110,8 @@ class Text
             $indentsLengths[] = count($match) > 1 ? strlen($match[0]) : 0;
         }
 
-        $entryRx = '/( ?+)+(\[(.*)]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)\n)/';
-        $closeArrayRx = '/^( ?+)+}/';
+        $entryRx = '/( ?+)+(\[(.*)]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)(\n)?)/';
+        $closeArrayRx = '/^( +)?}(\n)?/';
 
         $l = count($indentsLengths);
         for ($i = 0; $i < $l; $i++) {
@@ -121,14 +121,14 @@ class Text
             if (preg_match($closeArrayRx, $buffer, $matches)) {
                 $convert .= $indent . ']' . ($indent == '' ? '' : ',');
                 $convert .= "\n";
-                $stringLen = strlen($matches[0]) + 1;
+                $stringLen = strlen($matches[0]);
                 $buffer = substr($buffer, $stringLen);
                 $offset += $stringLen;
             } else if (preg_match($entryRx, $buffer, $matches)) {
                 $convert .= $indent;
                 if ($matches[5] == 'array') {
                     $convert .= !empty($matches[3]) ? "'" . trim($matches[3], '"') . "'" . ' => [' : '[';
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 } else if ($matches[5] == 'string') {
@@ -164,7 +164,7 @@ class Text
                     } else {
                         $convert .= $matches[6] . ',';
                     }
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 }
