@@ -8,35 +8,40 @@ use Ephect\Framework\Utils\Text;
 
 class PluginInstaller
 {
-    public static function install(string $workingDirectory): void
+    public function __construct(private string $workingDirectory)
     {
-        [$filename, $paths] = self::readPluginPaths();
+
+    }
+    public function install(): void
+    {
+        [$filename, $paths] = $this->readPluginPaths();
 
         if(is_array($paths)) {
-            $paths[] = $workingDirectory;
+            $paths[] = $this->workingDirectory;
         }
         $paths = array_unique($paths);
 
-        self::savePluginPaths($filename, $paths);
+        $this->savePluginPaths($filename, $paths);
 
-        Console::writeLine("Plugin path %s is now declared.", $workingDirectory);
+        Console::writeLine("Plugin path %s is now declared.", $this->workingDirectory);
     }
 
-    public static function remove(string $workingDirectory): void
+    public function remove(): void
     {
-        [$filename, $paths] = self::readPluginPaths();
+        $workingDirectory = $this->workingDirectory;
+        [$filename, $paths] = $this->readPluginPaths();
         if(is_array($paths)) {
             $paths = array_filter($paths, function ($path) use ($workingDirectory) {
                 return $path !== $workingDirectory;
             });
         }
 
-        self::savePluginPaths($filename, $paths);
+        $this->savePluginPaths($filename, $paths);
 
         Console::writeLine("Plugin path %s is now removed.", $workingDirectory);
     }
 
-    private static function readPluginPaths(): array
+    private function readPluginPaths(): array
     {
         $vendorPos = strpos( CONFIG_DIR, 'vendor');
         $configDir = CONFIG_DIR;
@@ -55,7 +60,7 @@ class PluginInstaller
         return [$filename, $paths];
     }
 
-    private static function savePluginPaths(string $filename, array $paths): void
+    private function savePluginPaths(string $filename, array $paths): void
     {
         $json = json_encode($paths);
         $pluginsPaths = Text::jsonToPhpReturnedArray($json, true);

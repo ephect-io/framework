@@ -24,6 +24,10 @@ class Lib extends AbstractCommandLib
         }
 
         $binScript = SITE_ROOT . "/vendor/bin/" . str_replace('/', '_', $package) . '_install.sh';
+        if(PHP_OS == 'Windows') {
+            $binScript = SITE_ROOT . "\\vendor\\bin\\" . str_replace('\\', '_', $package) . '_install.bat';
+        }
+
         $output = [];
         if(file_exists($binScript)) {
             Console::writeLine(ConsoleColors::getColoredString("An install script was found", ConsoleColors::BLUE, ConsoleColors::WHITE));
