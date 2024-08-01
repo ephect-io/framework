@@ -106,7 +106,7 @@ class Text
             $dump = $sanitize;
         }
 
-        $re = '/(.*)(\[[\w\S]+]=>)(\n)( +)/';
+        $re = '/(.*)(\[.*]=>)(\n)( +)/m';
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
