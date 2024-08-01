@@ -97,7 +97,16 @@ class Text
         $indentsLengths = [];
         $convert = '';
 
-        $re = '/(.*)(\[.*]=>)(\n)( +)/';
+        $re = '/\'([\w\S]+)\' =>/m';
+        $subst = "[$1]=>";
+
+        $sanitize = preg_replace($re, $subst, $dump);
+
+        if($sanitize != $dump) {
+            $dump = $sanitize;
+        }
+
+        $re = '/(.*)(\[[\w\S]+]=>)(\n)( +)/';
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
@@ -110,8 +119,9 @@ class Text
             $indentsLengths[] = count($match) > 1 ? strlen($match[0]) : 0;
         }
 
-        $entryRx = '/( ?+)+(\[(.*)]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)(\n)?)/';
+        $entryRx = '/( ?+)+(\[[\w\S]+]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)(\n)?)/';
         $closeArrayRx = '/^( +)?}(\n)?/';
+        file_put_contents(SITE_ROOT . "buffer.txt", $buffer);
 
         $l = count($indentsLengths);
         for ($i = 0; $i < $l; $i++) {
@@ -121,15 +131,14 @@ class Text
             if (preg_match($closeArrayRx, $buffer, $matches)) {
                 $convert .= $indent . ']' . ($indent == '' ? '' : ',');
                 $convert .= "\n";
-
-                $stringLen = strlen($matches[0]);
+                $stringLen = strlen($matches[0]) + 1;
                 $buffer = substr($buffer, $stringLen);
                 $offset += $stringLen;
             } else if (preg_match($entryRx, $buffer, $matches)) {
                 $convert .= $indent;
                 if ($matches[5] == 'array') {
                     $convert .= !empty($matches[3]) ? "'" . trim($matches[3], '"') . "'" . ' => [' : '[';
-                    $stringLen = strlen($matches[0]);
+                    $stringLen = strlen($matches[0]) + 1;
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 } else if ($matches[5] == 'string') {
@@ -141,7 +150,7 @@ class Text
 
                     $value = substr($entries, $offset + $start, $len);
                     $quote = str_starts_with($value, 'function') ? '' : "'";
-                    $value = $quote == '' ? $value : addslashes($value);
+                    $value = $quote == '' ? $value : str_replace("\\", "\\\\", $value);
 
                     if ($j = substr_count($value, "\n")) {
                         $i += $j;
@@ -165,7 +174,7 @@ class Text
                     } else {
                         $convert .= $matches[6] . ',';
                     }
-                    $stringLen = strlen($matches[0]);
+                    $stringLen = strlen($matches[0]) + 1;
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 }
