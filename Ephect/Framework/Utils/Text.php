@@ -94,6 +94,9 @@ class Text
     {
         $dump = self::var_dump_r($array);
 
+        file_put_contents(SITE_ROOT . 'dump_var.txt', $dump);
+        file_put_contents(SITE_ROOT . 'export_var.txt', var_export($array, true));
+
         $indentsLengths = [];
         $convert = '';
 
