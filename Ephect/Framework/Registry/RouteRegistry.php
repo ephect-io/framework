@@ -36,7 +36,7 @@ class RouteRegistry extends AbstractStaticRegistry
         $result = null;
 
         if (self::hasMoved()) {
-            $result = require self::getMovedPhpFilename();
+            $result = require self::getMovedFilename();
         }
 
         return $result;
@@ -44,7 +44,7 @@ class RouteRegistry extends AbstractStaticRegistry
 
     public static function hasMoved(): bool
     {
-        return file_exists(self::getMovedPhpFilename());
+        return file_exists(self::getMovedFilename());
     }
 
     public static function getMovedFilename(): string
