@@ -194,6 +194,73 @@ class Text
         return $convert;
     }
 
+    public static function arrayExportToString(array $array, bool $prettify = false): string
+    {
+        $dump = var_export($array, true);
+        file_put_contents(SITE_ROOT . 'dump_export.txt', $dump);
+
+        $indentsLengths = [];
+        $convert = '';
+
+        $re = '/(.*)(\'(.*)\' =>)( +)?(\n)( +)/m';
+        $subst = "$1$2";
+        $entries = preg_replace($re, $subst, $dump);
+        $buffer = $entries;
+        $offset = 0;
+        file_put_contents(SITE_ROOT . "dump_buffer.txt", $buffer);
+
+        $re = '/^( ?+)+/m';
+        preg_match_all($re, $entries, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $indentsLengths[] = count($match) > 1 ? strlen($match[0]) : 0;
+        }
+
+        $entryRx = '/( +)?((.*) =>)?(((array) \()| \'?(.|\s)*?\'?,)?/';
+        $closeArrayRx = '/^( +)?\)(\n)?/';
+
+
+        $spinning = false;
+        while (strlen($buffer) > 0 && !$spinning) {
+
+            if (preg_match($closeArrayRx, $buffer, $matches)) {
+                $indent = !isset($matches[1]) ? '' : $matches[1];
+                $convert .= $indent . ']' . ($indent == '' ? '' : ',');
+                $convert .= "\n";
+                $stringLen = strlen($matches[0]);
+                $buffer = substr($buffer, $stringLen);
+                $offset += $stringLen;
+            } else if (preg_match($entryRx, $buffer, $matches)) {
+                $indent = !isset($matches[1]) ? '' : $matches[1];
+                $convert .= $indent;
+                $key = !isset($matches[3]) ? '' : $matches[3];
+                $value = $matches[4];
+                if (isset($matches[6]) && $matches[6] == 'array') {
+                    $convert .= !empty($key) ? $key . ' => [' : '[';
+                    $stringLen = strlen($matches[0]);
+                    $buffer = substr($buffer, $stringLen);
+                    $offset += $stringLen;
+                } else {
+                    if(str_starts_with($matches[7], 'function')) {
+                        $value = $matches[7];
+                    }
+                    $convert .= $key . ' => ' . $value . '.';
+
+                    $stringLen = strlen($matches[0]);
+                    $buffer = substr($buffer, $stringLen);
+                }
+                $convert .= "\n";
+
+            }
+        }
+
+        if(!$prettify) {
+            $convert = str_replace("\n", "", $convert);
+        }
+
+        return $convert;
+    }
+
     private static function var_dump_r(mixed $value): string
     {
         ob_start();
