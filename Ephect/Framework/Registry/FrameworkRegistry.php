@@ -28,7 +28,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function register(): void
     {
-        if (!FrameworkRegistry::load(true)) {
+        if (!FrameworkRegistry::load()) {
 
             $frameworkFiles = File::walkTreeFiltered(EPHECT_ROOT, ['php']);
 
@@ -75,7 +75,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
             self::registerUserClasses();
 
-            FrameworkRegistry::save(true);
+            FrameworkRegistry::save();
 
         }
     }

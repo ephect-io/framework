@@ -25,7 +25,7 @@ class PharRegistry extends AbstractStaticRegistry
 
     public static function register(): void
     {
-        FrameworkRegistry::load(true);
+        FrameworkRegistry::load();
         $items = FrameworkRegistry::items();
 
         foreach ($items as $key => $value) {
