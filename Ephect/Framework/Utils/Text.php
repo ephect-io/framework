@@ -95,25 +95,26 @@ class Text
         $dump = self::var_dump_r($array);
 
         file_put_contents(SITE_ROOT . 'dump_var.txt', $dump);
-        file_put_contents(SITE_ROOT . 'export_var.txt', var_export($array, true));
 
         $indentsLengths = [];
         $convert = '';
 
         $re = '/\'([\w\S]+)\' =>/m';
-        $subst = "[$1]=>";
+        $subst = '["$1"]=>';
 
         $sanitize = preg_replace($re, $subst, $dump);
-
         if($sanitize != $dump) {
             $dump = $sanitize;
         }
+        file_put_contents(SITE_ROOT . "dump_sanitize.txt", $sanitize);
 
         $re = '/(.*)(\[.*]=>)(\n)( +)/m';
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
         $offset = 0;
+        file_put_contents(SITE_ROOT . "dump_buffer.txt", $buffer);
+
 
         $re = '/^( ?+)+/m';
         preg_match_all($re, $entries, $matches, PREG_SET_ORDER, 0);
@@ -122,9 +123,9 @@ class Text
             $indentsLengths[] = count($match) > 1 ? strlen($match[0]) : 0;
         }
 
-        $entryRx = '/( ?+)+(\[[\w\S]+]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)(\n)?)/';
+        $entryRx = '/( ?+)+(\[(.*)]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)(\n)?)/';
         $closeArrayRx = '/^( +)?}(\n)?/';
-        file_put_contents(SITE_ROOT . "buffer.txt", $buffer);
+
 
         $l = count($indentsLengths);
         for ($i = 0; $i < $l; $i++) {
@@ -134,14 +135,14 @@ class Text
             if (preg_match($closeArrayRx, $buffer, $matches)) {
                 $convert .= $indent . ']' . ($indent == '' ? '' : ',');
                 $convert .= "\n";
-                $stringLen = strlen($matches[0]) + 1;
+                $stringLen = strlen($matches[0]);
                 $buffer = substr($buffer, $stringLen);
                 $offset += $stringLen;
             } else if (preg_match($entryRx, $buffer, $matches)) {
                 $convert .= $indent;
                 if ($matches[5] == 'array') {
                     $convert .= !empty($matches[3]) ? "'" . trim($matches[3], '"') . "'" . ' => [' : '[';
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 } else if ($matches[5] == 'string') {
@@ -177,7 +178,7 @@ class Text
                     } else {
                         $convert .= $matches[6] . ',';
                     }
-                    $stringLen = strlen($matches[0]) + 1;
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $offset += $stringLen;
                 }
