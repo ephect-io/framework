@@ -87,21 +87,21 @@ class FrameworkRegistry extends AbstractStaticRegistry
         $sourceFiles = File::walkTreeFiltered(SRC_ROOT, ['php']);
 
         foreach ($sourceFiles as $filename) {
-            if (str_contains($filename, 'Interface')) {
+            if (str_ends_with($filename, 'Interface.php')) {
                 [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $interface;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
-            if (str_contains($filename, 'Trait')) {
+            if (str_ends_with($filename, 'Trait.php')) {
                 [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $trait;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
                 continue;
             }
 
-            if(str_contains($filename, 'Enum')) {
+            if(str_ends_with($filename, 'Enum.php')) {
                 [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(SRC_ROOT . $filename);
                 $fqname = $namespace . '\\' . $enum;
                 FrameworkRegistry::write($fqname, SRC_ROOT . $filename);
