@@ -12,15 +12,7 @@ function WebComponent($children): string
         $service = new WebComponentService($children);
         $manifest = $service->readManifest();
         $tag = $manifest->getTag();
-
         $body = $service->getBody($tag);
-//        if ($body === null) {
-//            $args = $children->getAttributes();
-//            $body = <<< BODY
-//            <$tag $args>
-//            </$tag>
-//            BODY;
-//        }
     });
 
     return (<<< HTML
