@@ -93,7 +93,6 @@ class Text
     public static function arrayToString(array $array, bool $prettify = false): string
     {
         $dump = var_export($array, true);
-        file_put_contents(SITE_ROOT . 'dump_export.txt', $dump);
 
         $convert = '';
 
@@ -101,14 +100,13 @@ class Text
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
-        file_put_contents(SITE_ROOT . "dump_buffer.txt", $buffer);
 
         $entryRx = '/( +)?((.*) =>)?(((array) \()| \'?((.|\s)*?)\'?,)?(\n)?/';
         $closeArrayRx = '/^( +)?\),?(\n)?/';
 
         $isSpinning = false;
         $countSpinning = 0;
-        $isDirty = false;
+        $previousBufferLength = 0;
         while (strlen($buffer) > 0 && !$isSpinning) {
             $isDirty = false;
 
@@ -123,14 +121,12 @@ class Text
                 $indent = !isset($matches[1]) ? '' : $matches[1];
                 $convert .= $indent;
                 $key = !isset($matches[3]) ? '' : $matches[3];
-//                $key = str_replace("\\", "\\\\", $key);
 
                 if (isset($matches[6]) && $matches[6] == 'array') {
                     $convert .= !empty($key) ? $key . ' => [' : '[';
 
                     $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
-                    $isDirty = true;
                 } else {
                     $value = !isset($matches[4]) ? '' : $matches[4];
 
@@ -146,17 +142,20 @@ class Text
 
                     $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
-                    $isDirty = true;
                 }
-                $convert .= "\n";
 
+                $convert .= "\n";
+                $isDirty = true;
             }
 
-            if(!$isDirty) {
+            $bufferLength = strlen($buffer);
+
+            if(!$isDirty || $previousBufferLength === $bufferLength) {
                 $countSpinning++;
             }
 
-            $isSpinning = $countSpinning > 10;
+            $isSpinning = $countSpinning > 3;
+            $previousBufferLength = $bufferLength;
         }
 
         if(!$prettify) {
