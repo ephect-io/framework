@@ -209,3 +209,27 @@ define('CLASS_JS_EXTENSION', '.class.js');
 define('MJS_EXTENSION', '.mjs');
 define('TPL_EXTENSION', '.tpl');
 define('TXT_EXTENSION', '.txt');
+
+function applicationConfigPath(): string
+{
+    $vendorPos = strpos( CONFIG_DIR, 'vendor');
+    $configDir = CONFIG_DIR;
+
+    if($vendorPos > -1) {
+        $configDir = substr(CONFIG_DIR, 0, $vendorPos) . 'config' . DIRECTORY_SEPARATOR;
+    }
+
+    return $configDir;
+}
+
+function applicationRuntimePath(): string
+{
+    $vendorPos = strpos( RUNTIME_DIR, 'vendor');
+    $runtimeDir = RUNTIME_DIR;
+
+    if($vendorPos > -1) {
+        $runtimeDir = substr(RUNTIME_DIR, 0, $vendorPos) . REL_RUNTIME_DIR;
+    }
+
+    return $runtimeDir;
+}
