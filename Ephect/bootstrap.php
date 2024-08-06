@@ -26,6 +26,7 @@ include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'FrameworkRegistry.php'
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'HooksRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractStateRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StateRegistry.php';
+include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'PluginRegistry.php';
 
 HooksRegistry::register();
 
