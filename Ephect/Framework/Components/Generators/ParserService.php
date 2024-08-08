@@ -19,7 +19,7 @@ use Ephect\Framework\Components\Generators\TokenParsers\UsesAsParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UsesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Framework\Components\Generators\TokenParsers\View\InlineCodeParser;
-use Ephect\Framework\Components\Generators\TokenParsers\WebComponentParser;
+use Ephect\Framework\Components\Generators\TokenParsers\ModuleComponentParser;
 use Ephect\Framework\Registry\ComponentRegistry;
 
 class ParserService implements ParserServiceInterface
@@ -157,7 +157,7 @@ class ParserService implements ParserServiceInterface
 
     public function doWebComponent(FileComponentInterface $component): void
     {
-        $p = new WebComponentParser($component);
+        $p = new ModuleComponentParser($component);
         $p->do($this->useVariables);
         $this->useVariables = $p->getUseVariables();
     }

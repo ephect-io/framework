@@ -29,8 +29,8 @@ include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StateRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'PluginRegistry.php';
 
 HooksRegistry::register();
-
 FrameworkRegistry::register();
+
 if (IS_PHAR_APP) {
     include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'PharRegistry.php';
     PharRegistry::register();

@@ -11,7 +11,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function reset(): void
     {
-        $runtimeDir = applicationRuntimePath();
+        $runtimeDir = siteRuntimePath();
 
         self::$instance = new FrameworkRegistry;
         self::$instance->_setCacheDirectory($runtimeDir);
@@ -21,7 +21,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     public static function getInstance(): AbstractStaticRegistry
     {
         if (self::$instance === null) {
-            $runtimeDir = applicationRuntimePath();
+            $runtimeDir = siteRuntimePath();
 
             self::$instance = new FrameworkRegistry;
             self::$instance->_setCacheDirectory($runtimeDir);
@@ -96,13 +96,21 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function collectCustomClasses(string $customDir): array
     {
-//        if (!file_exists($customDir)) return [];
+        if (!file_exists($customDir)) return [];
 
         $result = [];
 
         $sourceFiles = File::walkTreeFiltered($customDir, ['php']);
 
         foreach ($sourceFiles as $filename) {
+
+            if (
+                $filename == 'bootstrap.php'
+                || $filename == 'constants.php'
+            ) {
+                continue;
+            }
+
             if (str_ends_with($filename, 'Interface.php')) {
                 [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile($customDir . $filename);
                 $fqname = $namespace . '\\' . $interface;

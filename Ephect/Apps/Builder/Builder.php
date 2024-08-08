@@ -4,8 +4,8 @@ namespace Ephect\Apps\Builder;
 
 use Ephect\Apps\Builder\Copiers\FilesCopier;
 use Ephect\Apps\Builder\Descriptors\ComponentListDescriptor;
+use Ephect\Apps\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Apps\Builder\Descriptors\PluginListDescriptor;
-use Ephect\Apps\Builder\Descriptors\WebComponentListDescriptor;
 use Ephect\Apps\Builder\Routes\Finder;
 use Ephect\Apps\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Apps\Builder\Strategy\BuildByRouteStrategy;
@@ -62,16 +62,27 @@ class Builder
             ComponentRegistry::save();
         }
 
-        if (file_exists(CUSTOM_WEBCOMPONENTS_ROOT)) {
-            if (!ComponentRegistry::load()) {
-                $descriptor = new WebComponentListDescriptor;
-                $webcomponents = $descriptor->describe();
-                $this->list = [...$this->list, ...$webcomponents];
+        $modulePaths = PluginRegistry::readPluginPaths();
+        foreach ($modulePaths as $path) {
+            $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+            $srcPathFile = $moduleConfigDir . REL_CONFIG_APP;
+            $srcPath = file_exists($srcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($srcPathFile) : $path . DIRECTORY_SEPARATOR . REL_CONFIG_APP;
 
-                CodeRegistry::save();
-                ComponentRegistry::save();
+            $moduleTemplatesFile = $moduleConfigDir . 'templates';
+            $templatesPath = file_exists($moduleTemplatesFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleTemplatesFile) : null;
+
+            if ($templatesPath !== null && file_exists($templatesPath)) {
+                if (!ComponentRegistry::load()) {
+                    $descriptor = new ModuleListDescriptor();
+                    $webcomponents = $descriptor->describe($templatesPath);
+                    $this->list = [...$this->list, ...$webcomponents];
+
+                    CodeRegistry::save();
+                    ComponentRegistry::save();
+                }
             }
         }
+
     }
 
     public function prepareRoutedComponents(): void

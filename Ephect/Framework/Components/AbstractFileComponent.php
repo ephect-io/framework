@@ -11,7 +11,6 @@ use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
-use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Web\ApplicationIgniter;
 use Ephect\Framework\Web\Request;
 use Exception;
@@ -95,7 +94,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         [$fqFunctionName, $cacheFilename, $isCached] = $this->findComponent($functionName, $motherUID);
         if (!$isCached) {
             ComponentRegistry::load();
-            WebComponentRegistry::load();
 
             $fqName = ComponentRegistry::read($functionName);
             $component = ComponentFactory::create($fqName, $motherUID);
@@ -117,7 +115,6 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
     {
         CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
         CodeRegistry::load();
-        WebComponentRegistry::load();
 
         $parser = new ParserService();
 
@@ -142,7 +139,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         $parser->doReturnType($this);
         $this->code = $parser->getHtml();
 
-        $parser->doWebComponent($this);
+        $parser->doModuleComponent($this);
 
         $parser->doUseVariables($this);
         $this->code = $parser->getHtml();

@@ -2,21 +2,25 @@
 
 namespace Ephect\Apps\Builder\Descriptors;
 
+use Ephect\Apps\Builder\Descriptors\DescriptorInterface;
+use Ephect\Framework\Components\Component;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Utils\File;
-use Ephect\Plugins\WebComponent\WebComponent;
 
-class WebComponentDescriptor implements DescriptorInterface
+class ModuleDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
         File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
         copy($sourceDir . $filename, COPY_DIR . $filename);
 
-        $comp = new WebComponent();
+        //TODO: get module class from module middleware
+        $moduleClass = Component::class;
+
+        $comp = new $moduleClass;
         $comp->load($filename);
         $comp->analyse();
 

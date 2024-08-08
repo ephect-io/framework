@@ -16,19 +16,32 @@ class PluginInstaller
     public function install(): void
     {
         FrameworkRegistry::load(true);
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
 
         [$filename, $paths] = PluginRegistry::readPluginPaths();
-
         if(is_array($paths)) {
             $paths[] = $this->workingDirectory;
         }
         $paths = array_unique($paths);
-
         PluginRegistry::savePluginPaths($paths);
+
+        [$filename, $paths] = PluginRegistry::readPluginBootstrapPaths();
+        if(is_array($paths)) {
+            $bootstrapFile = $srcDir . 'bootstrap.php';
+            if(file_exists($bootstrapFile)) {
+                $paths[] = $bootstrapFile;
+            }
+            $constantsFile = $srcDir . 'constants.php';
+            if(file_exists($constantsFile)) {
+                $paths[] = $constantsFile;
+            }
+        }
+        $paths = array_unique($paths);
+        PluginRegistry::savePluginBootstrapPaths($paths);
 
         Console::writeLine("Plugin path %s is now declared.", $this->workingDirectory);
 
-        $customClasses =  FrameworkRegistry::collectCustomClasses($this->workingDirectory);
+        $customClasses = FrameworkRegistry::collectCustomClasses($srcDir);
 
         foreach ($customClasses as $class => $filename) {
             FrameworkRegistry::write($class, $filename);
@@ -42,19 +55,29 @@ class PluginInstaller
     public function remove(): void
     {
         FrameworkRegistry::load(true);
-
         $workingDirectory = $this->workingDirectory;
+
         [$filename, $paths] = PluginRegistry::readPluginPaths();
         if(is_array($paths)) {
             $paths = array_filter($paths, function ($path) use ($workingDirectory) {
                 return $path !== $workingDirectory;
             });
         }
+
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
+        $bootstrapFile = $srcDir . 'bootstrap.php';
+        $constantsFile = $srcDir . 'constants.php';
+
+        [$filename, $paths] = PluginRegistry::readPluginBootstrapPaths();
+        if(is_array($paths)) {
+            $paths = array_filter($paths, function ($path) use ($bootstrapFile, $constantsFile) {
+                return $path !== $bootstrapFile && $path !== $constantsFile;
+            });
+        }
+
         Console::writeLine("Plugin path %s is now removed.", $workingDirectory);
 
-
         PluginRegistry::savePluginPaths($paths);
-
         $customClasses =  FrameworkRegistry::collectCustomClasses($this->workingDirectory);
 
         foreach ($customClasses as $class => $filename) {
