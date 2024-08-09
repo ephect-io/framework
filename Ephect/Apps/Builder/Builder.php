@@ -2,7 +2,8 @@
 
 namespace Ephect\Apps\Builder;
 
-use Ephect\Apps\Builder\Copiers\FilesCopier;
+use Ephect\Apps\Builder\Copiers\TemplatesCopyMaker;
+use Ephect\Apps\Builder\Copiers\TemplatesCopier;
 use Ephect\Apps\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Apps\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Apps\Builder\Descriptors\PluginListDescriptor;
@@ -38,9 +39,8 @@ class Builder
             File::safeMkDir(COPY_DIR);
             File::safeMkDir(STATIC_DIR);
 
-            $copier = new FilesCopier;
+            $copier = new TemplatesCopyMaker;
 
-//            $copier->makeCopies();
             $copier->makeCopies(true); // make unique copies
 
             CodeRegistry::load();
