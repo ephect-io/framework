@@ -280,7 +280,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     public function getContents(?string $html = null): ?string
     {
         // TODO: Module implementation must take care of it!!!
-        if ($this->name === 'ModuleComponent') {
+        if ($this->name === 'WebeComponent') {
             return $this->getInnerHTML();
         }
 
