@@ -62,7 +62,7 @@ class Builder
             ComponentRegistry::save();
         }
 
-        $modulePaths = PluginRegistry::readPluginPaths();
+        [$filename, $modulePaths]  = PluginRegistry::readPluginPaths();
         foreach ($modulePaths as $path) {
             $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
             $srcPathFile = $moduleConfigDir . REL_CONFIG_APP;
@@ -73,7 +73,7 @@ class Builder
 
             if ($templatesPath !== null && file_exists($templatesPath)) {
                 if (!ComponentRegistry::load()) {
-                    $descriptor = new ModuleListDescriptor();
+                    $descriptor = new ModuleListDescriptor($path);
                     $webcomponents = $descriptor->describe($templatesPath);
                     $this->list = [...$this->list, ...$webcomponents];
 

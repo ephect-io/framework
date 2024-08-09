@@ -8,6 +8,10 @@ use Ephect\Framework\Utils\File;
 class ModuleListDescriptor implements ComponentListDescriptorInterface
 {
 
+    public function __construct(private string $modulePath)
+    {
+    }
+
     public function describe(string $templateDir = ''): array
     {
         $result = [];

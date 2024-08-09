@@ -155,7 +155,7 @@ class ParserService implements ParserServiceInterface
         $this->html = $p->getHtml();
     }
 
-    public function doWebComponent(FileComponentInterface $component): void
+    public function doModuleComponent(FileComponentInterface $component): void
     {
         $p = new ModuleComponentParser($component);
         $p->do($this->useVariables);

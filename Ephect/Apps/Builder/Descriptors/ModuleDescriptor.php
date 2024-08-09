@@ -12,15 +12,25 @@ use Ephect\Framework\Utils\File;
 
 class ModuleDescriptor implements DescriptorInterface
 {
+    public function __construct(private string $modulePath)
+    {
+    }
+
     public function describe(string $sourceDir, string $filename): array
     {
         File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
         copy($sourceDir . $filename, COPY_DIR . $filename);
 
         //TODO: get module class from module middleware
-        $moduleClass = Component::class;
+        $moduleConfigDir = $this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $moduleEntrypointFile = $moduleConfigDir . 'entrypoint';
+        $moduleEntrypoint = file_exists($moduleEntrypointFile) ? file_get_contents($moduleEntrypointFile) : null;
 
-        $comp = new $moduleClass;
+        if($moduleEntrypoint == null) {
+            throw new \Exception("Module entry point not found in {$moduleEntrypointFile}");
+        }
+
+        $comp = new $moduleEntrypoint;
         $comp->load($filename);
         $comp->analyse();
 
