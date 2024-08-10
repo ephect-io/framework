@@ -93,7 +93,6 @@ class Text
     public static function arrayToString(array $array, bool $prettify = false): string
     {
         $dump = var_export($array, true);
-        file_put_contents(SITE_ROOT . 'dump_export.txt', $dump);
 
         $convert = '';
 
@@ -101,7 +100,6 @@ class Text
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
-        file_put_contents(SITE_ROOT . "dump_buffer.txt", $buffer);
 
         $entryRx = '/( +)?((.*) =>)?(((array) \()| \'?((.|\s)*?)\'?,)?(\n)?/';
         $closeArrayRx = '/^( +)?\),?(\n)?/';
@@ -123,7 +121,6 @@ class Text
                 $indent = !isset($matches[1]) ? '' : $matches[1];
                 $convert .= $indent;
                 $key = !isset($matches[3]) ? '' : $matches[3];
-//                $key = str_replace("\\", "\\\\", $key);
 
                 if (isset($matches[6]) && $matches[6] == 'array') {
                     $convert .= !empty($key) ? $key . ' => [' : '[';
