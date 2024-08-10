@@ -238,9 +238,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return [$fqFunctionName, $cacheFilename];
     }
 
-    /**
-     * @throws Exception
-     */
     public function parse(): void
     {
         $parser = new ApplicationRecursiveParser($this);

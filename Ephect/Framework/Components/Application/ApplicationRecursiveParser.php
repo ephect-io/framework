@@ -22,7 +22,7 @@ class ApplicationRecursiveParser
     }
 
     /**
-     * @throws Exception
+     * @return void
      */
     public function parse(): void
     {
