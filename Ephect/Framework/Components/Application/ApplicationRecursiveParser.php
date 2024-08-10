@@ -13,74 +13,68 @@ use Exception;
 
 class ApplicationRecursiveParser
 {
-    use ElementTrait;
     use ComponentCodeTrait;
-
-    public function __construct(private FileComponentInterface $component)
-    {
-        $this->motherUID = $this->component->getMotherUID();
-    }
 
     /**
      * @return void
      */
-    public function parse(): void
+    public static function parse(FileComponentInterface $component): void
     {
-        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
+        CodeRegistry::setCacheDirectory(CACHE_DIR . $component->getMotherUID());
         CodeRegistry::load();
 
         $parser = new ParserService();
 
-        $parser->doUses($this->component);
-        $parser->doUsesAs($this->component);
+        $parser->doUses($component);
+        $parser->doUsesAs($component);
 
-        $parser->doHeredoc($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doHeredoc($component);
+        $component->applyCode($parser->getHtml());
 
-        $parser->doInlineCode($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doInlineCode($component);
+        $component->applyCode($parser->getHtml());
 
-        $parser->doChildrenDeclaration($this->component);
+        $parser->doChildrenDeclaration($component);
 
-        $parser->doArrays($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doArrays($component);
+        $component->applyCode($parser->getHtml());
 
-        $parser->doUseEffect($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doUseEffect($component);
+        $component->applyCode($parser->getHtml());
 
-        $parser->doReturnType($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doReturnType($component);
+        $component->applyCode($parser->getHtml());
 
-        $parser->doModuleComponent($this->component);
+        $parser->doModuleComponent($component);
 
-        $parser->doUseVariables($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doUseVariables($component);
+        $component->applyCode($parser->getHtml());
 
-        $parser->doNamespace($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doNamespace($component);
+        $component->applyCode($parser->getHtml());
 
-        $parser->doFragments($this->component);
-        $this->component->applyCode($parser->getHtml());
+        $parser->doFragments($component);
+        $component->applyCode($parser->getHtml());
 
-        $filename = $this->component->getSourceFilename();
-        File::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->component->getCode());
-        $this->updateComponent($this->component);
+        $filename = $component->getSourceFilename();
+        File::safeWrite(CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $component->getCode());
+        self::updateComponent($component);
 
-        $parser->doChildSlots($this->component);
-        $this->component->applyCode($parser->getHtml());
-        $this->updateComponent($this->component);
+        $parser->doChildSlots($component);
+        $component->applyCode($parser->getHtml());
+        self::updateComponent($component);
 
-        while ($compz = $this->component->getDeclaration()->getComposition() !== null) {
-            $parser->doOpenComponents($this->component);
-            $this->component->applyCode($parser->getHtml());
-            $this->updateComponent($this->component);
+        while ($compz = $component->getDeclaration()->getComposition() !== null) {
+            $parser->doOpenComponents($component);
+            $component->applyCode($parser->getHtml());
+            self::updateComponent($component);
 
-            $parser->doClosedComponents($this->component);
-            $this->component->applyCode($parser->getHtml());
-            $this->updateComponent($this->component);
+            $parser->doClosedComponents($component);
+            $component->applyCode($parser->getHtml());
+            self::updateComponent($component);
 
-            $parser->doIncludes($this->component);
-            $this->component->applyCode($parser->getHtml());
+            $parser->doIncludes($component);
+            $component->applyCode($parser->getHtml());
         }
 
         CodeRegistry::save();

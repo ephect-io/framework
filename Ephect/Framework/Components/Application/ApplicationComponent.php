@@ -240,8 +240,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     public function parse(): void
     {
-        $parser = new ApplicationRecursiveParser($this);
-        $parser->parse();
+        ApplicationRecursiveParser::parse($this);
     }
 
     public function getFlattenSourceFilename(): string
