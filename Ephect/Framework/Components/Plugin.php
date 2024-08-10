@@ -2,12 +2,13 @@
 
 namespace Ephect\Framework\Components;
 
+use Ephect\Framework\Components\Application\ApplicationComponent;
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
+use Ephect\Framework\Utils\File;
 
-class Plugin extends AbstractFileComponent implements FileComponentInterface
+class Plugin extends ApplicationComponent implements FileComponentInterface
 {
 
     public function load(?string $filename = null): bool
