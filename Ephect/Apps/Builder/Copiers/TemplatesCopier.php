@@ -2,7 +2,6 @@
 
 namespace Ephect\Apps\Builder\Copiers;
 
-use Ephect\Apps\Builder\Copiers\Strategy\CopiersFactory;
 use Ephect\Apps\Builder\Copiers\Strategy\CopierStrategyInterface;
 use Ephect\Framework\Utils\File;
 
