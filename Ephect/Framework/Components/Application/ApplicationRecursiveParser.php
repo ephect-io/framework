@@ -62,7 +62,6 @@ class ApplicationRecursiveParser
         $parser->doFragments($this->component);
         $this->component->applyCode($parser->getHtml());
 
-//        $filename = $this->getFlattenSourceFilename();
         $filename = $this->component->getSourceFilename();
         File::safeWrite(CACHE_DIR . $this->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $this->component->getCode());
         $this->updateComponent($this->component);
@@ -84,7 +83,6 @@ class ApplicationRecursiveParser
             $this->component->applyCode($parser->getHtml());
         }
 
-//        $this->code = $this->component->getCode();
         CodeRegistry::save();
     }
 

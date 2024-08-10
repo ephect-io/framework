@@ -34,7 +34,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     protected ?ComponentDeclaration $declaration = null;
     protected ?ComponentEntity $entity = null;
 
-
     public function __construct(?string $id = null, string $motherUID = '')
     {
         parent::__construct([]);
@@ -197,8 +196,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $names;
     }
 
-
-
     public function analyse(): void
     {
         $parser = new ParserService;
@@ -257,8 +254,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     public static function getFlatFilename(string $basename): string
     {
-//        $basename = pathinfo($basename, PATHINFO_BASENAME);
-
         return str_replace('/', '_', $basename);
     }
 
