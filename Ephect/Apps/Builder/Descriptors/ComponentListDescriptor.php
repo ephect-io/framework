@@ -35,7 +35,13 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
         foreach ($modulePaths as $path) {
             $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
             $moduleTemplatesFile = $moduleConfigDir . 'templates';
-            $configTemplatesDir = file_exists($moduleTemplatesFile) ? APP_ROOT . file_get_contents($moduleTemplatesFile) : null;
+            $moduleTemplatesDir = trim(file_get_contents($moduleTemplatesFile));
+            $configTemplatesDir = file_exists($moduleTemplatesFile) ? APP_ROOT . $moduleTemplatesDir : null;
+
+            //TODO: Find the user's custom directory for the module's templates.
+//            if ($configTemplatesDir !== null && !file_exists($configTemplatesDir)) {
+//                $configTemplatesDir =  file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir);
+//            }
 
             if ($configTemplatesDir !== null && file_exists($configTemplatesDir)) {
                 $componentsList = File::walkTreeFiltered($configTemplatesDir, ['phtml']);
