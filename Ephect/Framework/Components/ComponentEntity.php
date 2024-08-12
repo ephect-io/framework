@@ -279,11 +279,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
     public function getContents(?string $html = null): ?string
     {
-        // TODO: Module implementation must take care of it!!!
-        if ($this->name === 'WebeComponent') {
-            return $this->getInnerHTML();
-        }
-
         $result = '';
 
         if (!$this->hasCloser) {
@@ -294,11 +289,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $start = $contents['startsAt'];
         $end = $contents['endsAt'];
 
-        if ($end - $start < 1) {
-            return $result;
-        }
-
-        ComponentRegistry::load();
         $compFile = ComponentRegistry::read($this->compName);
         if ($compFile === null) {
             return $result;
