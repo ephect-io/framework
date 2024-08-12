@@ -4,9 +4,7 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
-use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Utils\File;
-use Ephect\Framework\WebComponents\ManifestReader;
 
 final class OpenComponentsParser extends AbstractComponentParser
 {

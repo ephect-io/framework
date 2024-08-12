@@ -2,10 +2,11 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\Utils\File;
+use Ephect\Framework\Components\Application\ApplicationComponent;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Utils\File;
 
-class Component extends AbstractFileComponent implements FileComponentInterface
+class Component extends ApplicationComponent implements FileComponentInterface
 {
 
     public function makeComponent(string $filename, string &$html): void

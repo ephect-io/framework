@@ -1,7 +1,7 @@
 <?php
 declare(ticks=1);
 
-namespace Ephect\Framework\Components\FileSystem;
+namespace Ephect\Framework\CLI\FileSystem;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Utils\File;

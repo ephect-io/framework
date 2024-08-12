@@ -3,8 +3,8 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\Utils\File;
-use Ephect\Framework\Utils\Text;
+use Ephect\Framework\Registry\FrameworkRegistry;
+use Ephect\Framework\Registry\PluginRegistry;
 
 class PluginInstaller
 {
@@ -12,59 +12,85 @@ class PluginInstaller
     {
 
     }
+
     public function install(): void
     {
-        [$filename, $paths] = $this->readPluginPaths();
+        FrameworkRegistry::load(true);
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
 
+        [$filename, $paths] = PluginRegistry::readPluginPaths();
         if(is_array($paths)) {
             $paths[] = $this->workingDirectory;
         }
         $paths = array_unique($paths);
+        PluginRegistry::savePluginPaths($paths);
 
-        $this->savePluginPaths($filename, $paths);
+        [$filename, $paths] = PluginRegistry::readPluginBootstrapPaths();
+        if(is_array($paths)) {
+            $bootstrapFile = $srcDir . 'bootstrap.php';
+            if(file_exists($bootstrapFile)) {
+                $paths[] = $bootstrapFile;
+            }
+            $constantsFile = $srcDir . 'constants.php';
+            if(file_exists($constantsFile)) {
+                $paths[] = $constantsFile;
+            }
+        }
+        $paths = array_unique($paths);
+        PluginRegistry::savePluginBootstrapPaths($paths);
 
         Console::writeLine("Plugin path %s is now declared.", $this->workingDirectory);
+
+        $customClasses = FrameworkRegistry::collectCustomClasses($srcDir);
+
+        foreach ($customClasses as $class => $filename) {
+            FrameworkRegistry::write($class, $filename);
+        }
+        FrameworkRegistry::save(true);
+
+        Console::writeLine("Plugin classes are now registered.");
+
     }
 
     public function remove(): void
     {
+        FrameworkRegistry::load(true);
         $workingDirectory = $this->workingDirectory;
-        [$filename, $paths] = $this->readPluginPaths();
+
+        [$filename, $paths] = PluginRegistry::readPluginPaths();
         if(is_array($paths)) {
             $paths = array_filter($paths, function ($path) use ($workingDirectory) {
                 return $path !== $workingDirectory;
             });
         }
 
-        $this->savePluginPaths($filename, $paths);
+        PluginRegistry::savePluginPaths($paths);
+
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
+        $bootstrapFile = $srcDir . 'bootstrap.php';
+        $constantsFile = $srcDir . 'constants.php';
+
+        [$filename, $paths] = PluginRegistry::readPluginBootstrapPaths();
+        if(is_array($paths)) {
+            $paths = array_filter($paths, function ($path) use ($bootstrapFile, $constantsFile) {
+                return $path !== $bootstrapFile && $path !== $constantsFile;
+            });
+        }
+
+        PluginRegistry::savePluginBootstrapPaths($paths);
 
         Console::writeLine("Plugin path %s is now removed.", $workingDirectory);
-    }
 
-    private function readPluginPaths(): array
-    {
-        $vendorPos = strpos( CONFIG_DIR, 'vendor');
-        $configDir = CONFIG_DIR;
+        $customClasses =  FrameworkRegistry::collectCustomClasses($this->workingDirectory);
 
-        if($vendorPos > -1) {
-            $configDir = substr(CONFIG_DIR, 0, $vendorPos) . 'config' . DIRECTORY_SEPARATOR;
+        foreach ($customClasses as $class => $filename) {
+            FrameworkRegistry::delete($class);
         }
+        FrameworkRegistry::save(true);
 
-        $filename = $configDir . "pluginsPaths.php";
+        Console::writeLine("Plugin classes are now unregistered.");
 
-        $paths = [];
-        if(is_file($filename)) {
-            $paths = require $filename;
-        }
-
-        return [$filename, $paths];
     }
 
-    private function savePluginPaths(string $filename, array $paths): void
-    {
-        $json = json_encode($paths);
-        $pluginsPaths = Text::jsonToPhpReturnedArray($json, true);
 
-        File::safeWrite($filename, $pluginsPaths);
-    }
 }

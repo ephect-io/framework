@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
-final class WebComponentParser extends AbstractTokenParser
+final class ModuleComponentParser extends AbstractTokenParser
 {
     public function do(null|string|array|object $parameter = null): void
     {

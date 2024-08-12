@@ -106,7 +106,7 @@ class Text
 
         $isSpinning = false;
         $countSpinning = 0;
-        $previousBufferLength = 0;
+        $isDirty = false;
         while (strlen($buffer) > 0 && !$isSpinning) {
             $isDirty = false;
 
@@ -127,6 +127,7 @@ class Text
 
                     $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
+                    $isDirty = true;
                 } else {
                     $value = !isset($matches[4]) ? '' : $matches[4];
 
@@ -142,20 +143,17 @@ class Text
 
                     $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
+                    $isDirty = true;
                 }
-
                 $convert .= "\n";
-                $isDirty = true;
+
             }
 
-            $bufferLength = strlen($buffer);
-
-            if(!$isDirty || $previousBufferLength === $bufferLength) {
+            if(!$isDirty) {
                 $countSpinning++;
             }
 
-            $isSpinning = $countSpinning > 3;
-            $previousBufferLength = $bufferLength;
+            $isSpinning = $countSpinning > 10;
         }
 
         if(!$prettify) {
