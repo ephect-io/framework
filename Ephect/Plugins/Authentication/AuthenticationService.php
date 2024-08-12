@@ -2,8 +2,9 @@
 
 namespace Ephect\Plugins\Authentication;
 
+use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\StaticElement;
-use Ephect\Plugins\DBAL\TDataAccess;
+use Ephect\Plugins\DBAL\DataAccess;
 
 class AuthenticationService extends StaticElement
 {
@@ -72,8 +73,8 @@ class AuthenticationService extends StaticElement
     {
         $result = null;
 
-        $connection = TDataAccess::getCryptoDB();
-        $token = TCrypto::generateToken('');
+        $connection = DataAccess::getCryptoDB();
+        $token = Crypto::createToken('');
         $stmt = $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             , ['token' => $token, 'userId' => $userId, 'login' => $login]
@@ -86,7 +87,7 @@ class AuthenticationService extends StaticElement
     {
         $result = null;
 
-        $connection = TDataAccess::getCryptoDB();
+        $connection = DataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
 
         if ($stmt->fetch()) {
@@ -113,7 +114,7 @@ class AuthenticationService extends StaticElement
         $userId = $this->getUserId();
         $login = $this->getUserName();
 
-        $connection = TDataAccess::getCryptoDB();
+        $connection = DataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
         if ($row = $stmt->fetchAssoc()) {
 
@@ -124,7 +125,7 @@ class AuthenticationService extends StaticElement
 
         }
 
-        $token = TCrypto::generateToken('');
+        $token = Crypto::createToken('');
         $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             , ['token' => $token, 'userId' => $userId, 'login' => $login]
