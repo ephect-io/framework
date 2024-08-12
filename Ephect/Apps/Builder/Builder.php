@@ -59,9 +59,6 @@ class Builder
                     $descriptor = new ModuleListDescriptor($path);
                     $moduleComponents = $descriptor->describe($moduleSrcPath);
                     $this->list = [...$this->list, ...$moduleComponents];
-
-                    CodeRegistry::save();
-                    ComponentRegistry::save();
                 }
             }
 
