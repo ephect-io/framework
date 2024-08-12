@@ -78,6 +78,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
             }
 
             self::registerCustomClasses(SRC_ROOT);
+            self::registerModulesClasses();
 
             FrameworkRegistry::save(true);
 
@@ -152,6 +153,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
         foreach ($paths as $path) {
             self::registerCustomClasses($path);
         }
-
     }
+
+
 }

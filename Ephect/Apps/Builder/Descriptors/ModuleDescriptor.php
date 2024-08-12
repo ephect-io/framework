@@ -2,10 +2,9 @@
 
 namespace Ephect\Apps\Builder\Descriptors;
 
-use Ephect\Apps\Builder\Descriptors\DescriptorInterface;
-use Ephect\Framework\Components\Component;
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Utils\File;
@@ -23,8 +22,10 @@ class ModuleDescriptor implements DescriptorInterface
 
         //TODO: get module class from module middleware
         $moduleConfigDir = $this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-        $moduleEntrypointFile = $moduleConfigDir . 'entrypoint';
-        $moduleEntrypoint = file_exists($moduleEntrypointFile) ? file_get_contents($moduleEntrypointFile) : null;
+        $moduleEntrypointFile = $moduleConfigDir . 'entrypoint.php';
+        $moduleEntrypoint = file_exists($moduleEntrypointFile) ? require_once $moduleEntrypointFile : null;
+
+        Logger::create()->info("Module entrypoint: $moduleEntrypoint:");
 
         if($moduleEntrypoint == null) {
             throw new \Exception("Module entry point not found in {$moduleEntrypointFile}");

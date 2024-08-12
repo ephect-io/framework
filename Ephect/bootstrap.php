@@ -5,6 +5,7 @@ use Ephect\Framework\JavaScripts\AjilBuilder;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\HooksRegistry;
 use Ephect\Framework\Registry\PharRegistry;
+use Ephect\Framework\Registry\PluginRegistry;
 
 define('LIBDIR_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
 define('FRAMEWORK_PATH', dirname(__FILE__) . LIBDIR_SEPARATOR . 'Framework' . LIBDIR_SEPARATOR);
@@ -28,6 +29,7 @@ include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractStateRegistry.
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StateRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'PluginRegistry.php';
 
+PluginRegistry::loadBootstraps();
 HooksRegistry::register();
 FrameworkRegistry::register();
 

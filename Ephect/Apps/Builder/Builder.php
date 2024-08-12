@@ -49,6 +49,22 @@ class Builder
             $components = $descriptor->describe();
             $this->list = [...$this->list, ...$components];
 
+            [$filename, $modulePaths]  = PluginRegistry::readPluginPaths();
+            foreach ($modulePaths as $path) {
+                $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+                $moduleSrcPathFile = $moduleConfigDir . REL_CONFIG_APP;
+                $moduleSrcPath = file_exists($moduleSrcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile) : $path . DIRECTORY_SEPARATOR . REL_CONFIG_APP;
+
+                if (!ComponentRegistry::load()) {
+                    $descriptor = new ModuleListDescriptor($path);
+                    $moduleComponents = $descriptor->describe($moduleSrcPath);
+                    $this->list = [...$this->list, ...$moduleComponents];
+
+                    CodeRegistry::save();
+                    ComponentRegistry::save();
+                }
+            }
+
             CodeRegistry::save();
             ComponentRegistry::save();
         }
@@ -60,29 +76,7 @@ class Builder
 
             PluginRegistry::save();
             ComponentRegistry::save();
-        }
-
-        [$filename, $modulePaths]  = PluginRegistry::readPluginPaths();
-        foreach ($modulePaths as $path) {
-            $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-            $srcPathFile = $moduleConfigDir . REL_CONFIG_APP;
-            $srcPath = file_exists($srcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($srcPathFile) : $path . DIRECTORY_SEPARATOR . REL_CONFIG_APP;
-
-            $moduleTemplatesFile = $moduleConfigDir . 'templates';
-            $templatesPath = file_exists($moduleTemplatesFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleTemplatesFile) : null;
-
-            if ($templatesPath !== null && file_exists($templatesPath)) {
-                if (!ComponentRegistry::load()) {
-                    $descriptor = new ModuleListDescriptor($path);
-                    $webcomponents = $descriptor->describe($templatesPath);
-                    $this->list = [...$this->list, ...$webcomponents];
-
-                    CodeRegistry::save();
-                    ComponentRegistry::save();
-                }
-            }
-        }
-
+       }
     }
 
     public function prepareRoutedComponents(): void

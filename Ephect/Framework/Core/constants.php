@@ -163,8 +163,8 @@ define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARA
 define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
 define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
 
-define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
-define('APP_ROOT', SITE_ROOT . APP_DIR);
+define('APP_DIR', CONFIG_APP . DIRECTORY_SEPARATOR);
+define('APP_ROOT', SRC_ROOT);
 define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
 define('APP_CLIENT', APP_ROOT . 'client' . DIRECTORY_SEPARATOR);
 define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
@@ -235,7 +235,6 @@ function siteRuntimePath(): string
 
 function siteSrcPath(): string
 {
-
     $configDir = siteConfigPath();
     return file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
 }

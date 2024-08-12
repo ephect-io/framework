@@ -71,4 +71,12 @@ class PluginRegistry extends AbstractStaticRegistry
 
         File::safeWrite($filename, $pluginsPaths);
     }
+
+    public static function loadBootstraps(): void
+    {
+        [$filename, $paths] = self::readPluginBootstrapPaths();
+        foreach ($paths as $path) {
+            require $path;
+        }
+    }
 }

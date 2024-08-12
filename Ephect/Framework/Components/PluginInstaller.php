@@ -64,6 +64,8 @@ class PluginInstaller
             });
         }
 
+        PluginRegistry::savePluginPaths($paths);
+
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
         $bootstrapFile = $srcDir . 'bootstrap.php';
         $constantsFile = $srcDir . 'constants.php';
@@ -75,9 +77,10 @@ class PluginInstaller
             });
         }
 
+        PluginRegistry::savePluginBootstrapPaths($paths);
+
         Console::writeLine("Plugin path %s is now removed.", $workingDirectory);
 
-        PluginRegistry::savePluginPaths($paths);
         $customClasses =  FrameworkRegistry::collectCustomClasses($this->workingDirectory);
 
         foreach ($customClasses as $class => $filename) {
