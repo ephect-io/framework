@@ -236,5 +236,6 @@ function siteRuntimePath(): string
 function siteSrcPath(): string
 {
     $configDir = siteConfigPath();
-    return file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
+    $srcDir =  file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
+    return siteRoot() . $srcDir . DIRECTORY_SEPARATOR;
 }
