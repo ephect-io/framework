@@ -4,6 +4,7 @@ namespace Ephect\Apps\Builder\Descriptors;
 
 use Ephect\Framework\Components\ComponentEntity;
 use Ephect\Framework\Components\Generators\ComponentParser;
+use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Utils\File;
@@ -20,12 +21,13 @@ class ModuleDescriptor implements DescriptorInterface
         copy($sourceDir . $filename, COPY_DIR . $filename);
 
         //TODO: get module class from module middleware
-        $moduleConfigDir = $this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-        $moduleEntrypointFile = $moduleConfigDir . 'entrypoint.php';
-        $moduleEntrypoint = file_exists($moduleEntrypointFile) ? require_once $moduleEntrypointFile : null;
+        $reader = new ModuleManifestReader();
+        $manifest = $reader->read($this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR);
+
+        $moduleEntrypoint = $manifest->getEntrypoint();
 
         if($moduleEntrypoint == null) {
-            throw new \Exception("Module entry point not found in {$moduleEntrypointFile}");
+            throw new \Exception("Module entry point not found.");
         }
 
         $comp = new $moduleEntrypoint;
