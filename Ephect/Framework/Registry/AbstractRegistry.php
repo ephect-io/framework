@@ -21,7 +21,7 @@ abstract class AbstractRegistry implements RegistryInterface
         $this->entries[$key] = $value;
     }
 
-    public function _read($key, $value = null)
+    public function _read($key, $value = null): mixed
     {
         if (!isset($this->entries[$key])) {
             return null;
