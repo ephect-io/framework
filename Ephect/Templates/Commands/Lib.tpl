@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\{{CommandNamespace}};
+namespace {{ApplicationNamespace}}\Commands\{{CommandNamespace}};
 
 use Ephect\Framework\Commands\AbstractCommandLib;
 
