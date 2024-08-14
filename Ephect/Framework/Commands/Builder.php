@@ -2,11 +2,11 @@
 
 namespace Ephect\Framework\Commands;
 
+use Ephect\Framework\Templates\TemplateMaker;
 use Ephect\Framework\Utils\File;
 
 class Builder
 {
-
     /**
      * Third and last creation step of the User Command
      *
@@ -23,22 +23,29 @@ class Builder
      */
     function copyTemplates(string $verb, string $subject, string $description, string $methodName, array $arguments, string $srcDir, string $destDir): void
     {
-        $commandNamespace = ucfirst($verb)  . ucfirst($subject);
+        $commandNamespace = ucfirst($verb) . ucfirst($subject);
         $commandAttributes = 'verb: "' . $verb . '"';
         $commandAttributes = $subject !== "" ? $commandAttributes . ', subject: "' . $subject . '"' : $commandAttributes;
+        $commandTemplatesDir = EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR;
 
-        $mainText = File::safeRead($srcDir . 'Main.tpl');
-        $mainText = str_replace('{{CommandNamespace}}', $commandNamespace, $mainText);
-        $mainText = str_replace('{{CommandAttributes}}', $commandAttributes, $mainText);
-        $mainText = str_replace('{{Description}}', $description, $mainText);
-        $mainText = str_replace('{{MethodName}}', $methodName, $mainText);
+        $mainTextMaker = new TemplateMaker($commandTemplatesDir . 'Main.tpl');
+        $libTextMaker = new TemplateMaker($commandTemplatesDir . 'Lib.tpl');
 
-        $libText = File::safeRead($srcDir . 'Lib.tpl');
-        $libText = str_replace('{{CommandNamespace}}', $commandNamespace, $libText);
-        $libText = str_replace('{{MethodName}}', $methodName, $libText);
+        $mainTextMaker->make([
+            'ApplicationNamespace' => CONFIG_NAMESPACE,
+            'CommandNamespace' => $commandNamespace,
+            'CommandAttributes' => $commandAttributes,
+            'Description' => $description,
+            'MethodName' => $methodName,
+        ]);
+
+        $libTextMaker->make([
+            'ApplicationNamespace' => CONFIG_NAMESPACE,
+            'CommandNamespace' => $commandNamespace,
+            'MethodName' => $methodName,
+        ]);
 
         if (count($arguments) > 0) {
-
             $getargs = '';
             $l = count($arguments);
             for ($i = 0; $i < $l; $i++) {
@@ -60,16 +67,26 @@ class Builder
 
             $parameters = implode(', ', $properties);
 
-            $mainText = str_replace('{{GetArgs}}', $getargs, $mainText);
-            $mainText = str_replace('{{SetArgs}}', $setargs, $mainText);
-            $libText = str_replace('{{Parameters}}', $parameters, $libText);
+            $mainTextMaker->make([
+                'GetArgs' => $getargs,
+                'SetArgs' => $setargs,
+            ]);
+
+            $libTextMaker->make([
+                'Parameters' => $parameters,
+            ]);
         } else {
-            $mainText = str_replace('{{GetArgs}}','', $mainText);
-            $mainText = str_replace('{{SetArgs}}', '', $mainText);
-            $libText = str_replace('{{Parameters}}', '', $libText);
+            $mainTextMaker->make([
+                'GetArgs' => '',
+                'SetArgs' => '',
+            ]);
+
+            $libTextMaker->make([
+                'Parameters' => '',
+            ]);
         }
 
-        File::safeWrite($destDir . "Main.php", $mainText);
-        File::safeWrite($destDir . "Lib.php", $libText);
+        $mainTextMaker->save($destDir . "Main.php");
+        $libTextMaker->save($destDir . "Lib.php");
     }
 }
