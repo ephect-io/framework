@@ -5,6 +5,8 @@ namespace Ephect\Framework\Commands;
 use Ephect\Framework\Core\AbstractApplication;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Logger\Logger;
+use Ephect\Framework\Registry\CommandRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\StateRegistry;
@@ -49,15 +51,25 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
             }
         }
 
+        CommandRegistry::load();
+
         foreach ($allFiles as $entry) {
             $root_dir = $entry->root;
             foreach ($entry->files as $filename) {
                 [$namespace, $class] = ElementUtils::getClassDefinitionFromFile($root_dir . $filename);
                 $fqClass = "$namespace\\$class";
 
+                $connandClass = CommandRegistry::read($fqClass);
+                if($connandClass !== null) {
+                    Logger::create()->info("$connandClass has already been initialized.");
+                    continue;
+                }
+
                 if ($class !== 'Main') {
                     continue;
                 }
+
+                CommandRegistry::write($fqClass, $root_dir . $filename);
 
                 include $root_dir . $filename;
                 $object = new $fqClass($this->_application);
