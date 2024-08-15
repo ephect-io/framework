@@ -33,6 +33,7 @@ class Entity implements ElementInterface
 
     /**
      * @throws \ErrorException
+     * @throws \JsonException
      */
     public function load(bool $asPhpArray = false): void
     {
@@ -47,10 +48,10 @@ class Entity implements ElementInterface
             $json = require $filename;
         } else {
             $filename = $info['dirname']  . DIRECTORY_SEPARATOR .  $info['filename'] .  ".json";
-            if(!file_exists($filename)) {
-                throw new \ErrorException("File '$filename' not found");
+            $json = File::safeRead($filename);
+            if(!json_validate($json)) {
+                throw new \JsonException("Entity data is not valid");
             }
-            $json = file_get_contents($filename);
             $json = json_decode($json, JSON_OBJECT_AS_ARRAY);
         }
 
@@ -68,7 +69,7 @@ class Entity implements ElementInterface
             File::safeWrite($filename, $phpArray);
         } else {
             $filename = $info['dirname']  . DIRECTORY_SEPARATOR .  $info['filename'] .  ".json";
-            $json = json_encode($array);
+            $json = json_encode($array, JSON_PRETTY_PRINT);
             File::safeWrite($filename, $json);
         }
     }

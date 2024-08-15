@@ -3,6 +3,8 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
+use Ephect\Framework\Modules\ModuleManifestReader;
+use Ephect\Framework\Modules\ModulesConfigEntity;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 
@@ -13,10 +15,15 @@ class PluginInstaller
 
     }
 
+    /**
+     * @throws \JsonException
+     * @throws \ErrorException
+     */
     public function install(): void
     {
         FrameworkRegistry::load(true);
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
+        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
 
         [$filename, $paths] = PluginRegistry::readPluginPaths();
         if(is_array($paths)) {
@@ -48,10 +55,22 @@ class PluginInstaller
         }
         FrameworkRegistry::save(true);
 
+        $moduleManifestReader = new ModuleManifestReader;
+        $moduleManifest = $moduleManifestReader->read($configDir);
+
+        $moduleConfig = new ModulesConfigEntity;
+        $moduleConfig->load();
+        $moduleConfig->addModule($moduleManifest->getName(), $moduleManifest->getVersion());
+        $moduleConfig->save();
+
         Console::writeLine("Plugin classes are now registered.");
 
     }
 
+    /**
+     * @throws \JsonException
+     * @throws \ErrorException
+     */
     public function remove(): void
     {
         FrameworkRegistry::load(true);
@@ -67,6 +86,8 @@ class PluginInstaller
         PluginRegistry::savePluginPaths($paths);
 
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
+        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+
         $bootstrapFile = $srcDir . 'bootstrap.php';
         $constantsFile = $srcDir . 'constants.php';
 
@@ -87,6 +108,14 @@ class PluginInstaller
             FrameworkRegistry::delete($class);
         }
         FrameworkRegistry::save(true);
+
+        $moduleManifestReader = new ModuleManifestReader;
+        $moduleManifest = $moduleManifestReader->read($configDir);
+
+        $moduleConfig = new ModulesConfigEntity;
+        $moduleConfig->load();
+        $moduleConfig->removeModule($moduleManifest->getName());
+        $moduleConfig->save();
 
         Console::writeLine("Plugin classes are now unregistered.");
 

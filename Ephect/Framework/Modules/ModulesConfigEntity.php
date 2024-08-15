@@ -10,7 +10,7 @@ class ModulesConfigEntity extends Entity
 
     public function __construct(?ModulesConfigStructure $structure = null)
     {
-        $this->filename = SITE_ROOT . "modules.json";
+        $this->filename = siteRoot() . "modules.json";
 
         parent::__construct($structure);
 
@@ -24,7 +24,7 @@ class ModulesConfigEntity extends Entity
         return $this->modules;
     }
 
-    public function addModules(string $name, $version): void
+    public function addModule(string $name, $version): void
     {
         $this->modules[$name] = $version;
     }

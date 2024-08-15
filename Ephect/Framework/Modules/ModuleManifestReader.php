@@ -9,6 +9,7 @@ class ModuleManifestReader extends ManifestReader
 {
 
     /**
+     * @throws \JsonException
      * @throws \ErrorException
      */
     public function read(string $manifestDirectory): ModuleManifestEntity
