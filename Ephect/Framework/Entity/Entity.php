@@ -2,10 +2,9 @@
 
 namespace Ephect\Framework\Entity;
 
-use Ephect\Framework\CLI\Console;
-use Ephect\Framework\Core\StructureInterface;
 use Ephect\Framework\ElementInterface;
 use Ephect\Framework\ElementTrait;
+use Ephect\Framework\Structure\StructureInterface;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 

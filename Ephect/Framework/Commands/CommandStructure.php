@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Commands;
 
-use Ephect\Framework\Core\Structure;
+use Ephect\Framework\Structure\Structure;
 
 class CommandStructure extends Structure
 {

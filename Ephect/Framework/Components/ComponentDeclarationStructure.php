@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\Core\Structure;
+use Ephect\Framework\Structure\Structure;
 
 class ComponentDeclarationStructure extends Structure
 {

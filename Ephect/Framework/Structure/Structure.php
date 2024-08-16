@@ -1,7 +1,8 @@
 <?php
 
-namespace Ephect\Framework\Core;
+namespace Ephect\Framework\Structure;
 
+use Ephect\Framework\Element;
 use Error;
 
 class Structure implements StructureInterface
@@ -26,5 +27,25 @@ class Structure implements StructureInterface
     public function toArray(): array
     {
         return get_object_vars($this);
+    }
+
+    public static function encode(StructureInterface $structure)
+    {
+
+        $attrs = Element::getClassAttributesData($structure);
+
+        foreach ($attrs as $attr) {
+            if($attr['name'] !== "JsonProperty") {
+                continue;
+            }
+
+            $property = $attr['args']['name'];
+
+
+        }
+    }
+    public static function decode($serialized)
+    {
+
     }
 }

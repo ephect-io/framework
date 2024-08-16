@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\Core;
+namespace Ephect\Framework\Structure;
 
 interface StructureInterface
 {

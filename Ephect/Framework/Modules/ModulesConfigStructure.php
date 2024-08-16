@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Modules;
 
-use Ephect\Framework\Core\Structure;
+use Ephect\Framework\Structure\Structure;
 
 class ModulesConfigStructure extends Structure
 {

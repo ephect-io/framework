@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Components\Validators;
 
-use Ephect\Framework\Core\Structure;
+use Ephect\Framework\Structure\Structure;
 use ErrorException;
 use Exception;
 

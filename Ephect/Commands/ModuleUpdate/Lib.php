@@ -12,12 +12,6 @@ class Lib extends AbstractCommandLib
 {
     public function update(): void
     {
-        $modulesJson = SITE_ROOT . "modules.json";
-        if(!file_exists($modulesJson)) {
-            Console::writeLine("No modules.json found in site root.");
-            return;
-        }
-
         $modulesConfig = new ModulesConfigEntity();
         $modulesConfig->load();
         $modules = $modulesConfig->getModules();

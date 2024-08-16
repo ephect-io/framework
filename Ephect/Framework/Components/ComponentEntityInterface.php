@@ -2,8 +2,8 @@
 
 namespace Ephect\Framework\Components;
 
-use Ephect\Framework\Core\StructureInterface;
 use Ephect\Framework\ElementInterface;
+use Ephect\Framework\Structure\StructureInterface;
 use Ephect\Framework\Tree\TreeInterface;
 
 interface ComponentEntityInterface extends TreeInterface, ElementInterface, StructureInterface

@@ -2,7 +2,7 @@
 
 namespace Ephect\Plugins\Route;
 
-use Ephect\Framework\Core\Structure;
+use Ephect\Framework\Structure\Structure;
 
 class RouteStructure extends Structure
 {
