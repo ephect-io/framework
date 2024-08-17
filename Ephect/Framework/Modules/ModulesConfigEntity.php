@@ -7,6 +7,7 @@ use Ephect\Framework\Entity\Entity;
 class ModulesConfigEntity extends Entity
 {
     private array $modules = [];
+    private array $modulesDev = [];
 
     public function __construct(?ModulesConfigStructure $structure = null)
     {
@@ -24,6 +25,11 @@ class ModulesConfigEntity extends Entity
         return $this->modules;
     }
 
+    public function getModulesDev(): array
+    {
+        return $this->modulesDev;
+    }
+
     public function addModule(string $name, $version): void
     {
         $this->modules[$name] = $version;
@@ -37,6 +43,7 @@ class ModulesConfigEntity extends Entity
     private function bindStructure()
     {
         $this->modules = $this->structure->modules;
+        $this->modulesDev = $this->structure->modulesDev;
     }
 
     #[\Override]

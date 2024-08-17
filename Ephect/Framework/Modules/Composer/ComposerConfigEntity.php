@@ -7,6 +7,7 @@ use Ephect\Framework\Entity\Entity;
 class ComposerConfigEntity extends Entity
 {
     private array $require = [];
+    private array $requireDev = [];
 
     public function __construct(?ComposerConfigStructure $structure = null)
     {
@@ -24,9 +25,15 @@ class ComposerConfigEntity extends Entity
         return $this->require;
     }
 
+    public function getRequireDev(): array
+    {
+        return $this->requireDev;
+    }
+
     private function bindStructure()
     {
         $this->require = $this->structure->require;
+        $this->requireDev = $this->structure->requireDev;
     }
 
     #[\Override]
@@ -40,6 +47,6 @@ class ComposerConfigEntity extends Entity
     #[\Override]
     public function save(bool $asPhpArray = false): void
     {
-
+        // DO NOT SAVE composer.json
     }
 }

@@ -2,23 +2,23 @@
 
 namespace Ephect\Framework\Structure;
 
-use Ephect\Framework\Element;
 use Error;
+use ReflectionClass;
+use stdClass;
 
 class Structure implements StructureInterface
 {
 
-    public function __construct($props)
+    public function __construct(?array $props = null)
     {
         if (!is_array($props) && !is_object($props)) {
-            return null;
+            return;
         }
 
         foreach ($props as $key => $value) {
             if (!property_exists($this, $key)) {
                 throw new Error("The property [$key] is not defined.");
             }
-
 
             $this->{$key} = $value;
         }
@@ -29,23 +29,59 @@ class Structure implements StructureInterface
         return get_object_vars($this);
     }
 
-    public static function encode(StructureInterface $structure)
+    public function encode(): string
     {
+        $result = new stdClass;
 
-        $attrs = Element::getClassAttributesData($structure);
+        $ref  = new ReflectionClass($this);
+        $publicProps = $ref->getProperties(\ReflectionProperty::IS_PUBLIC);
+        foreach ($publicProps as $prop) {
+            $attrs = $prop->getAttributes();
+            $propName = $prop->getName();
+            $resultPropName = $propName;
 
-        foreach ($attrs as $attr) {
-            if($attr['name'] !== "JsonProperty") {
-                continue;
+            foreach ($attrs as $attr) {
+                if($attr->getName() !== JsonProperty::class) {
+                    continue;
+                }
+
+                $args = $attr->getArguments();
+                $argName = $args['name'];
+
+                $resultPropName = $argName;
+                break;
             }
 
-            $property = $attr['args']['name'];
+            $result->{$resultPropName} = $this->{$propName};
+        }
 
+        return json_encode($result, JSON_PRETTY_PRINT);
+    }
 
+    public function decode(string $serialized): void
+    {
+        $array = json_decode($serialized, true);
+
+        $ref  = new ReflectionClass($this);
+        $publicProps = $ref->getProperties(\ReflectionProperty::IS_PUBLIC);
+        foreach ($publicProps as $prop) {
+            $attrs = $prop->getAttributes();
+            $propName = $prop->getName();
+
+            foreach ($attrs as $attr) {
+                if($attr->getName() !== JsonProperty::class) {
+                    continue;
+                }
+
+                $args = $attr->getArguments();
+                $argName = $args['name'];
+
+                $array[$propName] = $array[$argName];
+                break;
+            }
+
+            $this->{$propName} = $array[$propName];
         }
     }
-    public static function decode($serialized)
-    {
 
-    }
 }
