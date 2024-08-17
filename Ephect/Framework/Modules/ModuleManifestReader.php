@@ -12,7 +12,7 @@ class ModuleManifestReader extends ManifestReader
      * @throws \JsonException
      * @throws \ErrorException
      */
-    public function read(string $manifestDirectory): ModuleManifestEntity
+    public function read(?string $manifestDirectory = null): ModuleManifestEntity
     {
         $jsonArray = $this->readManifest($manifestDirectory, ManifestReaderInputEnum::IS_ARRAY);
 
