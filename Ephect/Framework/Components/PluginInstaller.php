@@ -3,6 +3,7 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
+use Ephect\Framework\Modules\Composer\ComposerConfigReader;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Modules\ModulesConfigEntity;
 use Ephect\Framework\Registry\FrameworkRegistry;
@@ -58,9 +59,24 @@ class PluginInstaller
         $moduleManifestReader = new ModuleManifestReader;
         $moduleManifest = $moduleManifestReader->read($configDir);
 
+        $composerReader = new ComposerConfigReader();
+        $composer = $composerReader->read($this->workingDirectory);
+
         $moduleConfig = new ModulesConfigEntity;
         $moduleConfig->load();
-        $moduleConfig->addModule($moduleManifest->getName(), $moduleManifest->getVersion());
+
+        //TODO: loop through the requires and require-dev to add the right versions to modules.json.
+        $requires = $composer->getRequire();
+        $package = $moduleManifest->getName();
+        $version = $moduleManifest->getVersion();
+        foreach ($requires as $requireName => $requireVersion) {
+            if($package == $requireName && $requireVersion !== $version && !empty($requireVersion)) {
+                $moduleConfig->addModule($package, $requireVersion);
+            } else {
+                $moduleConfig->addModule($package, $moduleManifest->getVersion());
+            }
+        }
+
         $moduleConfig->save();
 
         Console::writeLine("Plugin classes are now registered.");
