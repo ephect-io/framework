@@ -6,7 +6,7 @@ use Ephect\Framework\Utils\File;
 
 abstract class ManifestReader
 {
-    abstract public function read(string $manifestDirectory): ManifestEntityInterface;
+    abstract public function read(?string $manifestDirectory = null): ManifestEntityInterface;
 
     /**
      * @throws \JsonException

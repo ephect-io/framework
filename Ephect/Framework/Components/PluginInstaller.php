@@ -3,7 +3,7 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\Modules\Composer\ComposerConfigEntity;
+use Ephect\Framework\Modules\Composer\ComposerConfigReader;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Modules\ModulesConfigEntity;
 use Ephect\Framework\Registry\FrameworkRegistry;
@@ -59,8 +59,8 @@ class PluginInstaller
         $moduleManifestReader = new ModuleManifestReader;
         $moduleManifest = $moduleManifestReader->read($configDir);
 
-        $composerConfig = new ComposerConfigEntity;
-        $composerConfig->load();
+        $composerConfigReader = new ComposerConfigReader;
+        $composerConfig = $composerConfigReader->read();
 
         $moduleConfig = new ModulesConfigEntity;
         $moduleConfig->load();
