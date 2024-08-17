@@ -9,7 +9,7 @@ use stdClass;
 class Structure implements StructureInterface
 {
 
-    public function __construct(?array $props = null)
+    public function __construct(object|array|null $props = null)
     {
         if (!is_array($props) && !is_object($props)) {
             return;
