@@ -14,7 +14,6 @@ class ModuleManifestReader extends ManifestReader
      */
     public function read(string $manifestDirectory): ModuleManifestEntity
     {
-        // TODO: Implement read() method.
         $jsonArray = $this->readManifest($manifestDirectory, ManifestReaderInputEnum::IS_ARRAY);
 
         $struct = new ModuleManifestStructure($jsonArray);

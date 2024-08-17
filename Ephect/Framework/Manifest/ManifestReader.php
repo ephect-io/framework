@@ -18,7 +18,6 @@ abstract class ManifestReader
     ): array|string|null
     {
         $asPhpArray = $inputOption == ManifestReaderInputEnum::IS_ARRAY;
-
         $filename = $manifestDirectory . DIRECTORY_SEPARATOR . 'manifest' . ($asPhpArray ? ".php" : ".json");
 
         $result = null;
