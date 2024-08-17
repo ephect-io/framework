@@ -52,6 +52,10 @@ class Structure implements StructureInterface
                 break;
             }
 
+            if (!property_exists($this, $propName)) {
+                throw new Error("The property [$propName] is not defined.");
+            }
+
             $result->{$resultPropName} = $this->{$propName};
         }
 
@@ -79,11 +83,19 @@ class Structure implements StructureInterface
                 $args = $attr->getArguments();
                 $argName = $args['name'];
 
-                $array[$propName] = $array[$argName];
+                if(isset($array[$argName])) {
+                    $array[$propName] = $array[$argName];
+                }
                 break;
             }
 
-            $this->{$propName} = $array[$propName];
+            if (!property_exists($this, $propName)) {
+                throw new Error("The property [$propName] is not defined.");
+            }
+
+            if(isset($array[$propName])) {
+                $this->{$propName} = $array[$propName];
+            }
         }
     }
 
