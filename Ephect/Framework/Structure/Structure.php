@@ -58,9 +58,12 @@ class Structure implements StructureInterface
         return json_encode($result, JSON_PRETTY_PRINT);
     }
 
-    public function decode(string $serialized): void
+    public function decode(string|array $input): void
     {
-        $array = json_decode($serialized, true);
+        $array = $input;
+        if(is_string($input)) {
+            $array = json_decode($input, true);
+        }
 
         $ref  = new ReflectionClass($this);
         $publicProps = $ref->getProperties(\ReflectionProperty::IS_PUBLIC);
