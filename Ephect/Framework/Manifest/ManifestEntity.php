@@ -2,8 +2,8 @@
 
 namespace Ephect\Framework\Manifest;
 
-use Ephect\Framework\Element;
+use Ephect\Framework\Entity\Entity;
 
-abstract class ManifestEntity extends Element implements ManifestEntityInterface
+abstract class ManifestEntity extends Entity implements ManifestEntityInterface
 {
 }
