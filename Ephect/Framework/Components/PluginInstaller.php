@@ -60,12 +60,11 @@ class PluginInstaller
         $moduleManifest = $moduleManifestReader->read($configDir);
 
         $composerReader = new ComposerConfigReader();
-        $composer = $composerReader->read($this->workingDirectory);
+        $composer = $composerReader->read(siteRoot());
 
         $moduleConfig = new ModulesConfigEntity;
         $moduleConfig->load();
 
-        //TODO: loop through the requires and require-dev to add the right versions to modules.json.
         $requires = $composer->getRequire();
         $package = $moduleManifest->getName();
         $version = $moduleManifest->getVersion();
