@@ -3,8 +3,9 @@
 namespace Ephect\Framework\Modules\Composer;
 
 use Ephect\Framework\Entity\Entity;
+use Ephect\Framework\Manifest\ManifestEntity;
 
-class ComposerConfigEntity extends Entity
+class ComposerConfigEntity extends ManifestEntity
 {
     private array $require = [];
     private array $requireDev = [];
