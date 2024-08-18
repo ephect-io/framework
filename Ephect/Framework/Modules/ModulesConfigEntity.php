@@ -2,9 +2,9 @@
 
 namespace Ephect\Framework\Modules;
 
-use Ephect\Framework\Entity\Entity;
+use Ephect\Framework\Manifest\ManifestEntity;
 
-class ModulesConfigEntity extends Entity
+class ModulesConfigEntity extends ManifestEntity
 {
     private array $modules = [];
     private array $modulesDev = [];
