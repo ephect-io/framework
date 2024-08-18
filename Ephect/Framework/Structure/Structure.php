@@ -4,6 +4,7 @@ namespace Ephect\Framework\Structure;
 
 use Error;
 use ReflectionClass;
+use ReflectionProperty;
 use stdClass;
 
 class Structure implements StructureInterface
@@ -31,17 +32,37 @@ class Structure implements StructureInterface
 
     public function encode(): string
     {
+        $result = $this->recursiveEncode($this);
+
+        return json_encode($result, JSON_PRETTY_PRINT);
+    }
+
+    public function decode(string|array $input): void
+    {
+        $array = $input;
+        if (is_string($input)) {
+            $array = json_decode($input, true);
+        }
+
+        $this->recursiveDecode($this, $array);
+    }
+
+    private function recursiveEncode(StructureInterface $structure)
+    {
         $result = new stdClass;
 
-        $ref  = new ReflectionClass($this);
-        $publicProps = $ref->getProperties(\ReflectionProperty::IS_PUBLIC);
+        $ref = new ReflectionClass($structure);
+        $publicProps = $ref->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($publicProps as $prop) {
             $attrs = $prop->getAttributes();
             $propName = $prop->getName();
+            $propType = $prop->getType();
+            $propValue = $prop->getValue($structure);
+
             $resultPropName = $propName;
 
             foreach ($attrs as $attr) {
-                if($attr->getName() !== JsonProperty::class) {
+                if ($attr->getName() !== JsonProperty::class) {
                     continue;
                 }
 
@@ -52,51 +73,55 @@ class Structure implements StructureInterface
                 break;
             }
 
-            if (!property_exists($this, $propName)) {
-                throw new Error("The property [$propName] is not defined.");
+            if (!$propType->isBuiltin() && in_array(StructureInterface::class, class_implements($propType->getName()))) {
+                $result->{$resultPropName} = $this->recursiveEncode($propValue);
+            } else {
+                $result->{$resultPropName} = $propValue;
             }
-
-            $result->{$resultPropName} = $this->{$propName};
         }
 
-        return json_encode($result, JSON_PRETTY_PRINT);
+        return $result;
     }
 
-    public function decode(string|array $input): void
+    private function recursiveDecode(StructureInterface $structure, array $values)
     {
-        $array = $input;
-        if(is_string($input)) {
-            $array = json_decode($input, true);
-        }
-
-        $ref  = new ReflectionClass($this);
-        $publicProps = $ref->getProperties(\ReflectionProperty::IS_PUBLIC);
+        $ref = new ReflectionClass($structure);
+        $publicProps = $ref->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($publicProps as $prop) {
             $attrs = $prop->getAttributes();
             $propName = $prop->getName();
+            $propType = $prop->getType();
 
             foreach ($attrs as $attr) {
-                if($attr->getName() !== JsonProperty::class) {
+                if ($attr->getName() !== JsonProperty::class) {
                     continue;
                 }
 
                 $args = $attr->getArguments();
                 $argName = $args['name'];
 
-                if(isset($array[$argName])) {
-                    $array[$propName] = $array[$argName];
+                if (isset($values[$argName])) {
+                    $values[$propName] = $values[$argName];
                 }
                 break;
             }
 
-            if (!property_exists($this, $propName)) {
+            if (!property_exists($structure, $propName)) {
                 throw new Error("The property [$propName] is not defined.");
             }
 
-            if(isset($array[$propName])) {
-                $this->{$propName} = $array[$propName];
+            if(isset($values[$propName])) {
+                if (!$propType->isBuiltin() && in_array(StructureInterface::class, class_implements($propType->getName()))) {
+                    $propClass = $propType->getName();
+                    $structureChild = new $propClass;
+                    $structure->{$propName} = $this->recursiveDecode($structureChild, $values[$propName]);
+                } else {
+                    $structure->{$propName} = $values[$propName];
+                }
             }
         }
+
+        return $structure;
     }
 
 }
