@@ -54,10 +54,19 @@ class Structure implements StructureInterface
         $ref = new ReflectionClass($structure);
         $publicProps = $ref->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($publicProps as $prop) {
-            $attrs = $prop->getAttributes();
             $propName = $prop->getName();
+
+            /*
+             * The structure doesn't have a value for this field.
+             * So, we go to the next field.
+             */
+            if(!isset($structure->{$propName})) {
+                continue;
+            }
+
+            $attrs = $prop->getAttributes();
             $propType = $prop->getType();
-            $propValue = $prop->getValue($structure);
+            $propValue = $structure->{$propName};
 
             $resultPropName = $propName;
 
