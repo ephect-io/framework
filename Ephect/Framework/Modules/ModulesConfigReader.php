@@ -7,7 +7,7 @@ use Ephect\Framework\Modules\Composer\ComposerConfigEntity;
 use Ephect\Framework\Modules\Composer\ComposerConfigStructure;
 use Ephect\Framework\Utils\File;
 
-class ModuleConfigReader extends ManifestReader
+class ModulesConfigReader extends ManifestReader
 {
 
     /**
@@ -17,9 +17,11 @@ class ModuleConfigReader extends ManifestReader
     public function read(?string $manifestDirectory = null): ModulesConfigEntity
     {
         $json = File::safeRead(siteRoot() . "modules.json");
+        $struct = new ModulesConfigStructure;
 
-        $struct = new ModulesConfigStructure();
-        $struct->decode($json);
+        if(!$json === null) {
+            $struct->decode($json);
+        }
 
         return new ModulesConfigEntity($struct);
     }

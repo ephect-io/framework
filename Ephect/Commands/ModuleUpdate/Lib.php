@@ -5,13 +5,13 @@ namespace Ephect\Commands\ModuleUpdate;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Framework\Modules\ModuleConfigReader;
+use Ephect\Framework\Modules\ModulesConfigReader;
 
 class Lib extends AbstractCommandLib
 {
     public function update(): void
     {
-        $moduleConfigReader = new ModuleConfigReader;
+        $moduleConfigReader = new ModulesConfigReader;
         $modulesConfig = $moduleConfigReader->read();
         $modules = $modulesConfig->getModules();
 

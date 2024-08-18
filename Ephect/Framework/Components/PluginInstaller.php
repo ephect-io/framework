@@ -4,7 +4,7 @@ namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Modules\Composer\ComposerConfigReader;
-use Ephect\Framework\Modules\ModuleConfigReader;
+use Ephect\Framework\Modules\ModulesConfigReader;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
@@ -62,7 +62,7 @@ class PluginInstaller
         $composerConfigReader = new ComposerConfigReader;
         $composerConfig = $composerConfigReader->read();
 
-        $moduleConfigReader = new ModuleConfigReader;
+        $moduleConfigReader = new ModulesConfigReader;
         $moduleConfig = $moduleConfigReader->read();
 
         $requires = $composerConfig->getRequire();
@@ -127,7 +127,7 @@ class PluginInstaller
         $moduleManifestReader = new ModuleManifestReader;
         $moduleManifest = $moduleManifestReader->read($configDir);
 
-        $moduleConfigReader = new ModuleConfigReader;
+        $moduleConfigReader = new ModulesConfigReader;
         $moduleConfig = $moduleConfigReader->read();
         $moduleConfig->removeModule($moduleManifest->getName());
         $moduleConfig->save();

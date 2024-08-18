@@ -15,9 +15,11 @@ class ComposerConfigReader extends ManifestReader
     public function read(?string $manifestDirectory = null): ComposerConfigEntity
     {
         $json = File::safeRead(siteRoot() . "composer.json");
-
         $struct = new ComposerConfigStructure;
-        $struct->decode($json);
+
+        if(!$json === null) {
+            $struct->decode($json);
+        }
 
         return new ComposerConfigEntity($struct);
     }
