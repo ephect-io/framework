@@ -12,11 +12,12 @@ use Ephect\Framework\Components\FileComponentInterface;
 use Ephect\Framework\Components\Generators\ParserService;
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Entity\Entity;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\StateRegistry;
-use Ephect\Framework\Tree\Tree;
+use Ephect\Framework\Tree\TreeTrait;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\ApplicationIgniter;
 use Ephect\Framework\Web\Request;
@@ -26,17 +27,18 @@ use ReflectionException;
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
 define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 
-abstract class ApplicationComponent extends Tree implements FileComponentInterface
+abstract class ApplicationComponent extends Entity implements FileComponentInterface
 {
     use ElementTrait;
     use ComponentCodeTrait;
+    use TreeTrait;
 
     protected ?ComponentDeclaration $declaration = null;
     protected ?ComponentEntity $entity = null;
 
     public function __construct(?string $id = null, string $motherUID = '')
     {
-        parent::__construct([]);
+        parent::__construct(null);
 
         $this->id = $id ?: '';
         if ($id === null) {

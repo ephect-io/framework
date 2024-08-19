@@ -4,7 +4,7 @@ namespace Ephect\Framework\Tree;
 
 use Closure;
 
-class Tree implements TreeInterface
+trait TreeTrait
 {
     protected array $elementList = [];
 

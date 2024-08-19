@@ -3,11 +3,13 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\Tree\Tree;
+use Ephect\Framework\Entity\Entity;
+use Ephect\Framework\Tree\TreeTrait;
 
-class Children extends Tree implements ChildrenInterface
+class Children extends Entity implements ChildrenInterface
 {
     use ElementTrait;
+    use TreeTrait;
 
     protected ?object $props = null;
     protected array|object|null $parentProps = null;
@@ -18,6 +20,8 @@ class Children extends Tree implements ChildrenInterface
 
     public function __construct(ChildrenStructure $struct)
     {
+        parent::__construct($struct);
+
         $this->uid = $struct->uid;
         $this->motherUID = $struct->motherUID;
         $this->props = $struct->props;

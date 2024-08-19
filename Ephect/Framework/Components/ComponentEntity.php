@@ -3,18 +3,20 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementTrait;
+use Ephect\Framework\Entity\Entity;
+use Ephect\Framework\Tree\TreeTrait;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
-use Ephect\Framework\Tree\Tree;
 
 /**
  * Description of match
  *
  * @author david
  */
-class ComponentEntity extends Tree implements ComponentEntityInterface
+class ComponentEntity extends Entity implements ComponentEntityInterface
 {
     use ElementTrait;
+    use TreeTrait;
 
     protected int $parentId = 0;
     protected string $name = '';
@@ -35,7 +37,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
 
     public function __construct(protected ?ComponentStructure $attributes)
     {
-        parent::__construct([]);
+        parent::__construct($this->attributes);
 
         if ($attributes === null) {
             return null;
@@ -303,5 +305,15 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         }
 
         return substr($text, $start, $end - $start + 1);
+    }
+
+    public function encode(): string
+    {
+        // TODO: Implement encode() method.
+    }
+
+    public function decode(array|string $input): void
+    {
+        // TODO: Implement decode() method.
     }
 }
