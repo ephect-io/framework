@@ -7,15 +7,17 @@ use Ephect\Framework\Manifest\ManifestEntity;
 
 class ModuleManifestEntity extends ManifestEntity implements ModuleManifestEntityInterface
 {
-    private string $tag;
-    private string $name;
-    private string $entrypoint;
-    private string $templates;
-    private string $description;
-    private string $version;
+    private string $tag = '';
+    private string $name = '';
+    private ?string $entrypoint = null;
+    private string $templates = '';
+    private string $description = '';
+    private string $version = '';
 
     public function __construct(ModuleManifestStructure $structure)
     {
+        parent::__construct($structure);
+
         $this->tag = $structure->tag;
         $this->name = $structure->name;
         $this->entrypoint = $structure->entrypoint;
@@ -34,7 +36,7 @@ class ModuleManifestEntity extends ManifestEntity implements ModuleManifestEntit
         return $this->name;
     }
 
-    public function getEntrypoint(): string
+    public function getEntrypoint(): ?string
     {
         return $this->entrypoint;
     }

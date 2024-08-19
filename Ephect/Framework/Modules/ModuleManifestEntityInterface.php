@@ -10,7 +10,7 @@ interface ModuleManifestEntityInterface extends ManifestEntityInterface
 
     public function getName(): string;
 
-    public function getEntrypoint(): string;
+    public function getEntrypoint(): ?string;
 
     public function getTemplates(): string;
 

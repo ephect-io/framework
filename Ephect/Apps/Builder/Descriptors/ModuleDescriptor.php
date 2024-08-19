@@ -3,6 +3,7 @@
 namespace Ephect\Apps\Builder\Descriptors;
 
 use Ephect\Framework\Components\ComponentEntity;
+use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Registry\CodeRegistry;
@@ -27,10 +28,20 @@ class ModuleDescriptor implements DescriptorInterface
         $moduleEntrypoint = $manifest->getEntrypoint();
 
         if($moduleEntrypoint == null) {
-            throw new \Exception("Module entry point not found.");
+            return [null, null];
         }
 
-        $comp = new $moduleEntrypoint;
+        if(!in_array(ComponentInterface::class, class_implements($moduleEntrypoint))) {
+            throw new \Exception("Module entry point must implement " . ComponentInterface::class . " or be null.");
+        }
+
+        return $this->parseComponent($moduleEntrypoint, $filename);
+
+    }
+
+    private function parseComponent(string $moduleEntrypointClass, string $filename): array
+    {
+        $comp = new $moduleEntrypointClass;
         $comp->load($filename);
         $comp->analyse();
 
