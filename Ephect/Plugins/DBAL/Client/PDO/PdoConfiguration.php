@@ -2,7 +2,7 @@
 namespace Ephect\Plugins\DBAL\Client\PDO;
 
 use Ephect\Framework\Registry\StateRegistry;
-use Ephect\Plugins\DBAL\Data\JsonConfiguration;
+use Ephect\Plugins\DBAL\Configuration\JsonConfiguration;
 use Ephect\Plugins\DBAL\ServerType;
 
 class PdoConfiguration extends JsonConfiguration

@@ -1,10 +1,9 @@
 <?php
-namespace Ephect\Plugins\DBAL;
+namespace Ephect\Plugins\DBAL\Client\PDO;
 
-use Ephect\Plugins\DBAL\Client\PDO\PdoConfiguration;
-use Ephect\Plugins\DBAL\Client\PDO\PdoConnection;
+use Ephect\Plugins\DBAL\ServerType;
 
-class DataAccess
+class PdoDataAccess
 {
 
     public static function getCryptoDB(): ?PdoConnection

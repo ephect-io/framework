@@ -4,7 +4,7 @@ namespace Ephect\Plugins\Authentication;
 
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\StaticElement;
-use Ephect\Plugins\DBAL\DataAccess;
+use Ephect\Plugins\DBAL\Client\PDO\PdoDataAccess;
 
 class AuthenticationService extends StaticElement
 {
@@ -73,7 +73,7 @@ class AuthenticationService extends StaticElement
     {
         $result = null;
 
-        $connection = DataAccess::getCryptoDB();
+        $connection = PdoDataAccess::getCryptoDB();
         $token = Crypto::createToken('');
         $stmt = $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
@@ -87,7 +87,7 @@ class AuthenticationService extends StaticElement
     {
         $result = null;
 
-        $connection = DataAccess::getCryptoDB();
+        $connection = PdoDataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
 
         if ($stmt->fetch()) {
@@ -114,7 +114,7 @@ class AuthenticationService extends StaticElement
         $userId = $this->getUserId();
         $login = $this->getUserName();
 
-        $connection = DataAccess::getCryptoDB();
+        $connection = PdoDataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
         if ($row = $stmt->fetchAssoc()) {
 
