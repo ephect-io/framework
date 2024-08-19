@@ -14,4 +14,7 @@ interface ModuleManifestEntityInterface extends ManifestEntityInterface
 
     public function getTemplates(): string;
 
+    public function getDescription(): string;
+
+    public function getVersion(): string;
 }
