@@ -19,7 +19,7 @@ class ModulesConfigReader extends ManifestReader
         $json = File::safeRead(siteRoot() . "modules.json");
         $struct = new ModulesConfigStructure;
 
-        if(!$json === null) {
+        if($json !== null) {
             $struct->decode($json);
         }
 
