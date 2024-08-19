@@ -2,14 +2,12 @@
 namespace Ephect\Plugins\DBAL\Client\PDO;
 
 use Ephect\Framework\Element;
-use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\AbstractPdoSchemaInfo;
+use Ephect\Plugins\DBAL\Client\PDO\SchemaInfo\AbstractPdoSchemaInfo;
 use Ephect\Plugins\DBAL\DataStatementInterface;
-
-use Ephect\Plugins\DBAL\ServerType;
 use Exception;
 use PDO;
-use PDOStatement;
 use PDOException;
+use PDOStatement;
 use Throwable;
 
 class PdoDataStatement extends Element implements DataStatementInterface

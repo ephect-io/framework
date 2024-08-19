@@ -6,7 +6,7 @@ use Ephect\Framework\Components\ChildrenInterface;
 use Ephect\Framework\Utils\File;
 use DateTime;
 
-class HtmlSaverService implements HtmlSaveServiceInterface
+class HtmlSaverService implements HtmlSaverServiceInterface
 {
 
     public function __construct(private readonly ChildrenInterface $children)

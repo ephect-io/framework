@@ -1,5 +1,5 @@
 <?php
-namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
+namespace Ephect\Plugins\DBAL\Client\PDO\SchemaInfo;
 
 interface PdoSchemaInfoInterface
 {

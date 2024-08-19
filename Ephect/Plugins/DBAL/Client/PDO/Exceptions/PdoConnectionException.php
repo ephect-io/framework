@@ -1,5 +1,5 @@
 <?php
-namespace Ephect\Plugins\DBAL\CLient\PDO\Exceptions;
+namespace Ephect\Plugins\DBAL\Client\PDO\Exceptions;
 use Exception;
 
 class PdoConnectionException extends Exception

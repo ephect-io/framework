@@ -1,5 +1,5 @@
 <?php
-namespace Ephect\Plugins\DBAL\Data;
+namespace Ephect\Plugins\DBAL\Configuration;
 
 use Ephect\Framework\Configuration\AbstractConfiguration;
 

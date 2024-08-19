@@ -2,14 +2,14 @@
 namespace Ephect\Plugins\DBAL\Client\PDO;
 
 use Ephect\Framework\Configuration\AbstractConfiguration;
-use Ephect\Plugins\DBAL\CLient\PDO\Exceptions\PdoConnectionException;
+use Ephect\Plugins\DBAL\Client\PDO\Exceptions\PdoConnectionException;
+use Ephect\Plugins\DBAL\Client\PDO\SchemaInfo\AbstractPdoSchemaInfo;
 use Ephect\Plugins\DBAL\CrudQueriesTrait;
-use Ephect\Plugins\DBAL\SqlConnectionInterface;
 use Ephect\Plugins\DBAL\ServerType;
-use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\AbstractPdoSchemaInfo;
+use Ephect\Plugins\DBAL\SqlConnectionInterface;
 use Exception;
-use PDOException;
 use PDO;
+use PDOException;
 
 class PdoConnection extends AbstractConfiguration implements SqlConnectionInterface
 {

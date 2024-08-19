@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Apps\Builder\Routes;
+namespace Ephect\Apps\Builder\Routing;
 
 use Ephect\Framework\Components\ComponentDeclaration;
 use Ephect\Framework\Components\ComponentDeclarationStructure;

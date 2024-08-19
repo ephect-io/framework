@@ -1,12 +1,11 @@
 <?php
-namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
+namespace Ephect\Plugins\DBAL\Client\PDO\SchemaInfo;
 
 use Ephect\Framework\Configuration\ConfigurableInterface;
 use Ephect\Framework\Logger\Logger;
 use Ephect\Plugins\DBAL\Client\PDO\PdoConfiguration;
 use Ephect\Plugins\DBAL\DataStatementInterface;
 use Ephect\Plugins\DBAL\ServerType;
-
 use PDOException;
 
 abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface

@@ -1,10 +1,10 @@
 <?php
-namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
+namespace Ephect\Plugins\DBAL\Client\PDO\SchemaInfo;
 
 use Ephect\Framework\Logger\Logger;
 use SQLite3;
 
-class PdoSQLiteSchemaInfo extends AbstractPdoSchemaInfo
+class PdoSqliteSchemaInfo extends AbstractPdoSchemaInfo
 {
 
     public function getInfo($index): ?object

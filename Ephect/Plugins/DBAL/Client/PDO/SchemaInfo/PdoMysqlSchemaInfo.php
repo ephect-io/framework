@@ -1,10 +1,9 @@
 <?php
-namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
+namespace Ephect\Plugins\DBAL\Client\PDO\SchemaInfo;
 
 use Ephect\Plugins\DBAL\Client\PDO\PdoConnection;
-use PDO;
 
-class PdoMySQLSchemaInfo extends AbstractPdoSchemaInfo
+class PdoMysqlSchemaInfo extends AbstractPdoSchemaInfo
 {
     public function getInfo($index): ?object
     {

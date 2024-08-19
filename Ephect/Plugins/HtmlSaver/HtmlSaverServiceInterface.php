@@ -2,7 +2,7 @@
 
 namespace Ephect\Plugins\HtmlSaver;
 
-interface HtmlSaveServiceInterface
+interface HtmlSaverServiceInterface
 {
     public function canRender(): bool;
 
