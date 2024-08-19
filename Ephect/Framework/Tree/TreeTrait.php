@@ -8,11 +8,6 @@ trait TreeTrait
 {
     protected array $elementList = [];
 
-    public function __construct(array $list)
-    {
-        $this->elementList = $list;
-    }
-
     public function getIterator(): TreeIterator
     {
         return new TreeIterator($this->elementList);

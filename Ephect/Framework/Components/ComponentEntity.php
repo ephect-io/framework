@@ -306,14 +306,4 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
 
         return substr($text, $start, $end - $start + 1);
     }
-
-    public function encode(): string
-    {
-        // TODO: Implement encode() method.
-    }
-
-    public function decode(array|string $input): void
-    {
-        // TODO: Implement decode() method.
-    }
 }
