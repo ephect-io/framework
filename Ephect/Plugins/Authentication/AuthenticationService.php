@@ -4,7 +4,7 @@ namespace Ephect\Plugins\Authentication;
 
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\StaticElement;
-use Ephect\Plugins\DBAL\Client\PDO\PdoDataAccess;
+use Ephect\Modules\DataAccess\Client\PDO\PdoDataAccess;
 
 class AuthenticationService extends StaticElement
 {
