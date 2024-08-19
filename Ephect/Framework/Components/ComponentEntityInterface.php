@@ -6,7 +6,7 @@ use Ephect\Framework\ElementInterface;
 use Ephect\Framework\Structure\StructureInterface;
 use Ephect\Framework\Tree\TreeInterface;
 
-interface ComponentEntityInterface extends TreeInterface, ElementInterface, StructureInterface
+interface ComponentEntityInterface extends TreeInterface, ElementInterface
 {
     public function getParentId(): int;
 
@@ -35,4 +35,6 @@ interface ComponentEntityInterface extends TreeInterface, ElementInterface, Stru
     public function getCloser(): array;
 
     public function getMethod(): string;
+
+    public function toArray(): array;
 }
