@@ -30,7 +30,7 @@ class PluginRegistry extends AbstractStaticRegistry
         $filename = $configDir . "pluginsPaths.php";
 
         $paths = [];
-        if(is_file($filename)) {
+        if(file_exists($filename)) {
             $paths = require $filename;
         }
 
@@ -54,7 +54,7 @@ class PluginRegistry extends AbstractStaticRegistry
         $filename = $configDir . "pluginsBootstrapPaths.php";
 
         $paths = [];
-        if(is_file($filename)) {
+        if(file_exists($filename)) {
             $paths = require $filename;
         }
 

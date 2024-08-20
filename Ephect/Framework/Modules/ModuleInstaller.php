@@ -141,7 +141,7 @@ class ModuleInstaller
         $filename = $configDir . "modulesPaths.php";
 
         $paths = [];
-        if(is_file($filename)) {
+        if(file_exists($filename)) {
             $paths = require $filename;
         }
 
@@ -165,7 +165,7 @@ class ModuleInstaller
         $filename = $configDir . "modulesBootstrapPaths.php";
 
         $paths = [];
-        if(is_file($filename)) {
+        if(file_exists($filename)) {
             $paths = require $filename;
         }
 
