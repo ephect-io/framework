@@ -18,34 +18,6 @@ class CommonLib extends Element
         parent::__construct($parent);
     }
 
-    public function createCommonTrees(): void
-    {
-        $common = EPHECT_ROOT . 'Samples' . DIRECTORY_SEPARATOR . 'Common';
-        $src_dir = $common . DIRECTORY_SEPARATOR . 'config';
-
-        File::safeMkDir(CONFIG_DIR);
-        $destDir = realpath(CONFIG_DIR);
-
-        $tree = File::walkTreeFiltered($src_dir);
-
-        foreach ($tree as $filePath) {
-            File::safeWrite($destDir . $filePath, '');
-            copy($src_dir . $filePath, $destDir . $filePath);
-        }
-
-        $src_dir = $common . DIRECTORY_SEPARATOR . 'public';
-
-        File::safeMkDir(CONFIG_DOCROOT);
-        $destDir = realpath(CONFIG_DOCROOT);
-
-        $tree = File::walkTreeFiltered($src_dir);
-
-        foreach ($tree as $filePath) {
-            File::safeWrite($destDir . $filePath, '');
-            copy($src_dir . $filePath, $destDir . $filePath);
-        }
-    }
-
     public function requireTree(string $treePath): object
     {
         $tree = File::walkTreeFiltered($treePath, ['php']);
