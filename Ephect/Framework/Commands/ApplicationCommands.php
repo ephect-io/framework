@@ -6,8 +6,8 @@ use Ephect\Framework\Core\AbstractApplication;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementUtils;
 use Ephect\Framework\Logger\Logger;
+use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Registry\CommandRegistry;
-use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\StateRegistry;
 
@@ -38,7 +38,7 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
         }
 
 
-        [$filename, $modulePaths]  = PluginRegistry::readPluginPaths();
+        [$filename, $modulePaths]  = ModuleInstaller::readModulePaths();
         foreach ($modulePaths as $path) {
             $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
             $moduleSrcPathFile = $moduleConfigDir . REL_CONFIG_APP;
