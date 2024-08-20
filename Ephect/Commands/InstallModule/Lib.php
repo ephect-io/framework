@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\InstallPlugin;
+namespace Ephect\Commands\InstallModule;
 
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Plugins\PluginInstaller;

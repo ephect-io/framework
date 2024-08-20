@@ -195,7 +195,7 @@ BOOTSTRAP2;
 <?php
 include 'bootstrap.php';
 
-Ephect\Framework\Web\Application::create();
+\Ephect\Forms\Web\Application::create();
 
 INDEX;
 

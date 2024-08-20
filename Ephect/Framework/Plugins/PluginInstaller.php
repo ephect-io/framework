@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\Components;
+namespace Ephect\Framework\Plugins;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Modules\Composer\ComposerConfigReader;
