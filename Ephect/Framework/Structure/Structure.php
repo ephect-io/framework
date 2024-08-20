@@ -30,11 +30,11 @@ class Structure implements StructureInterface
         return get_object_vars($this);
     }
 
-    public function encode(): string
+    public function encode(int $jsonOptions = JSON_PRETTY_PRINT): string
     {
         $result = $this->recursiveEncode($this);
 
-        return json_encode($result, JSON_PRETTY_PRINT);
+        return json_encode($result,  $jsonOptions);
     }
 
     public function decode(string|array $input): void

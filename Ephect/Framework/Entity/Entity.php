@@ -68,7 +68,7 @@ class Entity implements ElementInterface
             File::safeWrite($filename, $phpArray);
         } else {
             $filename = $info['dirname']  . DIRECTORY_SEPARATOR .  $info['filename'] .  ".json";
-            $json = $this->structure->encode();
+            $json = $this->structure->encode(JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
             File::safeWrite($filename, $json);
         }
     }
