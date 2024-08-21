@@ -20,7 +20,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         }
 
         $this->_setCacheDirectory(CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
-        $registryFilename =  $this->_getCacheFileName($asArray);
+        $registryFilename = $this->_getCacheFileName($asArray);
         $len = File::safeWrite($registryFilename, $result);
 
     }
@@ -31,22 +31,11 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         $this->_load($asArray);
     }
 
-    public function _readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
-    {
-        $result = null;
-
-        if ($this->entries[$item] !== null) {
-            $result = $this->entries[$item][$key] ?? (($defaultValue !== null) ? $defaultValue : null);
-        }
-
-        return $result;
-    }
-
     public function _writeItem(string|int $item, ...$params): void
     {
         $concat = function (string|int $key, mixed $value) use ($item): mixed {
             $result = $value;
-            if(isset($this->entries[$item][$key]) && is_array($this->entries[$item][$key]) && is_array($value)) {
+            if (isset($this->entries[$item][$key]) && is_array($this->entries[$item][$key]) && is_array($value)) {
                 $result = array_merge_recursive($this->entries[$item][$key], $value);
             }
 
@@ -162,5 +151,16 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         }
 
         return $value;
+    }
+
+    public function _readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
+    {
+        $result = null;
+
+        if ($this->entries[$item] !== null) {
+            $result = $this->entries[$item][$key] ?? (($defaultValue !== null) ? $defaultValue : null);
+        }
+
+        return $result;
     }
 }

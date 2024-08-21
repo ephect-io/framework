@@ -3,8 +3,8 @@
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
 
 define('IS_WEB_APP', $document_root !== '');
-define('IS_PHAR_APP', (\Phar::running() !== ''));
-define('IS_CLI_APP', (\Phar::running() === '') && !IS_WEB_APP);
+define('IS_PHAR_APP', (Phar::running() !== ''));
+define('IS_CLI_APP', (Phar::running() === '') && !IS_WEB_APP);
 define('REL_CONFIG_DIR', 'config' . DIRECTORY_SEPARATOR);
 define('REL_CONFIG_APP', 'app');
 
@@ -93,7 +93,7 @@ if (!IS_WEB_APP) {
     $appName = pathinfo($script_name)['filename'];
     $script_root = $script_dir . DIRECTORY_SEPARATOR;
 
-    define('APP_CWD',  str_replace($script_name, '', $app_path));
+    define('APP_CWD', str_replace($script_name, '', $app_path));
     define('SITE_ROOT', $script_root);
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
@@ -113,18 +113,18 @@ if (!IS_WEB_APP) {
 
     define('APP_NAME', $appName);
 
-    $ephect_root = \Phar::running();
+    $ephect_root = Phar::running();
 
     if (!IS_PHAR_APP) {
 
-            if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
-                $ephect_dir = $portable_dir;
-            }
-            $ephect_vendor_lib = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
-            $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
+        if (file_exists(SITE_ROOT . $portable_dir . $bootstrap)) {
+            $ephect_dir = $portable_dir;
+        }
+        $ephect_vendor_lib = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
+        $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
 
-            $ephect_root = SITE_ROOT . $ephect_vendor_lib;
-        
+        $ephect_root = SITE_ROOT . $ephect_vendor_lib;
+
     }
 
     define('EPHECT_VENDOR_SRC', $ephect_dir);
@@ -213,10 +213,10 @@ define('TXT_EXTENSION', '.txt');
 function siteRoot(): string
 {
     $siteRoot = SITE_ROOT;
-    $vendorPos = strpos( SITE_ROOT, 'vendor');
+    $vendorPos = strpos(SITE_ROOT, 'vendor');
 
-    if($vendorPos > -1) {
-        $siteRoot = substr(SITE_ROOT, 0, $vendorPos) ;
+    if ($vendorPos > -1) {
+        $siteRoot = substr(SITE_ROOT, 0, $vendorPos);
     }
 
     return $siteRoot;
@@ -236,6 +236,6 @@ function siteRuntimePath(): string
 function siteSrcPath(): string
 {
     $configDir = siteConfigPath();
-    $srcDir =  file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
+    $srcDir = file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
     return siteRoot() . $srcDir . DIRECTORY_SEPARATOR;
 }

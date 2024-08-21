@@ -7,6 +7,8 @@ use Ephect\Framework\Modules\Composer\ComposerConfigReader;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
+use ErrorException;
+use JsonException;
 
 class ModuleInstaller
 {
@@ -15,9 +17,17 @@ class ModuleInstaller
 
     }
 
+    public static function loadBootstraps(): void
+    {
+        [$filename, $paths] = self::readModuleBootstrapPaths();
+        foreach ($paths as $path) {
+            require $path;
+        }
+    }
+
     /**
-     * @throws \JsonException
-     * @throws \ErrorException
+     * @throws JsonException
+     * @throws ErrorException
      */
     public function install(): void
     {
@@ -26,20 +36,20 @@ class ModuleInstaller
         $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
 
         [$filename, $paths] = self::readModulePaths();
-        if(is_array($paths)) {
+        if (is_array($paths)) {
             $paths[] = $this->workingDirectory;
         }
         $paths = array_unique($paths);
         self::saveModulePaths($paths);
 
         [$filename, $paths] = self::readModuleBootstrapPaths();
-        if(is_array($paths)) {
+        if (is_array($paths)) {
             $bootstrapFile = $srcDir . 'bootstrap.php';
-            if(file_exists($bootstrapFile)) {
+            if (file_exists($bootstrapFile)) {
                 $paths[] = $bootstrapFile;
             }
             $constantsFile = $srcDir . 'constants.php';
-            if(file_exists($constantsFile)) {
+            if (file_exists($constantsFile)) {
                 $paths[] = $constantsFile;
             }
         }
@@ -68,7 +78,7 @@ class ModuleInstaller
         $package = $moduleManifest->getName();
         $version = $moduleManifest->getVersion();
         foreach ($requires as $requireName => $requireVersion) {
-            if($package == $requireName && $requireVersion !== $version && !empty($requireVersion)) {
+            if ($package == $requireName && $requireVersion !== $version && !empty($requireVersion)) {
                 $moduleConfig->addModule($package, $requireVersion);
             } else {
                 $moduleConfig->addModule($package, $moduleManifest->getVersion());
@@ -81,67 +91,13 @@ class ModuleInstaller
 
     }
 
-    /**
-     * @throws \JsonException
-     * @throws \ErrorException
-     */
-    public function remove(): void
-    {
-        FrameworkRegistry::load(true);
-        $workingDirectory = $this->workingDirectory;
-
-        [$filename, $paths] = self::readModulePaths();
-        if(is_array($paths)) {
-            $paths = array_filter($paths, function ($path) use ($workingDirectory) {
-                return $path !== $workingDirectory;
-            });
-        }
-
-        self::saveModulePaths($paths);
-
-        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
-        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-
-        $bootstrapFile = $srcDir . 'bootstrap.php';
-        $constantsFile = $srcDir . 'constants.php';
-
-        [$filename, $paths] = self::readModuleBootstrapPaths();
-        if(is_array($paths)) {
-            $paths = array_filter($paths, function ($path) use ($bootstrapFile, $constantsFile) {
-                return $path !== $bootstrapFile && $path !== $constantsFile;
-            });
-        }
-
-        self::saveModuleBootstrapPaths($paths);
-
-        Console::writeLine("Module path %s is now removed.", $workingDirectory);
-
-        $customClasses =  FrameworkRegistry::collectCustomClasses($this->workingDirectory);
-
-        foreach ($customClasses as $class => $filename) {
-            FrameworkRegistry::delete($class);
-        }
-        FrameworkRegistry::save(true);
-
-        $moduleManifestReader = new ModuleManifestReader;
-        $moduleManifest = $moduleManifestReader->read($configDir);
-
-        $moduleConfigReader = new ModulesConfigReader;
-        $moduleConfig = $moduleConfigReader->read();
-        $moduleConfig->removeModule($moduleManifest->getName());
-        $moduleConfig->save();
-
-        Console::writeLine("Module classes are now unregistered.");
-
-    }
-
     public static function readModulePaths(): array
     {
         $configDir = siteConfigPath();
         $filename = $configDir . "modulesPaths.php";
 
         $paths = [];
-        if(file_exists($filename)) {
+        if (file_exists($filename)) {
             $paths = require $filename;
         }
 
@@ -165,7 +121,7 @@ class ModuleInstaller
         $filename = $configDir . "modulesBootstrapPaths.php";
 
         $paths = [];
-        if(file_exists($filename)) {
+        if (file_exists($filename)) {
             $paths = require $filename;
         }
 
@@ -183,12 +139,58 @@ class ModuleInstaller
         File::safeWrite($filename, $modulesPaths);
     }
 
-    public static function loadBootstraps(): void
+    /**
+     * @throws JsonException
+     * @throws ErrorException
+     */
+    public function remove(): void
     {
-        [$filename, $paths] = self::readModuleBootstrapPaths();
-        foreach ($paths as $path) {
-            require $path;
+        FrameworkRegistry::load(true);
+        $workingDirectory = $this->workingDirectory;
+
+        [$filename, $paths] = self::readModulePaths();
+        if (is_array($paths)) {
+            $paths = array_filter($paths, function ($path) use ($workingDirectory) {
+                return $path !== $workingDirectory;
+            });
         }
+
+        self::saveModulePaths($paths);
+
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
+        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+
+        $bootstrapFile = $srcDir . 'bootstrap.php';
+        $constantsFile = $srcDir . 'constants.php';
+
+        [$filename, $paths] = self::readModuleBootstrapPaths();
+        if (is_array($paths)) {
+            $paths = array_filter($paths, function ($path) use ($bootstrapFile, $constantsFile) {
+                return $path !== $bootstrapFile && $path !== $constantsFile;
+            });
+        }
+
+        self::saveModuleBootstrapPaths($paths);
+
+        Console::writeLine("Module path %s is now removed.", $workingDirectory);
+
+        $customClasses = FrameworkRegistry::collectCustomClasses($this->workingDirectory);
+
+        foreach ($customClasses as $class => $filename) {
+            FrameworkRegistry::delete($class);
+        }
+        FrameworkRegistry::save(true);
+
+        $moduleManifestReader = new ModuleManifestReader;
+        $moduleManifest = $moduleManifestReader->read($configDir);
+
+        $moduleConfigReader = new ModulesConfigReader;
+        $moduleConfig = $moduleConfigReader->read();
+        $moduleConfig->removeModule($moduleManifest->getName());
+        $moduleConfig->save();
+
+        Console::writeLine("Module classes are now unregistered.");
+
     }
 
 }

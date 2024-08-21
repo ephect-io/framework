@@ -12,15 +12,6 @@ class HooksRegistry
     {
     }
 
-    public static function create(): HooksRegistry
-    {
-        if (self::$instance === null) {
-            self::$instance = new HooksRegistry;
-        }
-
-        return self::$instance;
-    }
-
     public static function register(string $path = EPHECT_ROOT): void
     {
         self::create()->_register($path);
@@ -41,7 +32,7 @@ class HooksRegistry
                     continue;
                 }
 
-                array_push($hooks, str_replace(DIRECTORY_SEPARATOR, '_' , HOOKS_DIR . $filename));
+                array_push($hooks, str_replace(DIRECTORY_SEPARATOR, '_', HOOKS_DIR . $filename));
 
                 include $path . HOOKS_DIR . $filename;
             }
@@ -61,6 +52,15 @@ class HooksRegistry
                 include $hook;
             }
         }
+    }
+
+    public static function create(): HooksRegistry
+    {
+        if (self::$instance === null) {
+            self::$instance = new HooksRegistry;
+        }
+
+        return self::$instance;
     }
 
 }

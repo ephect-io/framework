@@ -33,7 +33,7 @@ final class ElementUtils
 
         preg_match($re, $contents, $matches, PREG_OFFSET_CAPTURE, 0);
 
-        if(!count($matches)) {
+        if (!count($matches)) {
             return ['', '', '', '', -1];
         }
         $namespace = $matches[1][0];

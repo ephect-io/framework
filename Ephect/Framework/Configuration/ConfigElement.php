@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Framework\Configuration;
 
 use Ephect\Framework\Element;

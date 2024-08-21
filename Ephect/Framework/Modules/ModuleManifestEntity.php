@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Modules;
 
-use Ephect\Framework\Element;
 use Ephect\Framework\Manifest\ManifestEntity;
 use Ephect\Framework\Structure\StructureTrait;
 

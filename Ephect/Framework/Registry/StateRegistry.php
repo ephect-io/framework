@@ -9,12 +9,17 @@ class StateRegistry extends AbstractStateRegistry implements StateRegistryInterf
 
     use StaticRegistryTrait;
 
-    private static ? StateRegistryInterface $instance = null;
+    private static ?StateRegistryInterface $instance = null;
 
     public static function reset(): void
     {
         self::$instance = new StateRegistry;
         unlink(self::$instance->getCacheFilename());
+    }
+
+    public static function saveByMotherUid(string $motherUid, bool $asArray = false): void
+    {
+        static::getInstance()->_saveByMotherUid($motherUid, $asArray);
     }
 
     public static function getInstance(): StateRegistryInterface
@@ -26,11 +31,6 @@ class StateRegistry extends AbstractStateRegistry implements StateRegistryInterf
         return self::$instance;
     }
 
-    public static function saveByMotherUid(string $motherUid, bool $asArray = false): void
-    {
-        static::getInstance()->_saveByMotherUid($motherUid, $asArray);
-    }
-
     public static function loadByMotherUid(string $motherUid, bool $asArray = false): void
     {
         static::getInstance()->_loadByMotherUid($motherUid, $asArray);
@@ -39,6 +39,11 @@ class StateRegistry extends AbstractStateRegistry implements StateRegistryInterf
     public static function dump(string $key): void
     {
         Logger::create()->dump('Registry key ' . $key, StateRegistry::item($key));
+    }
+
+    public static function item(string|int $item, string|null $value = null): ?array
+    {
+        return static::getInstance()->_item($item, $value);
     }
 
     public static function readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
@@ -64,11 +69,6 @@ class StateRegistry extends AbstractStateRegistry implements StateRegistryInterf
     public static function keys(string|null $item = null): array
     {
         return static::getInstance()->_keys($item = null);
-    }
-
-    public static function item(string|int $item, string|null $value = null): ?array
-    {
-        return static::getInstance()->_item($item, $value);
     }
 
     public static function ini(string $section, string|null $key = null): string|null

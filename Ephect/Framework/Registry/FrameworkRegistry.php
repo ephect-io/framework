@@ -53,7 +53,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
                     continue;
                 }
 
-                if(str_ends_with($filename, 'Enum.php')) {
+                if (str_ends_with($filename, 'Enum.php')) {
                     [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(EPHECT_ROOT . $filename);
                     $fqname = $namespace . '\\' . $enum;
                     FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
@@ -127,7 +127,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 continue;
             }
 
-            if(str_ends_with($filename, 'Enum.php')) {
+            if (str_ends_with($filename, 'Enum.php')) {
                 [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile($customDir . $filename);
                 $fqname = $namespace . '\\' . $enum;
                 $result[$fqname] = $customDir . $filename;

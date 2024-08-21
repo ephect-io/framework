@@ -3,7 +3,6 @@
 namespace Ephect\Framework\Commands;
 
 use Ephect\Framework\Templates\TemplateMaker;
-use Ephect\Framework\Utils\File;
 
 class Builder
 {

@@ -81,6 +81,17 @@ trait TreeTrait
         $this->elementList = [];
     }
 
+    public function forEachRecursive(callable $callback, TreeInterface $tree, Closure|null $breakOn = null): void
+    {
+        foreach ($tree as $key => $item) {
+            if ($item->hasChildren()) {
+                $this->forEach($callback, $item, $breakOn);
+            }
+
+            call_user_func($callback, $item, $key);
+        }
+    }
+
     public function hasChildren(): bool
     {
         return $this->count() > 0;
@@ -95,23 +106,12 @@ trait TreeTrait
     {
         foreach ($tree as $key => $item) {
             call_user_func($callback, $item, $key);
-            if($breakOn != null && $breakOn()) {
+            if ($breakOn != null && $breakOn()) {
                 break;
             }
             if ($item->hasChildren()) {
                 $this->forEach($callback, $item, $breakOn);
             }
-        }
-    }
-
-    public function forEachRecursive(callable $callback, TreeInterface $tree, Closure|null $breakOn = null): void
-    {
-        foreach ($tree as $key => $item) {
-            if ($item->hasChildren()) {
-                $this->forEach($callback, $item, $breakOn);
-            }
-
-            call_user_func($callback, $item, $key);
         }
     }
 }
