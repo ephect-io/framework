@@ -1,14 +1,11 @@
 <?php
 
 use Ephect\Framework\Core\Autoloader;
-use Ephect\Framework\JavaScripts\AjilBuilder;
-use Ephect\Framework\Registry\FrameworkRegistry;
-use Ephect\Framework\Registry\HooksRegistry;
-use Ephect\Framework\Registry\PharRegistry;
 use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Plugins\PluginInstaller;
+use Ephect\Framework\Registry\FrameworkRegistry;
+use Ephect\Framework\Registry\HooksRegistry;
 
-define('LIBDIR_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
 define('FRAMEWORK_PATH', dirname(__FILE__) . LIBDIR_SEPARATOR . 'Framework' . LIBDIR_SEPARATOR);
 define('HOOKS_DIR', 'Hooks' . LIBDIR_SEPARATOR);
 
@@ -36,13 +33,4 @@ PluginInstaller::loadBootstraps();
 HooksRegistry::register();
 FrameworkRegistry::register();
 
-if (IS_PHAR_APP) {
-    include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'PharRegistry.php';
-    PharRegistry::register();
-}
-
 Autoloader::register();
-
-if (IS_WEB_APP) {
-    AjilBuilder::build();
-}
