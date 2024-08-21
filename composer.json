@@ -11,11 +11,6 @@
         "homepage": "https://ephect.io",
         "role": "Creator"
     }],
-    "autoload": {
-        "psr-4": {
-            "Ephect\\": "Ephect/"
-        }
-    },
     "require": {
         "php": "^8.2",
         "ext-iconv": "*",
