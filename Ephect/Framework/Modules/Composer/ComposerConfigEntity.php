@@ -3,9 +3,12 @@
 namespace Ephect\Framework\Modules\Composer;
 
 use Ephect\Framework\Manifest\ManifestEntity;
+use Ephect\Framework\Structure\StructureTrait;
 
 class ComposerConfigEntity extends ManifestEntity
 {
+
+    use StructureTrait;
 
     private string $name;
 
@@ -34,7 +37,7 @@ class ComposerConfigEntity extends ManifestEntity
         parent::__construct($structure);
 
         if($structure instanceof ComposerConfigStructure) {
-            $this->bindStructure();
+            $this->bindStructure($this->structure);
         }
     }
 
@@ -88,7 +91,7 @@ class ComposerConfigEntity extends ManifestEntity
         return $this->requireDev;
     }
 
-    private function bindStructure()
+    private function bindStructure_()
     {
         $this->name = $this->structure->name;
         $this->type = $this->structure->type;
@@ -107,7 +110,7 @@ class ComposerConfigEntity extends ManifestEntity
     {
         parent::load($asPhpArray);
         $this->structure = new ComposerConfigStructure($this->data);
-        $this->bindStructure();
+        $this->bindStructure($this->structure);
     }
 
     #[\Override]
