@@ -5,8 +5,8 @@ use Ephect\Framework\JavaScripts\AjilBuilder;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\HooksRegistry;
 use Ephect\Framework\Registry\PharRegistry;
-use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Modules\ModuleInstaller;
+use Ephect\Framework\Plugins\PluginInstaller;
 
 define('LIBDIR_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
 define('FRAMEWORK_PATH', dirname(__FILE__) . LIBDIR_SEPARATOR . 'Framework' . LIBDIR_SEPARATOR);
@@ -28,11 +28,11 @@ include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'FrameworkRegistry.php'
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'HooksRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'AbstractStateRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'StateRegistry.php';
-include FRAMEWORK_PATH . 'Registry' . LIBDIR_SEPARATOR . 'PluginRegistry.php';
 include FRAMEWORK_PATH . 'Modules' . LIBDIR_SEPARATOR . 'ModuleInstaller.php';
+include FRAMEWORK_PATH . 'Plugins' . LIBDIR_SEPARATOR . 'PluginInstaller.php';
 
-PluginRegistry::loadBootstraps();
 ModuleInstaller::loadBootstraps();
+PluginInstaller::loadBootstraps();
 HooksRegistry::register();
 FrameworkRegistry::register();
 

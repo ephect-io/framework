@@ -7,7 +7,8 @@ use Ephect\Framework\Modules\Composer\ComposerConfigReader;
 use Ephect\Framework\Modules\ModulesConfigReader;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Registry\FrameworkRegistry;
-use Ephect\Framework\Registry\PluginRegistry;
+use Ephect\Framework\Utils\File;
+use Ephect\Framework\Utils\Text;
 
 class PluginInstaller
 {
@@ -26,14 +27,14 @@ class PluginInstaller
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
         $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
 
-        [$filename, $paths] = PluginRegistry::readPluginPaths();
+        [$filename, $paths] = self::readPluginPaths();
         if(is_array($paths)) {
             $paths[] = $this->workingDirectory;
         }
         $paths = array_unique($paths);
-        PluginRegistry::savePluginPaths($paths);
+        self::savePluginPaths($paths);
 
-        [$filename, $paths] = PluginRegistry::readPluginBootstrapPaths();
+        [$filename, $paths] = self::readPluginBootstrapPaths();
         if(is_array($paths)) {
             $bootstrapFile = $srcDir . 'bootstrap.php';
             if(file_exists($bootstrapFile)) {
@@ -45,7 +46,7 @@ class PluginInstaller
             }
         }
         $paths = array_unique($paths);
-        PluginRegistry::savePluginBootstrapPaths($paths);
+        self::savePluginBootstrapPaths($paths);
 
         Console::writeLine("Plugin path %s is now declared.", $this->workingDirectory);
 
@@ -91,14 +92,14 @@ class PluginInstaller
         FrameworkRegistry::load(true);
         $workingDirectory = $this->workingDirectory;
 
-        [$filename, $paths] = PluginRegistry::readPluginPaths();
+        [$filename, $paths] = self::readPluginPaths();
         if(is_array($paths)) {
             $paths = array_filter($paths, function ($path) use ($workingDirectory) {
                 return $path !== $workingDirectory;
             });
         }
 
-        PluginRegistry::savePluginPaths($paths);
+        self::savePluginPaths($paths);
 
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
         $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
@@ -106,14 +107,14 @@ class PluginInstaller
         $bootstrapFile = $srcDir . 'bootstrap.php';
         $constantsFile = $srcDir . 'constants.php';
 
-        [$filename, $paths] = PluginRegistry::readPluginBootstrapPaths();
+        [$filename, $paths] = self::readPluginBootstrapPaths();
         if(is_array($paths)) {
             $paths = array_filter($paths, function ($path) use ($bootstrapFile, $constantsFile) {
                 return $path !== $bootstrapFile && $path !== $constantsFile;
             });
         }
 
-        PluginRegistry::savePluginBootstrapPaths($paths);
+        self::savePluginBootstrapPaths($paths);
 
         Console::writeLine("Plugin path %s is now removed.", $workingDirectory);
 
@@ -134,5 +135,61 @@ class PluginInstaller
 
         Console::writeLine("Plugin classes are now unregistered.");
 
+    }
+
+    public static function readPluginPaths(): array
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "pluginsPaths.php";
+
+        $paths = [];
+        if(file_exists($filename)) {
+            $paths = require $filename;
+        }
+
+        return [$filename, $paths];
+    }
+
+    public static function savePluginPaths(array $paths): void
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "pluginsPaths.php";
+
+        $json = json_encode($paths);
+        $pluginsPaths = Text::jsonToPhpReturnedArray($json, true);
+
+        File::safeWrite($filename, $pluginsPaths);
+    }
+
+    public static function readPluginBootstrapPaths(): array
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "pluginsBootstrapPaths.php";
+
+        $paths = [];
+        if(file_exists($filename)) {
+            $paths = require $filename;
+        }
+
+        return [$filename, $paths];
+    }
+
+    public static function savePluginBootstrapPaths(array $paths): void
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "pluginsBootstrapPaths.php";
+
+        $json = json_encode($paths);
+        $pluginsPaths = Text::jsonToPhpReturnedArray($json, true);
+
+        File::safeWrite($filename, $pluginsPaths);
+    }
+
+    public static function loadBootstraps(): void
+    {
+        [$filename, $paths] = self::readPluginBootstrapPaths();
+        foreach ($paths as $path) {
+            require $path;
+        }
     }
 }
