@@ -186,8 +186,11 @@ abstract class AbstractComponent extends Tree implements ComponentInterface
             $html = ob_get_clean();
         } else {
             $props = null;
-            if (count($functionArgs) > 0) {
-                $props = $functionArgs;
+            if ((null !== $args = json_decode(json_encode($functionArgs))) && count($functionArgs) > 0) {
+                $props = new stdClass;
+                foreach ($args as $field => $value) {
+                    $props->{$field} = urldecode($value);
+                }
             } else {
                 $routeProps = RouterService::findRouteArguments($fqFunctionName);
                 if ($routeProps !== null) {

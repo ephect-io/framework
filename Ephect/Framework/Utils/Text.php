@@ -2,6 +2,10 @@
 
 namespace Ephect\Framework\Utils;
 
+use ReflectionException;
+use ReflectionFunction;
+use SplFileObject;
+
 class Text
 {
     public static function slugify(string $text): ?string
@@ -49,17 +53,16 @@ class Text
         return $result;
     }
 
-    public static function jsonToPhpReturnedArray(string $json, bool $prettify = true): string
+    public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string
     {
-        $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        $array = [];
+        if (!is_array($json)) {
+            $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
+        }
         $result = '<?php' . PHP_EOL;
         $result .= 'return ';
 
-        if(!is_array($array)) {
-            $result .= "$array";
-        } else {
-            $result .= self::arrayToString($array, $prettify);
-        }
+        $result .= self::arrayToString($array, $prettify);
         $result .= ';' . PHP_EOL;
 
         return $result;
@@ -67,102 +70,98 @@ class Text
 
     public static function arrayToString(array $array, bool $prettify = false): string
     {
-        $dump = self::var_dump_r($array);
+        $dump = var_export($array, true);
 
-        $indentsLengths = [];
         $convert = '';
 
-        $re = '/(.*)(\[.*]=>)(\n)( +)/';
+        $re = '/(.*)(\'(.*)\' =>)( +)?(\n)( +)/m';
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
-        $offset = 0;
 
-        $re = '/^( ?+)+/m';
-        preg_match_all($re, $entries, $matches, PREG_SET_ORDER, 0);
+        $entryRx = '/( +)?((.*) =>)?(((array) \()| \'?((.|\s)*?)\'?,)?(\n)?/';
+        $closeArrayRx = '/^( +)?\),?(\n)?/';
 
-        foreach ($matches as $match) {
-            $indentsLengths[] = count($match) > 1 ? strlen($match[0]) : 0;
-        }
-
-        $entryRx = '/( ?+)+(\[(.*)]=>)?((array|string|int|float|bool)\(([\w.]+)\) ?(.*)\n)/';
-        $closeArrayRx = '/^( ?+)+}/';
-
-        $l = count($indentsLengths);
-        for ($i = 0; $i < $l; $i++) {
-            $indentLen = $indentsLengths[$i];
-            $indent = $indentLen > 0 ? str_repeat(' ', $indentLen) : '';
+        $isSpinning = false;
+        $countSpinning = 0;
+        $isDirty = false;
+        while (strlen($buffer) > 0 && !$isSpinning) {
+            $isDirty = false;
 
             if (preg_match($closeArrayRx, $buffer, $matches)) {
+                $indent = !isset($matches[1]) ? '' : $matches[1];
                 $convert .= $indent . ']' . ($indent == '' ? '' : ',');
                 $convert .= "\n";
-
-                $stringLen = strlen($matches[0]) + 1;
+                $stringLen = strlen($matches[0]);
                 $buffer = substr($buffer, $stringLen);
-                $offset += $stringLen;
+                $isDirty = true;
             } else if (preg_match($entryRx, $buffer, $matches)) {
+                $indent = !isset($matches[1]) ? '' : $matches[1];
                 $convert .= $indent;
-                if ($matches[5] == 'array') {
-                    $convert .= !empty($matches[3]) ? "'" . trim($matches[3], '"') . "'" . ' => [' : '[';
-                    $stringLen = strlen($matches[0]) + 1;
+                $key = !isset($matches[3]) ? '' : $matches[3];
+
+                if (isset($matches[6]) && $matches[6] == 'array') {
+                    $convert .= !empty($key) ? $key . ' => [' : '[';
+
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
-                    $offset += $stringLen;
-                } else if ($matches[5] == 'string') {
-                    $len = intval($matches[6]);
-                    $token = "string($len)";
-                    $lenToken = strlen($token);
-                    $posToken = strpos($matches[0], $token);
-                    $start = $posToken + $lenToken + 2;
-
-                    $value = substr($entries, $offset + $start, $len);
-                    $quote = str_starts_with($value, 'function') ? '' : "'";
-                    $value = $quote == '' ? $value : addslashes($value);
-
-                    if ($j = substr_count($value, "\n")) {
-                        $i += $j;
-                    }
-                    if (str_starts_with($matches[3], '"')) {
-                        $key = "'" . trim($matches[3], '"') . "'";
-                        $key = str_replace("\\", "\\\\", $key);
-                        $convert .= $key . " => $quote" . $value . "$quote,";
-                    } else {
-                        $convert .= "$quote" . $value . "$quote,";
-                    }
-
-                    $stringLen = $start + $len + 2;
-                    $buffer = substr($buffer, $stringLen);
-                    $offset += $stringLen;
+                    $isDirty = true;
                 } else {
-                    if (str_starts_with($matches[3], '"')) {
-                        $key = "'" . trim($matches[3], '"') . "'";
-                        $key = str_replace("\\", "\\\\", $key);
-                        $convert .= $key . " => " . $matches[6] . ",";
-                    } else {
-                        $convert .= $matches[6] . ',';
+                    $value = !isset($matches[4]) ? '' : $matches[4];
+
+                    if (isset($matches[7]) && str_starts_with($matches[7], 'function')) {
+                        $value = stripslashes($matches[7]) . ',';
                     }
-                    $stringLen = strlen($matches[0]) + 1;
+
+                    if ($key[0] == "'") {
+                        $convert .= $key . ' => ' . $value;
+                    } else {
+                        $convert .= $value;
+                    }
+
+                    $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
-                    $offset += $stringLen;
+                    $isDirty = true;
                 }
                 $convert .= "\n";
 
             }
+
+            if (!$isDirty) {
+                $countSpinning++;
+            }
+
+            $isSpinning = $countSpinning > 10;
         }
 
-        if(!$prettify) {
+        if (!$prettify) {
             $convert = str_replace("\n", "", $convert);
         }
 
         return $convert;
     }
 
-    private static function var_dump_r(mixed $value): string
+    /**
+     * @throws ReflectionException
+     */
+    private function callableToString(callable $controller): string
     {
-        ob_start();
-        var_dump($value);
-        $content = ob_get_contents();
-        ob_end_clean();
+        $ref = new ReflectionFunction($controller);
 
-        return $content;
+        $file = new SplFileObject($ref->getFileName());
+        $file->seek($ref->getStartLine() - 1);
+
+        $code = '';
+        while ($file->key() < $ref->getEndLine()) {
+            $code .= $file->current();
+            $file->next();
+        }
+
+        $begin = strpos($code, 'function');
+        $end = strrpos($code, '}');
+        $code = substr($code, $begin, $end - $begin + 1);
+
+        return $code;
     }
+
 }

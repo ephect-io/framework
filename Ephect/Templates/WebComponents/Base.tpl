@@ -5,7 +5,7 @@
     <slot></slot>
 </template>
 <script>
-    import {{Base}} from "./{{Base}}.class.mjs"
+    import {{Base}} from "./{{Base}}.class.js"
     import {{Base}}Element from "./{{Base}}Element.js"
 
     /**
