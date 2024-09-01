@@ -5,7 +5,7 @@ namespace Ephect\Plugins\Route;
 use Ephect\Plugins\Router\RouterService;
 use stdClass;
 use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useState;
+use function Ephect\Hooks\useStateObject;
 
 function Route($children): string
 {
@@ -13,7 +13,12 @@ function Route($children): string
 
         $props = $children;
         if(method_exists($children, "props")) {
-            $props = $children->props();
+            $args = $children->props();
+
+            $props = new stdClass;
+            foreach ($args as $field => $value) {
+                $props->{$field} = urldecode($value);
+            }
         }
 
         $routeBuilder = new RouteBuilder($props);
@@ -31,11 +36,11 @@ function Route($children): string
 
         [$path, $query, $code] = $router->matchRoute($route);
 
-        [$state, $setState] = useState();
+        [$state, $setState] = useStateObject();
         $routes = $state->routes ?? [];
 
         $routes[] = ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
-        useState(['routes' => $routes]);
+        useStateObject(['routes' => $routes]);
 
     });
 

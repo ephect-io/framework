@@ -22,11 +22,9 @@ abstract class AbstractComponentParser extends AbstractTokenParser
 
         foreach ($componentArgs as $key => $value) {
             if (is_array($value)) {
-                $arrayString = Text::arrayToString($value);
-                $pair = '"' . $key . '" => ' . $arrayString . ', ';
-            } else {
-                $pair = '"' . $key . '" => ' . (addslashes($value) != $value ?  "'" . addslashes($value) . "', " : "'" . $value . "', ");
+                $value = json_encode($value);
             }
+            $pair = '"' . $key . '" => ' . (urlencode($value) != $value ?  'urldecode("' . urlencode($value) . '"), ' : '"' . $value . '", ');
             if ($value[0] === '$') {
                 $pair = '"' . $key . '" => ' . $value . ', ';
             }

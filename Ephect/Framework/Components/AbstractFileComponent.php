@@ -82,7 +82,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
     /**
      * @throws ReflectionException
      */
-    public function render(?array $functionArgs = null, ?Request $request = null): void
+    public function render(array|object|null $functionArgs = null, ?Request $request = null): void
     {
         if($this->motherUID == $this->uid) {
             StateRegistry::loadByMotherUid($this->motherUID, true);
@@ -93,7 +93,7 @@ abstract class AbstractFileComponent extends AbstractComponent implements FileCo
         echo $this->renderHTML($cacheFilename, $fqFunctionName, $functionArgs, $request);
     }
 
-    public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array
+    public function renderComponent(string $motherUID, string $functionName, array|object|null $functionArgs = null): array
     {
         [$fqFunctionName, $cacheFilename, $isCached] = $this->findComponent($functionName, $motherUID);
         if (!$isCached) {
