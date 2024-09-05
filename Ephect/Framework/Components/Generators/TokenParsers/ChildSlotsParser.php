@@ -4,8 +4,8 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\Component;
 use Ephect\Framework\Components\Generators\ComponentDocument;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Utils\File;
 
 class ChildSlotsParser extends AbstractTokenParser
 {

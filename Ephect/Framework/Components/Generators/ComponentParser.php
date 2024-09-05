@@ -26,7 +26,7 @@ class ComponentParser extends Parser implements ParserInterface
 
     public function doDeclaration(string $uid = ''): ComponentDeclarationStructure
     {
-        if($uid == '') {
+        if ($uid == '') {
             $uid = Crypto::createUID();
         }
         $this->doComponents();

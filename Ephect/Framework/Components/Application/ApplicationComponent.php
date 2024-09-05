@@ -67,14 +67,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     }
 
-    public static function createByHtml(string $html): static
-    {
-        $new = new static;
-        $new->code = $html;
-
-        return $new;
-    }
-
     public function load(?string $filename = null): bool
     {
         $filename = $filename ?: '';
@@ -98,6 +90,16 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $this->code !== null;
     }
 
+    public abstract function makeComponent(string $filename, string &$html): void;
+
+    public static function createByHtml(string $html): static
+    {
+        $new = new static;
+        $new->code = $html;
+
+        return $new;
+    }
+
     /**
      * @throws Exception
      */
@@ -117,11 +119,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     {
         $decl = $this->getDeclaration();
         $this->entity = $decl->getComposition();
-    }
-
-    public function getFullyQualifiedFunction(): ?string
-    {
-        return $this->namespace . '\\' . $this->function;
     }
 
     public function getFunction(): ?string
@@ -208,7 +205,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
      */
     public function render(?array $functionArgs = null, ?Request $request = null): void
     {
-        if($this->motherUID == $this->uid && $this->id !== 'App') {
+        if ($this->motherUID == $this->uid && $this->id !== 'App') {
             StateRegistry::loadByMotherUid($this->motherUID, true);
             $stateIgniter = new ApplicationIgniter;
             $stateIgniter->ignite();
@@ -243,6 +240,11 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         ApplicationRecursiveParser::parse($this);
     }
 
+    public function getSourceFilename(): string
+    {
+        return $this->filename;
+    }
+
     public function getFlattenSourceFilename(): string
     {
         return static::getFlatFilename($this->filename);
@@ -253,16 +255,9 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return str_replace('/', '_', $basename);
     }
 
-    public abstract function makeComponent(string $filename, string &$html): void;
-
     public function getFlattenFilename(): string
     {
         return static::getFlatFilename($this->filename);
-    }
-
-    public function getSourceFilename(): string
-    {
-        return $this->filename;
     }
 
     public function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string
@@ -278,17 +273,12 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             }
         }
 
-        return ComponentsCopier::copy( $list, $motherUID, $component);
+        return ComponentsCopier::copy($list, $motherUID, $component);
     }
 
     protected function cacheHtml(): ?string
     {
-        return  $this->cacheFile(CACHE_DIR);
-    }
-
-    protected function cacheJavascript(): ?string
-    {
-        return  $this->cacheFile(RUNTIME_JS_DIR);
+        return $this->cacheFile(CACHE_DIR);
     }
 
     private function cacheFile($cacheDir): ?string
@@ -303,5 +293,15 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         CacheRegistry::save();
 
         return $result === null ? $result : $cache_file;
+    }
+
+    public function getFullyQualifiedFunction(): ?string
+    {
+        return $this->namespace . '\\' . $this->function;
+    }
+
+    protected function cacheJavascript(): ?string
+    {
+        return $this->cacheFile(RUNTIME_JS_DIR);
     }
 }

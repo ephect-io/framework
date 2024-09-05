@@ -2,7 +2,6 @@
 
 namespace Ephect\Commands\Build;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
@@ -67,8 +66,7 @@ LOGO;
 
 LOGO;
 
-        
-        
+
         echo $logo3 . PHP_EOL;
 
 

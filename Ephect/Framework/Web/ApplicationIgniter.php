@@ -10,21 +10,21 @@ class ApplicationIgniter
 {
     public function ignite(): void
     {
-    
+
         [$state] = useState();
 
-        if($state === null || !isset($state['middlewares'])) {
+        if ($state === null || !isset($state['middlewares'])) {
             return;
         }
-        
-        $middlewares = (object) $state['middlewares'];
+
+        $middlewares = (object)$state['middlewares'];
         foreach ($middlewares as $className => $arguments) {
             $filename = FrameworkRegistry::read($className);
-            if(is_file($filename)) {
-                if(is_subclass_of($className, ApplicationStateMiddlewareInterface::class)) {
+            if (is_file($filename)) {
+                if (is_subclass_of($className, ApplicationStateMiddlewareInterface::class)) {
                     include_once $filename;
                     $middleware = new $className;
-                    $middleware->ignite((object) $arguments);
+                    $middleware->ignite((object)$arguments);
                 }
             }
 

@@ -3,7 +3,6 @@
 namespace Ephect\Plugins\Route;
 
 use Ephect\Plugins\Router\RouterService;
-use stdClass;
 use function Ephect\Hooks\useEffect;
 use function Ephect\Hooks\useState;
 
@@ -12,7 +11,7 @@ function Route($children): string
     useEffect(function ($children, /* bool */ $onError, /* string */ $html) {
 
         $props = $children;
-        if(method_exists($children, "props")) {
+        if (method_exists($children, "props")) {
             $props = $children->props();
         }
 

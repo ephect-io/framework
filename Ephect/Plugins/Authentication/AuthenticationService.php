@@ -2,9 +2,8 @@
 
 namespace Ephect\Plugins\Authentication;
 
-use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\StaticElement;
-use Ephect\Modules\DataAccess\Client\PDO\PdoDataAccess;
+use Ephect\Plugins\DBAL\TDataAccess;
 
 class AuthenticationService extends StaticElement
 {
@@ -15,6 +14,58 @@ class AuthenticationService extends StaticElement
     public function __construct()
     {
 
+    }
+
+    public static function getPermissionByToken(string $token): ?string
+    {
+
+        $result = null;
+
+        if ($token != '') {
+
+            $token = self::renewToken($token);
+            if (is_string($token)) {
+                $result = $token;
+            }
+        }
+
+        return $result;
+    }
+
+    public function renewToken($token = ''): ?string
+    {
+        $result = null;
+
+        self::$logger->debug(__METHOD__ . '::TOKEN::' . $token);
+
+        if (strlen($token) > 0 && substr($token, 0, 1) == '!') {
+            $result = $token;
+            return $result;
+        }
+
+        $userId = $this->getUserId();
+        $login = $this->getUserName();
+
+        $connection = TDataAccess::getCryptoDB();
+        $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
+        if ($row = $stmt->fetchAssoc()) {
+
+            $userId = $row["userId"];
+            $login = $row["userName"];
+
+            $stmt = $connection->query("UPDATE crypto SET outdated=1 WHERE token =:token;", ['token' => $token]);
+
+        }
+
+        $token = TCrypto::generateToken('');
+        $connection->query(
+            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
+            , ['token' => $token, 'userId' => $userId, 'login' => $login]
+        );
+
+        $result = $token;
+
+        return $result;
     }
 
     public function getUserId(): string
@@ -53,28 +104,12 @@ class AuthenticationService extends StaticElement
         $this->userName = $value;
     }
 
-    public static function getPermissionByToken(string $token): ?string
-    {
-
-        $result = null;
-
-        if ($token != '') {
-
-            $token = self::renewToken($token);
-            if (is_string($token)) {
-                $result = $token;
-            }
-        }
-
-        return $result;
-    }
-
     public static function setUserToken(string $userId, string $login): ?string
     {
         $result = null;
 
-        $connection = PdoDataAccess::getCryptoDB();
-        $token = Crypto::createToken('');
+        $connection = TDataAccess::getCryptoDB();
+        $token = TCrypto::generateToken('');
         $stmt = $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             , ['token' => $token, 'userId' => $userId, 'login' => $login]
@@ -87,7 +122,7 @@ class AuthenticationService extends StaticElement
     {
         $result = null;
 
-        $connection = PdoDataAccess::getCryptoDB();
+        $connection = TDataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
 
         if ($stmt->fetch()) {
@@ -96,42 +131,6 @@ class AuthenticationService extends StaticElement
                 $result = $stmt->getRowCount();
             }
         }
-
-        return $result;
-    }
-
-    public function renewToken($token = ''): ?string
-    {
-        $result = null;
-
-        self::$logger->debug(__METHOD__ . '::TOKEN::' . $token);
-
-        if (strlen($token) > 0 && substr($token, 0, 1) == '!') {
-            $result = $token;
-            return $result;
-        }
-
-        $userId = $this->getUserId();
-        $login = $this->getUserName();
-
-        $connection = PdoDataAccess::getCryptoDB();
-        $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
-        if ($row = $stmt->fetchAssoc()) {
-
-            $userId = $row["userId"];
-            $login = $row["userName"];
-
-            $stmt = $connection->query("UPDATE crypto SET outdated=1 WHERE token =:token;", ['token' => $token]);
-
-        }
-
-        $token = Crypto::createToken('');
-        $connection->query(
-            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
-            , ['token' => $token, 'userId' => $userId, 'login' => $login]
-        );
-
-        $result = $token;
 
         return $result;
     }

@@ -11,14 +11,14 @@ final class InlineCodeParser extends AbstractTokenParser
         $phtml = [];
 
         $text = $this->html;
-        if(is_array($parameter)) {
+        if (is_array($parameter)) {
             $text = $parameter['html'];
             $this->useVariables = $parameter['useVariables'];
         }
 
         $lines = explode(PHP_EOL, $text);
 
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             $line = $this->doIf($line);
             $line = $this->doElseIf($line);
             $line = $this->doElse($line);
@@ -68,9 +68,9 @@ final class InlineCodeParser extends AbstractTokenParser
         return $parser->getResult();
     }
 
-    public function doEnd(string $html): string
+    public function doForeach(string $html): string
     {
-        $parser = new EndParser($this->component);
+        $parser = new ForeachParser($this->component);
         $parser->do($html);
         return $parser->getResult();
     }
@@ -78,13 +78,6 @@ final class InlineCodeParser extends AbstractTokenParser
     public function doFor(string $html): string
     {
         $parser = new ForParser($this->component);
-        $parser->do($html);
-        return $parser->getResult();
-    }
-
-    public function doForeach(string $html): string
-    {
-        $parser = new ForeachParser($this->component);
         $parser->do($html);
         return $parser->getResult();
     }
@@ -110,6 +103,20 @@ final class InlineCodeParser extends AbstractTokenParser
         return $parser->getResult();
     }
 
+    public function doBreaker(string $html): string
+    {
+        $parser = new BreakerParser($this->component);
+        $parser->do($html);
+        return $parser->getResult();
+    }
+
+    public function doEnd(string $html): string
+    {
+        $parser = new EndParser($this->component);
+        $parser->do($html);
+        return $parser->getResult();
+    }
+
     public function doOperation(string $html): string
     {
         $parser = new OperationParser($this->component);
@@ -117,10 +124,22 @@ final class InlineCodeParser extends AbstractTokenParser
         return $parser->getResult();
     }
 
-    public function doBreaker(string $html): string
+    public function doPhpTags(string $html): string
     {
-        $parser = new BreakerParser($this->component);
+        $parser = new PhpTagsParser($this->component);
         $parser->do($html);
+        return $parser->getResult();
+    }
+
+    public function doEchoes(string $html): string
+    {
+        $parser = new EchoParser($this->component);
+        $parser->do([
+            "html" => $html,
+            "useVariables" => $this->useVariables,
+        ]);
+        $this->useVariables = $parser->getUseVariables();
+
         return $parser->getResult();
     }
 
@@ -147,29 +166,10 @@ final class InlineCodeParser extends AbstractTokenParser
         $this->useVariables = $parser->getUseVariables();
     }
 
-    public function doPhpTags(string $html): string
-    {
-        $parser = new PhpTagsParser($this->component);
-        $parser->do($html);
-        return $parser->getResult();
-    }
-
     public function doPhpCleaner(string $html): string
     {
         $parser = new PhpTagsCleaner($this->component);
         $parser->do($html);
-        return $parser->getResult();
-    }
-
-    public function doEchoes(string $html): string
-    {
-        $parser = new EchoParser($this->component);
-        $parser->do([
-            "html" => $html,
-            "useVariables" => $this->useVariables,
-        ]);
-        $this->useVariables = $parser->getUseVariables();
-
         return $parser->getResult();
     }
 }

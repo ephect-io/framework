@@ -123,7 +123,6 @@ final class OpenComponentsParser extends AbstractComponentParser
     }
 
 
-
     private function argumentsKeys(array $componentArgs): ?array
     {
         $result = [];

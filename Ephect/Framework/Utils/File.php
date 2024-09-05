@@ -26,7 +26,7 @@ class File
                     continue;
                 }
 
-                if(is_dir($file)) {
+                if (is_dir($file)) {
                     continue;
                 }
 
@@ -49,7 +49,7 @@ class File
                     continue;
                 }
 
-                if(is_dir($file->getPathName())) {
+                if (is_dir($file->getPathName())) {
                     continue;
                 }
 

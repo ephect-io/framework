@@ -1,4 +1,5 @@
 <?php
+
 namespace QuickStart;
 
 use function Ephect\Hooks\useEffect;
@@ -6,11 +7,11 @@ use function Ephect\Hooks\useEffect;
 function HelloWorld($slot): string
 {
 
-useEffect(function ($slot, /* string */ $foo) {
-    $foo = "It works!"; 
-});
+    useEffect(function ($slot, /* string */ $foo) {
+        $foo = "It works!";
+    });
 
-return (<<< HTML
+    return (<<< HTML
 <WebComponent>
 <template id="HelloWorld">
     <h1>

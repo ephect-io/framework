@@ -6,7 +6,7 @@ use function Ephect\Hooks\useEffect;
 
 function HtmlSaver($children): string
 {
-    useEffect(function($children, $service) {
+    useEffect(function ($children, $service) {
         $service = new HtmlSaverService($children);
     });
 

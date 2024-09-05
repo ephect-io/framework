@@ -57,7 +57,7 @@ abstract class AbstractRegistry implements RegistryInterface
         if ($asArray) {
             $result = Text::jsonToPhpReturnedArray($result);
             $ephect_root = EPHECT_ROOT;
-            if(DIRECTORY_SEPARATOR === '\\') {
+            if (DIRECTORY_SEPARATOR === '\\') {
                 $ephect_root = str_replace('\\', '\\\\', EPHECT_ROOT);
             }
 

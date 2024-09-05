@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Plugins\DBAL\Data;
 
 use Ephect\Framework\Configuration\AbstractConfiguration;
@@ -20,7 +21,7 @@ abstract class DataConfiguration extends AbstractConfiguration
 
     }
 
-    public function configure() : void
+    public function configure(): void
     {
     }
 
@@ -28,7 +29,7 @@ abstract class DataConfiguration extends AbstractConfiguration
     {
         return $this->_driver;
     }
-    
+
     public function getDatabaseName(): string
     {
         return $this->_databaseName;

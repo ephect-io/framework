@@ -14,8 +14,6 @@ use ReflectionFunction;
 abstract class AbstractComponentParser extends AbstractTokenParser
 {
 
-    abstract public function do(object|array|string|null $parameter = null): void;
-
     public static function doArgumentsToString(array $componentArgs): ?string
     {
         $result = '';
@@ -25,7 +23,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
                 $arrayString = Text::arrayToString($value);
                 $pair = '"' . $key . '" => ' . $arrayString . ', ';
             } else {
-                $pair = '"' . $key . '" => ' . (addslashes($value) != $value ?  "'" . addslashes($value) . "', " : "'" . $value . "', ");
+                $pair = '"' . $key . '" => ' . (addslashes($value) != $value ? "'" . addslashes($value) . "', " : "'" . $value . "', ");
             }
             if ($value[0] === '$') {
                 $pair = '"' . $key . '" => ' . $value . ', ';
@@ -35,15 +33,17 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         return ($result === '') ? null : '[' . $result . ']';
     }
 
+    abstract public function do(object|array|string|null $parameter = null): void;
+
     public function declareMiddlewares(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props): void
     {
-        if($parent == null) {
+        if ($parent == null) {
             return;
         }
 
         $filename = $motherUID . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
 
-        if(!is_file(CACHE_DIR . $filename)) {
+        if (!is_file(CACHE_DIR . $filename)) {
             return;
         }
 
@@ -55,7 +55,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         $middlewaresArgsList = [];
         foreach ($attrs as $attr) {
             $attrNew = $attr->newInstance();
-            if($attrNew instanceof AttributeMiddlewareInterface) {
+            if ($attrNew instanceof AttributeMiddlewareInterface) {
                 $middlewaresList[$attr->getName()] = [
                     $attr->getArguments(),
                     $attrNew->getMiddlewares(),
@@ -63,7 +63,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
             }
         }
 
-        if(count($middlewaresList)) {
+        if (count($middlewaresList)) {
             FrameworkRegistry::load();
             foreach ($middlewaresList as $key => $value) {
                 [$arguments, $middlewares] = $value;
@@ -72,7 +72,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
                     include_once $filename;
                     $middleware = new $middlewareClass;
 
-                    if($middleware instanceof ComponentParserMiddlewareInterface) {
+                    if ($middleware instanceof ComponentParserMiddlewareInterface) {
                         $middleware->parse($parent, $motherUID, $funcName, $props, $arguments);
                     }
 

@@ -16,12 +16,6 @@ class RouteRegistry extends AbstractStaticRegistry
         $this->_write('middlewares', $middleware);
     }
 
-    public static function reset(): void
-    {
-        self::$instance = new RouteRegistry;
-        unlink(self::$instance->getCacheFilename());
-    }
-
     public static function getInstance(): RegistryInterface
     {
         if (self::$instance === null) {
@@ -29,6 +23,12 @@ class RouteRegistry extends AbstractStaticRegistry
         }
 
         return self::$instance;
+    }
+
+    public static function reset(): void
+    {
+        self::$instance = new RouteRegistry;
+        unlink(self::$instance->getCacheFilename());
     }
 
     public static function getCachedRoutes(): ?array
@@ -47,13 +47,13 @@ class RouteRegistry extends AbstractStaticRegistry
         return file_exists(self::getMovedPhpFilename());
     }
 
-    public static function getMovedFilename(): string
-    {
-        return CACHE_DIR . 'routes.json';
-    }
-
     public static function getMovedPhpFilename(): string
     {
         return CACHE_DIR . 'routes.php';
+    }
+
+    public static function getMovedFilename(): string
+    {
+        return CACHE_DIR . 'routes.json';
     }
 }

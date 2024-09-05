@@ -3,7 +3,6 @@
 namespace Ephect\Apps\Builder;
 
 use Ephect\Apps\Builder\Copiers\TemplatesCopyMaker;
-use Ephect\Apps\Builder\Copiers\TemplatesCopier;
 use Ephect\Apps\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Apps\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Apps\Builder\Descriptors\PluginListDescriptor;
@@ -15,6 +14,7 @@ use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Plugins\Router\RouterService;
+use Exception;
 
 class Builder
 {
@@ -49,7 +49,7 @@ class Builder
             $components = $descriptor->describe();
             $this->list = [...$this->list, ...$components];
 
-            [$filename, $modulePaths]  = PluginRegistry::readPluginPaths();
+            [$filename, $modulePaths] = PluginRegistry::readPluginPaths();
             foreach ($modulePaths as $path) {
                 $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
                 $moduleSrcPathFile = $moduleConfigDir . REL_CONFIG_APP;
@@ -76,7 +76,7 @@ class Builder
 
             PluginRegistry::save();
             ComponentRegistry::save();
-       }
+        }
     }
 
     public function prepareRoutedComponents(): void
@@ -84,7 +84,7 @@ class Builder
         CodeRegistry::load();
         ComponentRegistry::load();
 
-        $routes =  (new Finder)->searchForRoutes();
+        $routes = (new Finder)->searchForRoutes();
 
         array_unshift($routes, 'App');
 
@@ -99,7 +99,7 @@ class Builder
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildAllRoutes(): void
     {

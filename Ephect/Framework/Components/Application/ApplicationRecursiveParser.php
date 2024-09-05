@@ -6,10 +6,8 @@ use Ephect\Framework\Components\Component;
 use Ephect\Framework\Components\FileComponentInterface;
 use Ephect\Framework\Components\Generators\ComponentParser;
 use Ephect\Framework\Components\Generators\ParserService;
-use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Utils\File;
-use Exception;
 
 class ApplicationRecursiveParser
 {

@@ -111,8 +111,6 @@ abstract class AbstractApplication extends Element
 
     abstract public function run(...$params): int;
 
-    abstract protected function execute(): int;
-
     abstract public function displayConstants(): array;
 
     public function clearLogs(): string
@@ -228,6 +226,8 @@ abstract class AbstractApplication extends Element
     {
         return PHP_OS;
     }
+
+    abstract protected function execute(): int;
 
 //    protected function execute(): int {
 //        return 0;

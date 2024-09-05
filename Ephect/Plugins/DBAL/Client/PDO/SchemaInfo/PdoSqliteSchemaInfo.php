@@ -1,7 +1,9 @@
 <?php
+
 namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
 
 use Ephect\Framework\Logger\Logger;
+use PDOException;
 use SQLite3;
 
 class PdoSQLiteSchemaInfo extends AbstractPdoSchemaInfo
@@ -71,21 +73,21 @@ class PdoSQLiteSchemaInfo extends AbstractPdoSchemaInfo
                 $name = $this->result->columnName($index);
                 $type = $this->result->columnType($index);
                 $len = 32768;
-            } catch (\PDOException $ex) {
+            } catch (PDOException $ex) {
                 Logger::create()->error($ex);
             }
         }
 
-        $this->info = (object) ['name' => $name, 'type' => $type, 'length' => $len];
+        $this->info = (object)['name' => $name, 'type' => $type, 'length' => $len];
 
         return $this->info;
     }
 
     public function setTypes(): void
     {
-        $this->native_types = (array) null;
-        $this->native2php_assoc = (array) null;
-        $this->native2php_num = (array) null;
+        $this->native_types = (array)null;
+        $this->native2php_assoc = (array)null;
+        $this->native2php_num = (array)null;
 
         $this->native_types[1] = "INTEGER";
         $this->native_types[2] = "TEXT";
@@ -121,20 +123,11 @@ class PdoSQLiteSchemaInfo extends AbstractPdoSchemaInfo
         return $sql;
     }
 
-    public function getShowFieldsQuery(?string $table): string
-    {
-        $sql = <<<SQL
-            SELECT name FROM PRAGMA_TABLE_INFO('{$table}');
-            SQL;
-
-        return $sql;
-    }
-
     public function getFieldCount(): int
     {
         $result = 0;
 
-        $connection = new \SQLite3(
+        $connection = new SQLite3(
             $this->config->getDatabaseName()
         );
 
@@ -151,11 +144,20 @@ class PdoSQLiteSchemaInfo extends AbstractPdoSchemaInfo
         return $result;
     }
 
+    public function getShowFieldsQuery(?string $table): string
+    {
+        $sql = <<<SQL
+            SELECT name FROM PRAGMA_TABLE_INFO('{$table}');
+            SQL;
+
+        return $sql;
+    }
+
     public function getRowCount(): int
     {
         $result = 0;
 
-        $connection = new \SQLite3(
+        $connection = new SQLite3(
             $this->config->getDatabaseName()
         );
 

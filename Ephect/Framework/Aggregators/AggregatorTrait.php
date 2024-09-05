@@ -8,6 +8,7 @@ use Ephect\Framework\Utils\Text;
 trait AggregatorTrait
 {
     protected array $list = [];
+
     public function add(string $className): void
     {
         $this->list[] = $className;
@@ -19,7 +20,7 @@ trait AggregatorTrait
         $elementsList = $this->list;
         $existingList = file_exists($filename) ? require $filename : null;
 
-        if(is_array($existingList)) {
+        if (is_array($existingList)) {
             $elementsList = [...$existingList, ...$elementsList];
             $elementsList = array_unique($elementsList);
         }

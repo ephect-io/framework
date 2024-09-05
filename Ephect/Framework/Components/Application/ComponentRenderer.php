@@ -17,7 +17,7 @@ class ComponentRenderer
         $funcParams = $funcReflection->getParameters();
 
         $bodyProps = null;
-        if($request !== null && $request->headers->contains('application/json', 'content-type')) {
+        if ($request !== null && $request->headers->contains('application/json', 'content-type')) {
             $bodyProps = json_decode($request->body);
         }
 
@@ -42,8 +42,8 @@ class ComponentRenderer
                 }
             }
 
-            if($bodyProps !== null) {
-                if($props === null) {
+            if ($bodyProps !== null) {
+                if ($props === null) {
                     $props = new stdClass;
                 }
                 foreach ($bodyProps as $field => $value) {

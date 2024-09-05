@@ -8,6 +8,7 @@ use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Utils\File;
+use Exception;
 
 class ModuleDescriptor implements DescriptorInterface
 {
@@ -27,8 +28,8 @@ class ModuleDescriptor implements DescriptorInterface
 
         Logger::create()->info("Module entrypoint: $moduleEntrypoint:");
 
-        if($moduleEntrypoint == null) {
-            throw new \Exception("Module entry point not found in {$moduleEntrypointFile}");
+        if ($moduleEntrypoint == null) {
+            throw new Exception("Module entry point not found in {$moduleEntrypointFile}");
         }
 
         $comp = new $moduleEntrypoint;

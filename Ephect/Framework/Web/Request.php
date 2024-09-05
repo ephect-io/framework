@@ -4,7 +4,8 @@ namespace Ephect\Framework\Web;
 
 use Ephect\Framework\Web\Request\Headers;
 
-readonly class Request {
+readonly class Request
+{
 
     public Headers $headers;
     public string $body;
@@ -12,7 +13,8 @@ readonly class Request {
     public string $method;
     public string $uri;
 
-    public function __construct() {
+    public function __construct()
+    {
         parse_str(QUERY_STRING, $params);
 
         $this->headers = new Headers();

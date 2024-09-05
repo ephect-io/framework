@@ -13,8 +13,8 @@ class Main extends AbstractCommand
     {
         {{GetArgs}}
         $lib = new Lib($this->application);
-        $lib->{{MethodName}}({{SetArgs}});
+$lib->{{MethodName}}({{SetArgs}});
 
-        return 0;
-    }
+return 0;
+}
 }

@@ -12,13 +12,13 @@ class Lib extends AbstractCommandLib
     {
 
         $binScript = SITE_ROOT . "vendor/bin/" . str_replace('/', '_', $package) . '_install.sh';
-        if(PHP_OS == 'WINNT') {
+        if (PHP_OS == 'WINNT') {
             $binScript = SITE_ROOT . "vendor\\bin\\" . str_replace('/', '_', $package) . '_install.bat';
         }
 
-        if(file_exists($binScript)) {
+        if (file_exists($binScript)) {
             Console::writeLine(ConsoleColors::getColoredString("An remove script was found", ConsoleColors::BLUE, ConsoleColors::WHITE));
-            if(Console::readYesOrNo("Do you want to run the script?")) {
+            if (Console::readYesOrNo("Do you want to run the script?")) {
                 exec("$binScript -r", $output, $returnCode);
                 if ($returnCode !== 0) {
                     foreach ($output as $item) {
