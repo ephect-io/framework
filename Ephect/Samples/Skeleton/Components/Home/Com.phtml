@@ -3,7 +3,7 @@
 namespace QuickStart;
 
 use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useState;
+use function Ephect\Hooks\useStateObject;
 
 function Com($props): string
 {
@@ -12,11 +12,9 @@ function Com($props): string
         $b = 'It is a';
         $c = 'functional component';
         $d = $props->from;
-        [$state, $setState] = useState();
+        [$state] = useStateObject();
 
-        $m = $state->m->n;
-
-        $setState(['p' => ['n' => 'q']]);
+        $m = $state->m;
 
     });
 
