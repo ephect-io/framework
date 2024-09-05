@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Plugins\HtmlSaver;
+namespace Ephect\Modules\Html;
 
-interface HtmlSaveServiceInterface
+interface HtmlSaverServiceInterface
 {
     public function canRender(): bool;
 

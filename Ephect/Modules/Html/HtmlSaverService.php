@@ -1,12 +1,12 @@
 <?php
 
-namespace Ephect\Plugins\HtmlSaver;
+namespace Ephect\Modules\Html;
 
 use DateTime;
-use Ephect\Framework\Components\ChildrenInterface;
+use Ephect\Forms\Components\ChildrenInterface;
 use Ephect\Framework\Utils\File;
 
-class HtmlSaverService implements HtmlSaveServiceInterface
+class HtmlSaverService implements HtmlSaverServiceInterface
 {
 
     public function __construct(private readonly ChildrenInterface $children)
