@@ -1,0 +1,16 @@
+<?php
+
+namespace Ephect\Modules\DataAccess;
+
+use Ephect\Modules\DataAccess\Client\PDO\PdoConnection;
+use function Ephect\Hooks\useState;
+
+function DbalConnection($props): string
+{
+    $conn = PdoConnection::opener($props->conf);
+    useState(["$props->conf" => $conn,]);
+
+    return (<<< HTML
+
+    HTML);
+}
