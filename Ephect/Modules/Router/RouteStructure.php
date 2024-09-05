@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace Ephect\Modules\Routing;
 
-use Ephect\Framework\Core\Structure;
+use Ephect\Framework\Structure\Structure;
 
 class RouteStructure extends Structure
 {

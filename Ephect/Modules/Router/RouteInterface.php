@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace Ephect\Modules\Routing;
 
 use Ephect\Framework\ElementInterface;
 

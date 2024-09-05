@@ -1,14 +1,14 @@
 <?php
 
-namespace Ephect\Plugins\Route\Middlewares;
+namespace Ephect\Modules\Routing\Middlewares;
 
-use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Middlewares\ComponentParserMiddlewareInterface;
-use Ephect\Framework\Registry\ComponentRegistry;
-use Ephect\Framework\Registry\RouteRegistry;
-use Ephect\Plugins\Route\Attributes\RouteMiddleware;
-use Ephect\Plugins\Route\RouteEntity;
-use Ephect\Plugins\Route\RouteStructure;
+use Ephect\Forms\Components\ComponentEntityInterface;
+use Ephect\Forms\Middlewares\ComponentParserMiddlewareInterface;
+use Ephect\Forms\Registry\ComponentRegistry;
+use Ephect\Modules\Routing\Registry\RouteRegistry;
+use Ephect\Modules\Routing\Attributes\RouteMiddleware;
+use Ephect\Modules\Routing\RouteEntity;
+use Ephect\Modules\Routing\RouteStructure;
 use Exception;
 use ReflectionFunction;
 

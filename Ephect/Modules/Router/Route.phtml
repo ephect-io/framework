@@ -1,10 +1,9 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace  Ephect\Modules\Routing;
 
-use Ephect\Plugins\Router\RouterService;
 use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useState;
+use function Ephect\Hooks\useStateObject;
 
 function Route($children): string
 {
@@ -30,11 +29,11 @@ function Route($children): string
 
         [$path, $query, $code] = $router->matchRoute($route);
 
-        [$state, $setState] = useState();
+        [$state, $setState] = useStateObject();
         $routes = $state->routes ?? [];
 
         $routes[] = ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
-        useState(['routes' => $routes]);
+        useStateObject(['routes' => $routes]);
 
     });
 

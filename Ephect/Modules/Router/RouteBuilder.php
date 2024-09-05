@@ -1,9 +1,9 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace Ephect\Modules\Routing;
 
-use Ephect\Framework\Components\Builders\AbstractBuilder;
-use Ephect\Framework\Components\Children;
+use Ephect\Forms\Components\Builders\AbstractBuilder;
+use Ephect\Forms\Components\Children;
 
 class RouteBuilder extends AbstractBuilder
 {
@@ -11,8 +11,6 @@ class RouteBuilder extends AbstractBuilder
 
     public function __construct(object $props)
     {
-
-
         parent::__construct($props, RouteStructure::class);
     }
 

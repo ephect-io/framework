@@ -1,19 +1,16 @@
 <?php
 
-namespace Ephect\Plugins\Router;
+namespace  Ephect\Modules\Routing;
 
-use Ephect\Framework\Registry\RouteRegistry;
+use Ephect\Modules\Routing\Registry\RouteRegistry;
 use function Ephect\Hooks\useEffect;
-
 
 function Router($children): string
 {
     useEffect(function (/* bool */ $hasRouted, /* object */ $service, /* string */ $path, /* string */ $html) {
 
         $service = new RouterService;
-
         if (RouteRegistry::hasMoved()) {
-
             [$path, $query, $error, $code, $middlewares] = $service->doRouting();
             $service->renderRoute($code === 200, $path, $query, $error, $code, $middlewares, $html);
 
@@ -31,8 +28,7 @@ function Router($children): string
         {{ children }}
         <%            
             %service->moveCache();
-            Builder::purgeCopies();
-
+            %service->purgeCopies();
             %service->findRoute(%html);
             if(%html !== '') { 
                 { html }
