@@ -20,6 +20,4 @@ interface FileComponentInterface extends ComponentInterface
 
     function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string;
 
-    function identifyComponents(array &$list, ?string $motherUID = null, ?FileComponentInterface $component = null): void;
-
 }

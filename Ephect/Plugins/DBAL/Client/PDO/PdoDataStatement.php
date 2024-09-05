@@ -23,7 +23,7 @@ class PdoDataStatement extends Element implements DataStatementInterface
     private AbstractPdoSchemaInfo|null $_schemaInfo = null;
     private PdoConfiguration|null $_config = null;
     private PDO $_native_connection;
-    private ServerType $_driver;
+    private string $_driver;
     private bool $_hasException = false;
 
     public function __construct(
@@ -41,10 +41,10 @@ class PdoDataStatement extends Element implements DataStatementInterface
             $this->_native_connection = $this->_connection->getState();
             $this->_config = $this->_connection->getConfiguration();
             $this->_driver = $this->_config->getDriver();
-            $this->_schemaInfo = $this->_connection->getSchemaInfo();
-            if ($this->_sql !== null) {
-                $this->_schemaInfo->setQuery($this->_sql);
-            }
+//            $this->_schemaInfo = $this->_connection->getSchemaInfo();
+//            if ($this->_sql !== null) {
+//                $this->_schemaInfo->setQuery($this->_sql);
+//            }
         }
     }
 

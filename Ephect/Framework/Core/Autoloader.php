@@ -24,7 +24,7 @@ class Autoloader
         /**
          * Activate only for debug
          */
-        if (empty($classFilename)) {
+        if(empty($classFilename)) {
             throw new \Exception("Class $className not found");
         }
 

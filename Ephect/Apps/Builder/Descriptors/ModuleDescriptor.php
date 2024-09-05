@@ -3,9 +3,8 @@
 namespace Ephect\Apps\Builder\Descriptors;
 
 use Ephect\Framework\Components\ComponentEntity;
-use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Components\Generators\ComponentParser;
-use Ephect\Framework\Modules\ModuleManifestReader;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Registry\CodeRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Utils\File;
@@ -22,26 +21,17 @@ class ModuleDescriptor implements DescriptorInterface
         copy($sourceDir . $filename, COPY_DIR . $filename);
 
         //TODO: get module class from module middleware
-        $reader = new ModuleManifestReader();
-        $manifest = $reader->read($this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR);
+        $moduleConfigDir = $this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $moduleEntrypointFile = $moduleConfigDir . 'entrypoint.php';
+        $moduleEntrypoint = file_exists($moduleEntrypointFile) ? require_once $moduleEntrypointFile : null;
 
-        $moduleEntrypoint = $manifest->getEntrypoint();
+        Logger::create()->info("Module entrypoint: $moduleEntrypoint:");
 
         if($moduleEntrypoint == null) {
-            return [null, null];
+            throw new \Exception("Module entry point not found in {$moduleEntrypointFile}");
         }
 
-        if(!in_array(ComponentInterface::class, class_implements($moduleEntrypoint))) {
-            throw new \Exception("Module entry point must implement " . ComponentInterface::class . " or be null.");
-        }
-
-        return $this->parseComponent($moduleEntrypoint, $filename);
-
-    }
-
-    private function parseComponent(string $moduleEntrypointClass, string $filename): array
-    {
-        $comp = new $moduleEntrypointClass;
+        $comp = new $moduleEntrypoint;
         $comp->load($filename);
         $comp->analyse();
 

@@ -2,7 +2,6 @@
 
 namespace Ephect\Apps\Builder\Descriptors;
 
-use Ephect\Framework\Components\ComponentInterface;
 use Ephect\Framework\Utils\File;
 
 class ModuleListDescriptor implements ComponentListDescriptorInterface
@@ -20,9 +19,7 @@ class ModuleListDescriptor implements ComponentListDescriptorInterface
         $moduleTemplateList = File::walkTreeFiltered($templateDir, ['phtml']);
         foreach ($moduleTemplateList as $key => $moduleTemplate) {
             [$fqcn, $comp] = $descriptor->describe($templateDir, $moduleTemplate);
-            if(is_string($fqcn) && $comp instanceof ComponentInterface) {
-                $result[$fqcn] = $comp;
-            }
+            $result[$fqcn] = $comp;
         }
 
         return $result;

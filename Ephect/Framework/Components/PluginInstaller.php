@@ -3,9 +3,6 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\Modules\Composer\ComposerConfigReader;
-use Ephect\Framework\Modules\ModulesConfigReader;
-use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\PluginRegistry;
 
@@ -16,15 +13,10 @@ class PluginInstaller
 
     }
 
-    /**
-     * @throws \JsonException
-     * @throws \ErrorException
-     */
     public function install(): void
     {
         FrameworkRegistry::load(true);
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
-        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
 
         [$filename, $paths] = PluginRegistry::readPluginPaths();
         if(is_array($paths)) {
@@ -56,36 +48,10 @@ class PluginInstaller
         }
         FrameworkRegistry::save(true);
 
-        $moduleManifestReader = new ModuleManifestReader;
-        $moduleManifest = $moduleManifestReader->read($configDir);
-
-        $composerConfigReader = new ComposerConfigReader;
-        $composerConfig = $composerConfigReader->read();
-
-        $moduleConfigReader = new ModulesConfigReader;
-        $moduleConfig = $moduleConfigReader->read();
-
-        $requires = $composerConfig->getRequire();
-        $package = $moduleManifest->getName();
-        $version = $moduleManifest->getVersion();
-        foreach ($requires as $requireName => $requireVersion) {
-            if($package == $requireName && $requireVersion !== $version && !empty($requireVersion)) {
-                $moduleConfig->addModule($package, $requireVersion);
-            } else {
-                $moduleConfig->addModule($package, $moduleManifest->getVersion());
-            }
-        }
-
-        $moduleConfig->save();
-
         Console::writeLine("Plugin classes are now registered.");
 
     }
 
-    /**
-     * @throws \JsonException
-     * @throws \ErrorException
-     */
     public function remove(): void
     {
         FrameworkRegistry::load(true);
@@ -101,8 +67,6 @@ class PluginInstaller
         PluginRegistry::savePluginPaths($paths);
 
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
-        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-
         $bootstrapFile = $srcDir . 'bootstrap.php';
         $constantsFile = $srcDir . 'constants.php';
 
@@ -124,15 +88,9 @@ class PluginInstaller
         }
         FrameworkRegistry::save(true);
 
-        $moduleManifestReader = new ModuleManifestReader;
-        $moduleManifest = $moduleManifestReader->read($configDir);
-
-        $moduleConfigReader = new ModulesConfigReader;
-        $moduleConfig = $moduleConfigReader->read();
-        $moduleConfig->removeModule($moduleManifest->getName());
-        $moduleConfig->save();
-
         Console::writeLine("Plugin classes are now unregistered.");
 
     }
+
+
 }

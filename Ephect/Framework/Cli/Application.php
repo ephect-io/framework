@@ -40,7 +40,7 @@ class Application extends AbstractApplication
      * @param string $default
      * @return null|string NULL when the index is not in $argc range
      */
-    public function getArgi(int $index, string $default = ''): null|string
+    public function getArgi(int $index, string $default = ''): string
     {
         if($index > -1 && $this->argc > $index) {
             return $this->argv[$index];

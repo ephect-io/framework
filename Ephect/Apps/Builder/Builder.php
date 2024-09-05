@@ -3,10 +3,11 @@
 namespace Ephect\Apps\Builder;
 
 use Ephect\Apps\Builder\Copiers\TemplatesCopyMaker;
+use Ephect\Apps\Builder\Copiers\TemplatesCopier;
 use Ephect\Apps\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Apps\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Apps\Builder\Descriptors\PluginListDescriptor;
-use Ephect\Apps\Builder\Routing\Finder;
+use Ephect\Apps\Builder\Routes\Finder;
 use Ephect\Apps\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Apps\Builder\Strategy\BuildByRouteStrategy;
 use Ephect\Framework\Registry\CodeRegistry;
@@ -58,6 +59,9 @@ class Builder
                     $descriptor = new ModuleListDescriptor($path);
                     $moduleComponents = $descriptor->describe($moduleSrcPath);
                     $this->list = [...$this->list, ...$moduleComponents];
+
+                    CodeRegistry::save();
+                    ComponentRegistry::save();
                 }
             }
 
