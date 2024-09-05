@@ -1,15 +1,14 @@
 <?php
+
 namespace Ephect\Plugins\DBAL\Client\PDO;
 
 use Ephect\Framework\Element;
 use Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo\AbstractPdoSchemaInfo;
 use Ephect\Plugins\DBAL\DataStatementInterface;
-
-use Ephect\Plugins\DBAL\ServerType;
 use Exception;
 use PDO;
-use PDOStatement;
 use PDOException;
+use PDOStatement;
 use Throwable;
 
 class PdoDataStatement extends Element implements DataStatementInterface
@@ -28,7 +27,7 @@ class PdoDataStatement extends Element implements DataStatementInterface
 
     public function __construct(
         private readonly ?PDOStatement  $_statement,
-        private readonly PdoConnection      $_connection,
+        private readonly PdoConnection  $_connection,
         private readonly string         $_sql = '',
         private readonly Throwable|null $_exception = null,
     )
@@ -63,21 +62,15 @@ class PdoDataStatement extends Element implements DataStatementInterface
         return $this->_values[$i];
     }
 
-    public function fetch(int $mode = PDO::FETCH_NUM): ?array
-    {
-        $this->_values = $this->_statement->fetch($mode);
-        return (!$this->_values) ? null : $this->_values;
-    }
-
-    public function fetchAll(int $mode = PDO::FETCH_NUM): ?array
-    {
-        $this->_values = $this->_statement->fetchAll($mode);
-        return (!$this->_values) ? null : $this->_values;
-    }
-
     public function fetchAssoc(): ?array
     {
         $this->_values = $this->_statement->fetch(PDO::FETCH_ASSOC);
+        return (!$this->_values) ? null : $this->_values;
+    }
+
+    public function fetch(int $mode = PDO::FETCH_NUM): ?array
+    {
+        $this->_values = $this->_statement->fetch($mode);
         return (!$this->_values) ? null : $this->_values;
     }
 
@@ -87,26 +80,15 @@ class PdoDataStatement extends Element implements DataStatementInterface
         return (!$this->_values) ? null : $this->_values;
     }
 
+    public function fetchAll(int $mode = PDO::FETCH_NUM): ?array
+    {
+        $this->_values = $this->_statement->fetchAll($mode);
+        return (!$this->_values) ? null : $this->_values;
+    }
+
     public function fetchObject(): ?object
     {
         return $this->_statement->fetchObject();
-    }
-
-    public function getFieldCount(): ?int
-    {
-        if (!isset($this->_fieldCount)) {
-            try {
-                $this->_fieldCount = $this->_statement->columnCount();
-            } catch (Exception | PDOException $ex) {
-                if (isset($this->_values[0])) {
-                    $this->_fieldCount = count($this->_values[0]);
-                } else {
-                    throw new Exception("Cannot count fields of a row before the resource is fetched", -1, $ex);
-                }
-            }
-        }
-
-        return $this->_fieldCount;
     }
 
     public function getRowCount(): ?int
@@ -118,7 +100,7 @@ class PdoDataStatement extends Element implements DataStatementInterface
 
                 try {
                     $this->_rowCount = $this->_statement->rowCount();
-                } catch (Exception | PDOException $ex) {
+                } catch (Exception|PDOException $ex) {
                     if (is_array($this->_values)) {
                         $this->_rowCount = count($this->_values);
                     } else {
@@ -142,6 +124,23 @@ class PdoDataStatement extends Element implements DataStatementInterface
         }
 
         return $this->_colNames;
+    }
+
+    public function getFieldCount(): ?int
+    {
+        if (!isset($this->_fieldCount)) {
+            try {
+                $this->_fieldCount = $this->_statement->columnCount();
+            } catch (Exception|PDOException $ex) {
+                if (isset($this->_values[0])) {
+                    $this->_fieldCount = count($this->_values[0]);
+                } else {
+                    throw new Exception("Cannot count fields of a row before the resource is fetched", -1, $ex);
+                }
+            }
+        }
+
+        return $this->_fieldCount;
     }
 
     public function getFieldName($i): string

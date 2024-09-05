@@ -3,8 +3,8 @@
 namespace Ephect\Framework\Cache;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\StaticElement;
+use Ephect\Framework\Utils\File;
 use Throwable;
 
 class Cache extends StaticElement

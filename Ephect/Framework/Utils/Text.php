@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\Utils;
 
+use ReflectionException;
 use ReflectionFunction;
 use SplFileObject;
 
@@ -55,7 +56,7 @@ class Text
     public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string
     {
         $array = [];
-        if(!is_array($json)) {
+        if (!is_array($json)) {
             $array = json_decode($json, JSON_OBJECT_AS_ARRAY);
         }
         $result = '<?php' . PHP_EOL;
@@ -65,29 +66,6 @@ class Text
         $result .= ';' . PHP_EOL;
 
         return $result;
-    }
-
-    /**
-     * @throws \ReflectionException
-     */
-    private function callableToString(callable $controller): string
-    {
-        $ref = new ReflectionFunction($controller);
-
-        $file = new SplFileObject($ref->getFileName());
-        $file->seek($ref->getStartLine() - 1);
-
-        $code = '';
-        while ($file->key() < $ref->getEndLine()) {
-            $code .= $file->current();
-            $file->next();
-        }
-
-        $begin = strpos($code, 'function');
-        $end = strrpos($code, '}');
-        $code = substr($code, $begin, $end - $begin + 1);
-
-        return $code;
     }
 
     public static function arrayToString(array $array, bool $prettify = false): string
@@ -131,14 +109,14 @@ class Text
                 } else {
                     $value = !isset($matches[4]) ? '' : $matches[4];
 
-                    if(isset($matches[7]) && str_starts_with($matches[7], 'function')) {
-                        $value = stripslashes($matches[7])  . ',';
+                    if (isset($matches[7]) && str_starts_with($matches[7], 'function')) {
+                        $value = stripslashes($matches[7]) . ',';
                     }
 
-                    if($key[0] == "'") {
+                    if ($key[0] == "'") {
                         $convert .= $key . ' => ' . $value;
                     } else {
-                        $convert .=  $value;
+                        $convert .= $value;
                     }
 
                     $stringLen = strlen($matches[0]);
@@ -149,18 +127,41 @@ class Text
 
             }
 
-            if(!$isDirty) {
+            if (!$isDirty) {
                 $countSpinning++;
             }
 
             $isSpinning = $countSpinning > 10;
         }
 
-        if(!$prettify) {
+        if (!$prettify) {
             $convert = str_replace("\n", "", $convert);
         }
 
         return $convert;
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function callableToString(callable $controller): string
+    {
+        $ref = new ReflectionFunction($controller);
+
+        $file = new SplFileObject($ref->getFileName());
+        $file->seek($ref->getStartLine() - 1);
+
+        $code = '';
+        while ($file->key() < $ref->getEndLine()) {
+            $code .= $file->current();
+            $file->next();
+        }
+
+        $begin = strpos($code, 'function');
+        $end = strrpos($code, '}');
+        $code = substr($code, $begin, $end - $begin + 1);
+
+        return $code;
     }
 
 }

@@ -11,6 +11,6 @@ class RouteMiddleware implements AttributeMiddlewareInterface
 {
     public function getMiddlewares(): array
     {
-        return  [RouteParserMiddleware::class];
+        return [RouteParserMiddleware::class];
     }
 }

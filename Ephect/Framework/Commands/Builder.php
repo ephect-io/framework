@@ -23,7 +23,7 @@ class Builder
      */
     function copyTemplates(string $verb, string $subject, string $description, string $methodName, array $arguments, string $srcDir, string $destDir): void
     {
-        $commandNamespace = ucfirst($verb)  . ucfirst($subject);
+        $commandNamespace = ucfirst($verb) . ucfirst($subject);
         $commandAttributes = 'verb: "' . $verb . '"';
         $commandAttributes = $subject !== "" ? $commandAttributes . ', subject: "' . $subject . '"' : $commandAttributes;
 
@@ -64,7 +64,7 @@ class Builder
             $mainText = str_replace('{{SetArgs}}', $setargs, $mainText);
             $libText = str_replace('{{Parameters}}', $parameters, $libText);
         } else {
-            $mainText = str_replace('{{GetArgs}}','', $mainText);
+            $mainText = str_replace('{{GetArgs}}', '', $mainText);
             $mainText = str_replace('{{SetArgs}}', '', $mainText);
             $libText = str_replace('{{Parameters}}', '', $libText);
         }

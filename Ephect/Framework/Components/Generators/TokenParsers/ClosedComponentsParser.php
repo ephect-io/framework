@@ -3,8 +3,8 @@
 namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Utils\File;
 
 final class ClosedComponentsParser extends AbstractComponentParser
 {
@@ -17,7 +17,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
         $cmpz = $decl->getComposition();
         $parent = null;
         $child = null;
-        if($parameter != null) {
+        if ($parameter != null) {
             [$parent, $child] = $parameter;
         }
         $muid = $comp->getMotherUID();
@@ -61,7 +61,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
 
         };
 
-        if($child != null) {
+        if ($child != null) {
             $closure($child, 0);
         } else if (!$cmpz->hasChildren()) {
             $closure($cmpz, 0);

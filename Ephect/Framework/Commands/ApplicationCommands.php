@@ -5,8 +5,8 @@ namespace Ephect\Framework\Commands;
 use Ephect\Framework\Core\AbstractApplication;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\StateRegistry;
+use Ephect\Framework\Utils\File;
 
 class ApplicationCommands extends Element implements CommandCollectionInterface
 {

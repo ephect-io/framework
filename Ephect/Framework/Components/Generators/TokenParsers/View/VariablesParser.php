@@ -9,7 +9,7 @@ final class VariablesParser extends AbstractTokenParser
     public function do(null|string|array|object $parameter = null): void
     {
 
-        if(is_array($parameter)) {
+        if (is_array($parameter)) {
             $this->useVariables = $parameter['useVariables'];
         }
 
@@ -49,12 +49,12 @@ final class VariablesParser extends AbstractTokenParser
 
         $c = count($useVariables);
 
-        for($i = $c - 1; $i > -1; $i--) {
+        for ($i = $c - 1; $i > -1; $i--) {
             $current = '$' . $useVariables[$i];
-            if(is_array($funcArguments) && in_array($current,  $funcArguments)) {
+            if (is_array($funcArguments) && in_array($current, $funcArguments)) {
                 continue;
             }
-            if(!in_array($current, $variables)) {
+            if (!in_array($current, $variables)) {
                 unset($this->useVariables[$useVariables[$i]]);
             }
         }

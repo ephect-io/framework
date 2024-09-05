@@ -24,7 +24,7 @@ class Lib extends AbstractCommandLib
 
         Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
         Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
-        $cmd->execute( $php, '-S', "localhost:$port", '-t', CONFIG_DOCROOT);
+        $cmd->execute($php, '-S', "localhost:$port", '-t', CONFIG_DOCROOT);
         Console::writeLine("Serving the application locally ...");
     }
 

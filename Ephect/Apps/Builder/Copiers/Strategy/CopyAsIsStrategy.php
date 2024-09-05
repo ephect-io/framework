@@ -2,7 +2,6 @@
 
 namespace Ephect\Apps\Builder\Copiers\Strategy;
 
-use Ephect\Apps\Builder\Copiers\Strategy\CopierStrategyInterface;
 use Ephect\Framework\Utils\File;
 
 class CopyAsIsStrategy implements CopierStrategyInterface
@@ -16,7 +15,7 @@ class CopyAsIsStrategy implements CopierStrategyInterface
     {
         $root = pathinfo($path, PATHINFO_FILENAME) . DIRECTORY_SEPARATOR;
 
-        if($root === APP_DIR) {
+        if ($root === APP_DIR) {
             $root = DIRECTORY_SEPARATOR;
         }
 

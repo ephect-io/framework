@@ -10,7 +10,7 @@ class Lib extends AbstractCommandLib
     public function install(string $workingDirectory, bool $remove): void
     {
         $pluginInstaller = new PluginInstaller($workingDirectory);
-        if($remove) {
+        if ($remove) {
             $pluginInstaller->remove();
         } else {
             $pluginInstaller->install();

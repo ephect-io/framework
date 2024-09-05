@@ -16,11 +16,6 @@ class Application extends AbstractApplication
 {
     private string $html = '';
 
-    public function getHtml(): string
-    {
-        return $this->html;
-    }
-
     public static function create(...$params): self
     {
         self::$instance = new Application();
@@ -60,6 +55,11 @@ class Application extends AbstractApplication
         // $compiler->buildWebcomponents($motherUID);
 
         return 0;
+    }
+
+    public function getHtml(): string
+    {
+        return $this->html;
     }
 
     public function displayConstants(): array
@@ -111,7 +111,6 @@ class Application extends AbstractApplication
 
         return $constants;
     }
-
 
 
 }

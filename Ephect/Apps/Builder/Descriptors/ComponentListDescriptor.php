@@ -31,7 +31,7 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
             $result[$fqcn] = $comp;
         }
 
-        [$filename, $modulePaths]  = PluginRegistry::readPluginPaths();
+        [$filename, $modulePaths] = PluginRegistry::readPluginPaths();
         foreach ($modulePaths as $path) {
             $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
             $moduleTemplatesFile = $moduleConfigDir . 'templates';

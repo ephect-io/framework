@@ -15,7 +15,7 @@ class CopyAsUniqueStrategy implements CopierStrategyInterface
     {
         $root = pathinfo($path, PATHINFO_FILENAME) . DIRECTORY_SEPARATOR;
 
-        if($root === APP_DIR) {
+        if ($root === APP_DIR) {
             $root = DIRECTORY_SEPARATOR;
         }
 

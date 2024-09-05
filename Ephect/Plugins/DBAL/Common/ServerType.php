@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Plugins\DBAL;
 
 class ServerType

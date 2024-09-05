@@ -1,8 +1,9 @@
 <?php
+
 namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
 
 use Ephect\Plugins\DBAL\Client\PDO\PdoConnection;
-use PDO;
+use Exception;
 
 class PdoMySQLSchemaInfo extends AbstractPdoSchemaInfo
 {
@@ -14,7 +15,7 @@ class PdoMySQLSchemaInfo extends AbstractPdoSchemaInfo
                 $connection = new PdoConnection($this->config);
 
                 $this->result = $connection->query($this->query);
-            } catch (\Exception $ex) {
+            } catch (Exception $ex) {
                 return null;
             }
         }
@@ -26,9 +27,9 @@ class PdoMySQLSchemaInfo extends AbstractPdoSchemaInfo
 
     public function setTypes(): void
     {
-        $this->native_types = (array) null;
-        $this->native2php_assoc = (array) null;
-        $this->native2php_num = (array) null;
+        $this->native_types = (array)null;
+        $this->native2php_assoc = (array)null;
+        $this->native2php_num = (array)null;
 
         $this->native_types[1] = "TINYINT";
         $this->native_types[2] = "SMALLINT";
@@ -102,7 +103,8 @@ class PdoMySQLSchemaInfo extends AbstractPdoSchemaInfo
 
         return $sql;
     }
-    
-    public function getFieldCount() : int
-    {}
+
+    public function getFieldCount(): int
+    {
+    }
 }

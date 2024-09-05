@@ -30,7 +30,7 @@ class PluginRegistry extends AbstractStaticRegistry
         $filename = $configDir . "pluginsPaths.php";
 
         $paths = [];
-        if(is_file($filename)) {
+        if (is_file($filename)) {
             $paths = require $filename;
         }
 
@@ -46,19 +46,6 @@ class PluginRegistry extends AbstractStaticRegistry
         $pluginsPaths = Text::jsonToPhpReturnedArray($json, true);
 
         File::safeWrite($filename, $pluginsPaths);
-    }
-
-    public static function readPluginBootstrapPaths(): array
-    {
-        $configDir = siteConfigPath();
-        $filename = $configDir . "pluginsBootstrapPaths.php";
-
-        $paths = [];
-        if(is_file($filename)) {
-            $paths = require $filename;
-        }
-
-        return [$filename, $paths];
     }
 
     public static function savePluginBootstrapPaths(array $paths): void
@@ -78,5 +65,18 @@ class PluginRegistry extends AbstractStaticRegistry
         foreach ($paths as $path) {
             require $path;
         }
+    }
+
+    public static function readPluginBootstrapPaths(): array
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "pluginsBootstrapPaths.php";
+
+        $paths = [];
+        if (is_file($filename)) {
+            $paths = require $filename;
+        }
+
+        return [$filename, $paths];
     }
 }

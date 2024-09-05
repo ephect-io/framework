@@ -145,32 +145,32 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
     private static function _makeFragment(): ComponentEntityInterface
     {
         $fragment = [
-            "closer" =>  [
-                "id" =>  1,
-                "parentId" =>  0,
-                "text" =>  "<\/>",
-                "startsAt" =>  0,
-                "endsAt" =>  0,
-                "contents" =>  [
-                    "startsAt" =>  0,
-                    "endsAt" =>  0
+            "closer" => [
+                "id" => 1,
+                "parentId" => 0,
+                "text" => "<\/>",
+                "startsAt" => 0,
+                "endsAt" => 0,
+                "contents" => [
+                    "startsAt" => 0,
+                    "endsAt" => 0
                 ]
             ],
-            "uid" =>  "00000000-0000-0000-0000-000000000000",
-            "id" =>  0,
-            "name" =>  "FakeFragment",
-            "class" =>  null,
-            "component" =>  "Ephect",
-            "text" =>  "<>",
-            "method" =>  "echo",
-            "startsAt" =>  0,
-            "endsAt" =>  0,
-            "props" =>  [],
-            "node" =>  [],
-            "hasCloser" =>  true,
-            "isSibling" =>  false,
-            "parentId" =>  -1,
-            "depth" =>  0
+            "uid" => "00000000-0000-0000-0000-000000000000",
+            "id" => 0,
+            "name" => "FakeFragment",
+            "class" => null,
+            "component" => "Ephect",
+            "text" => "<>",
+            "method" => "echo",
+            "startsAt" => 0,
+            "endsAt" => 0,
+            "props" => [],
+            "node" => [],
+            "hasCloser" => true,
+            "isSibling" => false,
+            "parentId" => -1,
+            "depth" => 0
         ];
 
         return new ComponentEntity(new ComponentStructure($fragment));
@@ -306,7 +306,7 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         $text = $html ?: File::safeRead(COPY_DIR . $compFile);
 
         if (($pos = strpos($text, $this->text) + strlen($this->text)) > $start) {
-            $offset =  $pos - $start;
+            $offset = $pos - $start;
 
             $start += $offset;
             $end += $offset;

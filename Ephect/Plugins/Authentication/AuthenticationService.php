@@ -16,42 +16,6 @@ class AuthenticationService extends StaticElement
 
     }
 
-    public function getUserId(): string
-    {
-        if (!isset($this->userId) || empty($this->userId)) {
-            if (isset($_SESSION['userId'])) {
-                $this->userId = $_SESSION['userId'];
-            } else {
-                $this->setUserId('#!user' . uniqid() . '#');
-            }
-        }
-        return $this->userId;
-    }
-
-    public function setUserId($value): void
-    {
-        $_SESSION['userId'] = $value;
-        $this->userId = $value;
-    }
-
-    public function getUserName(): string
-    {
-        if (!isset($this->userName) || empty($this->userName)) {
-            if (isset($_SESSION['userName'])) {
-                $this->userName = $_SESSION['userName'];
-            } else {
-                $this->setUserName('#!user' . uniqid() . '#');
-            }
-        }
-        return $this->userName;
-    }
-
-    public function setUserName($value): void
-    {
-        $_SESSION['userName'] = $value;
-        $this->userName = $value;
-    }
-
     public static function getPermissionByToken(string $token): ?string
     {
 
@@ -62,37 +26,6 @@ class AuthenticationService extends StaticElement
             $token = self::renewToken($token);
             if (is_string($token)) {
                 $result = $token;
-            }
-        }
-
-        return $result;
-    }
-
-    public static function setUserToken(string $userId, string $login): ?string
-    {
-        $result = null;
-
-        $connection = TDataAccess::getCryptoDB();
-        $token = TCrypto::generateToken('');
-        $stmt = $connection->query(
-            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
-            , ['token' => $token, 'userId' => $userId, 'login' => $login]
-        );
-
-        return ($token || $stmt->fetch()) ? $token : $result;
-    }
-
-    public function updateToken($token): ?int
-    {
-        $result = null;
-
-        $connection = TDataAccess::getCryptoDB();
-        $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
-
-        if ($stmt->fetch()) {
-            $stmt = $connection->query("UPDATE crypto SET outdated=1 WHERE token=:token;", ['token' => $token]);
-            if ($stmt->fetch()) {
-                $result = $stmt->getRowCount();
             }
         }
 
@@ -131,6 +64,73 @@ class AuthenticationService extends StaticElement
         );
 
         $result = $token;
+
+        return $result;
+    }
+
+    public function getUserId(): string
+    {
+        if (!isset($this->userId) || empty($this->userId)) {
+            if (isset($_SESSION['userId'])) {
+                $this->userId = $_SESSION['userId'];
+            } else {
+                $this->setUserId('#!user' . uniqid() . '#');
+            }
+        }
+        return $this->userId;
+    }
+
+    public function setUserId($value): void
+    {
+        $_SESSION['userId'] = $value;
+        $this->userId = $value;
+    }
+
+    public function getUserName(): string
+    {
+        if (!isset($this->userName) || empty($this->userName)) {
+            if (isset($_SESSION['userName'])) {
+                $this->userName = $_SESSION['userName'];
+            } else {
+                $this->setUserName('#!user' . uniqid() . '#');
+            }
+        }
+        return $this->userName;
+    }
+
+    public function setUserName($value): void
+    {
+        $_SESSION['userName'] = $value;
+        $this->userName = $value;
+    }
+
+    public static function setUserToken(string $userId, string $login): ?string
+    {
+        $result = null;
+
+        $connection = TDataAccess::getCryptoDB();
+        $token = TCrypto::generateToken('');
+        $stmt = $connection->query(
+            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
+            , ['token' => $token, 'userId' => $userId, 'login' => $login]
+        );
+
+        return ($token || $stmt->fetch()) ? $token : $result;
+    }
+
+    public function updateToken($token): ?int
+    {
+        $result = null;
+
+        $connection = TDataAccess::getCryptoDB();
+        $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
+
+        if ($stmt->fetch()) {
+            $stmt = $connection->query("UPDATE crypto SET outdated=1 WHERE token=:token;", ['token' => $token]);
+            if ($stmt->fetch()) {
+                $result = $stmt->getRowCount();
+            }
+        }
 
         return $result;
     }

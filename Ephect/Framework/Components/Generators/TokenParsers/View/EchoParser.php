@@ -9,7 +9,7 @@ final class EchoParser extends AbstractTokenParser
     public function do(null|string|array|object $parameter = null): void
     {
         $text = '';
-        if(is_array($parameter)) {
+        if (is_array($parameter)) {
             $text = $parameter['html'];
             $this->useVariables = $parameter['useVariables'];
         }

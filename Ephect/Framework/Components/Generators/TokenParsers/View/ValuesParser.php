@@ -10,7 +10,7 @@ final class ValuesParser extends AbstractTokenParser
     {
 
         $text = '';
-        if(is_array($parameter)) {
+        if (is_array($parameter)) {
             $text = $parameter['html'];
             $this->useVariables = $parameter['useVariables'];
         }

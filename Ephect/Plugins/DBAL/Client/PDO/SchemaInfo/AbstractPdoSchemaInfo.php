@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Plugins\DBAL\CLient\PDO\SchemaInfo;
 
 use Ephect\Framework\Configuration\ConfigurableInterface;
@@ -6,7 +7,6 @@ use Ephect\Framework\Logger\Logger;
 use Ephect\Plugins\DBAL\Client\PDO\PdoConfiguration;
 use Ephect\Plugins\DBAL\DataStatementInterface;
 use Ephect\Plugins\DBAL\ServerType;
-
 use PDOException;
 
 abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
@@ -36,6 +36,10 @@ abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
         $this->setTypes();
     }
 
+    public function setTypes(): void
+    {
+    }
+
     public static function builder(PdoConfiguration $config): AbstractPdoSchemaInfo
     {
         $result = null;
@@ -56,14 +60,14 @@ abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
         }
     }
 
-    public function setQuery(string $value): void
-    {
-        $this->query = $value;
-    }
-
     public function getQuery(): string
     {
         return $this->query;
+    }
+
+    public function setQuery(string $value): void
+    {
+        $this->query = $value;
     }
 
     public function getColumnNames(): ?array
@@ -85,10 +89,6 @@ abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
             $this->queryIsATable = (strpos($sql, ' ') === false);
         }
         return $this->queryIsATable;
-    }
-
-    public function setTypes(): void
-    {
     }
 
     public function getInfo(int $index): ?object
@@ -121,7 +121,7 @@ abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface
     public function getFieldCount(): int
     {
     }
-    
+
     public function getRowCount(): int
     {
     }
