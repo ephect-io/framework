@@ -1,0 +1,24 @@
+{
+    "name": "ephect-io/framework",
+    "type": "library",
+    "description": "Effective PHP",
+    "homepage": "https://ephect.io",
+    "license": "GPL-3.0+",
+    "version": "0.7.2",
+    "authors": [{
+        "name": "David Blanchard",
+        "email": "dpjb@hotmail.fr",
+        "homepage": "https://ephect.io",
+        "role": "Creator"
+    }],
+    "require": {
+        "php": "^8.2",
+        "ext-iconv": "*",
+        "ext-curl": "*",
+        "ext-zip": "*",
+        "ext-readline": "*",
+        "ext-pdo": "*",
+        "ext-sqlite3": "*",
+        "ext-mysqlnd": "*"
+    }
+}
