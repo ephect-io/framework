@@ -3,7 +3,6 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementInterface;
-use Ephect\Framework\Web\Request;
 
 interface ComponentInterface extends ElementInterface
 {
