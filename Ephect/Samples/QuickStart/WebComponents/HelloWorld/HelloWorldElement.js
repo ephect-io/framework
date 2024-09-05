@@ -4,9 +4,9 @@ class HelloWorldElement extends HTMLElement {
         super();
 
         this.word
-        this.styles
-        this.classes
-
+            this.styles
+            this.classes
+            
         this.attachShadow({mode: 'open'});
         this.renderTemplate()
 
@@ -19,36 +19,33 @@ class HelloWorldElement extends HTMLElement {
 
     }
 
-    static get observeAttributes() {
-        /**
-         * Attributes passed inline to the component
-         */
-        return ['word', 'styles', 'classes']
-    }
-
-    get word() {
-        return this.getAttribute('word') ?? null
-    }
-
-    get styles() {
-        return this.getAttribute('styles') ?? null
-    }
-
-    get classes() {
-        return this.getAttribute('classes') ?? null
-    }
+        static get observeAttributes() {
+            /**
+            * Attributes passed inline to the component
+            */
+            return ['word', 'styles', 'classes']
+        }
 
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue) return;
 
         this[property] = newValue;
     }
-
+        get word() {
+            return this.getAttribute('word') ?? null
+        }
+        get styles() {
+            return this.getAttribute('styles') ?? null
+        }
+        get classes() {
+            return this.getAttribute('classes') ?? null
+        }
+    
     async connectedCallback() {
         /**
          * Integrate styles and apply classes
          */
-        if (this.styles !== null && this.classes !== null) {
+        if(this.styles !== null && this.classes !== null) {
             const $styleList = this.styles.split(',')
 
             $styleList.forEach($item => {

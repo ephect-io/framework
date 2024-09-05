@@ -1,5 +1,4 @@
 <?php
-
 namespace QuickStart;
 
 use function Ephect\Hooks\useEffect;
@@ -11,7 +10,7 @@ use function Ephect\Hooks\useEffect;
 #[ResponseHeader(contentType: "application/json")]
 function Response($props): string
 {
-    useEffect(function ($props, /* array */ $response) {
+    useEffect(function($props, /* array */ $response) {
         $proposition = $props->myNameIs;
         $response = json_encode(["answer" => "Hello $proposition!"]);
     });

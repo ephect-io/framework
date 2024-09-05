@@ -1,4 +1,5 @@
-class HelloWorld {
+class HelloWorld
+{
 
     sayHello(word) {
         /**
