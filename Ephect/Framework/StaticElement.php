@@ -9,7 +9,7 @@ class StaticElement
     protected static object|null $instance = null;
     protected static Logger|null $logger = null;
 
-    private function __construct()
+    protected function __construct()
     {
     }
 

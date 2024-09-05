@@ -3,9 +3,13 @@
 namespace Ephect\Framework\Modules;
 
 use Ephect\Framework\Manifest\ManifestEntity;
+use Ephect\Framework\Structure\StructureTrait;
+use Override;
 
 class ModulesConfigEntity extends ManifestEntity
 {
+    use StructureTrait;
+
     private array $modules = [];
     private array $modulesDev = [];
 
@@ -15,8 +19,8 @@ class ModulesConfigEntity extends ManifestEntity
 
         parent::__construct($structure);
 
-        if($structure instanceof ModulesConfigStructure) {
-            $this->bindStructure();
+        if ($structure instanceof ModulesConfigStructure) {
+            $this->bindStructure($this->structure);
         }
     }
 
@@ -40,21 +44,15 @@ class ModulesConfigEntity extends ManifestEntity
         unset($this->modules[$name]);
     }
 
-    private function bindStructure()
-    {
-        $this->modules = $this->structure->modules;
-        $this->modulesDev = $this->structure->modulesDev;
-    }
-
-    #[\Override]
+    #[Override]
     public function load(bool $asPhpArray = false): void
     {
         parent::load($asPhpArray);
         $this->structure = new ModulesConfigStructure($this->data);
-        $this->bindStructure();
+        $this->bindStructure($this->structure);
     }
 
-    #[\Override]
+    #[Override]
     public function save(bool $asPhpArray = false): void
     {
         $this->structure = new ModulesConfigStructure(["modules" => $this->modules]);

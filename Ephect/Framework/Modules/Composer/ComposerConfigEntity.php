@@ -3,9 +3,13 @@
 namespace Ephect\Framework\Modules\Composer;
 
 use Ephect\Framework\Manifest\ManifestEntity;
+use Ephect\Framework\Structure\StructureTrait;
+use Override;
 
 class ComposerConfigEntity extends ManifestEntity
 {
+
+    use StructureTrait;
 
     private string $name;
 
@@ -33,8 +37,8 @@ class ComposerConfigEntity extends ManifestEntity
 
         parent::__construct($structure);
 
-        if($structure instanceof ComposerConfigStructure) {
-            $this->bindStructure();
+        if ($structure instanceof ComposerConfigStructure) {
+            $this->bindStructure($this->structure);
         }
     }
 
@@ -88,7 +92,21 @@ class ComposerConfigEntity extends ManifestEntity
         return $this->requireDev;
     }
 
-    private function bindStructure()
+    #[Override]
+    public function load(bool $asPhpArray = false): void
+    {
+        parent::load($asPhpArray);
+        $this->structure = new ComposerConfigStructure($this->data);
+        $this->bindStructure($this->structure);
+    }
+
+    #[Override]
+    public function save(bool $asPhpArray = false): void
+    {
+        // DO NOT SAVE composer.json
+    }
+
+    private function bindStructure_()
     {
         $this->name = $this->structure->name;
         $this->type = $this->structure->type;
@@ -100,19 +118,5 @@ class ComposerConfigEntity extends ManifestEntity
         $this->minimumStability = $this->structure->minimumStability;
         $this->require = $this->structure->require;
         $this->requireDev = $this->structure->requireDev;
-    }
-
-    #[\Override]
-    public function load(bool $asPhpArray = false): void
-    {
-        parent::load($asPhpArray);
-        $this->structure = new ComposerConfigStructure($this->data);
-        $this->bindStructure();
-    }
-
-    #[\Override]
-    public function save(bool $asPhpArray = false): void
-    {
-        // DO NOT SAVE composer.json
     }
 }

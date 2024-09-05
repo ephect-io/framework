@@ -15,6 +15,8 @@ class Element extends StaticElement implements ElementInterface
 
     public function __construct(?ElementInterface $parent = null, ?string $id = null)
     {
+        parent::__construct();
+
         $this->parent = $parent;
         $this->id = ($id === null) ? '_' . time() : $id;
     }

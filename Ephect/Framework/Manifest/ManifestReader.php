@@ -3,17 +3,18 @@
 namespace Ephect\Framework\Manifest;
 
 use Ephect\Framework\Utils\File;
+use JsonException;
 
 abstract class ManifestReader
 {
     abstract public function read(?string $manifestDirectory = null): ManifestEntityInterface;
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     protected function readManifest(
-        string $manifestDirectory,
-        ManifestReaderInputEnum $inputOption = ManifestReaderInputEnum::IS_OBJECT,
+        string                   $manifestDirectory,
+        ManifestReaderInputEnum  $inputOption = ManifestReaderInputEnum::IS_OBJECT,
         ManifestReaderOutputEnum $returnOption = ManifestReaderOutputEnum::AS_IS
     ): array|string|null
     {
@@ -21,18 +22,18 @@ abstract class ManifestReader
         $filename = $manifestDirectory . DIRECTORY_SEPARATOR . 'manifest' . ($asPhpArray ? ".php" : ".json");
 
         $result = null;
-        if($asPhpArray) {
+        if ($asPhpArray) {
             $result = require $filename;
 
-            if($returnOption == ManifestReaderOutputEnum::AS_STRING) {
+            if ($returnOption == ManifestReaderOutputEnum::AS_STRING) {
                 $result = json_encode($result, JSON_PRETTY_PRINT);
             }
         } else {
             $result = File::safeRead($filename);
-            if(!json_validate($result)) {
-                throw new \JsonException("Manifest '$filename' is not valid");
+            if (!json_validate($result)) {
+                throw new JsonException("Manifest '$filename' is not valid");
             }
-            if($returnOption == ManifestReaderOutputEnum::AS_STRING) {
+            if ($returnOption == ManifestReaderOutputEnum::AS_STRING) {
                 return $result;
             }
 

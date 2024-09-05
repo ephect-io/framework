@@ -18,11 +18,11 @@ class TemplateMaker
     {
         $keys = array_keys($params);
 
-        if(count($keys) == 0)  {
+        if (count($keys) == 0) {
             return;
         }
 
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $this->template = str_replace('{{' . $key . '}}', $params[$key], $this->template);
         }
     }

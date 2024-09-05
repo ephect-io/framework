@@ -5,6 +5,9 @@ namespace Ephect\Framework\Commands;
 use Ephect\Framework\Core\AbstractApplication;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Logger\Logger;
+use Ephect\Framework\Modules\ModuleInstaller;
+use Ephect\Framework\Registry\CommandRegistry;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\File;
 
@@ -35,15 +38,38 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
         }
 
 
+        [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
+        foreach ($modulePaths as $path) {
+            $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+            $moduleSrcPathFile = $moduleConfigDir . REL_CONFIG_APP;
+            $moduleSrcPath = file_exists($moduleSrcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile) : $path . DIRECTORY_SEPARATOR . REL_CONFIG_APP;
+            $moduleCommandsPath = $moduleSrcPath . DIRECTORY_SEPARATOR . 'Commands';
+
+            if (file_exists($moduleCommandsPath)) {
+                $moduleCommandFiles = File::walkTreeFiltered($moduleCommandsPath, ['php']);
+                $allFiles[] = (object)["root" => $moduleCommandsPath, "files" => $moduleCommandFiles];
+            }
+        }
+
+        CommandRegistry::load();
+
         foreach ($allFiles as $entry) {
             $root_dir = $entry->root;
             foreach ($entry->files as $filename) {
                 [$namespace, $class] = ElementUtils::getClassDefinitionFromFile($root_dir . $filename);
                 $fqClass = "$namespace\\$class";
 
+                $connandClass = CommandRegistry::read($fqClass);
+                if ($connandClass !== null) {
+                    Logger::create()->info("$connandClass has already been initialized.");
+                    continue;
+                }
+
                 if ($class !== 'Main') {
                     continue;
                 }
+
+                CommandRegistry::write($fqClass, $root_dir . $filename);
 
                 include $root_dir . $filename;
                 $object = new $fqClass($this->_application);

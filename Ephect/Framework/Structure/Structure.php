@@ -34,17 +34,7 @@ class Structure implements StructureInterface
     {
         $result = $this->recursiveEncode($this);
 
-        return json_encode($result,  $jsonOptions);
-    }
-
-    public function decode(string|array $input): void
-    {
-        $array = $input;
-        if (is_string($input)) {
-            $array = json_decode($input, true);
-        }
-
-        $this->recursiveDecode($this, $array);
+        return json_encode($result, $jsonOptions);
     }
 
     private function recursiveEncode(StructureInterface $structure)
@@ -60,7 +50,7 @@ class Structure implements StructureInterface
              * The structure doesn't have a value for this field.
              * So, we go to the next field.
              */
-            if(!isset($structure->{$propName})) {
+            if (!isset($structure->{$propName})) {
                 continue;
             }
 
@@ -92,6 +82,16 @@ class Structure implements StructureInterface
         return $result;
     }
 
+    public function decode(string|array $input): void
+    {
+        $array = $input;
+        if (is_string($input)) {
+            $array = json_decode($input, true);
+        }
+
+        $this->recursiveDecode($this, $array);
+    }
+
     private function recursiveDecode(StructureInterface $structure, array $values)
     {
         $ref = new ReflectionClass($structure);
@@ -119,7 +119,7 @@ class Structure implements StructureInterface
                 throw new Error("The property [$propName] is not defined.");
             }
 
-            if(isset($values[$propName])) {
+            if (isset($values[$propName])) {
                 if (!$propType->isBuiltin() && in_array(StructureInterface::class, class_implements($propType->getName()))) {
                     $propClass = $propType->getName();
                     $structureChild = new $propClass;

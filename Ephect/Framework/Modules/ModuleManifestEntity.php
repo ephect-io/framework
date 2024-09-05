@@ -2,11 +2,13 @@
 
 namespace Ephect\Framework\Modules;
 
-use Ephect\Framework\Element;
 use Ephect\Framework\Manifest\ManifestEntity;
+use Ephect\Framework\Structure\StructureTrait;
 
 class ModuleManifestEntity extends ManifestEntity implements ModuleManifestEntityInterface
 {
+    use StructureTrait;
+
     private string $tag = '';
     private string $name = '';
     private ?string $entrypoint = null;
@@ -18,12 +20,7 @@ class ModuleManifestEntity extends ManifestEntity implements ModuleManifestEntit
     {
         parent::__construct($structure);
 
-        $this->tag = $structure->tag;
-        $this->name = $structure->name;
-        $this->entrypoint = $structure->entrypoint;
-        $this->templates = $structure->templates;
-        $this->description = $structure->description;
-        $this->version = $structure->version;
+        $this->bindStructure($this->structure);
     }
 
     public function getTag(): string
