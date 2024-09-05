@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace Ephect\Modules\Routing;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Entity\Entity;
@@ -20,6 +20,8 @@ class RouteEntity extends Entity implements RouteInterface
 
     public function __construct(RouteStructure $struct)
     {
+        parent::__construct($struct);
+
         $this->method = $struct->method;
         $this->rule = $struct->rule;
         $this->normalized = $struct->normalized;
