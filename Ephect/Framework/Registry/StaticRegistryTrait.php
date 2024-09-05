@@ -27,7 +27,7 @@ trait StaticRegistryTrait
         static::getInstance()->_write($key, $item);
     }
 
-    public static function read($key, $item = null)
+    public static function read($key, $item = null): mixed
     {
         return static::getInstance()->_read($key, $item);
     }

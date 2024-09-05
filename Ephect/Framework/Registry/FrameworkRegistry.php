@@ -3,6 +3,7 @@
 namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Utils\File;
 
 class FrameworkRegistry extends AbstractStaticRegistry
@@ -149,7 +150,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function registerModulesClasses(): void
     {
-        [$filename, $paths] = PluginRegistry::readPluginPaths();
+        [$filename, $paths] = ModuleInstaller::readModulePaths();
         foreach ($paths as $path) {
             self::registerCustomClasses($path);
         }
