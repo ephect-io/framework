@@ -3,20 +3,17 @@
 namespace Ephect\Plugins\DBAL\Middlewares;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
-use Ephect\Framework\Components\ComponentParserMiddlewareInterface;
-use Ephect\Framework\Utils\File;
-use Ephect\Framework\Utils\Text;
+use Ephect\Framework\Middlewares\ComponentParserMiddlewareInterface;
+use Ephect\Framework\Registry\StateRegistry;
+use function Ephect\Hooks\useState;
 
 class ConnectionParserMiddleware implements ComponentParserMiddlewareInterface
 {
 
-    public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props): void
+    public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props, array $arguments): void
     {
-        $params = [$parent, $motherUID, $funcName, $props];
-        $json = json_encode($params);
-
-        $text = Text::jsonToPhpReturnedArray($json, true);
-
-        File::safeWrite(CACHE_DIR . "ConnectionParserMiddleware.txt", $text);
+        StateRegistry::load();
+        useState(["middlewares" => [ConnectionOpenerMiddleware::class => (object) $arguments],]);
+        StateRegistry::saveByMotherUid($motherUID, true);
     }
 }
