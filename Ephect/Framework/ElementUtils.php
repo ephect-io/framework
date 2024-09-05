@@ -3,6 +3,7 @@
 namespace Ephect\Framework;
 
 use Ephect\Framework\Utils\File;
+
 use function strlen;
 
 final class ElementUtils
@@ -30,10 +31,10 @@ final class ElementUtils
     {
 
         $re = '/namespace *?([\w\\\\]+);[\w\W\\\\]*function *?([$\w]+) *?\(([\w\W]*)\)\W*:? *?(\w+)?\W*(\{)/U';
-        
+
         preg_match($re, $contents, $matches, PREG_OFFSET_CAPTURE, 0);
 
-        if(!count($matches)) {
+        if (!count($matches)) {
             return ['', '', '', '', -1];
         }
         $namespace = $matches[1][0];
@@ -48,11 +49,12 @@ final class ElementUtils
     public static function grabKeywordName(string $keyword, string $classText, string $delimiter): array
     {
         $result = '';
+        $needle = $keyword . ' ';
 
         $end = -1;
-        $start = strpos($classText, $keyword);
+        $start = strpos($classText, $needle);
         if ($start > -1) {
-            $start += strlen($keyword) + 1;
+            $start += strlen($needle);
             $end = strpos($classText, $delimiter, $start);
             $result = trim(substr($classText, $start, $end - $start));
         }

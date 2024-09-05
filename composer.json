@@ -1,5 +1,5 @@
 {
-    "name": "ephect-io/framework",
+    "name": "ephect-io/fullmoon",
     "type": "library",
     "description": "Effective PHP",
     "homepage": "https://ephect.io",
@@ -11,6 +11,11 @@
         "homepage": "https://ephect.io",
         "role": "Creator"
     }],
+    "autoload": {
+        "psr-4": {
+            "Ephect\\": "Ephect"
+        }
+    },
     "require": {
         "php": "^8.2"
     }

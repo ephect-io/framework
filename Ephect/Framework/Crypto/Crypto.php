@@ -14,6 +14,11 @@ class Crypto
         return base64_encode($token);
     }
 
+    public static function createOID(): string
+    {
+        return str_replace('-', '', self::createUID());
+    }
+
     public static function createUID(): string
     {
         return sprintf(
@@ -27,10 +32,5 @@ class Crypto
             mt_rand(0, 65535),
             mt_rand(0, 65535)
         );
-    }
-
-    public static function createOID(): string
-    {
-        return str_replace('-', '', self::createUID());
     }
 }

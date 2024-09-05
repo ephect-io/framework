@@ -1,0 +1,14 @@
+<?php
+
+namespace QuickStart;
+
+function CrashTest($props): string
+{
+    $speed = $props->speed;
+
+    return (<<< HTML
+    <h2>
+        Running at {{ speed }} looks dangerous but it's only a crash test!
+    </h2>
+    HTML);
+}

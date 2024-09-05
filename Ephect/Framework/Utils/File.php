@@ -8,7 +8,7 @@ use RecursiveIteratorIterator;
 
 class File
 {
-    public static function walkTreeFiltered($path, $filter = [], $noDepth = false): array
+    public static function walkTreeFiltered($path, $filter = [], $maxDepth1 = false): array
     {
         $result = [];
 
@@ -16,7 +16,7 @@ class File
 
         $iterator = null;
 
-        if ($noDepth) {
+        if ($maxDepth1) {
             $iterator = dir($path);
 
             while ($file = $iterator->read()) {
@@ -26,13 +26,19 @@ class File
                     continue;
                 }
 
-                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                if (is_dir($file)) {
                     continue;
                 }
 
-                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
-                    $result[] = $file;
+                if (isset($fi['extension']) && $fi['extension'] === 'DS_Store') {
+                    continue;
+                }
 
+                if (
+                    (count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter))
+                    || count($filter) === 0
+                ) {
+                    $result[] = $file;
                 }
             }
         } else {
@@ -46,11 +52,18 @@ class File
                     continue;
                 }
 
-                if (!isset($fi['extension']) || $fi['extension'] === 'DS_Store') {
+                if (is_dir($file->getPathName())) {
                     continue;
                 }
 
-                if ((count($filter) > 0 && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                if (isset($fi['extension']) && $fi['extension'] === 'DS_Store') {
+                    continue;
+                }
+
+                if (
+                    (count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter))
+                    || count($filter) === 0
+                ) {
                     $result[] = substr($file->getPathName(), $l);
                 }
             }
@@ -109,13 +122,8 @@ class File
 
     public static function safeWrite(string $filename, string $contents): ?int
     {
-        $result = null;
-
         $dir = pathinfo($filename, PATHINFO_DIRNAME);
-
-        if (!file_exists($dir)) {
-            $result = mkdir($dir, 0775, true);
-        }
+        self::safeMkDir($dir);
         return (false === $len = file_put_contents($filename, $contents)) ? null : $len;
     }
 
@@ -125,6 +133,20 @@ class File
             return null;
         }
         return (false === $contents = file_get_contents($filename)) ? null : $contents;
+    }
+
+    public static function safeCopy(string $source, string $destination): bool
+    {
+        if (!file_exists($source)) {
+            return false;
+        }
+
+        $dir = pathinfo($destination, PATHINFO_DIRNAME);
+        self::safeMkDir($dir);
+
+        copy($source, $destination);
+
+        return true;
     }
 
     public static function safeReadLines(string $filename): ?array

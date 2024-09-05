@@ -21,7 +21,7 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         $this->entries[$key] = $value;
     }
 
-    public function _read($key, $value = null)
+    public function _read($key, $value = null): mixed
     {
         if (!isset($this->entries[$key])) {
             return null;
@@ -58,13 +58,13 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
         if ($asArray) {
             $result = Text::jsonToPhpReturnedArray($result);
-            $ephect_root = EPHECT_ROOT;
-            if(DIRECTORY_SEPARATOR === '\\') {
-                $ephect_root = str_replace('\\', '\\\\', EPHECT_ROOT);
+            $EPHECT_ROOT = \Constants::EPHECT_ROOT;
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $EPHECT_ROOT = str_replace('\\', '\\\\', \Constants::EPHECT_ROOT);
             }
 
-            $result = str_replace('"' . $ephect_root, 'EPHECT_ROOT . "', $result);
-            $result = str_replace('"' . SRC_ROOT, 'SRC_ROOT . "', $result);
+            $result = str_replace('"' . $EPHECT_ROOT, 'EPHECT_ROOT . "', $result);
+            $result = str_replace('"' . \Constants::SRC_ROOT, 'SRC_ROOT . "', $result);
         }
 
         $registryFilename = $this->_getCacheFileName($asArray);

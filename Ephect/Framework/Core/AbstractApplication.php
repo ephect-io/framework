@@ -6,19 +6,20 @@ use Ephect\Framework\Cache\Cache;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Element;
 use Ephect\Framework\Registry\StateRegistry;
+use Ephect\Plugins\Authentication\AuthenticationService;
 use Throwable;
 
 abstract class AbstractApplication extends Element
 {
     use IniLoaderTrait;
 
-    const DEBUG_MODE = 'DEBUG';
-    const TEST_MODE = 'TEST';
-    const PROD_MODE = 'PROD';
+    public const DEBUG_MODE = 'DEBUG';
+    public const TEST_MODE = 'TEST';
+    public const PROD_MODE = 'PROD';
 
-    private static string $_executionMode = self::PROD_MODE;
-    private static bool $_verboseMode = false;
-    private static bool $_useTransactions = true;
+    private static string $executionMode = self::PROD_MODE;
+    private static bool $verboseMode = false;
+    private static bool $useTransactions = true;
 
     protected array $commands = [];
     protected array $callbacks = [];
@@ -28,8 +29,8 @@ abstract class AbstractApplication extends Element
     protected string $appDirectory = '';
     protected bool $canStop = false;
     protected string $dataConfName = '';
-    private string $_usage = '';
-    private array $_appini = [];
+    private string $usage = '';
+    private array $appini = [];
 
     public function __construct()
     {
@@ -38,13 +39,13 @@ abstract class AbstractApplication extends Element
 
     public static function getExecutionMode(): string
     {
-        return self::$_executionMode;
+        return self::$executionMode;
     }
 
     public static function setExecutionMode($myExecutionMode): void
     {
         if (!$myExecutionMode) {
-            $myExecutionMode = (IS_WEB_APP) ? 'debug' : 'prod';
+            $myExecutionMode = (\Constants::IS_WEB_APP) ? 'debug' : 'prod';
         }
 
         $prod = ($myExecutionMode == 'prod');
@@ -52,49 +53,49 @@ abstract class AbstractApplication extends Element
         $debug = ($myExecutionMode == 'debug');
 
         if ($prod) {
-            self::$_executionMode = self::PROD_MODE;
+            self::$executionMode = self::PROD_MODE;
         }
         if ($test) {
-            self::$_executionMode = self::TEST_MODE;
+            self::$executionMode = self::TEST_MODE;
         }
         if ($debug) {
-            self::$_executionMode = self::DEBUG_MODE;
+            self::$executionMode = self::DEBUG_MODE;
         }
     }
 
     public static function getVerboseMode(): bool
     {
-        return self::$_verboseMode;
+        return self::$verboseMode;
     }
 
     public static function setVerboseMode($set = false): void
     {
-        self::$_verboseMode = $set;
+        self::$verboseMode = $set;
     }
 
     public static function getTransactionUse(): bool
     {
-        return self::$_useTransactions;
+        return self::$useTransactions;
     }
 
     public static function useTransactions($set = true): void
     {
-        self::$_useTransactions = $set;
+        self::$useTransactions = $set;
     }
 
     public static function isProd(): bool
     {
-        return self::$_executionMode == self::PROD_MODE;
+        return self::$executionMode == self::PROD_MODE;
     }
 
     public static function isTest(): bool
     {
-        return self::$_executionMode == self::TEST_MODE;
+        return self::$executionMode == self::TEST_MODE;
     }
 
     public static function isDebug(): bool
     {
-        return self::$_executionMode == self::DEBUG_MODE;
+        return self::$executionMode == self::DEBUG_MODE;
     }
 
     public static function authenticateByToken($token): string
@@ -103,15 +104,13 @@ abstract class AbstractApplication extends Element
         // On prend le token en cours
         if (is_string($token)) {
             // avec ce token on récupère l'utilisateur et un nouveau token
-            $token = TAuthentication::getUserCredentialsByToken($token);
+            $token = AuthenticationService::getPermissionByToken($token);
         }
 
         return $token;
     }
 
     abstract public function run(...$params): int;
-
-    abstract protected function execute(): int;
 
     abstract public function displayConstants(): array;
 
@@ -173,7 +172,7 @@ abstract class AbstractApplication extends Element
     public function loadInFile(): void
     {
         try {
-            $exist = $this->loadINI(CONFIG_DIR);
+            $exist = $this->loadINI(\Constants::CONFIG_DIR);
             if (!$exist) {
                 return;
             }
@@ -227,8 +226,9 @@ abstract class AbstractApplication extends Element
         return PHP_OS;
     }
 
+    abstract protected function execute(): int;
+
 //    protected function execute(): int {
 //        return 0;
 //    }
-
 }

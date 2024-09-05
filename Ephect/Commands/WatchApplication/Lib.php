@@ -2,8 +2,8 @@
 
 namespace Ephect\Commands\WatchApplication;
 
+use Ephect\Framework\CLI\FileSystem\Watcher;
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Framework\Components\FileSystem\Watcher;
 
 class Lib extends AbstractCommandLib
 {
@@ -11,7 +11,7 @@ class Lib extends AbstractCommandLib
     {
         $watcher = new Watcher;
 
-        $watcher->watch(SRC_ROOT, ['phtml', 'php']);
+        $watcher->watch(\Constants::SRC_ROOT, ['phtml', 'php']);
     }
 }
 

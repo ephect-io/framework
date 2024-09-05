@@ -5,8 +5,11 @@ namespace Ephect\Framework\Commands;
 use Ephect\Framework\Core\AbstractApplication;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\Utils\File;
+use Ephect\Framework\Logger\Logger;
+use Ephect\Framework\Modules\ModuleInstaller;
+use Ephect\Framework\Registry\CommandRegistry;
 use Ephect\Framework\Registry\StateRegistry;
+use Ephect\Framework\Utils\File;
 
 class ApplicationCommands extends Element implements CommandCollectionInterface
 {
@@ -22,18 +25,38 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
     private function collectCommands(): void
     {
         $usage = [];
-        $commandFiles = File::walkTreeFiltered(COMMANDS_ROOT, ['php']);
-
+        $commandFiles = File::walkTreeFiltered(\Constants::COMMANDS_ROOT, ['php']);
         $allFiles = [
-            (object)["root" => COMMANDS_ROOT, "files" => $commandFiles],
+            (object)["root" => \Constants::COMMANDS_ROOT, "files" => $commandFiles],
         ];
 
-
-        if (file_exists(CUSTOM_COMMANDS_ROOT)) {
-            $customCommandFiles = File::walkTreeFiltered(CUSTOM_COMMANDS_ROOT, ['php']);
-            $allFiles[] = (object)["root" => CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles];
+        if (file_exists(\Constants::CUSTOM_COMMANDS_ROOT)) {
+            $customCommandFiles = File::walkTreeFiltered(\Constants::CUSTOM_COMMANDS_ROOT, ['php']);
+            $allFiles[] = (object)["root" => \Constants::CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles];
         }
 
+        if (file_exists(\Constants::PLUGINS_ROOT)) {
+            $moduleCommandFiles = File::walkTreeFiltered(\Constants::PLUGINS_ROOT, ['php']);
+            $allFiles[] = (object)["root" => \Constants::PLUGINS_ROOT, "files" => $moduleCommandFiles];
+        }
+
+        [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
+        foreach ($modulePaths as $path) {
+            $moduleSrcPathFile = $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR . \Constants::REL_CONFIG_APP;
+            $moduleSrcPath = file_exists($moduleSrcPathFile)
+                ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile)
+                : $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_APP;
+            $moduleSrcPath = is_dir($moduleSrcPath) ? $moduleSrcPath : $path;
+
+            $moduleCommandsPath = $moduleSrcPath . DIRECTORY_SEPARATOR . 'Commands';
+
+            if (file_exists($moduleCommandsPath)) {
+                $moduleCommandFiles = File::walkTreeFiltered($moduleCommandsPath, ['php']);
+                $allFiles[] = (object)["root" => $moduleCommandsPath, "files" => $moduleCommandFiles];
+            }
+        }
+
+        CommandRegistry::load();
 
         foreach ($allFiles as $entry) {
             $root_dir = $entry->root;
@@ -41,9 +64,17 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 [$namespace, $class] = ElementUtils::getClassDefinitionFromFile($root_dir . $filename);
                 $fqClass = "$namespace\\$class";
 
+                $connandClass = CommandRegistry::read($fqClass);
+                if ($connandClass !== null) {
+                    Logger::create()->info("$connandClass has already been initialized.");
+                    continue;
+                }
+
                 if ($class !== 'Main') {
                     continue;
                 }
+
+                CommandRegistry::write($fqClass, $root_dir . $filename);
 
                 include $root_dir . $filename;
                 $object = new $fqClass($this->_application);

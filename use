@@ -1,0 +1,6 @@
+#!/usr/bin/env php
+<?php
+
+include 'bootstrap.php';
+Ephect\Framework\CLI\Application::create($argv, $argc);
+ 

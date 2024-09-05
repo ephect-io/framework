@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\Error;
+namespace Ephect\Commands\ShowError;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;

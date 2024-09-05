@@ -3,8 +3,8 @@
 namespace Ephect\Framework\Cache;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\StaticElement;
+use Ephect\Framework\Utils\File;
 use Throwable;
 
 class Cache extends StaticElement
@@ -12,20 +12,24 @@ class Cache extends StaticElement
 
     public static function getCacheFilename(string $basename): string
     {
-        return CACHE_DIR . str_replace('/', '_', $basename);
+        return \Constants::CACHE_DIR . str_replace('/', '_', $basename);
     }
 
     public static function cacheFilenameFromView(string $compName): string
     {
 
-        // $uri = bin2hex(REQUEST_URI);
+        // $uri = bin2hex(\Constants::REQUEST_URI);
         $uri = '';
-        return REL_RUNTIME_DIR . strtolower($compName) . $uri . CLASS_EXTENSION;
+        return \Constants::REL_RUNTIME_DIR . strtolower($compName) . $uri . \Constants::CLASS_EXTENSION;
     }
 
     public static function absoluteURL(string $relativeURL = ''): string
     {
-        return ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . REWRITE_BASE . $relativeURL;
+        return (
+            \Constants::HTTP_HOST !== \Constants::SERVER_NAME
+                ? \Constants::SERVER_HOST
+                : \Constants::SERVER_ROOT
+            ) . \Constants::REWRITE_BASE . $relativeURL;
     }
 
     public static function cachePath(string $filepath): string
@@ -35,7 +39,7 @@ class Cache extends StaticElement
 
     public static function cacheFile($filename, $content): void
     {
-        $filename = CACHE_DIR . $filename;
+        $filename = \Constants::CACHE_DIR . $filename;
         file_put_contents($filename, $content);
     }
 
@@ -57,8 +61,8 @@ class Cache extends StaticElement
     public static function clearCache(): bool
     {
         $result = false;
-        if (file_exists(CACHE_DIR)) {
-            $result &= File::delTree(CACHE_DIR);
+        if (file_exists(\Constants::CACHE_DIR)) {
+            $result &= File::delTree(\Constants::CACHE_DIR);
         }
 
         return $result;
@@ -67,8 +71,8 @@ class Cache extends StaticElement
     public static function clearRuntimeDirs(): bool
     {
         $result = false;
-        if (file_exists(RUNTIME_DIR)) {
-            $result &= File::delTree(RUNTIME_DIR);
+        if (file_exists(\Constants::RUNTIME_DIR)) {
+            $result &= File::delTree(\Constants::RUNTIME_DIR);
         }
         return $result;
     }
@@ -76,8 +80,8 @@ class Cache extends StaticElement
     public static function clearRuntimeJsDirs(): bool
     {
         $result = false;
-        if (file_exists(RUNTIME_JS_DIR)) {
-            $result &= File::delTree(RUNTIME_JS_DIR);
+        if (file_exists(\Constants::RUNTIME_JS_DIR)) {
+            $result &= File::delTree(\Constants::RUNTIME_JS_DIR);
         }
         return $result;
     }

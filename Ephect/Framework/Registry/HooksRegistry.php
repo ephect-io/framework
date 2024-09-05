@@ -8,48 +8,45 @@ class HooksRegistry
 {
     private static $instance = null;
 
-    private function __construct()
+    private function ___construct()
     {
     }
 
-    public static function create(): HooksRegistry
+    public static function register(string $path = \Constants::EPHECT_ROOT): void
     {
-        if (self::$instance === null) {
-            self::$instance = new HooksRegistry;
-        }
-
-        return self::$instance;
+        self::create()->__register($path);
     }
 
-    public static function register(): void
+    protected function __register(string $path = \Constants::EPHECT_ROOT): void
     {
-        self::create()->_register();
-    }
-
-    protected function _register(): void
-    {
-        if (!IS_PHAR_APP) {
-
+        if (!\Constants::IS_PHAR_APP) {
+            if (!file_exists($path . \Constants::HOOKS_DIR)) {
+                return;
+            }
             $hooks = [];
-            $dir_handle = opendir(EPHECT_ROOT . HOOKS_PATH);
+            $dir_handle = opendir($path . \Constants::HOOKS_DIR);
 
             while (false !== $filename = readdir($dir_handle)) {
                 if ($filename == '.' || $filename == '..') {
                     continue;
                 }
 
-                array_push($hooks, str_replace(DIRECTORY_SEPARATOR, '_' , HOOKS_PATH . $filename));
+                $hooks[] = str_replace(
+                    DIRECTORY_SEPARATOR,
+                    '_',
+                    \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename
+                );
 
-                include EPHECT_ROOT . HOOKS_PATH . $filename;
+                include $path . \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename;
             }
 
             $hooksRegistry = ['Hooks' => $hooks];
 
-            File::safeWrite(RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
+            File::safeWrite(\Constants::RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
         }
 
-        if (IS_PHAR_APP) {
-            $hooksRegistry = File::safeRead(RUNTIME_DIR . 'HooksRegistry.json');
+        if (\Constants::IS_PHAR_APP) {
+            $hooksRegistry = File::safeRead(\Constants::RUNTIME_DIR . 'HooksRegistry.json');
 
             $hooks = json_decode($hooksRegistry);
             $hooks = $hooks->hooks;
@@ -60,4 +57,12 @@ class HooksRegistry
         }
     }
 
+    public static function create(): HooksRegistry
+    {
+        if (self::$instance === null) {
+            self::$instance = new HooksRegistry();
+        }
+
+        return self::$instance;
+    }
 }

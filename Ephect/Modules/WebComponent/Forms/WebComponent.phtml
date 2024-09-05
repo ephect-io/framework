@@ -1,0 +1,32 @@
+<?php
+
+namespace Ephect\Modules\WebComponent\Forms;
+
+use Ephect\Modules\WebComponent\Services\WebComponentService;
+use function Ephect\Hooks\useEffect;
+
+function WebComponent($children): string
+{
+
+    useEffect(function ($children, /* string */ $tag, /* string */ $args, /* string */ $body, $service) {
+
+        $service = new WebComponentService($children);
+        $manifest = $service->readManifest();
+        $tag = $manifest->getTag();
+
+        $body = $service->getBody($tag);
+    });
+
+    return (<<< HTML
+        <% 
+            if (%tag != '') {
+            { body }
+            }
+            if(!%service->isPending()) {
+                %html = { children };
+                %service->splitHTML(%html);
+                %service->markAsPending();
+            }
+        %>
+    HTML);
+}

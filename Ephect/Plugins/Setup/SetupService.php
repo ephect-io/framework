@@ -3,8 +3,8 @@
 namespace Ephect\Plugins\Setup;
 
 use Ephect\Framework\Core\PhpInfo;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\Logger\Logger;
+use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\Curl;
 use Exception;
 use PharData;
@@ -17,12 +17,12 @@ class SetupService
     {
         $rewriteBase = dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR;
         $rewriteBase = str_replace("//", "/", $rewriteBase);
-        // define('REWRITE_BASE', $rewriteBase);
+        // define('\Constants::REWRITE_BASE', $rewriteBase);
     }
 
     public function getRewriteBase(): string
     {
-        return REWRITE_BASE;
+        return \Constants::REWRITE_BASE;
     }
 
     public function installPhinkJS(): bool
@@ -30,12 +30,11 @@ class SetupService
         $ok = false;
 
         try {
-
             $filename = 'phinkjs.tar.gz';
             $tarfilename = 'phinkjs.tar';
             $phinkjs_dirname = 'phinkjs' . DIRECTORY_SEPARATOR;
 
-            $filepath = SITE_ROOT . FRAMEWORK;
+            $filepath = \Constants::FRAMEWORK_ROOT;
 
             if (file_exists($filepath . $phinkjs_dirname)) {
                 chdir($filepath . $phinkjs_dirname);
@@ -47,7 +46,7 @@ class SetupService
                 }
 
                 chdir('..');
-                FileUtils::delTree($filepath . $phinkjs_dirname);
+                File::delTree($filepath . $phinkjs_dirname);
             }
 
             if (!file_exists($filepath . $phinkjs_dirname)) {
@@ -60,7 +59,7 @@ class SetupService
 
             $curl = new Curl();
             $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.tar.gz');
-            $ok = false !== file_put_contents($filename, $result->content);
+            $ok = false !== file_put_contents($filename, $result['content']);
 
             $p = new PharData($filename);
             $p->decompress();
@@ -79,7 +78,6 @@ class SetupService
 
             $ok = $ok && rename('PhinkJS-master', 'phinkjs');
             chmod('phinkjs', 0775);
-
         } catch (Exception $ex) {
             $ok = false;
             $log = Logger::create();
@@ -100,8 +98,7 @@ class SetupService
         $ok = false;
 
         if ($ok = file_exists('bootstrap.php')) {
-
-            $ok = false !== file_put_contents(CONFIG_DIR . 'rewrite_base', REWRITE_BASE);
+            $ok = false !== file_put_contents(\Constants::CONFIG_DIR . 'rewrite_base', \Constants::REWRITE_BASE);
 
             if (file_exists('.htaccess') && ($htaccess = file_get_contents('.htaccess'))) {
                 $htaccess = str_replace(PHP_EOL, ';', $htaccess);
@@ -114,7 +111,11 @@ class SetupService
                     $pe = strpos($htaccess, ';', $ps);
                     $rewriteBaseEntry = substr($htaccess, $ps, $pe - $ps);
 
-                    $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . REWRITE_BASE, $htaccess);
+                    $htaccess = str_replace(
+                        $rewriteBaseEntry,
+                        $rewriteBaseKey . ' ' . \Constants::REWRITE_BASE,
+                        $htaccess
+                    );
                     $htaccess = str_replace(';', PHP_EOL, $htaccess);
 
                     $ok = $ok && false !== file_put_contents('.htaccess', $htaccess);
@@ -122,7 +123,7 @@ class SetupService
             }
         }
 
-        $result = ($ok) ? REWRITE_BASE : null;
+        $result = ($ok) ? \Constants::REWRITE_BASE : null;
 
         return $result;
     }
@@ -131,19 +132,19 @@ class SetupService
     {
         $ok = false;
 
-        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+        $vendor_dir = \Constants::FRAMEWORK_ROOT;
         $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
         $lib = 'ephect' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
         $framework_dir = 'framework';
-        if (file_exists(SITE_ROOT . $vendor_dir . $lib)) {
+        if (file_exists(\Constants::SITE_ROOT . $vendor_dir . $lib)) {
             $framework_dir = $vendor_dir;
         }
 
-        if (file_exists(SITE_ROOT . $portable_dir . $lib)) {
+        if (file_exists(\Constants::SITE_ROOT . $portable_dir . $lib)) {
             $framework_dir = $portable_dir;
         }
-        $ok = false !== file_put_contents(CONFIG_DIR . 'framework', $framework_dir);
+        $ok = false !== file_put_contents(\Constants::CONFIG_DIR . 'framework', $framework_dir);
 
         return $ok;
     }
@@ -162,16 +163,16 @@ if(\$is127 || \$isIndex) {
     header('Location: //' . \$hostname . \$port . \$requestUri);
     exit(302);
 }
-// define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
-// define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+// define('DONT_USE_CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
+// define('FRAMEWORK', trim(file_get_contents(DONT_USE_CONFIG_DIR . 'framework')));
 include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 BOOTSTRAP1;
 
         $bootstrap2 = <<<BOOTSTRAP2
 <?php
-// define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
-// define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+// define('DONT_USE_CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
+// define('FRAMEWORK', trim(file_get_contents(DONT_USE_CONFIG_DIR . 'framework')));
 include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 BOOTSTRAP2;
@@ -195,7 +196,7 @@ BOOTSTRAP2;
 <?php
 include 'bootstrap.php';
 
-Ephect\Framework\Web\Application::create();
+Ephect\Framework\Modules\WebApp\Web\Application::create();
 
 INDEX;
 
