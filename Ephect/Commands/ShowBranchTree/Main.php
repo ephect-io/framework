@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Commands\ShowBranchTree;
+namespace Ephect\Commands\BranchTree;
 
-use Ephect\Commands\CommonLib;
+use Ephect\Framework\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 

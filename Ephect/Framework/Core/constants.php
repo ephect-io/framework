@@ -5,8 +5,6 @@ $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_R
 define('IS_WEB_APP', $document_root !== '');
 define('IS_PHAR_APP', (\Phar::running() !== ''));
 define('IS_CLI_APP', (\Phar::running() === '') && !IS_WEB_APP);
-define('REL_CONFIG_DIR', 'config' . DIRECTORY_SEPARATOR);
-define('REL_CONFIG_APP', 'app');
 
 if (IS_WEB_APP) {
 
@@ -15,13 +13,13 @@ if (IS_WEB_APP) {
     $site_root = dirname(DOCUMENT_ROOT) . DIRECTORY_SEPARATOR;
 
     define('SITE_ROOT', $site_root);
-    define('CONFIG_DIR', SITE_ROOT . REL_CONFIG_DIR);
-    define('CONFIG_FRAMEWORK', file_exists(CONFIG_DIR . 'framework') ? trim(file_get_contents(CONFIG_DIR . 'framework')) : 'vendor/ephect-io/framework/Ephect');
-    define('CONFIG_APP', file_exists(CONFIG_DIR . REL_CONFIG_APP) ? trim(file_get_contents(CONFIG_DIR . REL_CONFIG_APP)) : REL_CONFIG_APP);
-    define('SRC_ROOT', SITE_ROOT . CONFIG_APP . DIRECTORY_SEPARATOR);
+    define('SRC_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
 
+    define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
+
+    define('EPHECT_CONFIG', trim(file_get_contents(CONFIG_DIR . 'framework')));
     define('AJIL_CONFIG', trim(file_get_contents(CONFIG_DIR . 'javascripts')));
-    define('EPHECT_ROOT', SITE_ROOT . CONFIG_FRAMEWORK . DIRECTORY_SEPARATOR);
+    define('EPHECT_ROOT', SITE_ROOT . EPHECT_CONFIG . DIRECTORY_SEPARATOR);
     define('AJIL_ROOT', SITE_ROOT . AJIL_CONFIG . DIRECTORY_SEPARATOR);
 
     $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
@@ -92,15 +90,17 @@ if (!IS_WEB_APP) {
     $script_dir = pathinfo($app_path, PATHINFO_DIRNAME);
     $appName = pathinfo($script_name)['filename'];
     $script_root = $script_dir . DIRECTORY_SEPARATOR;
+    $src_root = $script_root . 'app' . DIRECTORY_SEPARATOR;
 
     define('APP_CWD',  str_replace($script_name, '', $app_path));
-    define('SITE_ROOT', $script_root);
+
+    define('SRC_ROOT', $src_root);
+    define('SCRIPT_ROOT', $script_root);
+    define('SITE_ROOT', dirname(SRC_ROOT) . DIRECTORY_SEPARATOR);
 
     define('CONFIG_DIR', SITE_ROOT . 'config' . DIRECTORY_SEPARATOR);
-    define('CONFIG_FRAMEWORK', file_exists(CONFIG_DIR . 'framework') ? trim(file_get_contents(CONFIG_DIR . 'framework')) : 'vendor/ephect-io/framework/Ephect');
-    define('EPHECT_ROOT', SITE_ROOT . CONFIG_FRAMEWORK . DIRECTORY_SEPARATOR);
-    define('CONFIG_APP', file_exists(CONFIG_DIR . 'app') ? trim(file_get_contents(CONFIG_DIR . 'app')) : 'app');
-    define('SRC_ROOT', $script_root . CONFIG_APP . DIRECTORY_SEPARATOR);
+    define('EPHECT', trim(file_get_contents(CONFIG_DIR . 'framework')));
+    define('EPHECT_ROOT', SITE_ROOT . EPHECT . DIRECTORY_SEPARATOR);
 
     $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR;
     $portable_dir = 'Epehct' . DIRECTORY_SEPARATOR;
@@ -146,8 +146,8 @@ define('CONFIG_HOSTNAME', file_exists(CONFIG_DIR . 'hostname') ? trim(file_get_c
 define('CONFIG_NAMESPACE', file_exists(CONFIG_DIR . 'namespace') ? trim(file_get_contents(CONFIG_DIR . 'namespace')) : APP_NAME);
 define('CONFIG_COMMANDS', file_exists(CONFIG_DIR . 'commands') ? trim(file_get_contents(CONFIG_DIR . 'commands')) : 'Commands');
 define('CONFIG_PAGES', file_exists(CONFIG_DIR . 'pages') ? trim(file_get_contents(CONFIG_DIR . 'pages')) : 'Pages');
-define('CONFIG_LIBRARY', file_exists(CONFIG_DIR . 'library') ? trim(file_get_contents(CONFIG_DIR . 'library')) : 'Library');
 define('CONFIG_COMPONENTS', file_exists(CONFIG_DIR . 'components') ? trim(file_get_contents(CONFIG_DIR . 'components')) : 'Components');
+define('CONFIG_WEBCOMPONENTS', file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : 'WebComponents');
 
 if (!IS_WEB_APP) {
     define('DOCUMENT_ROOT', SITE_ROOT . CONFIG_DOCROOT . DIRECTORY_SEPARATOR);
@@ -163,11 +163,11 @@ define('EPHECT_VENDOR_PLUGINS', EPHECT_VENDOR_SRC . 'Plugins' . DIRECTORY_SEPARA
 define('EPHECT_WIDGETS_ROOT', SITE_ROOT . EPHECT_VENDOR_WIDGETS);
 define('EPHECT_PLUGINS_ROOT', SITE_ROOT . EPHECT_VENDOR_PLUGINS);
 
-define('APP_DIR', CONFIG_APP . DIRECTORY_SEPARATOR);
-define('APP_ROOT', SRC_ROOT);
+define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
+define('APP_ROOT', SRC_ROOT . APP_DIR);
 define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
 define('APP_CLIENT', APP_ROOT . 'client' . DIRECTORY_SEPARATOR);
-define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
+define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
 define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
 define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
 define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
@@ -199,6 +199,7 @@ define('COMMANDS_ROOT', EPHECT_ROOT . 'Commands' . DIRECTORY_SEPARATOR);
 define('CUSTOM_COMMANDS_ROOT', SRC_ROOT . CONFIG_COMMANDS . DIRECTORY_SEPARATOR);
 define('CUSTOM_PAGES_ROOT', SRC_ROOT . CONFIG_PAGES . DIRECTORY_SEPARATOR);
 define('CUSTOM_COMPONENTS_ROOT', SRC_ROOT . CONFIG_COMPONENTS . DIRECTORY_SEPARATOR);
+define('CUSTOM_WEBCOMPONENTS_ROOT', SRC_ROOT . CONFIG_WEBCOMPONENTS . DIRECTORY_SEPARATOR);
 
 define('CLASS_EXTENSION', '.class.php');
 define('HTML_EXTENSION', '.html');
@@ -209,33 +210,3 @@ define('CLASS_JS_EXTENSION', '.class.js');
 define('MJS_EXTENSION', '.mjs');
 define('TPL_EXTENSION', '.tpl');
 define('TXT_EXTENSION', '.txt');
-
-function siteRoot(): string
-{
-    $siteRoot = SITE_ROOT;
-    $vendorPos = strpos( SITE_ROOT, 'vendor');
-
-    if($vendorPos > -1) {
-        $siteRoot = substr(SITE_ROOT, 0, $vendorPos) ;
-    }
-
-    return $siteRoot;
-}
-
-
-function siteConfigPath(): string
-{
-    return siteRoot() . REL_CONFIG_DIR;
-}
-
-function siteRuntimePath(): string
-{
-    return siteRoot() . REL_RUNTIME_DIR;
-}
-
-function siteSrcPath(): string
-{
-    $configDir = siteConfigPath();
-    $srcDir =  file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
-    return siteRoot() . $srcDir . DIRECTORY_SEPARATOR;
-}

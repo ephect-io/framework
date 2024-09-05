@@ -6,7 +6,7 @@ interface RegistryInterface
 {
     function _write(string $key, $value): void;
 
-    function _read($key, $value = null): mixed;
+    function _read($key, $value = null);
 
     function _items(): array;
 

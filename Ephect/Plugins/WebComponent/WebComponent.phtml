@@ -1,0 +1,38 @@
+<?php
+
+namespace Ephect\Plugins\WebComponent;
+
+use function Ephect\Hooks\useEffect;
+
+function WebComponent($children): string
+{
+
+    useEffect(function ($children, /* string */ $tag, /* string */ $args, /* string */ $body, $service) {
+
+        $service = new WebComponentService($children);
+        $manifest = $service->readManifest();
+        $tag = $manifest->getTag();
+
+        $body = $service->getBody($tag);
+//        if ($body === null) {
+//            $args = $children->getAttributes();
+//            $body = <<< BODY
+//            <$tag $args>
+//            </$tag>
+//            BODY;
+//        }
+    });
+
+    return (<<< HTML
+        @if %tag != '' do
+        {{ body }}
+        @done
+        <% 
+            if(!%service->isPending()) {
+                %html = { children };
+                %service->splitHTML(%html);
+                %service->markAsPending();
+            }
+        %>
+    HTML);
+}

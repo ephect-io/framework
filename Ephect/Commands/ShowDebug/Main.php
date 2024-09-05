@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\ShowDebug;
+namespace Ephect\Commands\Debug;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;

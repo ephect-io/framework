@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\ShowArguments;
+namespace Ephect\Commands\Arguments;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;

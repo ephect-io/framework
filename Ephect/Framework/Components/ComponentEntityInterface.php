@@ -2,11 +2,11 @@
 
 namespace Ephect\Framework\Components;
 
+use Ephect\Framework\Core\StructureInterface;
 use Ephect\Framework\ElementInterface;
-use Ephect\Framework\Structure\StructureInterface;
 use Ephect\Framework\Tree\TreeInterface;
 
-interface ComponentEntityInterface extends TreeInterface, ElementInterface
+interface ComponentEntityInterface extends TreeInterface, ElementInterface, StructureInterface
 {
     public function getParentId(): int;
 
@@ -35,6 +35,4 @@ interface ComponentEntityInterface extends TreeInterface, ElementInterface
     public function getCloser(): array;
 
     public function getMethod(): string;
-
-    public function toArray(): array;
 }

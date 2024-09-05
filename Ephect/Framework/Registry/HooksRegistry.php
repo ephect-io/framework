@@ -21,29 +21,26 @@ class HooksRegistry
         return self::$instance;
     }
 
-    public static function register(string $path = EPHECT_ROOT): void
+    public static function register(): void
     {
-        self::create()->_register($path);
+        self::create()->_register();
     }
 
-    protected function _register(string $path = EPHECT_ROOT): void
+    protected function _register(): void
     {
         if (!IS_PHAR_APP) {
 
-            if (!file_exists($path . HOOKS_DIR)) {
-                return;
-            }
             $hooks = [];
-            $dir_handle = opendir($path . HOOKS_DIR);
+            $dir_handle = opendir(EPHECT_ROOT . HOOKS_PATH);
 
             while (false !== $filename = readdir($dir_handle)) {
                 if ($filename == '.' || $filename == '..') {
                     continue;
                 }
 
-                array_push($hooks, str_replace(DIRECTORY_SEPARATOR, '_' , HOOKS_DIR . $filename));
+                array_push($hooks, str_replace(DIRECTORY_SEPARATOR, '_' , HOOKS_PATH . $filename));
 
-                include $path . HOOKS_DIR . $filename;
+                include EPHECT_ROOT . HOOKS_PATH . $filename;
             }
 
             $hooksRegistry = ['Hooks' => $hooks];

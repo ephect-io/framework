@@ -7,9 +7,9 @@ use Ephect\Framework\Web\Request;
 
 interface ComponentInterface extends ElementInterface
 {
-    public function getCode(): ?string;
+    public function getParentHTML(): ?string;
 
-    public function applyCode(string $code): void;
+    public function getCode(): ?string;
 
     public function getFullyQualifiedFunction(): ?string;
 
@@ -25,7 +25,9 @@ interface ComponentInterface extends ElementInterface
 
     public function composedOf(): ?array;
 
-    public function renderComponent(string $motherUID, string $functionName, ?array $functionArgs = null): array;
+    public function renderHTML(string $cacheFilename, string $fqFunctionName, array|object|null $functionArgs = null, ?Request $request = null): string;
+
+    public function renderComponent(string $motherUID, string $functionName, array|object|null $functionArgs = null): array;
 
     public function render(): void;
 }

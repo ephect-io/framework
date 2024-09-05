@@ -4,7 +4,9 @@ namespace Ephect\Framework\Components\Generators\TokenParsers;
 
 use Ephect\Framework\Components\ComponentEntityInterface;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Registry\WebComponentRegistry;
 use Ephect\Framework\Utils\File;
+use Ephect\Framework\WebComponents\ManifestReader;
 
 final class OpenComponentsParser extends AbstractComponentParser
 {
@@ -102,7 +104,7 @@ final class OpenComponentsParser extends AbstractComponentParser
             $outerComponentBody = substr($subject, $startsAt, $length);
             $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
-            $filename = $this->component->getSourceFilename();
+            $filename = $this->component->getFlattenSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->result[] = $componentName;

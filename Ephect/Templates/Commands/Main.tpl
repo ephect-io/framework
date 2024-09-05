@@ -1,6 +1,6 @@
 <?php
 
-namespace {{ApplicationNamespace}}\Commands\{{CommandNamespace}};
+namespace Ephect\Commands\{{CommandNamespace}};
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
@@ -9,12 +9,10 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "{{Description}}")]
 class Main extends AbstractCommand
 {
-    public function run(): int
+    public function run(): void
     {
         {{GetArgs}}
         $lib = new Lib($this->application);
         $lib->{{MethodName}}({{SetArgs}});
-
-        return 0;
     }
 }

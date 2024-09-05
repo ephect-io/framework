@@ -3,20 +3,18 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\Entity\Entity;
-use Ephect\Framework\Tree\TreeTrait;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
+use Ephect\Framework\Tree\Tree;
 
 /**
  * Description of match
  *
  * @author david
  */
-class ComponentEntity extends Entity implements ComponentEntityInterface
+class ComponentEntity extends Tree implements ComponentEntityInterface
 {
     use ElementTrait;
-    use TreeTrait;
 
     protected int $parentId = 0;
     protected string $name = '';
@@ -37,7 +35,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
 
     public function __construct(protected ?ComponentStructure $attributes)
     {
-        parent::__construct($this->attributes);
+        parent::__construct([]);
 
         if ($attributes === null) {
             return null;
@@ -146,34 +144,38 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
 
     private static function _makeFragment(): ComponentEntityInterface
     {
-        $fragment = [
-            "closer" =>  [
-                "id" =>  1,
-                "parentId" =>  0,
-                "text" =>  "<\/>",
-                "startsAt" =>  0,
-                "endsAt" =>  0,
-                "contents" =>  [
-                    "startsAt" =>  0,
-                    "endsAt" =>  0
-                ]
-            ],
-            "uid" =>  "00000000-0000-0000-0000-000000000000",
-            "id" =>  0,
-            "name" =>  "FakeFragment",
-            "class" =>  null,
-            "component" =>  "Ephect",
-            "text" =>  "<>",
-            "method" =>  "echo",
-            "startsAt" =>  0,
-            "endsAt" =>  0,
-            "props" =>  [],
-            "node" =>  [],
-            "hasCloser" =>  true,
-            "isSibling" =>  false,
-            "parentId" =>  -1,
-            "depth" =>  0
-        ];
+        $json = <<<JSON
+            {
+                "closer": {
+                    "id": 1,
+                    "parentId": 0,
+                    "text": "<\/>",
+                    "startsAt": 0,
+                    "endsAt": 0,
+                    "contents": {
+                        "startsAt": 0,
+                        "endsAt": 0
+                    }
+                },
+                "uid": "00000000-0000-0000-0000-000000000000",
+                "id": 0,
+                "name": "FakeFragment",
+                "class": null,
+                "component": "Ephect",
+                "text": "<>",
+                "method": "echo",
+                "startsAt": 0,
+                "endsAt": 0,
+                "props": [],
+                "node": [],
+                "hasCloser": true,
+                "isSibling": false,
+                "parentId": -1,
+                "depth": 0
+            }
+        JSON;
+
+        $fragment = json_decode($json, JSON_OBJECT_AS_ARRAY);
 
         return new ComponentEntity(new ComponentStructure($fragment));
 
@@ -281,6 +283,10 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
 
     public function getContents(?string $html = null): ?string
     {
+        if ($this->name === 'WebComponent') {
+            return $this->getInnerHTML();
+        }
+
         $result = '';
 
         if (!$this->hasCloser) {
@@ -291,6 +297,11 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         $start = $contents['startsAt'];
         $end = $contents['endsAt'];
 
+        if ($end - $start < 1) {
+            return $result;
+        }
+
+        ComponentRegistry::load();
         $compFile = ComponentRegistry::read($this->compName);
         if ($compFile === null) {
             return $result;

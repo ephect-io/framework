@@ -6,6 +6,7 @@ use Ephect\Apps\Builder\Builder;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Components\Component;
 use Ephect\Framework\Core\AbstractApplication;
+use Ephect\Framework\Core\Builder;
 use Ephect\Framework\Registry\CacheRegistry;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Registry\HooksRegistry;
@@ -41,7 +42,7 @@ class Application extends AbstractApplication
 
         CacheRegistry::load();
         PluginRegistry::load();
-        HooksRegistry::register(APP_ROOT);
+        HooksRegistry::register(\Constants::APP_ROOT);
 
         $this->execute();
 

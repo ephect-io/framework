@@ -1,0 +1,14 @@
+<?php
+
+namespace QuickStart;
+
+function HeaderAndFooter($children): string
+{
+    return (<<< HTML
+        <>
+            <Header />
+            {{ children }}
+            <Footer />
+        </>
+    HTML);
+}

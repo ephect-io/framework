@@ -54,7 +54,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
 
             $this->result[] = $componentName;
 
-            $filename = $this->component->getSourceFilename();
+            $filename = $this->component->getFlattenSourceFilename();
             File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->declareMiddlewares($parent, $muid, $funcName, $props);

@@ -1,4 +1,4 @@
-![Ephect](assets/images/salamandra.png)
+**![Ephect](assets/images/salamandra.png)
 
 ## What is Ephect ?
 

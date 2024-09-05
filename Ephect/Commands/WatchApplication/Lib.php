@@ -2,8 +2,8 @@
 
 namespace Ephect\Commands\WatchApplication;
 
-use Ephect\Framework\CLI\FileSystem\Watcher;
 use Ephect\Framework\Commands\AbstractCommandLib;
+use Ephect\Framework\Components\FileSystem\Watcher;
 
 class Lib extends AbstractCommandLib
 {
