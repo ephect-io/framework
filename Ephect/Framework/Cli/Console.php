@@ -31,7 +31,7 @@ class Console extends Element
         }
 
 
-        $value = $string == null ? '' :  Text::format($string, $params);
+        $value = $string == null ? '' : Text::format($string, $params);
 
         echo $value . PHP_EOL;
     }
@@ -60,11 +60,11 @@ class Console extends Element
 
         $startTime = time();
         $answerYN = strtolower(trim($answerYN));
-        while($answerYN != 'y' && $answerYN != 'n' && $answerYN != '') {
+        while ($answerYN != 'y' && $answerYN != 'n' && $answerYN != '') {
             $answerYN = readline($prompt);
             $answerYN = strtolower(trim($answerYN));
             $elapsedTime = time() - $startTime;
-            if($elapsedTime > 29) {
+            if ($elapsedTime > 29) {
                 break;
             }
         }

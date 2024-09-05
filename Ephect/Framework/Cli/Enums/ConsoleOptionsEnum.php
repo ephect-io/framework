@@ -2,7 +2,8 @@
 
 namespace Ephect\Framework\CLI\Enums;
 
-enum ConsoleOptionsEnum {
+enum ConsoleOptionsEnum
+{
     case None;
     case ErrorMessageOnly;
 }

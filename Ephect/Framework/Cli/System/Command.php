@@ -9,11 +9,11 @@ class Command
 {
     public function execute(string $cmd, ...$args): int
     {
-        $fqcmd = $cmd . ' '. implode(' ', $args);
+        $fqcmd = $cmd . ' ' . implode(' ', $args);
         $return = system($fqcmd, $returnCode);
 
-        if(false === $return) {
-            throw new Exception('Something went wrong while trying to execute: ' . $fqcmd  . '.');
+        if (false === $return) {
+            throw new Exception('Something went wrong while trying to execute: ' . $fqcmd . '.');
         }
         Console::writeLine($return);
         return $returnCode;
@@ -30,7 +30,7 @@ class Command
         }
 
         $cmd = "which $bin";
-        if(PHP_OS == 'WINNT') {
+        if (PHP_OS == 'WINNT') {
             $cmd = "cmd /c where $bin";
         }
 

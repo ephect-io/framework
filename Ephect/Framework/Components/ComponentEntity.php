@@ -3,9 +3,9 @@
 namespace Ephect\Framework\Components;
 
 use Ephect\Framework\ElementTrait;
-use Ephect\Framework\Utils\File;
 use Ephect\Framework\Registry\ComponentRegistry;
 use Ephect\Framework\Tree\Tree;
+use Ephect\Framework\Utils\File;
 
 /**
  * Description of match
@@ -263,20 +263,6 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         return null;
     }
 
-    public function getInnerHTML(): string
-    {
-        $result = '';
-
-        if (!isset($this->closer['contents']['text'])) {
-            return $result;
-        }
-
-        $result = $this->closer['contents']['text'];
-        $result = substr($result, 9);
-
-        return base64_decode($result);
-    }
-
     public function getContents(?string $html = null): ?string
     {
         // TODO: Module implementation must take care of it!!!
@@ -313,5 +299,19 @@ class ComponentEntity extends Tree implements ComponentEntityInterface
         }
 
         return substr($text, $start, $end - $start + 1);
+    }
+
+    public function getInnerHTML(): string
+    {
+        $result = '';
+
+        if (!isset($this->closer['contents']['text'])) {
+            return $result;
+        }
+
+        $result = $this->closer['contents']['text'];
+        $result = substr($result, 9);
+
+        return base64_decode($result);
     }
 }
