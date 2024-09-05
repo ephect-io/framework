@@ -1,12 +1,13 @@
 <?php
 
-namespace Ephect\Plugins\HtmlSaver;
+namespace Ephect\Modules\Html;
 
+use Ephect\Modules\Html\HtmlSaverService;
 use function Ephect\Hooks\useEffect;
 
 function HtmlSaver($children): string
 {
-    useEffect(function ($children, $service) {
+    useEffect(function($children, $service) {
         $service = new HtmlSaverService($children);
     });
 
