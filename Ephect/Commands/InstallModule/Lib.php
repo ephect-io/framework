@@ -1,19 +1,19 @@
 <?php
 
-namespace Ephect\Commands\InstallPlugin;
+namespace Ephect\Commands\InstallModule;
 
 use Ephect\Framework\Commands\AbstractCommandLib;
-use Ephect\Framework\Plugins\PluginInstaller;
+use Ephect\Framework\Modules\ModuleInstaller;
 
 class Lib extends AbstractCommandLib
 {
     public function install(string $workingDirectory, bool $remove): void
     {
-        $pluginInstaller = new PluginInstaller($workingDirectory);
+        $moduleInstaller = new ModuleInstaller($workingDirectory);
         if ($remove) {
-            $pluginInstaller->remove();
+            $moduleInstaller->remove();
         } else {
-            $pluginInstaller->install();
+            $moduleInstaller->install();
         }
     }
 }

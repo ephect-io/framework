@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\ComposerRemove;
+namespace Ephect\Commands\ModuleRemove;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;

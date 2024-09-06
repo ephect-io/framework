@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\ApplicationTree;
+namespace Ephect\Commands\ShowApplicationTree;
 
 use Ephect\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;

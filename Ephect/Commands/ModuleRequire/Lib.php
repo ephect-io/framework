@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\ComposerRequire;
+namespace Ephect\Commands\ModuleRequire;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;

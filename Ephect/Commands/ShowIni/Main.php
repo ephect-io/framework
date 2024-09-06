@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\Ini;
+namespace Ephect\Commands\ShowIni;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;

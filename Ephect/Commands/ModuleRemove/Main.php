@@ -1,12 +1,12 @@
 <?php
 
-namespace Ephect\Commands\ComposerRemove;
+namespace Ephect\Commands\ModuleRemove;
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(verb: "composer", subject: "remove")]
-#[CommandDeclaration(desc: "Composer remove wrapper")]
+#[CommandDeclaration(verb: "module", subject: "remove")]
+#[CommandDeclaration(desc: "Composer remove wrapper and more.")]
 class Main extends AbstractCommand
 {
     public function run(): int

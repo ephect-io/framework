@@ -1,12 +1,12 @@
 <?php
 
-namespace Ephect\Commands\ComposerRequire;
+namespace Ephect\Commands\ModuleRequire;
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 
-#[CommandDeclaration(verb: "composer", subject: "require")]
-#[CommandDeclaration(desc: "Composer require wrapper")]
+#[CommandDeclaration(verb: "module", subject: "require")]
+#[CommandDeclaration(desc: "Composer require wrapper and more.")]
 class Main extends AbstractCommand
 {
     public function run(): int
