@@ -3,6 +3,7 @@
 namespace Ephect\JavaScripts\Builder;
 
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\JavaScripts\Lib\Common;
 
 class AjilBuilder
 {
@@ -10,7 +11,7 @@ class AjilBuilder
     public static function build(): void
     {
 
-        $srcdir = SRC_ROOT . 'Assets' . DIRECTORY_SEPARATOR . 'Ajil' . DIRECTORY_SEPARATOR;
+        $srcdir = Common::getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Ajil' . DIRECTORY_SEPARATOR;
 
         $js_filename = DOCUMENT_ROOT . 'ajil.js';
 
