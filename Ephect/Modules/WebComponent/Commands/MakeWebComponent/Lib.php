@@ -7,6 +7,7 @@ use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Modules\WebComponent\Builder\Compiler;
+use Ephect\Modules\WebComponent\Common;
 use Exception;
 
 class Lib extends AbstractCommandLib
@@ -27,7 +28,7 @@ class Lib extends AbstractCommandLib
 
             $builder->saveManifest($tagName, $className, $entrypoint, $arguments, $destDir);
 
-            $srcDir = MODULE_SRC_DIR . 'Templates' . DIRECTORY_SEPARATOR;
+            $srcDir = Common::getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR;
 
             $builder->copyTemplates($tagName, $className, $hasBackendProps, $entrypoint, $arguments, $srcDir, $destDir);
 

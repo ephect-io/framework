@@ -3,6 +3,7 @@
 namespace Ephect\Modules\WebComponent\Builder;
 
 use Ephect\Framework\Templates\TemplateMaker;
+use Ephect\Modules\WebComponent\Common;
 use Ephect\Modules\WebComponent\Manifest\ManifestStructure;
 use Ephect\Modules\WebComponent\Manifest\ManifestWriter;
 use Exception;
@@ -53,7 +54,7 @@ class Compiler
      */
     function copyTemplates(string $tagName, string $className, bool $hasBackendProps, string $entrypoint, array $arguments, string $srcDir, string $destDir): void
     {
-        $templatesDir = MODULE_SRC_DIR . 'Templates' . DIRECTORY_SEPARATOR;
+        $templatesDir = Common::getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR;
 
         $classTextMaker = new TemplateMaker($templatesDir . 'Base.class.tpl');
         $baseElementTextMaker = new TemplateMaker($templatesDir . 'BaseElement.tpl');
