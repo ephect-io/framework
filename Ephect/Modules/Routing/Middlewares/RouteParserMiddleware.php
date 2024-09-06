@@ -2,11 +2,11 @@
 
 namespace Ephect\Modules\Routing\Middlewares;
 
-use Ephect\Forms\Components\ComponentEntityInterface;
-use Ephect\Forms\Middlewares\ComponentParserMiddlewareInterface;
-use Ephect\Forms\Registry\ComponentRegistry;
-use Ephect\Modules\Routing\Registry\RouteRegistry;
+use Ephect\Modules\Forms\Components\ComponentEntityInterface;
+use Ephect\Modules\Forms\Middlewares\ComponentParserMiddlewareInterface;
+use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Routing\Attributes\RouteMiddleware;
+use Ephect\Modules\Routing\Registry\RouteRegistry;
 use Ephect\Modules\Routing\RouteEntity;
 use Ephect\Modules\Routing\RouteStructure;
 use Exception;
