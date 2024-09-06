@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Commands\Constants;
+namespace Ephect\Commands\ShowConstants;
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;

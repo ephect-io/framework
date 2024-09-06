@@ -1,10 +1,10 @@
 <?php
 
-namespace Ephect\Commands\BranchTree;
+namespace Ephect\Commands\ShowBranchTree;
 
+use Ephect\Commands\CommonLib;
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
-use Ephect\Framework\Commands\CommonLib;
 
 #[CommandDeclaration(verb: "show", subject: "branch-tree")]
 #[CommandDeclaration(desc: "Display the tree of the Ephect\Framework framework master branch.")]
