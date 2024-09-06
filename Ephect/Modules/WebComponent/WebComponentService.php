@@ -3,8 +3,8 @@
 namespace Ephect\Modules\WebComponent;
 
 use DateTime;
-use Ephect\Forms\Components\ChildrenInterface;
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\Forms\Components\ChildrenInterface;
 use Ephect\Modules\WebComponent\Builder\Parser;
 use Ephect\Modules\WebComponent\Manifest\ManifestEntity;
 use Ephect\Modules\WebComponent\Manifest\ManifestReader;

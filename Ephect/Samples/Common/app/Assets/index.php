@@ -1,4 +1,4 @@
 <?php
 include '../bootstrap.php';
 
-Ephect\WebApp\Web\Application::create();
+\Ephect\Modules\WebApp\Web\Application::create();
