@@ -15,7 +15,7 @@ class WebComponent extends ApplicationComponent
         $namespace = CONFIG_NAMESPACE;
         $function = $info->filename;
 
-        $componentTextMaker =  new TemplateMaker(MODULE_SRC_DIR . 'Templates' . DIRECTORY_SEPARATOR . 'Component.tpl');
+        $componentTextMaker =  new TemplateMaker(Common::getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR . 'Component.tpl');
         $componentTextMaker->make(['funcNamespace' => $namespace, 'funcName' => $function, 'funcBody' => '', 'html' => $html]);
         $componentTextMaker->save(COPY_DIR . $filename);
 
