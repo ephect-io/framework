@@ -2,8 +2,8 @@
 
 namespace Ephect\Modules\Routing;
 
-use Ephect\Forms\Components\Builders\AbstractBuilder;
-use Ephect\Forms\Components\Children;
+use Ephect\Modules\Forms\Components\Builders\AbstractBuilder;
+use Ephect\Modules\Forms\Components\Children;
 
 class RouteBuilder extends AbstractBuilder
 {
