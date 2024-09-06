@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Samples\Commands\MakeQuickStart;
+namespace Ephect\Modules\Samples\Commands\MakeSkeleton;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
@@ -11,11 +11,11 @@ use Ephect\Samples\Common;
 class Lib extends AbstractCommandLib
 {
 
-    public function createQuickstart(): void
+    public function makeSkeleton(): void
     {
-        Console::writeLine(ConsoleColors::getColoredString("Publishing Skeleton files...", ConsoleColors::BLUE));
+        Console::writeLine(ConsoleColors::getColoredString("Publishing QuickStart files...", ConsoleColors::BLUE));
 
-        $sample = Common::getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'QuickStart';
+        $sample = Common::getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Skeleton';
 
         File::safeMkDir(siteSrcPath());
         $destDir = realpath(siteSrcPath());
@@ -29,6 +29,7 @@ class Lib extends AbstractCommandLib
 
         Console::writeLine(ConsoleColors::getColoredString("Source directory: $sample", ConsoleColors::GREEN));
         Console::writeLine(ConsoleColors::getColoredString("Destination directory: $destDir", ConsoleColors::GREEN));
+
         foreach ($tree as $filePath) {
             Console::writeLine("Copying file: %s", $filePath);
             File::safeWrite($destDir . $filePath, '');

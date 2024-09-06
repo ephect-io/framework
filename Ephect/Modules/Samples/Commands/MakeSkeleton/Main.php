@@ -1,9 +1,10 @@
 <?php
 
-namespace Ephect\Samples\Commands\MakeSkeleton;
+namespace Ephect\Modules\Samples\Commands\MakeSkeleton;
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
+use Ephect\Modules\Samples\Commands\MakeSkeleton\Lib;
 use Ephect\Samples\Common;
 
 #[CommandDeclaration(verb: "make", subject: "skeleton")]
