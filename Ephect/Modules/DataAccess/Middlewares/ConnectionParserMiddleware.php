@@ -2,9 +2,9 @@
 
 namespace Ephect\Modules\DataAccess\Middlewares;
 
-use Ephect\Forms\Components\ComponentEntityInterface;
-use Ephect\Forms\Middlewares\ComponentParserMiddlewareInterface;
 use Ephect\Framework\Registry\StateRegistry;
+use Ephect\Modules\Forms\Components\ComponentEntityInterface;
+use Ephect\Modules\Forms\Middlewares\ComponentParserMiddlewareInterface;
 use function Ephect\Hooks\useState;
 
 class ConnectionParserMiddleware implements ComponentParserMiddlewareInterface
