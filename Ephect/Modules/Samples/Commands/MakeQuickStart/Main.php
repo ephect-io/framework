@@ -1,9 +1,10 @@
 <?php
 
-namespace Ephect\Samples\Commands\MakeQuickStart;
+namespace Ephect\Modules\Samples\Commands\MakeQuickStart;
 
 use Ephect\Framework\Commands\AbstractCommand;
 use Ephect\Framework\Commands\Attributes\CommandDeclaration;
+use Ephect\Modules\Samples\Commands\MakeQuickStart\Lib;
 use Ephect\Samples\Common;
 
 #[CommandDeclaration(verb: "make", subject: "quickstart")]
