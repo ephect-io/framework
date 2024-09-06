@@ -11,6 +11,7 @@ use Ephect\Modules\Routing\RouterService;
 use Ephect\Modules\WebApp\Builder\Copiers\TemplatesCopyMaker;
 use Ephect\Modules\WebApp\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\ModuleListDescriptor;
+use Ephect\Modules\WebApp\Builder\Descriptors\PluginListDescriptor;
 use Ephect\Modules\WebApp\Builder\Routing\Finder;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByRouteStrategy;
@@ -65,6 +66,13 @@ class Builder
                 $moduleComponents = $descriptor->describe($moduleSrcPath);
                 $this->list = [...$this->list, ...$moduleComponents];
             }
+
+            /**
+             * Describe builtin modules
+             */
+            $descriptor = new PluginListDescriptor;
+            $plugins = $descriptor->describe();
+            $this->list = [...$this->list, ...$plugins];
 
             CodeRegistry::save();
             PluginRegistry::save();
