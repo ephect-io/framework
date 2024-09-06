@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Samples\QuickStart\Commands\Hello;
+namespace QuickStart\Commands\Hello;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Commands\AbstractCommand;
