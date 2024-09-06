@@ -7,8 +7,6 @@ use Ephect\Framework\Crypto\Crypto;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
-use function Ephect\Forms\Components\Generators\phpsubstr;
-use const Ephect\Forms\Components\Generators\Decomposer;
 
 class Decomposer extends Parser implements ParserInterface
 {
@@ -60,7 +58,7 @@ class Decomposer extends Parser implements ParserInterface
             $quote = $attr[1][0];
             $quoted = $attr[0][0];
             $unQuoted = $attr[2][0];
-            $start = $attr[0][1] + 1;
+            $start = intval($attr[0][1]) + 1;
             $end = $start + strlen($quoted) - 1;
 
             $letter = '';
@@ -206,10 +204,8 @@ class Decomposer extends Parser implements ParserInterface
         }
 
         ksort($list);
-        $l = count($list);
-
-        for ($i = 0; $i < $l; $i++) {
-        }
+//        $l = count($list);
+//        for ($i = 0; $i < $l; $i++) {}
 
         $maxDepth = count($this->depths);
         for ($i = $maxDepth; $i > -1; $i--) {
@@ -241,7 +237,7 @@ class Decomposer extends Parser implements ParserInterface
             $tag['text'] = $match[0][0];
             $tag['name'] = !isset($match[1]) ? 'Fragment' : $match[1][0];
             $tag['startsAt'] = $match[0][1];
-            $tag['endsAt'] = $match[0][1] + strlen($tag['text']) - 1;
+            $tag['endsAt'] = intval($match[0][1]) + strlen($tag['text']) - 1;
 
             unset($tag[0]);
             unset($tag[1]);
@@ -361,7 +357,7 @@ class Decomposer extends Parser implements ParserInterface
         $c = count($tags);
         for ($i = $c - 1; $i > -1; $i--) {
             $tag = $tags[$i];
-            $tag['text'] = Decomposer . phpsubstr($tag['text'], 0, -4) . self::TERMINATOR . self::CLOSE_TAG;
+            $tag['text'] = substr($tag['text'], 0, -4) . self::TERMINATOR . self::CLOSE_TAG;
 
             $begin = substr($result, 0, $tag['startsAt']);
             $end = substr($result, $tag['endsAt'] + 1);
@@ -431,7 +427,7 @@ class Decomposer extends Parser implements ParserInterface
     private function doFunctionArguments(string $arguments): ?array
     {
         $result = [];
-        $re = '/([\,]?[\.]?\$[\w]+)/';
+        $re = '/([,]?[.]?\$[\w]+)/';
 
         $str = $arguments;
 
