@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Modules\Html;
+namespace Ephect\Modules\Html\Services;
 
 use DateTime;
 use Ephect\Framework\Utils\File;
