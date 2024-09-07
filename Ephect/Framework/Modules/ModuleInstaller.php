@@ -47,6 +47,8 @@ class ModuleInstaller
         FrameworkRegistry::load(true);
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
         $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = is_dir($srcDir) ? $srcDir : $this->workingDirectory;
+        $configDir = is_dir($configDir) ? $configDir : $this->workingDirectory;
 
         [$filename, $paths] = self::readModulePaths();
         if (is_array($paths)) {
@@ -159,6 +161,8 @@ class ModuleInstaller
 
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
         $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = is_dir($srcDir) ? $srcDir : $this->workingDirectory;
+        $configDir = is_dir($configDir) ? $configDir : $this->workingDirectory;
 
         $bootstrapFile = $srcDir . 'bootstrap.php';
         $constantsFile = $srcDir . 'constants.php';
