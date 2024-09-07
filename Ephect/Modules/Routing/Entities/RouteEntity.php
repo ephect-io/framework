@@ -1,9 +1,11 @@
 <?php
 
-namespace Ephect\Modules\Routing;
+namespace Ephect\Modules\Routing\Entities;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Entity\Entity;
+use Ephect\Modules\Routing\Base\RouteInterface;
+use Ephect\Modules\Routing\Base\RouteStructure;
 
 class RouteEntity extends Entity implements RouteInterface
 {

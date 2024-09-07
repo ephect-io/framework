@@ -1,9 +1,12 @@
 <?php
 
-namespace Ephect\Modules\Routing;
+namespace Ephect\Modules\Routing\Builder;
 
 use Ephect\Modules\Forms\Components\Builders\AbstractBuilder;
 use Ephect\Modules\Forms\Components\Children;
+use Ephect\Modules\Routing\Base\RouteInterface;
+use Ephect\Modules\Routing\Base\RouteStructure;
+use Ephect\Modules\Routing\Entities\RouteEntity;
 
 class RouteBuilder extends AbstractBuilder
 {

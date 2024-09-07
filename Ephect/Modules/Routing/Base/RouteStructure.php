@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Modules\Routing;
+namespace Ephect\Modules\Routing\Base;
 
 use Ephect\Framework\Structure\Structure;
 

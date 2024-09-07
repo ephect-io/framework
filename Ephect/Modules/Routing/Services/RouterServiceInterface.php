@@ -1,6 +1,9 @@
 <?php
 
-namespace Ephect\Modules\Routing;
+namespace Ephect\Modules\Routing\Services;
+
+use Ephect\Modules\Routing\Base\RouteInterface;
+use Ephect\Modules\Routing\Entities\RouteEntity;
 
 interface RouterServiceInterface
 {
