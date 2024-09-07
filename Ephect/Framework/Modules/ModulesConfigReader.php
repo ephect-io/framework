@@ -6,6 +6,7 @@ use Ephect\Framework\Manifest\ManifestReader;
 use Ephect\Framework\Utils\File;
 use ErrorException;
 use JsonException;
+use function siteRoot;
 
 class ModulesConfigReader extends ManifestReader
 {

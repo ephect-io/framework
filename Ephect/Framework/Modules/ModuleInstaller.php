@@ -9,6 +9,7 @@ use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 use ErrorException;
 use JsonException;
+use function siteConfigPath;
 
 class ModuleInstaller
 {
