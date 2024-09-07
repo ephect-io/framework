@@ -10,7 +10,7 @@ use Ephect\Framework\Registry\HooksRegistry;
 define('FRAMEWORK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Framework' . DIRECTORY_SEPARATOR);
 define('HOOKS_DIR', 'Hooks' . DIRECTORY_SEPARATOR);
 
-include '.' . DIRECTORY_SEPARATOR . 'constants.php';
+include  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'constants.php';
 include FRAMEWORK_PATH . 'Core' . DIRECTORY_SEPARATOR . 'Autoloader.php';
 include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'File.php';
 include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'Text.php';
