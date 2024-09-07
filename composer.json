@@ -25,5 +25,8 @@
         "ext-pdo": "*",
         "ext-sqlite3": "*",
         "ext-mysqlnd": "*"
-    }
+    },
+    "bin": [
+        "bin/ephect-io_fullmoon_install.sh"
+    ]
 }
