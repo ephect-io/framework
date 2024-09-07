@@ -30,3 +30,11 @@ php_errors.log
 
 # Trash files 
 .DS_Store
+
+# Ephect cache
+cache
+runtime
+config
+
+# Ephect modules
+modules.json
