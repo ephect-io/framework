@@ -8,7 +8,7 @@ use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
-use Ephect\Modules\Routing\RouterService;
+use Ephect\Modules\Routing\Services\RouterService;
 use Throwable;
 
 class BuildByNameStrategy implements BuiderStrategyInterface

@@ -7,7 +7,7 @@ use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
-use Ephect\Modules\Routing\RouteBuilder;
+use Ephect\Modules\Routing\Builder\RouteBuilder;
 
 class Finder
 {
