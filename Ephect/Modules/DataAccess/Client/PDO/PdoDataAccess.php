@@ -2,9 +2,7 @@
 
 namespace Ephect\Modules\DataAccess\Client\PDO;
 
-use Ephect\Modules\DataAccess\ServerType;
-use function file_exists;
-use function file_get_contents;
+use Ephect\Modules\DataAccess\Client\Base\Type\ServerType;
 
 class PdoDataAccess
 {

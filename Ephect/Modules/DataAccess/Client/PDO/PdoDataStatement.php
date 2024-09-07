@@ -3,8 +3,8 @@
 namespace Ephect\Modules\DataAccess\Client\PDO;
 
 use Ephect\Framework\Element;
+use Ephect\Modules\DataAccess\Client\Base\DataStatementInterface;
 use Ephect\Modules\DataAccess\Client\PDO\SchemaInfo\AbstractPdoSchemaInfo;
-use Ephect\Modules\DataAccess\DataStatementInterface;
 use Exception;
 use PDO;
 use PDOException;

@@ -3,8 +3,8 @@
 namespace Ephect\Modules\DataAccess\Client\PDO;
 
 use Ephect\Framework\Registry\StateRegistry;
+use Ephect\Modules\DataAccess\Client\Base\Type\ServerType;
 use Ephect\Modules\DataAccess\Configuration\JsonConfiguration;
-use Ephect\Modules\DataAccess\ServerType;
 
 class PdoConfiguration extends JsonConfiguration
 {

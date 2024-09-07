@@ -1,5 +1,5 @@
 <?php
-namespace Ephect\Modules\DataAccess;
+namespace Ephect\Modules\DataAccess\Client\Base;
 
 interface DataStatementInterface
 {
