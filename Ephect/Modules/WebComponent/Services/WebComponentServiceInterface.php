@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Modules\WebComponent;
+namespace Ephect\Modules\WebComponent\Services;
 
 use Ephect\Modules\WebComponent\Manifest\ManifestEntity;
 
