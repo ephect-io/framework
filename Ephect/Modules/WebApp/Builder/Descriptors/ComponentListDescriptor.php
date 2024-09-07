@@ -5,7 +5,6 @@ namespace Ephect\Modules\WebApp\Builder\Descriptors;
 use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Utils\File;
-use Ephect\Modules\JavaScripts\Lib\Common;
 
 class ComponentListDescriptor implements ComponentListDescriptorInterface
 {
@@ -35,8 +34,11 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
 
         [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
         foreach ($modulePaths as $path) {
+            if(str_starts_with($path, 'vendor')) {
+                $path = realpath(siteRoot() . $path);
+            }
             $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-            $moduleConfigDir = is_dir($moduleConfigDir) ? $moduleConfigDir : $path . DIRECTORY_SEPARATOR;
+            $moduleConfigDir = is_dir($moduleConfigDir) ? $moduleConfigDir : $path;
 
             $manifestReader = new ModuleManifestReader();
             $manifest = $manifestReader->read($moduleConfigDir);

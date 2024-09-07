@@ -58,9 +58,13 @@ class Builder
 
             [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
             foreach ($modulePaths as $path) {
+                if(str_starts_with($path, 'vendor')) {
+                    $path = realpath(siteRoot() . $path);
+                }
                 $moduleSrcPathFile = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR . REL_CONFIG_APP;
                 $moduleSrcPath = file_exists($moduleSrcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile) : $path . DIRECTORY_SEPARATOR . REL_CONFIG_APP;
-                $moduleSrcPath = is_dir($moduleSrcPathFile) ? $moduleSrcPathFile : $path . DIRECTORY_SEPARATOR;
+                $moduleSrcPath = is_dir($moduleSrcPath) ? $moduleSrcPath : $path . DIRECTORY_SEPARATOR;
+
 
                 $descriptor = new ModuleListDescriptor($path);
                 $moduleComponents = $descriptor->describe($moduleSrcPath);
