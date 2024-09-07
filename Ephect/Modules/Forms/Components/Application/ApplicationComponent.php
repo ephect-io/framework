@@ -82,7 +82,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         }
 
         [$this->namespace, $this->function, $parameters, $returnedType, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
-        if ($this->bodyStartsAt == -1) {
+        if ($this->bodyStartsAt == -1 && !empty($this->code)) {
             $this->makeComponent($this->filename, $this->code);
             [$this->namespace, $this->function, $parameters, $returnedType, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
         }
@@ -205,12 +205,12 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
      */
     public function render(array|object|null $functionArgs = null, ?Request $request = null): void
     {
-//        if ($this->motherUID == $this->uid && $this->id !== 'App') {
+        if ($this->motherUID == $this->uid && $this->id !== 'App') {
 //            StateRegistry::loadByMotherUid($this->motherUID, true);
-        StateRegistry::load(true);
-        $stateIgniter = new ApplicationIgniter;
-        $stateIgniter->ignite();
-//        }
+            StateRegistry::load(true);
+            $stateIgniter = new ApplicationIgniter;
+            $stateIgniter->ignite();
+        }
 
 //        $trueStaticFile = STATIC_DIR . pathinfo($this->filename, PATHINFO_FILENAME) . PREHTML_EXTENSION;
 //        if ($html = File::safeRead($trueStaticFile) != null && $this->motherUID == $this->uid && $this->id !== 'App')  {
