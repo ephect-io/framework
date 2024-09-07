@@ -25,6 +25,19 @@ class ModuleInstaller
         }
     }
 
+    public static function readModuleBootstrapPaths(): array
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "modulesBootstrapPaths.php";
+
+        $paths = [];
+        if (file_exists($filename)) {
+            $paths = require $filename;
+        }
+
+        return [$filename, $paths];
+    }
+
     /**
      * @throws JsonException
      * @throws ErrorException
@@ -113,19 +126,6 @@ class ModuleInstaller
         $modulesPaths = Text::jsonToPhpReturnedArray($json, true);
 
         File::safeWrite($filename, $modulesPaths);
-    }
-
-    public static function readModuleBootstrapPaths(): array
-    {
-        $configDir = siteConfigPath();
-        $filename = $configDir . "modulesBootstrapPaths.php";
-
-        $paths = [];
-        if (file_exists($filename)) {
-            $paths = require $filename;
-        }
-
-        return [$filename, $paths];
     }
 
     public static function saveModuleBootstrapPaths(array $paths): void

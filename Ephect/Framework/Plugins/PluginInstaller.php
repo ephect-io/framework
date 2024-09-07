@@ -27,6 +27,19 @@ class PluginInstaller
         }
     }
 
+    public static function readPluginBootstrapPaths(): array
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "pluginsBootstrapPaths.php";
+
+        $paths = [];
+        if (file_exists($filename)) {
+            $paths = require $filename;
+        }
+
+        return [$filename, $paths];
+    }
+
     /**
      * @throws JsonException
      * @throws ErrorException
@@ -115,19 +128,6 @@ class PluginInstaller
         $pluginsPaths = Text::jsonToPhpReturnedArray($json, true);
 
         File::safeWrite($filename, $pluginsPaths);
-    }
-
-    public static function readPluginBootstrapPaths(): array
-    {
-        $configDir = siteConfigPath();
-        $filename = $configDir . "pluginsBootstrapPaths.php";
-
-        $paths = [];
-        if (file_exists($filename)) {
-            $paths = require $filename;
-        }
-
-        return [$filename, $paths];
     }
 
     public static function savePluginBootstrapPaths(array $paths): void
