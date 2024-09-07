@@ -19,8 +19,11 @@ class ModuleDescriptor implements DescriptorInterface
         File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
         copy($sourceDir . $filename, COPY_DIR . $filename);
 
+        $manifestDir = realpath($this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR);
+        $manifestDir = is_dir($manifestDir) ? $manifestDir : $this->modulePath;
+
         $reader = new ModuleManifestReader();
-        $manifest = $reader->read($this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR);
+        $manifest = $reader->read($manifestDir);
 
         $moduleEntrypoint = $manifest->getEntrypoint();
 
