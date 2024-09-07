@@ -42,9 +42,10 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 
         [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
         foreach ($modulePaths as $path) {
-            $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-            $moduleSrcPathFile = $moduleConfigDir . REL_CONFIG_APP;
+            $moduleSrcPathFile = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR . REL_CONFIG_APP;
             $moduleSrcPath = file_exists($moduleSrcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile) : $path . DIRECTORY_SEPARATOR . REL_CONFIG_APP;
+            $moduleSrcPath = is_dir($moduleSrcPath) ? $moduleSrcPath : $path;
+
             $moduleCommandsPath = $moduleSrcPath . DIRECTORY_SEPARATOR . 'Commands';
 
             if (file_exists($moduleCommandsPath)) {
