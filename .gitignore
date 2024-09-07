@@ -34,7 +34,8 @@ php_errors.log
 # Ephect cache
 cache
 runtime
-config
 
 # Ephect modules
+config/modulesBootstrapPaths.php
+config/modulesPaths.php
 modules.json
