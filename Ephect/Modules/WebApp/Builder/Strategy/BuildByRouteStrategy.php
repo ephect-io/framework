@@ -7,7 +7,7 @@ use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\Curl;
-use Ephect\Modules\Routing\RouterService;
+use Ephect\Modules\Routing\Services\RouterService;
 use Exception;
 
 class BuildByRouteStrategy implements BuiderStrategyInterface
