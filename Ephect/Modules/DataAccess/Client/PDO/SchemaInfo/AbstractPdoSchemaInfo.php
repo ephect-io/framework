@@ -4,9 +4,9 @@ namespace Ephect\Modules\DataAccess\Client\PDO\SchemaInfo;
 
 use Ephect\Framework\Configuration\ConfigurableInterface;
 use Ephect\Framework\Logger\Logger;
+use Ephect\Modules\DataAccess\Client\Base\DataStatementInterface;
+use Ephect\Modules\DataAccess\Client\Base\Type\ServerType;
 use Ephect\Modules\DataAccess\Client\PDO\PdoConfiguration;
-use Ephect\Modules\DataAccess\DataStatementInterface;
-use Ephect\Modules\DataAccess\ServerType;
 use PDOException;
 
 abstract class AbstractPdoSchemaInfo implements PdoSchemaInfoInterface

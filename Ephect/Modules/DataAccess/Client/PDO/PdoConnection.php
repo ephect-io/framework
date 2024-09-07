@@ -3,16 +3,15 @@
 namespace Ephect\Modules\DataAccess\Client\PDO;
 
 use Ephect\Framework\Configuration\AbstractConfiguration;
+use Ephect\Modules\DataAccess\Client\Base\SqlConnectionInterface;
+use Ephect\Modules\DataAccess\Client\Base\Type\ServerType;
 use Ephect\Modules\DataAccess\Client\PDO\Exceptions\PdoConnectionException;
 use Ephect\Modules\DataAccess\Client\PDO\SchemaInfo\AbstractPdoSchemaInfo;
-use Ephect\Modules\DataAccess\CrudQueriesTrait;
-use Ephect\Modules\DataAccess\ServerType;
-use Ephect\Modules\DataAccess\SqlConnectionInterface;
+use Ephect\Modules\DataAccess\CRUD\CrudQueriesTrait;
 use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
-use function is_array;
 
 class PdoConnection extends AbstractConfiguration implements SqlConnectionInterface
 {
