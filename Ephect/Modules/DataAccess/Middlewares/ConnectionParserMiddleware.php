@@ -12,9 +12,9 @@ class ConnectionParserMiddleware implements ComponentParserMiddlewareInterface
 
     public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props, array $arguments): void
     {
-        StateRegistry::load(true);
+        StateRegistry::saveByMotherUid($motherUID, true);
         useState(["middlewares" => [ConnectionOpenerMiddleware::class => (object)$arguments],]);
-//        StateRegistry::saveByMotherUid($motherUID, true);
-        StateRegistry::save( true);
+        StateRegistry::saveByMotherUid($motherUID, true);
+//        StateRegistry::save( true);
     }
 }

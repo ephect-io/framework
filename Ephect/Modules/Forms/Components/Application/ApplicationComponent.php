@@ -206,8 +206,8 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     public function render(array|object|null $functionArgs = null, ?Request $request = null): void
     {
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
-//            StateRegistry::loadByMotherUid($this->motherUID, true);
-            StateRegistry::load(true);
+            StateRegistry::loadByMotherUid($this->motherUID, true);
+//            StateRegistry::load(true);
             $stateIgniter = new ApplicationIgniter;
             $stateIgniter->ignite();
         }

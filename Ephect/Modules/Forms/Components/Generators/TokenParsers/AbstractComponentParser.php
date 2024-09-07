@@ -79,8 +79,8 @@ abstract class AbstractComponentParser extends AbstractTokenParser
                         $middleware->parse($parent, $motherUID, $funcName, $props, $arguments);
                     }
 
-//                    StateRegistry::saveByMotherUid($motherUID, true);
-                    StateRegistry::save(true);
+                    StateRegistry::saveByMotherUid($motherUID, true);
+//                    StateRegistry::save(true);
 
 
                 }
