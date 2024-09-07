@@ -1,11 +1,12 @@
 <?php
 
-namespace Ephect\Modules\WebComponent;
+namespace Ephect\Modules\WebComponent\Services;
 
 use DateTime;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ChildrenInterface;
 use Ephect\Modules\WebComponent\Builder\Parser;
+use Ephect\Modules\WebComponent\Common;
 use Ephect\Modules\WebComponent\Manifest\ManifestEntity;
 use Ephect\Modules\WebComponent\Manifest\ManifestReader;
 
