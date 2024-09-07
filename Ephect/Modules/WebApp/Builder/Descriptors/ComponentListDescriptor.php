@@ -3,7 +3,9 @@
 namespace Ephect\Modules\WebApp\Builder\Descriptors;
 
 use Ephect\Framework\Modules\ModuleInstaller;
+use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\JavaScripts\Lib\Common;
 
 class ComponentListDescriptor implements ComponentListDescriptorInterface
 {
@@ -34,15 +36,12 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
         [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
         foreach ($modulePaths as $path) {
             $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-            $moduleTemplatesFile = $moduleConfigDir . 'templates';
-            $moduleTemplatesDir = trim(file_get_contents($moduleTemplatesFile));
-            $configTemplatesDir = file_exists($moduleTemplatesFile) ? APP_ROOT . $moduleTemplatesDir : null;
+            $moduleConfigDir = is_dir($moduleConfigDir) ? $moduleConfigDir : $path . DIRECTORY_SEPARATOR;
 
-            //TODO: Find the user's custom directory for the module's templates.
-//            if ($configTemplatesDir !== null && !file_exists($configTemplatesDir)) {
-//                $configTemplatesDir =  file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir);
-//            }
+            $manifestReader = new ModuleManifestReader();
+            $manifest = $manifestReader->read($moduleConfigDir);
 
+            $configTemplatesDir = $manifest->getTemplates();
             if ($configTemplatesDir !== null && file_exists($configTemplatesDir)) {
                 $componentsList = File::walkTreeFiltered($configTemplatesDir, ['phtml']);
                 foreach ($componentsList as $key => $compFile) {
