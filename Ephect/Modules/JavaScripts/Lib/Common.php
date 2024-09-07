@@ -27,12 +27,4 @@ class Common
         $manifestReader = new ModuleManifestReader();
         return $manifestReader->read(Common::getModuleConfDir());
     }
-
-    public static function getCustomWebComponentRoot(): string
-    {
-        $moduleTemplatesDir = Common::getModuleManifest()->getTemplates();
-        $customConfig =  file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir;
-        return SRC_ROOT . $customConfig . DIRECTORY_SEPARATOR;
-    }
-
 }
