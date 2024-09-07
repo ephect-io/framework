@@ -7,4 +7,3 @@ for i in $LIST;
 do
    php use install:module "$MODULES_PATH/$i" $1 $2
 done;
-

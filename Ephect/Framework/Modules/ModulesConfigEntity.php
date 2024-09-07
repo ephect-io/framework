@@ -5,6 +5,7 @@ namespace Ephect\Framework\Modules;
 use Ephect\Framework\Manifest\ManifestEntity;
 use Ephect\Framework\Structure\StructureTrait;
 use Override;
+use function siteRoot;
 
 class ModulesConfigEntity extends ManifestEntity
 {
