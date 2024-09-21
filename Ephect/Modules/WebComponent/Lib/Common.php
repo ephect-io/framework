@@ -2,36 +2,21 @@
 
 namespace Ephect\Modules\WebComponent;
 
-use Ephect\Framework\Modules\ModuleManifestEntity;
-use Ephect\Framework\Modules\ModuleManifestReader;
+use Ephect\Framework\Modules\Utils;
 
-class Common
+class Common extends Utils
 {
-    public static function getModuleDir()
+
+    public function __construct()
     {
-        return  dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
+        parent::__construct(__DIR__);
     }
 
-    public static function getModuleSrcDir()
+    public function getCustomWebComponentRoot(): string
     {
-        return  dirname(__DIR__) . DIRECTORY_SEPARATOR;
-    }
-
-    public static function getModuleConfDir()
-    {
-        return  dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
-    }
-
-    public static function getModuleManifest(): ModuleManifestEntity
-    {
-        $manifestReader = new ModuleManifestReader();
-        return $manifestReader->read(Common::getModuleConfDir());
-    }
-
-    public static function getCustomWebComponentRoot(): string
-    {
-        $moduleTemplatesDir = Common::getModuleManifest()->getTemplates();
-        $customConfig =  file_exists(CONFIG_DIR . 'webcomponents') ? trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir;
+        $moduleTemplatesDir = $this->getModuleManifest()->getTemplates();
+        $customConfig = file_exists(CONFIG_DIR . 'webcomponents') ?
+            trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir;
         return SRC_ROOT . $customConfig . DIRECTORY_SEPARATOR;
     }
 

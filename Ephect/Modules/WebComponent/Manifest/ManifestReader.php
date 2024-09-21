@@ -18,7 +18,8 @@ class ManifestReader
         $manifestCache = CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->name . '.' . $manifestFilename;
 
         if (!file_exists($manifestCache)) {
-            copy(Common::getCustomWebComponentRoot() . $this->name . DIRECTORY_SEPARATOR . $this->name . '.' . $manifestFilename, $manifestCache);
+            $common = new Common();
+            copy($common->getCustomWebComponentRoot() . $this->name . DIRECTORY_SEPARATOR . $this->name . '.' . $manifestFilename, $manifestCache);
         }
 
         $manifestJson = File::safeRead($manifestCache);

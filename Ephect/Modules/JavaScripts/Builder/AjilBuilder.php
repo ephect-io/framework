@@ -11,7 +11,8 @@ class AjilBuilder
     public static function build(): void
     {
 
-        $srcdir = Common::getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Ajil' . DIRECTORY_SEPARATOR;
+        $common = new Common();
+        $srcdir = $common->getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Ajil' . DIRECTORY_SEPARATOR;
 
         $js_filename = DOCUMENT_ROOT . 'ajil.js';
 

@@ -16,7 +16,8 @@ final class WebComponentService implements WebComponentServiceInterface
     private readonly string $customWebcomponentRoot;
     public function __construct(private readonly ChildrenInterface $children)
     {
-        $this->customWebcomponentRoot = Common::getCustomWebComponentRoot();
+        $common = new Common();
+        $this->customWebcomponentRoot = $common->getCustomWebComponentRoot();
     }
 
     public function isPending(): bool
