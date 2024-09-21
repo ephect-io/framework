@@ -5,6 +5,7 @@ namespace Ephect\Modules\WebApp\Builder\Descriptors;
 use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Utils\File;
+use function siteSrcPath;
 
 class ComponentListDescriptor implements ComponentListDescriptorInterface
 {
@@ -44,6 +45,7 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
             $manifest = $manifestReader->read($moduleConfigDir);
 
             $configTemplatesDir = $manifest->getTemplates();
+            $configTemplatesDir = $configTemplatesDir === null ? $configTemplatesDir : siteSrcPath() . $configTemplatesDir;
             if ($configTemplatesDir !== null && file_exists($configTemplatesDir)) {
                 $componentsList = File::walkTreeFiltered($configTemplatesDir, ['phtml']);
                 foreach ($componentsList as $key => $compFile) {
