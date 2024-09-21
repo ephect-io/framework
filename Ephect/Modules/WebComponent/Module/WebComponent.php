@@ -9,7 +9,6 @@ use Ephect\Modules\WebComponent\Common;
 
 class WebComponent extends ApplicationComponent
 {
-
     public function makeComponent(string $filename, string &$html): void
     {
         $info = (object) pathinfo($filename);
@@ -18,10 +17,11 @@ class WebComponent extends ApplicationComponent
 
         $common =  new Common();
 
-        $componentTextMaker =  new TemplateMaker($common->getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR . 'Component.tpl');
-        $componentTextMaker->make(['funcNamespace' => $namespace, 'funcName' => $function, 'funcBody' => '', 'html' => $html]);
-        $componentTextMaker->save(COPY_DIR . $filename);
-
+        $textMaker =  new TemplateMaker(
+            $common->getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR . 'Component.tpl'
+        );
+        $textMaker->make(['funcNamespace' => $namespace, 'funcName' => $function, 'funcBody' => '', 'html' => $html]);
+        $textMaker->save(COPY_DIR . $filename);
     }
 
     public function analyse(): void
