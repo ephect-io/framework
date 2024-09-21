@@ -6,7 +6,6 @@ use Ephect\Framework\Modules\Utils;
 
 class Common extends Utils
 {
-
     public function __construct()
     {
         parent::__construct(__DIR__);
@@ -19,5 +18,4 @@ class Common extends Utils
             trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir;
         return SRC_ROOT . $customConfig . DIRECTORY_SEPARATOR;
     }
-
 }

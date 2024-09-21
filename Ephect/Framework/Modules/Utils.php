@@ -4,7 +4,6 @@ namespace Ephect\Framework\Modules;
 
 class Utils
 {
-
     public function __construct(private string $currentDirectory)
     {
     }
