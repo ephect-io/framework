@@ -14,12 +14,15 @@ class ManifestReader
     public function read(): ManifestEntity
     {
 
-        $manifestFilename = 'manifest.json';
-        $manifestCache = CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->name . '.' . $manifestFilename;
+        $manifestFilename = $this->name . '.' . 'manifest.json';
+        $manifestCache = CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $manifestFilename;
 
         if (!file_exists($manifestCache)) {
             $common = new Common();
-            copy($common->getCustomWebComponentRoot() . $this->name . DIRECTORY_SEPARATOR . $this->name . '.' . $manifestFilename, $manifestCache);
+            copy(
+                $common->getCustomWebComponentRoot() . $this->name . DIRECTORY_SEPARATOR . $manifestFilename,
+                $manifestCache
+            );
         }
 
         $manifestJson = File::safeRead($manifestCache);

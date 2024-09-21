@@ -7,7 +7,6 @@ use Ephect\Modules\JavaScripts\Lib\Common;
 
 class AjilBuilder
 {
-
     public static function build(): void
     {
 

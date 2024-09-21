@@ -12,7 +12,6 @@ use Ephect\Modules\WebComponent\Manifest\ManifestReader;
 
 final class WebComponentService implements WebComponentServiceInterface
 {
-
     private readonly string $customWebcomponentRoot;
     public function __construct(private readonly ChildrenInterface $children)
     {
@@ -50,7 +49,6 @@ final class WebComponentService implements WebComponentServiceInterface
         }
 
         return "<$tag$componentArgsString></$tag>";
-
     }
 
     public function readManifest(): ManifestEntity
@@ -87,7 +85,10 @@ final class WebComponentService implements WebComponentServiceInterface
             $libFiles = File::walkTreeFiltered($this->customWebcomponentRoot . $name . DIRECTORY_SEPARATOR . "lib");
             File::safeMkDir($runtimeDir . 'lib');
             foreach ($libFiles as $filename) {
-                copy($this->customWebcomponentRoot . $name . DIRECTORY_SEPARATOR . 'lib' . $filename, $runtimeDir . 'lib' . $filename);
+                copy(
+                    $this->customWebcomponentRoot . $name . DIRECTORY_SEPARATOR . 'lib' . $filename,
+                    $runtimeDir . 'lib' . $filename
+                );
             }
         }
     }
@@ -98,5 +99,4 @@ final class WebComponentService implements WebComponentServiceInterface
         $finalHTML = $this->customWebcomponentRoot . $name . DIRECTORY_SEPARATOR . $name . HTML_EXTENSION;
         File::safeWrite($finalHTML, $html);
     }
-
 }
