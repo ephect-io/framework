@@ -2,8 +2,12 @@
 
 namespace Forms\Generators\TokenParsers;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\Forms\Components\ComponentDeclaration;
+use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
+use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 final class OpenComponentsParser extends AbstractComponentParser
@@ -25,8 +29,17 @@ final class OpenComponentsParser extends AbstractComponentParser
         $subject = $this->html;
 
         $previous = null;
-        $parent = null;
-        $closure = function (ComponentEntityInterface $item, int $index) use ($comp, &$subject, &$result, &$previous, &$parent) {
+
+        $closure = function (
+            ComponentEntityInterface $item,
+            int $index
+        ) use (
+            $comp,
+            &$subject,
+            &$result,
+            &$previous,
+            &$parent
+        ) {
             $parent = $previous != null && $previous->getDepth() < $item->getDepth() ? $previous : null;
 
             if (!$item->hasCloser()) {
@@ -105,15 +118,20 @@ final class OpenComponentsParser extends AbstractComponentParser
             $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
             $filename = $this->component->getSourceFilename();
-            $cachedFilename = CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
-            File::safeWrite($cachedFilename, $subject);
-
-            $this->declareMiddlewares($parent, $cachedFilename, $motherUID, $fqComponentName, $props);
+            File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->result[] = $componentName;
 
-            $previous = $item;
+            $list = CodeRegistry::read($fqComponentName);
+            $struct = new ComponentDeclarationStructure($list);
+            $decl = new ComponentDeclaration($struct);
+            $hasAttrs = $decl->hasAttributes();
 
+            Logger::create()->debug($hasAttrs ? $componentName . ' has attrs' : $componentName . ' nope', __FILE__, __LINE__);
+
+            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props, $hasAttrs);
+
+            $previous = $item;
         };
 
         $closure($cmpz, 0);

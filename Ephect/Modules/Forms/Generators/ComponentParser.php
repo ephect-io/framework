@@ -7,7 +7,6 @@ use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
-
 class ComponentParser extends Parser implements ParserInterface
 {
     private const TERMINATOR = '/';
@@ -57,8 +56,8 @@ class ComponentParser extends Parser implements ParserInterface
         $allTags = [];
 
         $re = <<< REGEX
-        /<\/?({$rule})((\s|.*?)*)\/?>|<\/?>/
-        REGEX;
+/<\/?({$rule})((\s|.*?)*)\/?>|<\/?>/
+REGEX;
 
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
@@ -90,7 +89,6 @@ class ComponentParser extends Parser implements ParserInterface
         $spinnerMax = $l;
         $isSpinning = false;
         while (count($allTags) && !$isFinished && !$isSpinning) {
-
             if ($i === $l) {
                 $i = 0;
                 $allTags = array_values($allTags);
@@ -283,7 +281,7 @@ class ComponentParser extends Parser implements ParserInterface
     {
         $result = [];
 
-        $re = '/(#\[(\w+)\(.*\)])/m';
+        $re = '/(#\[(\w+)(\(.*\))?])/m';
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {

@@ -13,7 +13,7 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
     protected mixed $attributes = [];
     protected mixed $flatComposition = [];
 
-    function __construct(ComponentDeclarationStructure $struct)
+    public function __construct(ComponentDeclarationStructure $struct)
     {
         parent::__construct($this);
 
