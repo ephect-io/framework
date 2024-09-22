@@ -2,7 +2,7 @@
 
 namespace Ephect\Modules\WebComponent\Builder;
 
-use Ephect\Modules\Forms\Components\Generators\RawHtmlParser;
+use Forms\Generators\RawHtmlParser;
 
 class Parser extends RawHtmlParser
 {
