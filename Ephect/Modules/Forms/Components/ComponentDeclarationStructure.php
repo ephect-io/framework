@@ -10,6 +10,7 @@ class ComponentDeclarationStructure extends Structure
     public ?string $type = '';
     public ?string $name = '';
     public ?array $arguments = [];
+    public ?array $attributes = [];
     public ?array $composition = null;
 
 }

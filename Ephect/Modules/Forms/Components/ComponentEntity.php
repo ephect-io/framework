@@ -4,6 +4,7 @@ namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Entity\Entity;
+use Ephect\Framework\Structure\StructureInterface;
 use Ephect\Framework\Tree\TreeTrait;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -34,34 +35,38 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
     protected string $compName = '';
     protected ?string $className = '';
     protected bool $isSingle = false;
+    protected array $attributes = [];
+    protected StructureInterface|null $struct;
 
-    public function __construct(protected ?ComponentStructure $attributes)
+    public function __construct(ComponentStructure|null $struct)
     {
-        parent::__construct($this->attributes);
+        parent::__construct($struct);
 
-        if ($attributes === null) {
+        if ($struct === null) {
             return null;
         }
+        $this->struct = $struct;
 
-        $this->uid = $attributes->uid;
-        $this->motherUID = $attributes->motherUID;
-        $this->id = $attributes->id;
-        $this->className = $attributes->class;
-        $this->compName = $attributes->component;
-        $this->parentId = $attributes->parentId;
-        $this->text = $attributes->text;
-        $this->name = $attributes->name;
-        $this->method = $attributes->method;
-        $this->start = $attributes->startsAt;
-        $this->end = $attributes->endsAt;
-        $this->depth = $attributes->depth;
-        $this->hasProperties = count($attributes->props) !== 0;
-        $this->properties = $this->hasProperties ? $attributes->props : [];
-        $this->hasCloser = is_array($attributes->closer);
-        $this->closer = $this->hasCloser ? $attributes->closer : null;
-        $this->isSingle = $attributes->isSingle;
+        $this->uid = $struct->uid;
+        $this->motherUID = $struct->motherUID;
+        $this->id = $struct->id;
+        $this->className = $struct->class;
+        $this->compName = $struct->component;
+        $this->parentId = $struct->parentId;
+        $this->text = $struct->text;
+        $this->name = $struct->name;
+        $this->method = $struct->method;
+        $this->start = $struct->startsAt;
+        $this->end = $struct->endsAt;
+        $this->depth = $struct->depth;
+        $this->hasProperties = count($struct->props) !== 0;
+        $this->properties = $this->hasProperties ? $struct->props : [];
+        $this->hasCloser = is_array($struct->closer);
+        $this->closer = $this->hasCloser ? $struct->closer : null;
+        $this->isSingle = $struct->isSingle;
+        $this->attributes = $struct->attributes;
 
-        $this->elementList = (false === $attributes->node) ? [] : $attributes->node;
+        $this->elementList = (false === $struct->node) ? [] : $struct->node;
 
         $this->bindNode();
     }
@@ -106,7 +111,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         if (count($list) === 1) {
             $result = new ComponentEntity(new ComponentStructure($list[0]));
         } elseif (count($list) > 1) {
-            $result = self::_makeFragment();
+            $result = self::makeFragment();
             foreach ($list as $item) {
                 $entity = new ComponentEntity(new ComponentStructure($item));
                 $result->add($entity);
@@ -127,7 +132,6 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         $depths = [];
 
         foreach ($list as $match) {
-
             $struct = new ComponentStructure($match);
             $depths[$struct->depth] = 1;
         }
@@ -144,7 +148,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         return $result;
     }
 
-    private static function _makeFragment(): ComponentEntityInterface
+    private static function makeFragment(): ComponentEntityInterface
     {
         $fragment = [
             "closer" => [
@@ -176,7 +180,6 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         ];
 
         return new ComponentEntity(new ComponentStructure($fragment));
-
     }
 
     public function getParentId(): int
@@ -248,7 +251,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
 
     public function toArray(): array
     {
-        return $this->attributes->toArray();
+        return $this->struct->toArray();
     }
 
     public function props(?string $key = null): string|array|null
