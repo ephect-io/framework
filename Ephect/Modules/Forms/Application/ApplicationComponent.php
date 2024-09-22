@@ -64,7 +64,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         }
 
         $this->motherUID = $motherUID ?: $this->uid;
-
     }
 
     public function load(?string $filename = null): bool
@@ -90,11 +89,11 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $this->code !== null;
     }
 
-    public abstract function makeComponent(string $filename, string &$html): void;
+    abstract public function makeComponent(string $filename, string &$html): void;
 
     public static function createByHtml(string $html): static
     {
-        $new = new static;
+        $new = new static();
         $new->code = $html;
 
         return $new;
@@ -169,7 +168,9 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     {
         $result = $this->composedOf();
 
-        if ($result === null) return null;
+        if ($result === null) {
+            return null;
+        }
 
         return array_unique($result);
     }
@@ -195,9 +196,12 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     public function analyse(): void
     {
-        $parser = new ParserService;
+        $parser = new ParserService();
         $parser->doUses($this);
         $parser->doUsesAs($this);
+        $parser->doAttributes($this);
+
+
     }
 
     /**
@@ -208,7 +212,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
             StateRegistry::loadByMotherUid($this->motherUID, true);
 //            StateRegistry::load(true);
-            $stateIgniter = new ApplicationIgniter;
+            $stateIgniter = new ApplicationIgniter();
             $stateIgniter->ignite();
         }
 
@@ -224,7 +228,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             File::safeWrite(STATIC_DIR . $this->filename, $html);
         }
         echo $html;
-
     }
 
     public function renderComponent(string $motherUID, string $functionName, array|object|null $functionArgs = null): array

@@ -10,16 +10,17 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
     protected string $name = '';
     protected ?ComponentEntity $entity = null;
     protected mixed $arguments = [];
+    protected mixed $attributes = [];
     protected mixed $flatComposition = [];
 
     function __construct(ComponentDeclarationStructure $struct)
     {
-
         parent::__construct($this);
 
         $this->uid = $struct->uid;
         $this->type = $struct->type;
         $this->arguments = $struct->arguments;
+        $this->attributes = $struct->attributes;
         $this->flatComposition = $struct->composition;
     }
 
@@ -41,6 +42,16 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
     public function getArguments(): ?array
     {
         return $this->arguments;
+    }
+
+    public function hasAttributes(): bool
+    {
+        return count($this->attributes) > 0;
+    }
+
+    public function getAttributes(): ?array
+    {
+        return $this->attributes;
     }
 
     public function getComposition(): ?ComponentEntity

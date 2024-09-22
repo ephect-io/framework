@@ -23,6 +23,8 @@ class ApplicationRecursiveParser
 
         $parser = new ParserService();
 
+        $parser->doAttributes($component);
+
         $parser->doUses($component);
         $parser->doUsesAs($component);
 
@@ -55,14 +57,17 @@ class ApplicationRecursiveParser
         $component->applyCode($parser->getHtml());
 
         $filename = $component->getSourceFilename();
-        File::safeWrite(CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $component->getCode());
+        File::safeWrite(
+            CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
+            $component->getCode()
+        );
         self::updateComponent($component);
 
         $parser->doChildSlots($component);
         $component->applyCode($parser->getHtml());
         self::updateComponent($component);
 
-        while ($compz = $component->getDeclaration()->getComposition() !== null) {
+        while ($component->getDeclaration()->getComposition() !== null) {
             $parser->doOpenComponents($component);
             $component->applyCode($parser->getHtml());
             self::updateComponent($component);
