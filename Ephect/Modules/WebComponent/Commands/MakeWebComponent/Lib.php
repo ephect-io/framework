@@ -24,11 +24,12 @@ class Lib extends AbstractCommandLib
             $builder = new Compiler;
             [$tagName, $className, $hasBackendProps, $entrypoint, $arguments] = $this->readLine();
 
-            $destDir = CUSTOM_WEBCOMPONENTS_ROOT . $className . DIRECTORY_SEPARATOR;
+            $common = new Common();
+            $destDir = $common->getCustomWebComponentRoot() . $className . DIRECTORY_SEPARATOR;
 
             $builder->saveManifest($tagName, $className, $entrypoint, $arguments, $destDir);
 
-            $srcDir = Common::getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR;
+            $srcDir = $common->getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR;
 
             $builder->copyTemplates($tagName, $className, $hasBackendProps, $entrypoint, $arguments, $srcDir, $destDir);
 
