@@ -309,4 +309,14 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
 
         return substr($text, $start, $end - $start + 1);
     }
+
+    public function hasAttributes(): bool
+    {
+        return count($this->attributes) > 0;
+    }
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
 }
