@@ -15,6 +15,8 @@ final class ClosedComponentsParser extends AbstractComponentParser
         $comp = $this->component;
         $decl = $comp->getDeclaration();
         $cmpz = $decl->getComposition();
+        $hasAttrs = $decl->hasAttributes();
+
         $parent = null;
         $child = null;
         if ($parameter != null) {

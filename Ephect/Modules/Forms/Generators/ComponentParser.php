@@ -31,7 +31,15 @@ class ComponentParser extends Parser implements ParserInterface
         }
         $this->doComponents();
         $func = $this->doFunctionDeclaration();
-        $decl = ['uid' => $uid, 'type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];
+        $attrs = $this->doAttributes();
+        $decl = [
+            'uid' => $uid,
+            'type' => $func[0],
+            'name' => $func[1],
+            'arguments' => $func[2],
+            'attributes' => $attrs,
+            'composition' => $this->list
+        ];
 
         return new ComponentDeclarationStructure($decl);
     }
@@ -137,7 +145,11 @@ class ComponentParser extends Parser implements ParserInterface
                     $closer['parentId'] = $item['id'];
                     $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
                     $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
-                    $contents = substr($this->html, $closer['contents']['startsAt'], $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
+                    $contents = substr(
+                        $this->html,
+                        $closer['contents']['startsAt'],
+                        $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1
+                    );
                     $closer['contents']['text'] = '!#base64#' . base64_encode($contents);
 
                     $item['closer'] = $closer;
@@ -233,7 +245,7 @@ class ComponentParser extends Parser implements ParserInterface
         return substr($text, 0, 2) === self::OPEN_TAG . self::TERMINATOR;
     }
 
-    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
+    /** TO BE DONE on base of regex101 https://regex101.com/r/QZejMW/2/ */
     public function doFunctionDeclaration(): ?array
     {
         $result = [];
@@ -244,7 +256,6 @@ class ComponentParser extends Parser implements ParserInterface
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-
             $args = $this->doFunctionArguments($match[3]);
             $result = [$match[1], $match[2], $args];
         }
@@ -263,6 +274,20 @@ class ComponentParser extends Parser implements ParserInterface
 
         foreach ($matches as $match) {
             $result[] = $match[1];
+        }
+
+        return $result;
+    }
+
+    public function doAttributes(): array
+    {
+        $result = [];
+
+        $re = '/(#\[(\w+)\(.*\)])/m';
+        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $result[] = $match[2];
         }
 
         return $result;

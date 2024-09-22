@@ -5,6 +5,7 @@ namespace Forms\Generators;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Forms\Generators\TokenParsers\ArraysParser;
+use Forms\Generators\TokenParsers\AttributesParser;
 use Forms\Generators\TokenParsers\ChildrenDeclarationParser;
 use Forms\Generators\TokenParsers\ChildSlotsParser;
 use Forms\Generators\TokenParsers\ClosedComponentsParser;
@@ -27,6 +28,7 @@ class ParserService implements ParserServiceInterface
     protected ?object $component = null;
     protected array $funcVariables = [];
     protected array $useVariables = [];
+    protected array $attributes = [];
     protected array $useTypes = [];
     protected string $html = '';
     protected ?object $children = null;
@@ -57,16 +59,20 @@ class ParserService implements ParserServiceInterface
         return $this->result;
     }
 
+    public function getUses(): ?array
+    {
+        return $this->useTypes;
+    }
+
+    public function getAttributes(): ?array
+    {
+        return $this->attributes;
+    }
     public function doUses(FileComponentInterface $component): void
     {
         $p = new UsesParser($component);
         $p->do();
         $this->useTypes = array_merge($this->useTypes, $p->getUses());
-    }
-
-    public function getUses(): ?array
-    {
-        return $this->useTypes;
     }
 
     public function doUsesAs(FileComponentInterface $component): void
@@ -81,6 +87,13 @@ class ParserService implements ParserServiceInterface
         $p = new ReturnTypeParser($component);
         $p->do();
         $this->html = $p->getHtml();
+    }
+
+    public function doAttributes(FileComponentInterface $component): void
+    {
+        $p = new AttributesParser($component);
+        $p->do();
+        $this->attributes = $p->getResult();
     }
 
     public function doHeredoc(FileComponentInterface $component): void
