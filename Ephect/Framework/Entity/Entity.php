@@ -12,19 +12,23 @@ use JsonException;
 
 class Entity implements ElementInterface
 {
-
     use ElementTrait;
 
     protected string $filename = '';
     protected array $data = [];
 
-    public function __construct(protected ?StructureInterface $structure = null)
+    public function __construct(private ?StructureInterface $structure = null)
     {
     }
 
     public static function create(?StructureInterface $struct = null): ElementInterface
     {
         return new self($struct);
+    }
+
+    public function getStructure(): ?StructureInterface
+    {
+        return $this->structure;
     }
 
     public function getFilename(): string
