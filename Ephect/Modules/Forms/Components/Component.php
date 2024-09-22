@@ -3,8 +3,8 @@
 namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Framework\Utils\File;
-use Ephect\Modules\Forms\Components\Application\ApplicationComponent;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
+use Forms\Application\ApplicationComponent;
 
 class Component extends ApplicationComponent implements FileComponentInterface
 {

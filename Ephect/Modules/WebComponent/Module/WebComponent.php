@@ -3,9 +3,9 @@
 namespace Ephect\Modules\WebComponent\Module;
 
 use Ephect\Framework\Templates\TemplateMaker;
-use Ephect\Modules\Forms\Components\Application\ApplicationComponent;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\WebComponent\Common;
+use Forms\Application\ApplicationComponent;
 
 class WebComponent extends ApplicationComponent
 {
