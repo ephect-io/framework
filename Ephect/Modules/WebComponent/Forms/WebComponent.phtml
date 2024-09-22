@@ -18,10 +18,10 @@ function WebComponent($children): string
     });
 
     return (<<< HTML
-        @if %tag != '' do
-        {{ body }}
-        @done
         <% 
+            if (%tag != '') {
+            { body }
+            }
             if(!%service->isPending()) {
                 %html = { children };
                 %service->splitHTML(%html);
