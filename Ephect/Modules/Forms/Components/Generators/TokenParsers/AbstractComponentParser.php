@@ -35,7 +35,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
 
     abstract public function do(object|array|string|null $parameter = null): void;
 
-    public function declareMiddlewares(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props): void
+    public function declareMiddlewares(ComponentEntityInterface|null $parent, string $cachedFilename, string $motherUID, string $funcName, string $props): void
     {
         /**
          * Mandatory test: Parent is not always null!
@@ -44,13 +44,11 @@ abstract class AbstractComponentParser extends AbstractTokenParser
             return;
         }
 
-        $filename = $motherUID . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
-
-        if (!is_file(CACHE_DIR . $filename)) {
+        if (!is_file($cachedFilename)) {
             return;
         }
 
-        include_once CACHE_DIR . $filename;
+        include_once $cachedFilename;
 
         $reflection = new ReflectionFunction($funcName);
         $attrs = $reflection->getAttributes();
