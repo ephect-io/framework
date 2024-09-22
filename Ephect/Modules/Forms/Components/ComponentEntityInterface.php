@@ -36,4 +36,8 @@ interface ComponentEntityInterface extends TreeInterface, ElementInterface
     public function getMethod(): string;
 
     public function toArray(): array;
+
+    public function hasAttributes(): bool;
+
+    public function getAttributes(): array;
 }

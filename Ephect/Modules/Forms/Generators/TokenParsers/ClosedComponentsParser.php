@@ -2,8 +2,12 @@
 
 namespace Forms\Generators\TokenParsers;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\Forms\Components\ComponentDeclaration;
+use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
+use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 final class ClosedComponentsParser extends AbstractComponentParser
@@ -15,7 +19,6 @@ final class ClosedComponentsParser extends AbstractComponentParser
         $comp = $this->component;
         $decl = $comp->getDeclaration();
         $cmpz = $decl->getComposition();
-        $hasAttrs = $decl->hasAttributes();
 
         $parent = null;
         $child = null;
@@ -30,7 +33,15 @@ final class ClosedComponentsParser extends AbstractComponentParser
 
         $subject = $this->html;
 
-        $closure = function (ComponentEntityInterface $item, int $index) use (&$subject, &$result, $parent, $muid) {
+        $closure = function (
+            ComponentEntityInterface $item,
+            int $index
+        ) use (
+            &$subject,
+            &$result,
+            $parent,
+            $muid
+        ) {
 
             if ($item->hasCloser()) {
                 return;
@@ -49,30 +60,34 @@ final class ClosedComponentsParser extends AbstractComponentParser
                 $props = "(object) " . $propsArgs ?? "[]";
             }
 
-            $funcName = ComponentRegistry::read($componentName);
-            $componentRender = "\t\t\t<?php \$fn = \\{$funcName}($props); \$fn(); ?>\n";
+            $fqFuncName = ComponentRegistry::read($componentName);
+            $componentRender = "\t\t\t<?php \$fn = \\{$fqFuncName}($props); \$fn(); ?>\n";
+
+            $list = CodeRegistry::read($fqFuncName);
+            $struct = new ComponentDeclarationStructure($list);
+            $decl = new ComponentDeclaration($struct);
+            $hasAttrs = $decl->hasAttributes();
 
             $subject = str_replace($component, $componentRender, $subject);
 
             $this->result[] = $componentName;
 
             $filename = $this->component->getSourceFilename();
-            $cachedFilename = CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
-            File::safeWrite($cachedFilename, $subject);
+            File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
-            $this->declareMiddlewares($parent, $cachedFilename, $muid, $funcName, $props);
+            Logger::create()->debug($hasAttrs ? $componentName . ' has attrs' : $componentName . ' nope', __FILE__, __LINE__);
 
+            $this->declareMiddlewares($parent, $muid, $fqFuncName, $props, $hasAttrs);
         };
 
         if ($child != null) {
             $closure($child, 0);
-        } else if (!$cmpz->hasChildren()) {
+        } elseif (!$cmpz->hasChildren()) {
             $closure($cmpz, 0);
-        } else if ($cmpz->hasChildren()) {
+        } elseif ($cmpz->hasChildren()) {
             $cmpz->forEach($closure, $cmpz);
         }
 
         $this->html = $subject;
     }
-
 }
