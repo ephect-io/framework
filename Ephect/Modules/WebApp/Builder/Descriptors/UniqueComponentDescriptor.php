@@ -2,20 +2,46 @@
 
 namespace Ephect\Modules\WebApp\Builder\Descriptors;
 
+use Ephect\Framework\ElementUtils;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\Component;
+use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Forms\Generators\ComponentParser;
 use Forms\Generators\ParserService;
+use ReflectionClass;
 
-class ComponentDescriptor implements DescriptorInterface
+class UniqueComponentDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
-        File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
-        copy($sourceDir . $filename, COPY_DIR . $filename);
+        [
+            $namespace,
+            $functionName,
+            $parameters,
+            $returnedType,
+            $startsAt
+        ] = ElementUtils::getFunctionDefinitionFromFile($filename);
+
+        include_once $filename;
+
+        $ref = new \ReflectionFunction($functionName);
+        $parameters = $ref->getParameters();
+        $attributes = $ref->getAttributes();
+        $returnType = $ref->getReturnType();
+
+//        $decl = [
+//            'uid' => $uid,
+//            'type' => $func[0],
+//            'name' => $func[1],
+//            'arguments' => $func[2],
+//            'attributes' => $attrs,
+//            'composition' => $this->list
+//        ];
+//
+//        $struct = new ComponentDeclarationStructure($decl);
 
         $comp = new Component();
         $comp->load($filename);

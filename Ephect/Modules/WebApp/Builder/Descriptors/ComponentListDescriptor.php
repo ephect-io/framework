@@ -36,7 +36,7 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
 
         [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
         foreach ($modulePaths as $path) {
-            if(str_starts_with($path, 'vendor')) {
+            if (str_starts_with($path, 'vendor')) {
                 $path = realpath(siteRoot() . $path);
             }
             $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
@@ -46,8 +46,9 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
             $manifest = $manifestReader->read($moduleConfigDir);
 
             $configTemplatesDir = $manifest->getTemplates();
-            $configTemplatesDir = $configTemplatesDir === null ?
-                $configTemplatesDir : siteSrcPath() . $configTemplatesDir;
+            $configTemplatesDir = $configTemplatesDir === null
+                ? $configTemplatesDir
+                : siteSrcPath() . $configTemplatesDir;
 
             if ($configTemplatesDir !== null && file_exists($configTemplatesDir)) {
                 $componentsList = File::walkTreeFiltered($configTemplatesDir, ['phtml']);

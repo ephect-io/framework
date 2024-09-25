@@ -34,7 +34,10 @@ class File
                     continue;
                 }
 
-                if ((count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                if (
+                    (count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter))
+                    || count($filter) === 0
+                ) {
                     $result[] = $file;
                 }
             }
@@ -57,7 +60,10 @@ class File
                     continue;
                 }
 
-                if ((count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter)) || count($filter) === 0) {
+                if (
+                    (count($filter) > 0 && isset($fi['extension']) && in_array($fi['extension'], $filter))
+                    || count($filter) === 0
+                ) {
                     $result[] = substr($file->getPathName(), $l);
                 }
             }
