@@ -7,8 +7,8 @@ use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
-use Forms\Generators\ComponentParser;
-use Forms\Generators\ParserService;
+use Ephect\Modules\Forms\Generators\ComponentParser;
+use Ephect\Modules\Forms\Generators\ParserService;
 
 class ComponentDescriptor implements DescriptorInterface
 {

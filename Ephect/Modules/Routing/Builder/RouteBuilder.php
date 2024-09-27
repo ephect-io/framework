@@ -6,7 +6,7 @@ use Ephect\Modules\Forms\Components\Children;
 use Ephect\Modules\Routing\Base\RouteInterface;
 use Ephect\Modules\Routing\Base\RouteStructure;
 use Ephect\Modules\Routing\Entities\RouteEntity;
-use Forms\Builders\AbstractBuilder;
+use Ephect\Modules\Forms\Builders\AbstractBuilder;
 
 class RouteBuilder extends AbstractBuilder
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Application;
+namespace Ephect\Modules\Forms\Application;
 
 trait ComponentCodeTrait
 {

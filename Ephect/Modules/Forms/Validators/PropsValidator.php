@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Validators;
+namespace Ephect\Modules\Forms\Validators;
 
 use Ephect\Framework\Structure\Structure;
 use ErrorException;

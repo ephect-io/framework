@@ -1,8 +1,8 @@
 <?php
 
-namespace Forms\Generators\TokenParsers;
+namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
-use Forms\Generators\ParserServiceInterface;
+use Ephect\Modules\Forms\Generators\ParserServiceInterface;
 
 interface TokenParserInterface extends ParserServiceInterface
 {

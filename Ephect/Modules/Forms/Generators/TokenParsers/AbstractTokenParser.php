@@ -1,10 +1,10 @@
 <?php
 
-namespace Forms\Generators\TokenParsers;
+namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
-use Forms\Generators\ParserServiceInterface;
+use Ephect\Modules\Forms\Generators\ParserServiceInterface;
 
 abstract class AbstractTokenParser implements TokenParserInterface
 {

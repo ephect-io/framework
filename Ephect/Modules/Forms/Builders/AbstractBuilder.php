@@ -1,10 +1,10 @@
 <?php
 
-namespace Forms\Builders;
+namespace Ephect\Modules\Forms\Builders;
 
 use Ephect\Framework\ElementInterface;
 use ErrorException;
-use Forms\Validators\PropsValidator;
+use Ephect\Modules\Forms\Validators\PropsValidator;
 
 abstract class AbstractBuilder
 {

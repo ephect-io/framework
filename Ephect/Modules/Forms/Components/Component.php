@@ -3,12 +3,11 @@
 namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\Forms\Application\ApplicationComponent;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
-use Forms\Application\ApplicationComponent;
 
 class Component extends ApplicationComponent implements FileComponentInterface
 {
-
     public function makeComponent(string $filename, string &$html): void
     {
         $info = (object)pathinfo($filename);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Forms\Generators\TokenParsers\View;
+namespace Ephect\Modules\Forms\Generators\TokenParsers\View;
 
-use Forms\Generators\TokenParsers\AbstractTokenParser;
+use Ephect\Modules\Forms\Generators\TokenParsers\AbstractTokenParser;
 
 final class EndParser extends AbstractTokenParser
 {

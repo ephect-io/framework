@@ -18,6 +18,9 @@ class UniqueComponentListDescriptor implements ComponentListDescriptorInterface
         $bootstrapList = File::walkTreeFiltered(UNIQUE_DIR, ['phtml'], true);
         foreach ($bootstrapList as $key => $compFile) {
             [$fqcn, $comp] = $descriptor->describe(UNIQUE_DIR, $compFile);
+            if ($fqcn === null) {
+                continue;
+            }
             $result[$fqcn] = $comp;
         }
 

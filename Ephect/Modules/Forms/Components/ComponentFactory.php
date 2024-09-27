@@ -4,11 +4,10 @@ namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
-use Forms\Application\ApplicationComponent;
 
 class ComponentFactory
 {
-    public static function create(string $fullyQualifiedName, string $motherUID): ApplicationComponent
+    public static function create(string $fullyQualifiedName, string $motherUID): FileComponentInterface
     {
 
         $filename = ComponentRegistry::read($fullyQualifiedName);
