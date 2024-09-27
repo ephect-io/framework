@@ -8,7 +8,12 @@ use stdClass;
 
 class ComponentRenderer
 {
-    public static function renderHTML(string $cacheFilename, string $fqFunctionName, array|object|null $functionArgs = null, ?Request $request = null): string
+    public static function renderHTML(
+        string $cacheFilename,
+        string $fqFunctionName,
+        array|object|null $functionArgs = null,
+        ?Request $request = null
+    ): string
     {
         include_once CACHE_DIR . $cacheFilename;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Forms\Application;
+namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
-use Forms\Generators\ComponentParser;
-use Forms\Generators\ParserService;
+use Ephect\Modules\Forms\Generators\ComponentParser;
+use Ephect\Modules\Forms\Generators\ParserService;
 
 class ApplicationRecursiveParser
 {
