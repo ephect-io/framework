@@ -1,6 +1,6 @@
 <?php /** @noinspection PhpArrayWriteIsNotUsedInspection */
 
-namespace Forms\Generators;
+namespace Ephect\Modules\Forms\Generators;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Crypto\Crypto;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Application;
+namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentInterface;
@@ -28,7 +28,6 @@ class ComponentsCopier
 
         $fqFuncName = $component->getFullyQualifiedFunction();
         foreach ($componentList as $entity) {
-
             $funcName = $entity->getName();
             $fqFuncName = ComponentRegistry::read($funcName);
 

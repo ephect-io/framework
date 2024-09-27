@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Generators;
+namespace Ephect\Modules\Forms\Generators;
 
 trait TypesParserTrait
 {

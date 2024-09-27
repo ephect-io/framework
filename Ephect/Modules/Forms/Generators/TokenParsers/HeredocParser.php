@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Generators\TokenParsers;
+namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
 final class HeredocParser extends AbstractTokenParser
 {

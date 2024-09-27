@@ -1,8 +1,8 @@
 <?php
 
-namespace Forms\Generators\TokenParsers;
+namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
-use Forms\Generators\TypesParserTrait;
+use Ephect\Modules\Forms\Generators\TypesParserTrait;
 use JetBrains\PhpStorm\Deprecated;
 
 /**
