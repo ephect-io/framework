@@ -7,11 +7,14 @@ use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 use Ephect\Modules\Routing\Services\RouterService;
 use Ephect\Modules\WebApp\Builder\Copiers\TemplatesCopyMaker;
 use Ephect\Modules\WebApp\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\PluginListDescriptor;
+use Ephect\Modules\WebApp\Builder\Descriptors\UniqueComponentDescriptor;
+use Ephect\Modules\WebApp\Builder\Descriptors\UniqueComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Routing\Finder;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByRouteStrategy;
@@ -19,7 +22,6 @@ use Exception;
 
 class Builder
 {
-
     protected array $list = [];
     protected array $routes = [];
 
@@ -40,13 +42,17 @@ class Builder
             File::safeMkDir(COPY_DIR);
             File::safeMkDir(STATIC_DIR);
 
-            $copier = new TemplatesCopyMaker;
-
+            $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies
 
+//            UniqueCodeRegistry::load();
+//            $descriptor = new UniqueComponentListDescriptor();
+//            $descriptor->describe();
+//            UniqueCodeRegistry::save();
+//
             CodeRegistry::load();
 
-            $descriptor = new ComponentListDescriptor;
+            $descriptor = new ComponentListDescriptor();
             $components = $descriptor->describe();
             $this->list = [...$this->list, ...$components];
 
@@ -54,11 +60,10 @@ class Builder
             ComponentRegistry::save();
         }
 
-        if(!PluginRegistry::load()) {
-
+        if (!PluginRegistry::load()) {
             [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
             foreach ($modulePaths as $path) {
-                if(str_starts_with($path, 'vendor')) {
+                if (str_starts_with($path, 'vendor')) {
                     $path = realpath(siteRoot() . $path);
                 }
                 $moduleSrcPathFile = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR . REL_CONFIG_APP;
@@ -74,7 +79,7 @@ class Builder
             /**
              * Describe builtin modules
              */
-            $descriptor = new PluginListDescriptor;
+            $descriptor = new PluginListDescriptor();
             $plugins = $descriptor->describe();
             $this->list = [...$this->list, ...$plugins];
 
@@ -89,7 +94,7 @@ class Builder
         CodeRegistry::load();
         ComponentRegistry::load();
 
-        $routes = (new Finder)->searchForRoutes();
+        $routes = (new Finder())->searchForRoutes();
 
         array_unshift($routes, 'App');
 
@@ -108,10 +113,10 @@ class Builder
      */
     public function buildAllRoutes(): void
     {
-        (new BuildByNameStrategy)->build('App');
+        (new BuildByNameStrategy())->build('App');
         $this->routes = RouterService::findRouteNames();
 
-        $buildByRoute = new BuildByRouteStrategy;
+        $buildByRoute = new BuildByRouteStrategy();
         foreach ($this->routes as $route) {
             $buildByRoute->build($route);
         }

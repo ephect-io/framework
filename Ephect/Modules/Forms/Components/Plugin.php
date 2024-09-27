@@ -4,7 +4,6 @@ namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
-use Forms\Application\ApplicationComponent;
 
 class Plugin extends Component implements FileComponentInterface
 {
@@ -15,7 +14,7 @@ class Plugin extends Component implements FileComponentInterface
 
     public function analyse(): void
     {
-        ApplicationComponent::analyse();
+        parent::analyse();
 
         PluginRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());

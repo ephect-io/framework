@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Generators\TokenParsers;
+namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
 use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;

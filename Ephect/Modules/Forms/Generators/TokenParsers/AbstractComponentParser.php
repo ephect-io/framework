@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Generators\TokenParsers;
+namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
 use Ephect\Framework\Middlewares\AttributeMiddlewareInterface;
 use Ephect\Framework\Registry\FrameworkRegistry;

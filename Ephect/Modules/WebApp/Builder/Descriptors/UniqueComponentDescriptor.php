@@ -2,15 +2,18 @@
 
 namespace Ephect\Modules\WebApp\Builder\Descriptors;
 
+use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
-use Forms\Generators\ComponentParser;
-use Forms\Generators\ParserService;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
+use Ephect\Modules\Forms\Generators\ComponentParser;
+use Ephect\Modules\Forms\Generators\ParserService;
 use ReflectionClass;
 
 class UniqueComponentDescriptor implements DescriptorInterface
@@ -23,25 +26,39 @@ class UniqueComponentDescriptor implements DescriptorInterface
             $parameters,
             $returnedType,
             $startsAt
-        ] = ElementUtils::getFunctionDefinitionFromFile($filename);
+        ] = ElementUtils::getFunctionDefinitionFromFile(UNIQUE_DIR . $filename);
+
+        Logger::create()->debug([
+            'namespace' => $namespace,
+            'functionName' => $functionName,
+            'parameters' => $parameters,
+            'returnedType' => $returnedType,
+            'startsAt' => $startsAt
+        ]);
+
+        if ($functionName == '') {
+            return [null, null];
+        }
 
         include_once $filename;
 
-        $ref = new \ReflectionFunction($functionName);
-        $parameters = $ref->getParameters();
-        $attributes = $ref->getAttributes();
-        $returnType = $ref->getReturnType();
+        $fqFuncName = $namespace . '\\' . $functionName;
 
-//        $decl = [
-//            'uid' => $uid,
-//            'type' => $func[0],
-//            'name' => $func[1],
-//            'arguments' => $func[2],
-//            'attributes' => $attrs,
-//            'composition' => $this->list
-//        ];
-//
-//        $struct = new ComponentDeclarationStructure($decl);
+        $ref = new \ReflectionFunction($fqFuncName);
+        $refParameters = $ref->getParameters();
+        $refAttributes = $ref->getAttributes();
+        $refReturnType = $ref->getReturnType();
+
+        $arguments = array_map(function ($parameter) {
+            return $parameter->getName();
+        }, $refParameters);
+
+        $attributes = array_map(function ($attribute) {
+            return [
+                'name' => $attribute->getName(),
+                'arguments' => $attribute->getArguments(),
+            ];
+        }, $refAttributes);
 
         $comp = new Component();
         $comp->load($filename);
@@ -61,7 +78,17 @@ class UniqueComponentDescriptor implements DescriptorInterface
         $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
-        CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
+        $decl = [
+            'uid' => Crypto::createOID(),
+            'type' => 'function',
+            'name' => $functionName,
+            'arguments' => $arguments,
+            'attributes' => $attributes,
+            'returnType' => $refReturnType->getName(),
+            'composition' => $decl['composition'],
+        ];
+
+        UniqueCodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
         ComponentRegistry::write($filename, $uid);
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Application;
+namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Modules\WebApp\Web\Request;
 use ReflectionFunction;
