@@ -1,6 +1,6 @@
 <?php
 
-namespace Forms\Application;
+namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\ElementUtils;
@@ -20,7 +20,7 @@ use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\WebApp\Web\Request;
 use Exception;
-use Forms\Generators\ParserService;
+use Ephect\Modules\Forms\Generators\ParserService;
 use ReflectionException;
 
 define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
