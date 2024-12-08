@@ -18,7 +18,7 @@ use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\CacheRegistry;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
-use Ephect\Modules\WebApp\Web\Request;
+use Ephect\Modules\Http\Transport\Request;
 use Exception;
 use Ephect\Modules\Forms\Generators\ParserService;
 use ReflectionException;
@@ -80,10 +80,22 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             $this->code = File::safeRead(COPY_DIR . $this->filename);
         }
 
-        [$this->namespace, $this->function, $parameters, $returnedType, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
+        [
+            $this->namespace,
+            $this->function,
+            $parameters,
+            $returnedType,
+            $this->bodyStartsAt
+        ] = ElementUtils::getFunctionDefinition($this->code);
         if ($this->bodyStartsAt == -1 && !empty($this->code)) {
             $this->makeComponent($this->filename, $this->code);
-            [$this->namespace, $this->function, $parameters, $returnedType, $this->bodyStartsAt] = ElementUtils::getFunctionDefinition($this->code);
+            [
+                $this->namespace,
+                $this->function,
+                $parameters,
+                $returnedType,
+                $this->bodyStartsAt
+            ] = ElementUtils::getFunctionDefinition($this->code);
         }
 
         return $this->code !== null;
@@ -200,8 +212,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         $parser->doUses($this);
         $parser->doUsesAs($this);
         $parser->doAttributes($this);
-
-
     }
 
     /**
@@ -230,8 +240,11 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         echo $html;
     }
 
-    public function renderComponent(string $motherUID, string $functionName, array|object|null $functionArgs = null): array
-    {
+    public function renderComponent(
+        string $motherUID,
+        string $functionName,
+        array|object|null $functionArgs = null
+    ): array {
         [$fqFunctionName, $cacheFilename, $isCached] = ComponentFinder::find($functionName, $motherUID);
         if (!$isCached) {
             ComponentRegistry::load();
@@ -273,8 +286,11 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return static::getFlatFilename($this->filename);
     }
 
-    public function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string
-    {
+    public function copyComponents(
+        array &$list,
+        ?string $motherUID = null,
+        ?ComponentInterface $component = null
+    ): ?string {
         if ($component === null) {
             $component = $this;
             $motherUID = $component->getUID();

@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Modules\WebApp\Web\Request;
+namespace Ephect\Modules\Http\Transport;
 
-readonly class Headers
+readonly class RequestHeaders
 {
 
     public array $list;
