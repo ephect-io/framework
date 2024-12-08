@@ -2,7 +2,7 @@
 
 namespace Ephect\Modules\Forms\Application;
 
-use Ephect\Modules\WebApp\Web\Request;
+use Ephect\Modules\Http\Transport\Request;
 use ReflectionFunction;
 use stdClass;
 
@@ -13,8 +13,7 @@ class ComponentRenderer
         string $fqFunctionName,
         array|object|null $functionArgs = null,
         ?Request $request = null
-    ): string
-    {
+    ): string {
         include_once CACHE_DIR . $cacheFilename;
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
@@ -22,7 +21,7 @@ class ComponentRenderer
 
         $bodyProps = null;
         if ($request !== null && $request->headers->contains('application/json', 'content-type')) {
-            $bodyProps = json_decode($request->body);
+            $bodyProps = json_decode($request->getBody());
         }
 
         $html = '';
@@ -40,7 +39,7 @@ class ComponentRenderer
 
             if ($bodyProps !== null) {
                 if ($props === null) {
-                    $props = new stdClass;
+                    $props = new stdClass();
                 }
                 foreach ($bodyProps as $field => $value) {
                     $props->{$field} = $value;
@@ -50,7 +49,6 @@ class ComponentRenderer
             $fn = call_user_func($fqFunctionName, $props);
             $fn();
             $html = ob_get_clean();
-
         }
 
         return $html;
