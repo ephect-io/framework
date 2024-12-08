@@ -38,6 +38,9 @@ abstract class AbstractComponentParser extends AbstractTokenParser
 
     abstract public function do(object|array|string|null $parameter = null): void;
 
+    /**
+     * @throws \ReflectionException
+     */
     public function declareMiddlewares(
         ComponentEntityInterface|null $parent,
         string $motherUID,

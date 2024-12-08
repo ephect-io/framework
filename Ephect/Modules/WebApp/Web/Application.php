@@ -43,6 +43,9 @@ class Application extends AbstractApplication
         return 0;
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     protected function execute(): int
     {
         $app = new Component('App');

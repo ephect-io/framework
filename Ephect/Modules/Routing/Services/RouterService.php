@@ -6,15 +6,15 @@ use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
+use Ephect\Modules\Http\Transport\Request;
 use Ephect\Modules\Routing\Base\RouteInterface;
 use Ephect\Modules\Routing\Registry\HttpErrorRegistry;
 use Ephect\Modules\Routing\Registry\RouteRegistry;
-use Ephect\Modules\WebApp\Web\Request;
+
 use function Ephect\Hooks\useStateObject;
 
 class RouterService implements RouterServiceInterface
 {
-
     public function __construct()
     {
         RouteRegistry::load();
@@ -23,7 +23,7 @@ class RouterService implements RouterServiceInterface
 
     public static function findRouteArguments(string $route): ?array
     {
-        $result = null;
+        $result = [];
 
         $routes = RouteRegistry::items();
         if (count($routes) === 0) {
@@ -59,13 +59,11 @@ class RouterService implements RouterServiceInterface
 
         parse_str($query, $result);
 
-        return (array)$result;
+        return $result;
     }
 
     public static function findRouteNames(): ?array
     {
-        $result = null;
-
         $routes = RouteRegistry::items();
         if (count($routes) === 0) {
             $routes = RouteRegistry::getCachedRoutes();
@@ -77,15 +75,11 @@ class RouterService implements RouterServiceInterface
             return $item['redirect'];
         }, $allroutes);
 
-        $result = array_unique($result);
-
-        return $result;
+        return array_unique($result);
     }
 
     public static function findRouteByQueryString(string $query): ?string
     {
-        $result = null;
-
         $routes = RouteRegistry::items();
         if (count($routes) === 0) {
             $routes = RouteRegistry::getCachedRoutes();
@@ -112,8 +106,6 @@ class RouterService implements RouterServiceInterface
 
     public static function findRouteQueryString(string $route): ?string
     {
-        $result = null;
-
         $routes = RouteRegistry::items();
         if (count($routes) === 0) {
             $routes = RouteRegistry::getCachedRoutes();
@@ -185,6 +177,9 @@ class RouterService implements RouterServiceInterface
         $this->renderRoute($responseCode === 200, $path, $query, $error, $responseCode, $middlewares, $html);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function renderRoute(bool $pageFound, string $path, array|object|null $query, int $error, int $responseCode, array $middlewares, string &$html): void
     {
         if (!$pageFound) {
@@ -228,7 +223,6 @@ class RouterService implements RouterServiceInterface
         $parameters = [];
 
         foreach ($methodRoutes as $rule => $settings) {
-
             $stuff = (object)$settings;
             $redirect = $stuff->redirect;
             $translation = $stuff->translate;
