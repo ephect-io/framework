@@ -20,14 +20,11 @@ class ApplicationIgniter
         $middlewares = (object)$state['middlewares'];
         foreach ($middlewares as $className => $arguments) {
             $filename = FrameworkRegistry::read($className);
-            if (is_file($filename)) {
-                if (is_subclass_of($className, ApplicationStateMiddlewareInterface::class)) {
-                    include_once $filename;
-                    $middleware = new $className;
-                    $middleware->ignite((object)$arguments);
-                }
+            if (is_file($filename) && is_subclass_of($className, ApplicationStateMiddlewareInterface::class)) {
+                include_once $filename;
+                $middleware = new $className();
+                $middleware->ignite((object)$arguments);
             }
-
         }
     }
 }

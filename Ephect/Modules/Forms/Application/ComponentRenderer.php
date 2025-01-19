@@ -2,12 +2,17 @@
 
 namespace Ephect\Modules\Forms\Application;
 
+use Ephect\Framework\Event\EventDispatcher;
+use Ephect\Modules\Forms\Events\ComponentFinishedEvent;
 use Ephect\Modules\Http\Transport\Request;
 use ReflectionFunction;
 use stdClass;
 
 class ComponentRenderer
 {
+    /**
+     * @throws \ReflectionException
+     */
     public static function renderHTML(
         string $cacheFilename,
         string $fqFunctionName,
@@ -50,6 +55,10 @@ class ComponentRenderer
             $fn();
             $html = ob_get_clean();
         }
+
+//        $finishedEvent = new ComponentFinishedEvent($cacheFilename, $fqFunctionName, $html);
+//        $dispatcher = new EventDispatcher();
+//        $dispatcher->dispatch($finishedEvent);
 
         return $html;
     }

@@ -29,7 +29,7 @@ class Application extends AbstractApplication
         $this->loadInFile();
         StateRegistry::load();
         if (!ComponentRegistry::load()) {
-            $compiler = new Builder;
+            $compiler = new Builder();
             $compiler->describeComponents();
             $compiler->prepareRoutedComponents();
         }

@@ -13,5 +13,6 @@ class ConnectionOpenerMiddleware implements ApplicationStateMiddlewareInterface
     {
         $conn = PdoConnection::opener($arguments->conf);
         useState(["$arguments->conf" => $conn,]);
+        // Dispatch event
     }
 }
