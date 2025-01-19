@@ -14,8 +14,13 @@ use ReflectionFunction;
 
 class RouteParserMiddleware implements ComponentParserMiddlewareInterface
 {
-    public function parse(ComponentEntityInterface|null $parent, string $motherUID, string $funcName, string $props, array $arguments): void
-    {
+    public function parse(
+        ComponentEntityInterface|null $parent,
+        string $motherUID,
+        string $funcName,
+        string $props,
+        array $arguments
+    ): void {
         if ($parent == null || $parent->getName() != 'Route') {
             return;
         }

@@ -41,6 +41,7 @@ class Builder
             File::safeMkDir(CACHE_DIR);
             File::safeMkDir(COPY_DIR);
             File::safeMkDir(STATIC_DIR);
+            File::safeMkDir(STORE_DIR);
 
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies

@@ -29,9 +29,10 @@ include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'StateRegistry.php';
 include FRAMEWORK_PATH . 'Modules' . DIRECTORY_SEPARATOR . 'ModuleInstaller.php';
 include FRAMEWORK_PATH . 'Plugins' . DIRECTORY_SEPARATOR . 'PluginInstaller.php';
 
-ModuleInstaller::loadBootstraps();
-PluginInstaller::loadBootstraps();
 HooksRegistry::register();
 FrameworkRegistry::register();
 
 Autoloader::register();
+
+ModuleInstaller::loadBootstraps();
+PluginInstaller::loadBootstraps();

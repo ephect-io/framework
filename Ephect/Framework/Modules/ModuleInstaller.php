@@ -3,26 +3,38 @@
 namespace Ephect\Framework\Modules;
 
 use Ephect\Framework\CLI\Console;
+use Ephect\Framework\ElementUtils;
 use Ephect\Framework\Modules\Composer\ComposerConfigReader;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 use ErrorException;
 use JsonException;
+
 use function siteConfigPath;
 
 class ModuleInstaller
 {
     public function __construct(private string $workingDirectory)
     {
-
     }
 
     public static function loadBootstraps(): void
     {
-        [$filename, $paths] = self::readModuleBootstrapPaths();
+        [$filename, $paths] = self::readModulePaths();
         foreach ($paths as $path) {
-            require $path;
+            $bootstrapFile = $path . DIRECTORY_SEPARATOR . "bootstrap.php";
+
+            if (!file_exists($bootstrapFile)) {
+                continue;
+            }
+            [$namespace, $className] = ElementUtils::getClassDefinitionFromFile($bootstrapFile);
+            $fqBootstrap = $namespace . '\\' . $className;
+
+            require $bootstrapFile;
+
+            $bootstrap = new $fqBootstrap();
+            $bootstrap->boot();
         }
     }
 
@@ -81,13 +93,13 @@ class ModuleInstaller
         }
         FrameworkRegistry::save(true);
 
-        $moduleManifestReader = new ModuleManifestReader;
+        $moduleManifestReader = new ModuleManifestReader();
         $moduleManifest = $moduleManifestReader->read($configDir);
 
-        $composerConfigReader = new ComposerConfigReader;
+        $composerConfigReader = new ComposerConfigReader();
         $composerConfig = $composerConfigReader->read();
 
-        $moduleConfigReader = new ModulesConfigReader;
+        $moduleConfigReader = new ModulesConfigReader();
         $moduleConfig = $moduleConfigReader->read();
 
         $requires = $composerConfig->getRequire();
@@ -186,10 +198,10 @@ class ModuleInstaller
         }
         FrameworkRegistry::save(true);
 
-        $moduleManifestReader = new ModuleManifestReader;
+        $moduleManifestReader = new ModuleManifestReader();
         $moduleManifest = $moduleManifestReader->read($configDir);
 
-        $moduleConfigReader = new ModulesConfigReader;
+        $moduleConfigReader = new ModulesConfigReader();
         $moduleConfig = $moduleConfigReader->read();
         $moduleConfig->removeModule($moduleManifest->getName());
         $moduleConfig->save();

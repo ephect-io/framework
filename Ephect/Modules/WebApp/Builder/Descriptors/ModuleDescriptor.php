@@ -14,6 +14,11 @@ class ModuleDescriptor implements DescriptorInterface
     {
     }
 
+    /**
+     * @throws \ErrorException
+     * @throws \JsonException
+     * @throws Exception
+     */
     public function describe(string $sourceDir, string $filename): array
     {
         File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
