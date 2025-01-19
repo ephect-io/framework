@@ -40,6 +40,8 @@ class ChildSlotsParser extends AbstractTokenParser
         if ($parentHtml !== '') {
             File::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
             File::safeWrite(CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getSourceFilename(), $this->html);
+            File::safeWrite(STORE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
+            File::safeWrite(STORE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getSourceFilename(), $this->html);
         }
 
         if ($doc->getCount() > 0) {
