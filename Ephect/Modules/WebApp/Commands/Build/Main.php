@@ -67,7 +67,8 @@ LOGO;
 LOGO;
 
 
-        echo $logo3 . PHP_EOL;
+        $principal = include_once __DIR__ . DIRECTORY_SEPARATOR  . "Logo.php";
+        echo $principal . PHP_EOL;
 
 
         $egg = new Lib($this->application);
