@@ -4,7 +4,7 @@ namespace Ephect\Hooks;
 
 use Ephect\Framework\Registry\StateRegistry;
 
-function useStateObject(array|object $state = null): array
+function useStateObject(array|object|null $state = null): array
 {
     $setState = function (array|object $state) {
         StateRegistry::writeItem('stateObject', $state);
