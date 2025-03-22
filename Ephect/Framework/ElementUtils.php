@@ -45,22 +45,6 @@ final class ElementUtils
         return [$namespace, $functionName, $parameters, $returnedType, $pos];
     }
 
-    public static function grabKeywordName(string $keyword, string $classText, string $delimiter): array
-    {
-        $result = '';
-        $needle = $keyword . ' ';
-
-        $end = -1;
-        $start = strpos($classText, $needle);
-        if ($start > -1) {
-            $start += strlen($needle);
-            $end = strpos($classText, $delimiter, $start);
-            $result = trim(substr($classText, $start, $end - $start));
-        }
-
-        return [$result, $end];
-    }
-
     public static function getEnumDefinitionFromFile($filepath): ?array
     {
         $contents = File::safeRead($filepath);
@@ -82,6 +66,22 @@ final class ElementUtils
         $enumName = trim($enumName);
 
         return [$namespace, $enumName, $pos];
+    }
+
+    public static function grabKeywordName(string $keyword, string $classText, string $delimiter): array
+    {
+        $result = '';
+        $needle = $keyword . ' ';
+
+        $end = -1;
+        $start = strpos($classText, $needle);
+        if ($start > -1) {
+            $start += strlen($needle);
+            $end = strpos($classText, $delimiter, $start);
+            $result = trim(substr($classText, $start, $end - $start));
+        }
+
+        return [$result, $end];
     }
 
     public static function getTraitDefinitionFromFile($filepath): ?array

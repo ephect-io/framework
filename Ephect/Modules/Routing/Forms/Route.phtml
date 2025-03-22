@@ -1,0 +1,45 @@
+<?php
+
+namespace  Ephect\Modules\Routing\Forms;
+
+use Ephect\Modules\Routing\Builder\RouteBuilder;
+use Ephect\Modules\Routing\Services\RouterService;
+use function Ephect\Hooks\useEffect;
+use function Ephect\Hooks\useStateObject;
+
+function Route($children): string
+{
+    useEffect(function ($children, /* bool */ $onError, /* string */ $html) {
+
+        $props = $children;
+        if (method_exists($children, "props")) {
+            $props = $children->props();
+        }
+
+        $routeBuilder = new RouteBuilder($props);
+        $route = $routeBuilder->build();
+
+        $router = new RouterService();
+        $router->addRoute($route);
+        $router->saveRoutes();
+
+        if (!IS_WEB_APP) {
+            return;
+        }
+
+        $error = $route->getError();
+
+        [$path, $query, $code] = $router->matchRoute($route);
+
+        [$state, $setState] = useStateObject();
+        $routes = $state->routes ?? [];
+
+        $routes[] = ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
+        useStateObject(['routes' => $routes]);
+
+    });
+
+    return (<<< HTML
+
+    HTML);
+}

@@ -1,0 +1,40 @@
+<?php
+
+namespace  Ephect\Modules\Routing\Forms;
+
+use Ephect\Modules\Routing\Registry\RouteRegistry;
+use Ephect\Modules\Routing\Services\RouterService;
+use function Ephect\Hooks\useEffect;
+
+function Router($children): string
+{
+    useEffect(function (/* bool */ $hasRouted, /* object */ $service, /* string */ $path, /* string */ $html) {
+
+        $service = new RouterService;
+        if (RouteRegistry::hasMoved()) {
+            [$path, $query, $error, $code, $middlewares] = $service->doRouting();
+            $service->renderRoute($code === 200, $path, $query, $error, $code, $middlewares, $html);
+
+            $hasRouted = true;
+        }
+    });
+
+    return (<<< HTML
+        <%
+            if(%hasRouted) { 
+                { html }
+                return;
+            }
+        %>
+        {{ children }}
+        <%            
+            %service->moveCache();
+            %service->purgeCopies();
+            %service->findRoute(%html);
+            if(%html !== '') { 
+                { html }
+            } 
+
+        %>
+    HTML);
+}

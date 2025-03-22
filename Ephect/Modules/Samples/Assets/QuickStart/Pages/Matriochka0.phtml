@@ -1,0 +1,40 @@
+<?php
+
+namespace QuickStart;
+
+use function Ephect\Hooks\useEffect;
+
+function Matriochka0($props): string
+{
+
+    useEffect(function($props, /* string */ $devotchka) {
+        $devotchka = $props->devotchka;
+    });
+
+    return (<<< HTML
+    <Mother >
+        <Slot name="title">Ephect in action!</Slot>
+        <Slot name="stylesheets">
+            <link rel="stylesheet" href="/css/index.css" />
+            <link rel="stylesheet" href="/css/app.css" />
+        </Slot>
+        <div class="App-content" >
+            <p>
+                {{ devotchka }}
+            </p>
+            <Matriochka1 id="zero" label="Zero">
+                inside 0<br>
+                <Matriochka1 id="one" label="One">
+                    inside 1<br>
+                    <Matriochka1 id="two" label="Two">
+                        inside 2<br>
+                        <Matriochka1 id="three" label="Three">
+                            inside 3<br>
+                        </Matriochka1>
+                    </Matriochka1>
+                </Matriochka1>
+            </Matriochka1>
+        </div>
+    </Mother>
+    HTML);
+}

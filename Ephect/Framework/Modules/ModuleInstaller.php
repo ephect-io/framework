@@ -9,6 +9,7 @@ use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 use ErrorException;
 use JsonException;
+use function siteConfigPath;
 
 class ModuleInstaller
 {
@@ -25,6 +26,19 @@ class ModuleInstaller
         }
     }
 
+    public static function readModuleBootstrapPaths(): array
+    {
+        $configDir = siteConfigPath();
+        $filename = $configDir . "modulesBootstrapPaths.php";
+
+        $paths = [];
+        if (file_exists($filename)) {
+            $paths = require $filename;
+        }
+
+        return [$filename, $paths];
+    }
+
     /**
      * @throws JsonException
      * @throws ErrorException
@@ -34,6 +48,8 @@ class ModuleInstaller
         FrameworkRegistry::load(true);
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
         $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = is_dir($srcDir) ? $srcDir : $this->workingDirectory;
+        $configDir = is_dir($configDir) ? $configDir : $this->workingDirectory;
 
         [$filename, $paths] = self::readModulePaths();
         if (is_array($paths)) {
@@ -115,19 +131,6 @@ class ModuleInstaller
         File::safeWrite($filename, $modulesPaths);
     }
 
-    public static function readModuleBootstrapPaths(): array
-    {
-        $configDir = siteConfigPath();
-        $filename = $configDir . "modulesBootstrapPaths.php";
-
-        $paths = [];
-        if (file_exists($filename)) {
-            $paths = require $filename;
-        }
-
-        return [$filename, $paths];
-    }
-
     public static function saveModuleBootstrapPaths(array $paths): void
     {
         $configDir = siteConfigPath();
@@ -159,6 +162,8 @@ class ModuleInstaller
 
         $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
         $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = is_dir($srcDir) ? $srcDir : $this->workingDirectory;
+        $configDir = is_dir($configDir) ? $configDir : $this->workingDirectory;
 
         $bootstrapFile = $srcDir . 'bootstrap.php';
         $constantsFile = $srcDir . 'constants.php';

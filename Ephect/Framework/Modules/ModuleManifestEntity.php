@@ -19,8 +19,7 @@ class ModuleManifestEntity extends ManifestEntity implements ModuleManifestEntit
     public function __construct(ModuleManifestStructure $structure)
     {
         parent::__construct($structure);
-
-        $this->bindStructure($this->structure);
+        $this->bindStructure($structure);
     }
 
     public function getTag(): string
