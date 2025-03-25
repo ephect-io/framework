@@ -1,11 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-namespace Ephect;
-
-use Ephect\Framework\CLI\Application;
-
-include 'Ephect' . DIRECTORY_SEPARATOR . 'bootstrap.php';
-
-Application::create($argv, $argc);
+include 'bootstrap.php';
+Ephect\Framework\CLI\Application::create($argv, $argc);
  
