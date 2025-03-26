@@ -12,16 +12,17 @@ class Bootstrap implements ModuleBootstrapInterface
 {
     public function boot(): void
     {
-//        $dispatcher = new EventDispatcher();
-//        $provider = new EventServiceProvider(
-//            $dispatcher,
-//            [
-//                ComponentFinishedEvent::class => [
-//                    ComponentFinishedListener::class
-//                ],
-//            ],
-//        );
-//
-//        $provider->register();
+        $dispatcher = new EventDispatcher();
+
+        $provider = new EventServiceProvider(
+            $dispatcher,
+            [
+                ComponentFinishedEvent::class => [
+                    ComponentFinishedListener::class
+                ],
+            ],
+        );
+
+        $provider->register();
     }
 }

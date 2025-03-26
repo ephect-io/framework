@@ -56,9 +56,9 @@ class ComponentRenderer
             $html = ob_get_clean();
         }
 
-//        $finishedEvent = new ComponentFinishedEvent($cacheFilename, $fqFunctionName, $html);
-//        $dispatcher = new EventDispatcher();
-//        $dispatcher->dispatch($finishedEvent);
+        $finishedEvent = new ComponentFinishedEvent($cacheFilename, $fqFunctionName, $html);
+        $dispatcher = new EventDispatcher();
+        $dispatcher->dispatch($finishedEvent);
 
         return $html;
     }
