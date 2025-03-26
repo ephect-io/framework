@@ -13,8 +13,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     public static function reset(): void
     {
         $runtimeDir = siteRuntimePath();
-
-        self::$instance = new FrameworkRegistry;
+        self::$instance = new FrameworkRegistry();
         self::$instance->_setCacheDirectory($runtimeDir);
         unlink(self::$instance->getCacheFilename());
     }
@@ -23,8 +22,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     {
         if (self::$instance === null) {
             $runtimeDir = siteRuntimePath();
-
-            self::$instance = new FrameworkRegistry;
+            self::$instance = new FrameworkRegistry();
             self::$instance->_setCacheDirectory($runtimeDir);
         }
 
@@ -34,8 +32,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     public static function register(): void
     {
         if (!FrameworkRegistry::load(true)) {
-
-            $frameworkFiles = File::walkTreeFiltered(EPHECT_ROOT, ['php']);
+            $frameworkFiles = File::walkTreeFiltered(FRAMEWORK_ROOT, ['php']);
 
             foreach ($frameworkFiles as $filename) {
                 if (
@@ -47,37 +44,38 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 }
 
                 if (str_ends_with($filename, 'Interface.php')) {
-                    [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(EPHECT_ROOT . $filename);
+                    [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
-                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
                 if (str_ends_with($filename, 'Enum.php')) {
-                    [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(EPHECT_ROOT . $filename);
+                    [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $enum;
-                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
                 if (str_ends_with($filename, 'Trait.php')) {
-                    [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(EPHECT_ROOT . $filename);
+                    [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
-                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
-                [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(EPHECT_ROOT . $filename);
+                [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                 $fqname = $namespace . '\\' . $class;
                 if ($class === '') {
-                    list($namespace, $function) = ElementUtils::getFunctionDefinitionFromFile(EPHECT_ROOT . $filename);
+                    [$namespace, $function] = ElementUtils::getFunctionDefinitionFromFile(FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $function;
                 }
                 if ($fqname !== '\\') {
-                    FrameworkRegistry::write($fqname, EPHECT_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
                 }
             }
 
+            self::registerCustomClasses(COMMANDS_ROOT);
             self::registerCustomClasses(SRC_ROOT);
             self::registerModulesClasses();
 
@@ -88,7 +86,9 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function registerCustomClasses(string $customDir): void
     {
-        if (!file_exists($customDir)) return;
+        if (!file_exists($customDir)) {
+            return;
+        }
         $collectedClasses = self::collectCustomClasses($customDir);
 
         foreach ($collectedClasses as $class => $filename) {
@@ -98,14 +98,15 @@ class FrameworkRegistry extends AbstractStaticRegistry
 
     public static function collectCustomClasses(string $customDir): array
     {
-        if (!file_exists($customDir)) return [];
+        if (!file_exists($customDir)) {
+            return [];
+        }
 
         $result = [];
 
         $sourceFiles = File::walkTreeFiltered($customDir, ['php']);
 
         foreach ($sourceFiles as $filename) {
-
             if (
                 $filename == 'bootstrap.php'
                 || $filename == 'constants.php'
