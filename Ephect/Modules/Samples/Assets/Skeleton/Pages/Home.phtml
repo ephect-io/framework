@@ -4,11 +4,11 @@ namespace QuickStart;
 
 use Com as QuickStartCom;
 
-use function Ephect\Hooks\useStateObject;
+use function Ephect\Hooks\useStore;
 
 function Home(): string
 {
-    useStateObject(['m' => ['n' => 'with a']]);
+    useStore(['m' => ['n' => 'with a']]);
 
     return (<<< HTML
     <Mother>
