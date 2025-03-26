@@ -31,8 +31,6 @@ class ModuleInstaller
             [$namespace, $className] = ElementUtils::getClassDefinitionFromFile($bootstrapFile);
             $fqBootstrap = $namespace . '\\' . $className;
 
-            require $bootstrapFile;
-
             $bootstrap = new $fqBootstrap();
             $bootstrap->boot();
         }
