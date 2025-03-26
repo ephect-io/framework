@@ -2,27 +2,19 @@
 
 namespace Ephect\Plugins\Authentication;
 
+use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\StaticElement;
-use Ephect\Plugins\DBAL\TDataAccess;
+use Ephect\Modules\DataAccess\Client\PDO\PdoDataAccess;
 
 class AuthenticationService extends StaticElement
 {
-
     protected $userId = null;
     protected $userName = null;
 
-    public function __construct()
-    {
-
-    }
-
     public static function getPermissionByToken(string $token): ?string
     {
-
         $result = null;
-
         if ($token != '') {
-
             $token = self::renewToken($token);
             if (is_string($token)) {
                 $result = $token;
@@ -32,7 +24,7 @@ class AuthenticationService extends StaticElement
         return $result;
     }
 
-    public function renewToken($token = ''): ?string
+    public static function renewToken($token = ''): ?string
     {
         $result = null;
 
@@ -43,13 +35,12 @@ class AuthenticationService extends StaticElement
             return $result;
         }
 
-        $userId = $this->getUserId();
-        $login = $this->getUserName();
+//        $userId = $this->getUserId();
+//        $login = $this->getUserName();
 
-        $connection = TDataAccess::getCryptoDB();
+        $connection = PdoDataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
         if ($row = $stmt->fetchAssoc()) {
-
             $userId = $row["userId"];
             $login = $row["userName"];
 
@@ -57,7 +48,7 @@ class AuthenticationService extends StaticElement
 
         }
 
-        $token = TCrypto::generateToken('');
+        $token = Crypto::createToken('');
         $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             , ['token' => $token, 'userId' => $userId, 'login' => $login]
@@ -108,8 +99,8 @@ class AuthenticationService extends StaticElement
     {
         $result = null;
 
-        $connection = TDataAccess::getCryptoDB();
-        $token = TCrypto::generateToken('');
+        $connection = PdoDataAccess::getCryptoDB();
+        $token = Crypto::createToken('');
         $stmt = $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             , ['token' => $token, 'userId' => $userId, 'login' => $login]
@@ -122,7 +113,7 @@ class AuthenticationService extends StaticElement
     {
         $result = null;
 
-        $connection = TDataAccess::getCryptoDB();
+        $connection = PdoDataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
 
         if ($stmt->fetch()) {
