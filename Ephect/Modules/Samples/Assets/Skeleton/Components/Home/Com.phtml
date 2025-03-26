@@ -3,7 +3,7 @@
 namespace QuickStart;
 
 use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useStateObject;
+use function Ephect\Hooks\useStore;
 
 function Com($props): string
 {
@@ -12,7 +12,7 @@ function Com($props): string
         $b = 'It is a';
         $c = 'functional component';
         $d = $props->from;
-        [$state] = useStateObject();
+        [$state] = useStore();
 
         $m = $state->m;
 

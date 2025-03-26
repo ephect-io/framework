@@ -11,7 +11,7 @@ use Ephect\Modules\Routing\Base\RouteInterface;
 use Ephect\Modules\Routing\Registry\HttpErrorRegistry;
 use Ephect\Modules\Routing\Registry\RouteRegistry;
 
-use function Ephect\Hooks\useStateObject;
+use function Ephect\Hooks\useStore;
 
 class RouterService implements RouterServiceInterface
 {
@@ -150,7 +150,7 @@ class RouterService implements RouterServiceInterface
     public function findRoute(string &$html): void
     {
         $html = '';
-        [$state, $setState] = useStateObject();
+        [$state] = useStore();
 
         if (!isset($state->routes)) {
             return;
