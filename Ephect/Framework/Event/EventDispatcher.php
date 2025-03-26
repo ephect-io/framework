@@ -2,17 +2,23 @@
 
 namespace Ephect\Framework\Event;
 
+use function Ephect\Hooks\useState;
+
 class EventDispatcher implements EventDispatcherInterface
 {
 
     private iterable $listeners = [];
 
+    /**
+     * @param StoppableEventInterface $event
+     * @return StoppableEventInterface
+     */
     public function dispatch(StoppableEventInterface $event): StoppableEventInterface
     {
-        // TODO: Implement dispatch() method.
+
         $eventListeners = $this->getListenersForEvent($event);
         foreach ($eventListeners as $listener) {
-            if ($event instanceof StoppableEventInterface && $event->isPropagationStopped()) {
+            if ($event instanceof StoppableEventInterface && $event->isPropagationStopped()) { //
                 return $event;
             }
 
@@ -31,6 +37,16 @@ class EventDispatcher implements EventDispatcherInterface
      */
     public function getListenersForEvent(StoppableEventInterface $event): iterable
     {
+        if (count($this->listeners) === 0) {
+            [$events] = useState(get: 'events');
+
+            foreach ($events as $eventClass => $listeners) {
+                foreach (array_unique($listeners) as $listener) {
+                    $this->addListener($eventClass, new $listener());
+                }
+            }
+        }
+
         $eventName = get_class($event);
         if (array_key_exists($eventName, $this->listeners)) {
             return $this->listeners[$eventName];
@@ -39,6 +55,11 @@ class EventDispatcher implements EventDispatcherInterface
         return [];
     }
 
+    /**
+     * @param string $eventName
+     * @param callable $listener
+     * @return $this
+     */
     public function addListener(string $eventName, callable $listener): EventDispatcher
     {
         $this->listeners[$eventName][] = $listener;

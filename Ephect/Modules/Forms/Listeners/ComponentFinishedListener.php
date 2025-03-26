@@ -2,20 +2,19 @@
 
 namespace Ephect\Modules\Forms\Listeners;
 
-use Ephect\Framework\IO\Utils;
+use Ephect\Framework\Event\Event;
+use Ephect\Framework\Event\EventListenerInterface;
+use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Events\ComponentFinishedEvent;
-use Ephect\Modules\Forms\Events\ComponentFinishedEventInterface;
 
-class ComponentFinishedListener implements ComponentFinishedEventInterface
+class ComponentFinishedListener implements EventListenerInterface
 {
 
-    public function invoke(ComponentFinishedEvent $componentFinishedEvent): void
+    public function __invoke(Event|ComponentFinishedEvent $event): void
     {
-        // TODO: Implement invoke() method.
-        $storeFilename = str_replace(CACHE_DIR, STORE_DIR, $componentFinishedEvent->getCacheFilename());
-        $storeDir = dirname($storeFilename);
-        Utils::safeMkDir($storeDir);
-        $text = $componentFinishedEvent->getComponentText();
-        Utils::safeWrite($storeFilename, $text);
+        $storeFilename = STORE_DIR . DIRECTORY_SEPARATOR . $event->getCacheFilename();
+        $text = $event->getComponentText();
+
+        File::safeWrite($storeFilename, $text);
     }
 }
