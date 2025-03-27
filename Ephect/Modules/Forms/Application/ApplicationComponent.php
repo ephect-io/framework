@@ -23,7 +23,7 @@ use Exception;
 use Ephect\Modules\Forms\Generators\ParserService;
 use ReflectionException;
 
-define('INCLUDE_PLACEHOLDER', "include_once CACHE_DIR . '%s';");
+define('INCLUDE_PLACEHOLDER', "include_once \Constants::CACHE_DIR . '%s';");
 define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
 
 abstract class ApplicationComponent extends Tree implements FileComponentInterface
@@ -75,9 +75,9 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             return false;
         }
 
-        $this->code = File::safeRead(CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
+        $this->code = File::safeRead(\Constants::CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
         if ($this->code === null) {
-            $this->code = File::safeRead(COPY_DIR . $this->filename);
+            $this->code = File::safeRead(\Constants::COPY_DIR . $this->filename);
         }
 
         [
@@ -162,7 +162,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
                 throw new Exception('Please the component is defined in the registry before asking for its entity');
             }
         }
-        CodeRegistry::setCacheDirectory(CACHE_DIR . $this->getMotherUID());
+        CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $this->getMotherUID());
 
         $list = CodeRegistry::read($fqName);
         $struct = new ComponentDeclarationStructure($list);
@@ -235,7 +235,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
         $html = ComponentRenderer::renderHTML($cacheFilename, $fqFunctionName, $functionArgs, $request);
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
-            File::safeWrite(STATIC_DIR . $this->filename, $html);
+            File::safeWrite(\Constants::STATIC_DIR . $this->filename, $html);
         }
         echo $html;
     }
@@ -294,11 +294,11 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         if ($component === null) {
             $component = $this;
             $motherUID = $component->getUID();
-            if (!file_exists(CACHE_DIR . $motherUID)) {
-                mkdir(CACHE_DIR . $motherUID, 0775);
+            if (!file_exists(\Constants::CACHE_DIR . $motherUID)) {
+                mkdir(\Constants::CACHE_DIR . $motherUID, 0775);
 
                 $flatFilename = CodeRegistry::getFlatFilename() . '.json';
-                copy(CACHE_DIR . $flatFilename, CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
+                copy(\Constants::CACHE_DIR . $flatFilename, \Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
             }
         }
 
@@ -307,7 +307,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     protected function cacheHtml(): ?string
     {
-        return $this->cacheFile(CACHE_DIR);
+        return $this->cacheFile(\Constants::CACHE_DIR);
     }
 
     private function cacheFile($cacheDir): ?string
@@ -331,6 +331,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     protected function cacheJavascript(): ?string
     {
-        return $this->cacheFile(RUNTIME_JS_DIR);
+        return $this->cacheFile(\Constants::RUNTIME_JS_DIR);
     }
 }

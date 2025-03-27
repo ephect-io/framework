@@ -27,7 +27,7 @@ class Component extends ApplicationComponent implements FileComponentInterface
         }
         COMPONENT;
 
-        File::safeWrite(COPY_DIR . $filename, $html);
+        File::safeWrite(\Constants::COPY_DIR . $filename, $html);
     }
 
     public function parse(): void
@@ -44,5 +44,4 @@ class Component extends ApplicationComponent implements FileComponentInterface
         ComponentRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
-
 }

@@ -19,7 +19,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
             $result = Text::jsonToPhpReturnedArray($result);
         }
 
-        $this->_setCacheDirectory(CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
+        $this->_setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
         $registryFilename = $this->_getCacheFileName($asArray);
         $len = File::safeWrite($registryFilename, $result);
 
@@ -27,7 +27,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
 
     public function _loadByMotherUid(string $motherUid, bool $asArray = false): void
     {
-        $this->_setCacheDirectory(CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
+        $this->_setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
         $this->_load($asArray);
     }
 

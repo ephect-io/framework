@@ -38,10 +38,10 @@ class Builder
     public function describeComponents(): void
     {
         if (!ComponentRegistry::load()) {
-            File::safeMkDir(CACHE_DIR);
-            File::safeMkDir(COPY_DIR);
-            File::safeMkDir(STATIC_DIR);
-            File::safeMkDir(STORE_DIR);
+            File::safeMkDir(\Constants::CACHE_DIR);
+            File::safeMkDir(\Constants::COPY_DIR);
+            File::safeMkDir(\Constants::STATIC_DIR);
+            File::safeMkDir(\Constants::STORE_DIR);
 
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies

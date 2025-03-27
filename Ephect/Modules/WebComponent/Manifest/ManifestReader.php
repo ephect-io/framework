@@ -15,7 +15,7 @@ class ManifestReader
     {
 
         $manifestFilename = $this->name . '.' . 'manifest.json';
-        $manifestCache = CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $manifestFilename;
+        $manifestCache = \Constants::CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $manifestFilename;
 
         if (!file_exists($manifestCache)) {
             $common = new Common();

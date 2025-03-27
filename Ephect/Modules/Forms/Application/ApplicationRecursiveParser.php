@@ -18,7 +18,7 @@ class ApplicationRecursiveParser
      */
     public static function parse(FileComponentInterface $component): void
     {
-        CodeRegistry::setCacheDirectory(CACHE_DIR . $component->getMotherUID());
+        CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $component->getMotherUID());
         CodeRegistry::load();
 
         $parser = new ParserService();
@@ -58,7 +58,7 @@ class ApplicationRecursiveParser
 
         $filename = $component->getSourceFilename();
         File::safeWrite(
-            CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
+            \Constants::CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
             $component->getCode()
         );
         self::updateComponent($component);

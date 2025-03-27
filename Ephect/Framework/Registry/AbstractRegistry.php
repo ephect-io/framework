@@ -10,7 +10,7 @@ abstract class AbstractRegistry implements RegistryInterface
 {
     protected array $entries = [];
     protected bool $isLoaded = false;
-    protected string $baseDirectory = CACHE_DIR;
+    protected string $baseDirectory = \Constants::CACHE_DIR;
     protected string $cacheFilename = '';
     protected string $flatFilename = '';
 

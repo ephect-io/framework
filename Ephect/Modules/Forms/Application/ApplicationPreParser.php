@@ -15,7 +15,7 @@ class ApplicationPreParser extends AbstractApplicationParser
      */
     public static function parse(FileComponentInterface $component): void
     {
-        CodeRegistry::setCacheDirectory(CACHE_DIR . $component->getMotherUID());
+        CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $component->getMotherUID());
         CodeRegistry::load();
 
         $parser = new ParserService();

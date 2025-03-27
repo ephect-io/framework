@@ -52,11 +52,11 @@ class RouteRegistry extends AbstractStaticRegistry
 
     public static function getMovedPhpFilename(): string
     {
-        return CACHE_DIR . 'routes.php';
+        return \Constants::CACHE_DIR . 'routes.php';
     }
 
     public static function getMovedFilename(): string
     {
-        return CACHE_DIR . 'routes.json';
+        return \Constants::CACHE_DIR . 'routes.json';
     }
 }

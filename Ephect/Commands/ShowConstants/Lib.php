@@ -27,7 +27,7 @@ class Lib extends AbstractCommandLib
             // $constants['EPHECT_VENDOR_APPS'] = EPHECT_VENDOR_APPS;
 
             if (APP_NAME !== 'egg') {
-                $constants['APP_ROOT'] = APP_ROOT;
+                $constants['APP_ROOT'] = \Constants::APP_ROOT;
                 $constants['APP_SCRIPTS'] = APP_SCRIPTS;
                 $constants['APP_BUSINESS'] = APP_BUSINESS;
                 $constants['MODEL_ROOT'] = MODEL_ROOT;
@@ -35,7 +35,7 @@ class Lib extends AbstractCommandLib
                 $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
                 $constants['REST_ROOT'] = REST_ROOT;
                 $constants['APP_DATA'] = APP_DATA;
-                $constants['CACHE_DIR'] = CACHE_DIR;
+                $constants['CACHE_DIR'] = \Constants::CACHE_DIR;
             }
             $constants['LOG_PATH'] = LOG_PATH;
             $constants['DEBUG_LOG'] = DEBUG_LOG;

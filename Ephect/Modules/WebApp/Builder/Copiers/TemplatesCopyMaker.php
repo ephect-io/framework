@@ -11,8 +11,8 @@ class TemplatesCopyMaker
         $copier = CopiersFactory::createCopier($asUnique);
 
         TemplatesCopier::copy($copier, SRC_ROOT, true);
-        TemplatesCopier::copy($copier, CUSTOM_PAGES_ROOT);
-        TemplatesCopier::copy($copier, CUSTOM_COMPONENTS_ROOT);
+        TemplatesCopier::copy($copier, \Constants::CUSTOM_PAGES_ROOT);
+        TemplatesCopier::copy($copier, \Constants::CUSTOM_COMPONENTS_ROOT);
 
         //TODO: copy plugins templates
         //TODO: copy modules templates

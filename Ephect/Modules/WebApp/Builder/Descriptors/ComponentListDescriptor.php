@@ -22,15 +22,15 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
             $result[$fqcn] = $comp;
         }
 
-        $pagesList = File::walkTreeFiltered(CUSTOM_PAGES_ROOT, ['phtml']);
+        $pagesList = File::walkTreeFiltered(\Constants::CUSTOM_PAGES_ROOT, ['phtml']);
         foreach ($pagesList as $key => $pageFile) {
-            [$fqcn, $comp] = $descriptor->describe(CUSTOM_PAGES_ROOT, $pageFile);
+            [$fqcn, $comp] = $descriptor->describe(\Constants::CUSTOM_PAGES_ROOT, $pageFile);
             $result[$fqcn] = $comp;
         }
 
-        $componentsList = File::walkTreeFiltered(CUSTOM_COMPONENTS_ROOT, ['phtml']);
+        $componentsList = File::walkTreeFiltered(\Constants::CUSTOM_COMPONENTS_ROOT, ['phtml']);
         foreach ($componentsList as $key => $compFile) {
-            [$fqcn, $comp] = $descriptor->describe(CUSTOM_COMPONENTS_ROOT, $compFile);
+            [$fqcn, $comp] = $descriptor->describe(\Constants::CUSTOM_COMPONENTS_ROOT, $compFile);
             $result[$fqcn] = $comp;
         }
 
