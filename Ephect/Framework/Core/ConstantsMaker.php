@@ -1,9 +1,11 @@
 <?php
 
+namespace Ephect\Framework\Core;
+
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 
-$constantsMaker = new class
+class ConstantsMaker
 {
     private array $constants = [];
 
@@ -223,7 +225,7 @@ $constantsMaker = new class
         $this->constants['TPL_EXTENSION'] = '.tpl';
         $this->constants['TXT_EXTENSION'] = '.txt';
 
-        $filename = $this->constants['CACHE_DIR'] . ($isWebApp ? 'web' : 'cli') . 'constants.php';
+        $filename = $this->constants['EPHECT_ROOT'] . ($isWebApp ? 'web' : 'cli') . 'constants.php';
 
         $lines = "<?php" . PHP_EOL;
         foreach ($this->constants as $key => $value) {
@@ -246,30 +248,3 @@ $constantsMaker = new class
 
 };
 
-function siteRoot(): string
-{
-    $siteRoot = SITE_ROOT;
-    $vendorPos = strpos(SITE_ROOT, 'vendor');
-
-    if ($vendorPos > -1) {
-        $siteRoot = substr(SITE_ROOT, 0, $vendorPos);
-    }
-
-    return $siteRoot;
-}
-function siteConfigPath(): string
-{
-    return siteRoot() . REL_CONFIG_DIR;
-}
-
-function siteRuntimePath(): string
-{
-    return siteRoot() . REL_RUNTIME_DIR;
-}
-
-function siteSrcPath(): string
-{
-    $configDir = siteConfigPath();
-    $srcDir = file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
-    return siteRoot() . $srcDir . DIRECTORY_SEPARATOR;
-}
