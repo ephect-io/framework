@@ -39,11 +39,11 @@ class HooksRegistry
 
             $hooksRegistry = ['Hooks' => $hooks];
 
-            File::safeWrite(RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
+            File::safeWrite(\Constants::RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
         }
 
         if (IS_PHAR_APP) {
-            $hooksRegistry = File::safeRead(RUNTIME_DIR . 'HooksRegistry.json');
+            $hooksRegistry = File::safeRead(\Constants::RUNTIME_DIR . 'HooksRegistry.json');
 
             $hooks = json_decode($hooksRegistry);
             $hooks = $hooks->hooks;

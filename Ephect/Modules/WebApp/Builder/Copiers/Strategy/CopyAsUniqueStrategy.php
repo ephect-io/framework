@@ -12,20 +12,20 @@ class CopyAsUniqueStrategy implements CopierStrategyInterface
     public function __construct()
     {
         $this->uniqueDomain = "Unique" . uniqid();
-        File::safeMkDir(UNIQUE_DIR);
+        File::safeMkDir(\Constants::UNIQUE_DIR);
     }
 
     public function copy(string $path, string $key, string $filename): void
     {
         $root = pathinfo($path, PATHINFO_FILENAME) . DIRECTORY_SEPARATOR;
 
-        if ($root === APP_DIR) {
+        if ($root === \Constants::APP_DIR) {
             $root = DIRECTORY_SEPARATOR;
         }
 
         $dirname = pathinfo($filename, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR;
         $basename = pathinfo($filename, PATHINFO_BASENAME);
-        File::safeMkDir(UNIQUE_DIR . $root . $dirname);
+        File::safeMkDir(\Constants::UNIQUE_DIR . $root . $dirname);
         $contents = file_get_contents($path . $dirname . $basename);
 
         [
@@ -49,6 +49,6 @@ class CopyAsUniqueStrategy implements CopierStrategyInterface
             $contents
         );
 
-        File::safeWrite(UNIQUE_DIR . $root . $dirname . $basename, $contents);
+        File::safeWrite(\Constants::UNIQUE_DIR . $root . $dirname . $basename, $contents);
     }
 }

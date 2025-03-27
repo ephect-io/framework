@@ -21,14 +21,14 @@ final class WebComponentService implements WebComponentServiceInterface
 
     public function isPending(): bool
     {
-        return file_exists(RUNTIME_JS_DIR . $this->children->getName() . '.pending' . JS_EXTENSION);
+        return file_exists(\Constants::RUNTIME_JS_DIR . $this->children->getName() . '.pending' . \Constants::JS_EXTENSION);
     }
 
     public function markAsPending(): void
     {
         $date = new DateTime();
         $timestamp = $date->getTimestamp();
-        $pendingJs = RUNTIME_JS_DIR . $this->children->getName() . '.pending' . JS_EXTENSION;
+        $pendingJs = \Constants::RUNTIME_JS_DIR . $this->children->getName() . '.pending' . \Constants::JS_EXTENSION;
         File::safeWrite($pendingJs, "const time = $timestamp");
     }
 
@@ -67,11 +67,11 @@ final class WebComponentService implements WebComponentServiceInterface
     {
         $name = $this->children->getName();
 
-        $runtimeDir = RUNTIME_JS_DIR . $name . DIRECTORY_SEPARATOR;
+        $runtimeDir = \Constants::RUNTIME_JS_DIR . $name . DIRECTORY_SEPARATOR;
         File::safeMkDir($runtimeDir);
-        $finalJs = $runtimeDir . $name . JS_EXTENSION;
-        $classJs = $name . CLASS_JS_EXTENSION;
-        $elementJs = $name . "Element" . JS_EXTENSION;
+        $finalJs = $runtimeDir . $name . \Constants::JS_EXTENSION;
+        $classJs = $name . \Constants::CLASS_JS_EXTENSION;
+        $elementJs = $name . "Element" . \Constants::JS_EXTENSION;
 
         $parser = new Parser($html);
         $parser->doTags();

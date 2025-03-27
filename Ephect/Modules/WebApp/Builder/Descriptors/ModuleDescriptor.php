@@ -21,8 +21,8 @@ class ModuleDescriptor implements DescriptorInterface
      */
     public function describe(string $sourceDir, string $filename): array
     {
-        File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
-        copy($sourceDir . $filename, COPY_DIR . $filename);
+        File::safeMkDir(\Constants::COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
+        copy($sourceDir . $filename, \Constants::COPY_DIR . $filename);
 
         $manifestDir = realpath($this->modulePath . DIRECTORY_SEPARATOR . REL_CONFIG_DIR);
         $manifestDir = is_dir($manifestDir) ? $manifestDir : $this->modulePath;

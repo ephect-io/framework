@@ -18,7 +18,7 @@ function siteConfigPath(): string
 
 function siteRuntimePath(): string
 {
-    return siteRoot() . REL_RUNTIME_DIR;
+    return siteRoot() . \Constants::REL_RUNTIME_DIR;
 }
 
 function siteSrcPath(): string

@@ -10,8 +10,8 @@ class PluginDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
-        File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
-        copy($sourceDir . $filename, COPY_DIR . $filename);
+        File::safeMkDir(\Constants::COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
+        copy($sourceDir . $filename, \Constants::COPY_DIR . $filename);
 
         $plugin = new Plugin();
         $plugin->load($filename);

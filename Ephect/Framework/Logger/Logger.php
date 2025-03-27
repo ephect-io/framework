@@ -5,12 +5,13 @@ namespace Ephect\Framework\Logger;
 use Ephect\Framework\Utils\Text;
 use ErrorException;
 use Throwable;
+
 use function file_exists;
 use function file_get_contents;
 
 class Logger
 {
-    private static Logger|null $_logger = null;
+    private static Logger|null $logger = null;
 
     private function __construct()
     {
@@ -18,10 +19,10 @@ class Logger
 
     public static function create(): Logger
     {
-        if (self::$_logger === null) {
-            self::$_logger = new Logger();
+        if (self::$logger === null) {
+            self::$logger = new Logger();
         }
-        return self::$_logger;
+        return self::$logger;
     }
 
     public function dump(string $message, object|array $object): void
@@ -31,10 +32,10 @@ class Logger
 
     public function debug(string|array|object $message, string $filename = '', int $line = -1): void
     {
-        $this->_log(DEBUG_LOG, $message, $filename, $line);
+        $this->__log(\Constants::DEBUG_LOG, $message, $filename, $line);
     }
 
-    private function _log(string $filepath, string|array|object $message, string $filename = '', int $line = -1): void
+    private function __log(string $filepath, string|array|object $message, string $filename = '', int $line = -1): void
     {
         $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
 
@@ -55,12 +56,12 @@ class Logger
     public function info(string $string, ...$params): void
     {
         $message = Text::format($string, $params);
-        $this->_log(INFO_LOG, $message);
+        $this->__log(\Constants::INFO_LOG, $message);
     }
 
     public function sql(string|array|object $message, string $filename = '', int $line = -1): void
     {
-        $this->_log(SQL_LOG, $message, $filename, $line);
+        $this->__log(\Constants::SQL_LOG, $message, $filename, $line);
     }
 
     public function error(Throwable $ex, string $filename = '', int $line = -1): void
@@ -75,69 +76,69 @@ class Logger
         $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
         $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
 
-        $this->_log(ERROR_LOG, $message, $filename, $line);
+        $this->__log(\Constants::ERROR_LOG, $message, $filename, $line);
     }
 
     public function getInfoLog(): string
     {
-        if (!file_exists(INFO_LOG)) {
+        if (!file_exists(\Constants::INFO_LOG)) {
             return '';
         }
-        return file_get_contents(INFO_LOG);
+        return file_get_contents(\Constants::INFO_LOG);
     }
 
     public function getDebugLog(): string
     {
-        if (!file_exists(DEBUG_LOG)) {
+        if (!file_exists(\Constants::DEBUG_LOG)) {
             return '';
         }
-        return file_get_contents(DEBUG_LOG);
+        return file_get_contents(\Constants::DEBUG_LOG);
     }
 
     public function getErrorLog(): string
     {
-        if (!file_exists(ERROR_LOG)) {
+        if (!file_exists(\Constants::ERROR_LOG)) {
             return '';
         }
-        return file_get_contents(ERROR_LOG);
+        return file_get_contents(\Constants::ERROR_LOG);
     }
 
     public function getSqlLog(): string
     {
-        if (!file_exists(SQL_LOG)) {
+        if (!file_exists(\Constants::SQL_LOG)) {
             return '';
         }
-        return file_get_contents(SQL_LOG);
+        return file_get_contents(\Constants::SQL_LOG);
     }
 
     public function getPhpErrorLog(): string
     {
-        if (!file_exists(DOCUMENT_ROOT . 'php_error_log')) {
+        if (!file_exists(DOCUMENT_ROOT . 'php_errors.log')) {
             return '';
         }
-        return file_get_contents(DOCUMENT_ROOT . 'php_error_log');
+        return file_get_contents(DOCUMENT_ROOT . 'php_errors.log');
     }
 
     public function clearAll(): void
     {
-        if (file_exists(INFO_LOG)) {
-            unlink(INFO_LOG);
+        if (file_exists(\Constants::INFO_LOG)) {
+            unlink(\Constants::INFO_LOG);
         }
 
-        if (file_exists(DEBUG_LOG)) {
-            unlink(DEBUG_LOG);
+        if (file_exists(\Constants::DEBUG_LOG)) {
+            unlink(\Constants::DEBUG_LOG);
         }
 
-        if (file_exists(ERROR_LOG)) {
-            unlink(ERROR_LOG);
+        if (file_exists(\Constants::ERROR_LOG)) {
+            unlink(\Constants::ERROR_LOG);
         }
 
-        if (file_exists(SQL_LOG)) {
-            unlink(SQL_LOG);
+        if (file_exists(\Constants::SQL_LOG)) {
+            unlink(\Constants::SQL_LOG);
         }
 
-        if (file_exists(DOCUMENT_ROOT . 'php_error_log')) {
-            unlink(DOCUMENT_ROOT . 'php_error_log');
+        if (file_exists(DOCUMENT_ROOT . 'php_errors.log')) {
+            unlink(DOCUMENT_ROOT . 'php_errors.log');
         }
     }
 }

@@ -32,7 +32,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     public static function register(): void
     {
         if (!FrameworkRegistry::load(true)) {
-            $frameworkFiles = File::walkTreeFiltered(FRAMEWORK_ROOT, ['php']);
+            $frameworkFiles = File::walkTreeFiltered(\Constants::FRAMEWORK_ROOT, ['php']);
 
             foreach ($frameworkFiles as $filename) {
                 if (
@@ -44,38 +44,38 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 }
 
                 if (str_ends_with($filename, 'Interface.php')) {
-                    [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(FRAMEWORK_ROOT . $filename);
+                    [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $interface;
-                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, \Constants::FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
                 if (str_ends_with($filename, 'Enum.php')) {
-                    [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(FRAMEWORK_ROOT . $filename);
+                    [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $enum;
-                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, \Constants::FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
                 if (str_ends_with($filename, 'Trait.php')) {
-                    [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(FRAMEWORK_ROOT . $filename);
+                    [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $trait;
-                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, \Constants::FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
-                [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(FRAMEWORK_ROOT . $filename);
+                [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
                 $fqname = $namespace . '\\' . $class;
                 if ($class === '') {
-                    [$namespace, $function] = ElementUtils::getFunctionDefinitionFromFile(FRAMEWORK_ROOT . $filename);
+                    [$namespace, $function] = ElementUtils::getFunctionDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
                     $fqname = $namespace . '\\' . $function;
                 }
                 if ($fqname !== '\\') {
-                    FrameworkRegistry::write($fqname, FRAMEWORK_ROOT . $filename);
+                    FrameworkRegistry::write($fqname, \Constants::FRAMEWORK_ROOT . $filename);
                 }
             }
 
-            self::registerCustomClasses(COMMANDS_ROOT);
+            self::registerCustomClasses(\Constants::COMMANDS_ROOT);
             self::registerCustomClasses(SRC_ROOT);
             self::registerModulesClasses();
 
