@@ -57,7 +57,7 @@ class HooksRegistry
     public static function create(): HooksRegistry
     {
         if (self::$instance === null) {
-            self::$instance = new HooksRegistry;
+            self::$instance = new HooksRegistry();
         }
 
         return self::$instance;
