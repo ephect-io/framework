@@ -36,7 +36,7 @@ class Application extends AbstractApplication
 
         CacheRegistry::load();
         PluginRegistry::load();
-        HooksRegistry::register(APP_ROOT);
+        HooksRegistry::register(\Constants::APP_ROOT);
 
         $this->execute();
 
@@ -71,22 +71,22 @@ class Application extends AbstractApplication
         $constants['SRC_ROOT'] = SRC_ROOT;
         $constants['EPHECT_ROOT'] = EPHECT_ROOT;
         $constants['APP_NAME'] = APP_NAME;
-        $constants['APP_ROOT'] = APP_ROOT;
-        $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
-        $constants['MODEL_ROOT'] = MODEL_ROOT;
-        $constants['REST_ROOT'] = REST_ROOT;
-        $constants['VIEW_ROOT'] = VIEW_ROOT;
-        $constants['BUSINESS_ROOT'] = BUSINESS_ROOT;
-        $constants['REL_RUNTIME_DIR'] = REL_RUNTIME_DIR;
-        $constants['RUNTIME_DIR'] = RUNTIME_DIR;
-        $constants['REL_RUNTIME_JS_DIR'] = REL_RUNTIME_JS_DIR;
-        $constants['RUNTIME_JS_DIR'] = RUNTIME_JS_DIR;
-        $constants['CACHE_DIR'] = CACHE_DIR;
-        $constants['LOG_PATH'] = LOG_PATH;
-        $constants['DEBUG_LOG'] = DEBUG_LOG;
-        $constants['ERROR_LOG'] = ERROR_LOG;
-        $constants['APP_DATA'] = APP_DATA;
-        $constants['APP_BUSINESS'] = APP_BUSINESS;
+        $constants['APP_ROOT'] = \Constants::APP_ROOT;
+        $constants['CONTROLLER_ROOT'] = \Constants::CONTROLLER_ROOT;
+        $constants['MODEL_ROOT'] = \Constants::MODEL_ROOT;
+        $constants['REST_ROOT'] = \Constants::REST_ROOT;
+        $constants['VIEW_ROOT'] = \Constants::VIEW_ROOT;
+        $constants['BUSINESS_ROOT'] = \Constants::BUSINESS_ROOT;
+        $constants['REL_RUNTIME_DIR'] = \Constants::REL_RUNTIME_DIR;
+        $constants['RUNTIME_DIR'] = \Constants::RUNTIME_DIR;
+        $constants['REL_RUNTIME_JS_DIR'] = \Constants::REL_RUNTIME_JS_DIR;
+        $constants['RUNTIME_JS_DIR'] = \Constants::RUNTIME_JS_DIR;
+        $constants['CACHE_DIR'] = \Constants::CACHE_DIR;
+        $constants['LOG_PATH'] = \Constants::LOG_PATH;
+        $constants['DEBUG_LOG'] = \Constants::DEBUG_LOG;
+        $constants['ERROR_LOG'] = \Constants::ERROR_LOG;
+        $constants['APP_DATA'] = \Constants::APP_DATA;
+        $constants['APP_BUSINESS'] = \Constants::APP_BUSINESS;
         $constants['HTTP_USER_AGENT'] = HTTP_USER_AGENT;
         $constants['HTTP_HOST'] = HTTP_HOST;
         $constants['HTTP_ORIGIN'] = HTTP_ORIGIN;

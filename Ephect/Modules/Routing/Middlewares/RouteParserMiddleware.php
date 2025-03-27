@@ -28,8 +28,8 @@ class RouteParserMiddleware implements ComponentParserMiddlewareInterface
         $filename = $motherUID . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
 
         $route = new RouteEntity(new RouteStructure($parent->props()));
-        $middlewareHtml = "function() {\n\tinclude_once CACHE_DIR . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
-        include_once CACHE_DIR . $filename;
+        $middlewareHtml = "function() {\n\tinclude_once \\Constants::CACHE_DIR . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
+        include_once \Constants::CACHE_DIR . $filename;
         $reflection = new ReflectionFunction($funcName);
         $attrs = $reflection->getAttributes();
 

@@ -73,7 +73,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $this->result[] = $componentName;
 
             $filename = $this->component->getSourceFilename();
-            File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+            File::safeWrite(\Constants::CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             Logger::create()->debug($hasAttrs ? $componentName . ' has attrs' : $componentName . ' nope', __FILE__, __LINE__);
 

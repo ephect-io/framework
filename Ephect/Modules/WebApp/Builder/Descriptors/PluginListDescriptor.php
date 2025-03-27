@@ -10,10 +10,10 @@ class PluginListDescriptor implements ComponentListDescriptorInterface
     {
         $result = [];
 
-        $descriptor = new PluginDescriptor;
-        $pluginList = File::walkTreeFiltered(PLUGINS_ROOT, ['phtml']);
+        $descriptor = new PluginDescriptor();
+        $pluginList = File::walkTreeFiltered(\Constants::PLUGINS_ROOT, ['phtml']);
         foreach ($pluginList as $key => $pluginFile) {
-            $descriptor->describe(PLUGINS_ROOT, $pluginFile);
+            $descriptor->describe(\Constants::PLUGINS_ROOT, $pluginFile);
         }
 
         return $result;

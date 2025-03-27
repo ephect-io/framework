@@ -19,7 +19,7 @@ class ComponentRenderer
         array|object|null $functionArgs = null,
         ?Request $request = null
     ): string {
-        include_once CACHE_DIR . $cacheFilename;
+        include_once \Constants::CACHE_DIR . $cacheFilename;
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();

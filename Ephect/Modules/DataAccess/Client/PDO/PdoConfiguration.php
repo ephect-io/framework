@@ -53,7 +53,7 @@ class PdoConfiguration extends JsonConfiguration
         $this->_driver = $this->contents['driver'];
         $this->_databaseName = $this->contents['database'];
         if ($this->_driver == ServerType::SQLITE) {
-            $this->_databaseName = APP_DATA . $this->_databaseName;
+            $this->_databaseName = \Constants::APP_DATA . $this->_databaseName;
         }
         $this->_host = !isset($this->contents['host']) ? '' : $this->contents['host'];
         $this->_user = !isset($this->contents['user']) ? '' : $this->contents['user'];

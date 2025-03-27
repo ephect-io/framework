@@ -11,7 +11,7 @@ class ComponentsCopier
 {
     public static function copy(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string
     {
-        $cachedir = CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
+        $cachedir = \Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
         $componentList = $component->composedOf();
         $copyFile = $component->getSourceFilename();
         $copyPath = pathinfo($copyFile, PATHINFO_DIRNAME);
@@ -20,7 +20,7 @@ class ComponentsCopier
 
         if ($componentList === null) {
             if (!file_exists($cachedir . $copyFile)) {
-                copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
+                copy(\Constants::COPY_DIR . $copyFile, $cachedir . $copyFile);
             }
 
             return $copyFile;
@@ -55,7 +55,7 @@ class ComponentsCopier
         }
 
         if (!file_exists($cachedir . $copyFile)) {
-            copy(COPY_DIR . $copyFile, $cachedir . $copyFile);
+            copy(\Constants::COPY_DIR . $copyFile, $cachedir . $copyFile);
         }
 
         return $copyFile;

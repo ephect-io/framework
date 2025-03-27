@@ -14,8 +14,8 @@ class ComponentDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
-        File::safeMkDir(COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
-        copy($sourceDir . $filename, COPY_DIR . $filename);
+        File::safeMkDir(\Constants::COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
+        copy($sourceDir . $filename, \Constants::COPY_DIR . $filename);
 
         $comp = new Component();
         $comp->load($filename);
@@ -24,7 +24,7 @@ class ComponentDescriptor implements DescriptorInterface
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            File::safeWrite(COPY_DIR . $filename, $html);
+            File::safeWrite(\Constants::COPY_DIR . $filename, $html);
             $comp->load($filename);
         }
 

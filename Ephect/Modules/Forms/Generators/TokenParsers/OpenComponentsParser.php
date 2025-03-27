@@ -117,7 +117,7 @@ final class OpenComponentsParser extends AbstractComponentParser
             $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
             $filename = $this->component->getSourceFilename();
-            File::safeWrite(CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+            File::safeWrite(\Constants::CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->result[] = $componentName;
 

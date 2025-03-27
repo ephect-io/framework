@@ -47,7 +47,7 @@ class SetupService
                 }
 
                 chdir('..');
-                FileUtils::delTree($filepath . $phinkjs_dirname);
+                File::delTree($filepath . $phinkjs_dirname);
             }
 
             if (!file_exists($filepath . $phinkjs_dirname)) {
@@ -60,7 +60,7 @@ class SetupService
 
             $curl = new Curl();
             $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.tar.gz');
-            $ok = false !== file_put_contents($filename, $result->content);
+            $ok = false !== file_put_contents($filename, $result['content']);
 
             $p = new PharData($filename);
             $p->decompress();
@@ -195,7 +195,7 @@ BOOTSTRAP2;
 <?php
 include 'bootstrap.php';
 
-Ephect\Framework\Web\Application::create();
+Ephect\Framework\Modules\WebApp\Web\Application::create();
 
 INDEX;
 

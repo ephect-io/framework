@@ -14,7 +14,7 @@ trait ComponentParserMiddlewareAggregatorTrait
         $middlewaresList = $this->list;
         $existingMiddlewaresList = [];
         if (file_exists(CACHE_DIR . 'componentsParserMiddlewares.php')) {
-            $existingMiddlewaresList = require CACHE_DIR . 'componentsParserMiddlewares.php';
+            $existingMiddlewaresList = require \Constants::CACHE_DIR . 'componentsParserMiddlewares.php';
         }
 
         if (is_array($existingMiddlewaresList)) {

@@ -12,7 +12,7 @@ class ComponentFinishedListener implements EventListenerInterface
 
     public function __invoke(Event|ComponentFinishedEvent $event): void
     {
-        $storeFilename = STORE_DIR . DIRECTORY_SEPARATOR . $event->getCacheFilename();
+        $storeFilename = \Constants::STORE_DIR . DIRECTORY_SEPARATOR . $event->getCacheFilename();
         $text = $event->getComponentText();
 
         File::safeWrite($storeFilename, $text);

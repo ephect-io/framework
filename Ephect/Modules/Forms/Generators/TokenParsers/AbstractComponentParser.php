@@ -57,11 +57,11 @@ abstract class AbstractComponentParser extends AbstractTokenParser
 
         $filename = $motherUID . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
 
-        if (!is_file(CACHE_DIR . $filename)) {
+        if (!is_file(\Constants::CACHE_DIR . $filename)) {
             return;
         }
 
-        include_once CACHE_DIR . $filename;
+        include_once \Constants::CACHE_DIR . $filename;
 
         $reflection = new ReflectionFunction($funcName);
         $attrs = $reflection->getAttributes();

@@ -1,7 +1,6 @@
 <?php
 
 use Ephect\Framework\Core\Autoloader;
-use Ephect\Framework\Core\ConstantsMaker;
 use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Plugins\PluginInstaller;
 use Ephect\Framework\Registry\FrameworkRegistry;
@@ -11,24 +10,13 @@ use Ephect\Framework\Registry\HooksRegistry;
 define('FRAMEWORK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Framework' . DIRECTORY_SEPARATOR);
 define('HOOKS_DIR', 'Hooks' . DIRECTORY_SEPARATOR);
 
-include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'File.php';
-include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'Text.php';
-
-$webConstants = __DIR__ . DIRECTORY_SEPARATOR . 'webConstants.php';
-$cliConstants = __DIR__ . DIRECTORY_SEPARATOR . 'cliConstants.php';
-
-if (file_exists($webConstants)) {
-    include $webConstants;
-} elseif (file_exists($cliConstants)) {
-    include $cliConstants;
-} else {
-    include FRAMEWORK_PATH . 'Core' . DIRECTORY_SEPARATOR . 'ConstantsMaker.php';
-    new ConstantsMaker();
-}
+include  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'constants.php';
 
 include  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'constants_utils.php';
 
 include FRAMEWORK_PATH . 'Core' . DIRECTORY_SEPARATOR . 'Autoloader.php';
+include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'File.php';
+include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'Text.php';
 include FRAMEWORK_PATH . 'ElementTrait.php';
 include FRAMEWORK_PATH . 'ElementUtils.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'RegistryInterface.php';
