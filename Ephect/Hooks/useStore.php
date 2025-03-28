@@ -26,7 +26,7 @@ function useStore(array|object|null $state = null, string $get = ''): array
         $json = json_encode($state);
         $state = json_decode($json);
     } else {
-        $state = StateRegistry::item('stateObject');
+        $state = StateRegistry::item('store');
 
         $json = json_encode($state);
         $state = json_decode($json);
