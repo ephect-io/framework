@@ -80,13 +80,13 @@ class PluginInstaller
         }
         FrameworkRegistry::save(true);
 
-        $moduleManifestReader = new ModuleManifestReader;
+        $moduleManifestReader = new ModuleManifestReader();
         $moduleManifest = $moduleManifestReader->read($configDir);
 
-        $composerConfigReader = new ComposerConfigReader;
+        $composerConfigReader = new ComposerConfigReader();
         $composerConfig = $composerConfigReader->read();
 
-        $moduleConfigReader = new ModulesConfigReader;
+        $moduleConfigReader = new ModulesConfigReader();
         $moduleConfig = $moduleConfigReader->read();
 
         $requires = $composerConfig->getRequire();
@@ -103,7 +103,6 @@ class PluginInstaller
         $moduleConfig->save();
 
         Console::writeLine("Plugin classes are now registered.");
-
     }
 
     public static function readPluginPaths(): array
@@ -183,15 +182,14 @@ class PluginInstaller
         }
         FrameworkRegistry::save(true);
 
-        $moduleManifestReader = new ModuleManifestReader;
+        $moduleManifestReader = new ModuleManifestReader();
         $moduleManifest = $moduleManifestReader->read($configDir);
 
-        $moduleConfigReader = new ModulesConfigReader;
+        $moduleConfigReader = new ModulesConfigReader();
         $moduleConfig = $moduleConfigReader->read();
         $moduleConfig->removeModule($moduleManifest->getName());
         $moduleConfig->save();
 
         Console::writeLine("Plugin classes are now unregistered.");
-
     }
 }

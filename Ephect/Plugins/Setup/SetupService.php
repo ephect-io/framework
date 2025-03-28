@@ -30,12 +30,11 @@ class SetupService
         $ok = false;
 
         try {
-
             $filename = 'phinkjs.tar.gz';
             $tarfilename = 'phinkjs.tar';
             $phinkjs_dirname = 'phinkjs' . DIRECTORY_SEPARATOR;
 
-            $filepath = \Constants::SITE_ROOT . FRAMEWORK;
+            $filepath = \Constants::FRAMEWORK_ROOT;
 
             if (file_exists($filepath . $phinkjs_dirname)) {
                 chdir($filepath . $phinkjs_dirname);
@@ -79,7 +78,6 @@ class SetupService
 
             $ok = $ok && rename('PhinkJS-master', 'phinkjs');
             chmod('phinkjs', 0775);
-
         } catch (Exception $ex) {
             $ok = false;
             $log = Logger::create();
@@ -100,8 +98,7 @@ class SetupService
         $ok = false;
 
         if ($ok = file_exists('bootstrap.php')) {
-
-            $ok = false !== file_put_contents(\Constants::CONFIG_DIR . '\Constants::REWRITE_BASE', \Constants::REWRITE_BASE);
+            $ok = false !== file_put_contents(\Constants::CONFIG_DIR . 'rewrite_base', \Constants::REWRITE_BASE);
 
             if (file_exists('.htaccess') && ($htaccess = file_get_contents('.htaccess'))) {
                 $htaccess = str_replace(PHP_EOL, ';', $htaccess);
@@ -114,7 +111,11 @@ class SetupService
                     $pe = strpos($htaccess, ';', $ps);
                     $rewriteBaseEntry = substr($htaccess, $ps, $pe - $ps);
 
-                    $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . \Constants::REWRITE_BASE, $htaccess);
+                    $htaccess = str_replace(
+                        $rewriteBaseEntry,
+                        $rewriteBaseKey . ' ' . \Constants::REWRITE_BASE,
+                        $htaccess
+                    );
                     $htaccess = str_replace(';', PHP_EOL, $htaccess);
 
                     $ok = $ok && false !== file_put_contents('.htaccess', $htaccess);
@@ -131,7 +132,7 @@ class SetupService
     {
         $ok = false;
 
-        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'ephect-io' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+        $vendor_dir = \Constants::FRAMEWORK_ROOT;
         $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
         $lib = 'ephect' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
@@ -143,7 +144,7 @@ class SetupService
         if (file_exists(\Constants::SITE_ROOT . $portable_dir . $lib)) {
             $framework_dir = $portable_dir;
         }
-        $ok = false !== file_put_contents(DONT_USE_CONFIG_DIR . 'framework', $framework_dir);
+        $ok = false !== file_put_contents(\Constants::CONFIG_DIR . 'framework', $framework_dir);
 
         return $ok;
     }

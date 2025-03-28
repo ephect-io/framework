@@ -17,9 +17,9 @@ class ConstantsMaker
     private function make()
     {
         // TODO: Implement __invoke() method.
-        $DONT_USE_DOCUMENT_ROOT = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
+        $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
 
-        $isWebApp = $DONT_USE_DOCUMENT_ROOT !== '';
+        $isWebApp = $document_root !== '';
         $this->constants['DONT_USE_IS_WEB_APP'] = $isWebApp;
         $this->constants['DONT_USE_IS_PHAR_APP'] = false; //(Phar::running() !== '');
 //        $this->constants['DONT_USE_IS_CLI_APP'] = (Phar::running() === '') && !DONT_USE_IS_WEB_APP;
@@ -28,11 +28,11 @@ class ConstantsMaker
         $this->constants['DONT_USE_REL_CONFIG_APP'] = 'app';
 
         if ($isWebApp) {
-            $this->constants['DONT_USE_DOCUMENT_ROOT'] = $DONT_USE_DOCUMENT_ROOT;
+            $this->constants['DONT_USE_DOCUMENT_ROOT'] = $document_root;
 
-            $DONT_USE_SITE_ROOT = dirname($this->constants['DONT_USE_DOCUMENT_ROOT']) . DIRECTORY_SEPARATOR;
+            $site_root = dirname($this->constants['DONT_USE_DOCUMENT_ROOT']) . DIRECTORY_SEPARATOR;
 
-            $this->constants['DONT_USE_SITE_ROOT'] = $DONT_USE_SITE_ROOT;
+            $this->constants['DONT_USE_SITE_ROOT'] = $site_root;
             $this->constants['DONT_USE_CONFIG_DIR'] = $this->constants['DONT_USE_SITE_ROOT'] . $this->constants['DONT_USE_REL_CONFIG_DIR'];
             $this->constants['DONT_USE_CONFIG_FRAMEWORK'] = str_replace(
                 '/',
@@ -66,12 +66,12 @@ class ConstantsMaker
             $this->constants['DONT_USE_EPHECT_VENDOR_LIB'] = $this->constants['DONT_USE_EPHECT_VENDOR_SRC'] . 'Framework' . DIRECTORY_SEPARATOR;
             $this->constants['DONT_USE_EPHECT_VENDOR_APPS'] = $this->constants['DONT_USE_EPHECT_VENDOR_SRC'] . 'Apps' . DIRECTORY_SEPARATOR;
 
-            $DONT_USE_REWRITE_BASE = '/';
+            $rewrite_base = '/';
 
-            if (file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'DONT_USE_REWRITE_BASE') && $DONT_USE_REWRITE_BASE = file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'DONT_USE_REWRITE_BASE')) {
-                $DONT_USE_REWRITE_BASE = trim($DONT_USE_REWRITE_BASE);
+            if (file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'DONT_USE_REWRITE_BASE') && $rewrite_base = file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'DONT_USE_REWRITE_BASE')) {
+                $rewrite_base = trim($rewrite_base);
             }
-            $this->constants['DONT_USE_REWRITE_BASE'] = $DONT_USE_REWRITE_BASE;
+            $this->constants['DONT_USE_REWRITE_BASE'] = $rewrite_base;
 
             $scheme = 'http';
             if (str_contains($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
@@ -90,7 +90,7 @@ class ConstantsMaker
             $this->constants['DONT_USE_HTTP_ORIGIN'] = $_SERVER['HTTP_ORIGIN'] ?? '';
             $this->constants['DONT_USE_HTTP_ACCEPT'] = $_SERVER['HTTP_ACCEPT'] ?: '';
             $this->constants['DONT_USE_HTTP_PORT'] = $_SERVER['SERVER_PORT'];
-            $this->constants['DONT_USE_COOKIE'] = $_DONT_USE_COOKIE;
+            $this->constants['DONT_USE_COOKIE'] = $_COOKIE;
             $this->constants['DONT_USE_REQUEST_URI'] = $_SERVER['REQUEST_URI'];
             $this->constants['DONT_USE_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
             $this->constants['DONT_USE_QUERY_STRING'] = parse_url($this->constants['DONT_USE_REQUEST_URI'], PHP_URL_QUERY) ?: '';
@@ -137,13 +137,13 @@ class ConstantsMaker
             if (file_exists($this->constants['DONT_USE_SITE_ROOT'] . $portable_dir . $bootstrap)) {
                 $ephect_dir = $portable_dir;
             }
-            $DONT_USE_EPHECT_VENDOR_LIB = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
-            $DONT_USE_EPHECT_VENDOR_APPS = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
+            $ephect_vendor_lib = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
+            $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
 
             $this->constants['DONT_USE_EPHECT_VENDOR_SRC'] = $ephect_dir;
             $this->constants['DONT_USE_AJIL_VENDOR_SRC'] = $ajil_dir;
-            $this->constants['DONT_USE_EPHECT_VENDOR_LIB'] = $DONT_USE_EPHECT_VENDOR_LIB;
-            $this->constants['DONT_USE_EPHECT_VENDOR_APPS'] = $DONT_USE_EPHECT_VENDOR_APPS;
+            $this->constants['DONT_USE_EPHECT_VENDOR_LIB'] = $ephect_vendor_lib;
+            $this->constants['DONT_USE_EPHECT_VENDOR_APPS'] = $ephect_vendor_apps;
 
             $this->constants['DONT_USE_EPHECT_APPS_ROOT'] = $this->constants['DONT_USE_SITE_ROOT'] . $this->constants['DONT_USE_EPHECT_VENDOR_APPS'];
 

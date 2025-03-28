@@ -20,12 +20,16 @@ class Cache extends StaticElement
 
         // $uri = bin2hex(\Constants::REQUEST_URI);
         $uri = '';
-        return REL_RUNTIME_DIR . strtolower($compName) . $uri . CLASS_EXTENSION;
+        return \Constants::REL_RUNTIME_DIR . strtolower($compName) . $uri . \Constants::CLASS_EXTENSION;
     }
 
     public static function absoluteURL(string $relativeURL = ''): string
     {
-        return ((\Constants::HTTP_HOST !== \Constants::SERVER_NAME) ? \Constants::SERVER_HOST : \Constants::SERVER_ROOT) . \Constants::REWRITE_BASE . $relativeURL;
+        return (
+            \Constants::HTTP_HOST !== \Constants::SERVER_NAME
+                ? \Constants::SERVER_HOST
+                : \Constants::SERVER_ROOT
+            ) . \Constants::REWRITE_BASE . $relativeURL;
     }
 
     public static function cachePath(string $filepath): string
@@ -57,8 +61,8 @@ class Cache extends StaticElement
     public static function clearCache(): bool
     {
         $result = false;
-        if (file_exists(CACHE_DIR)) {
-            $result &= File::delTree(CACHE_DIR);
+        if (file_exists(\Constants::CACHE_DIR)) {
+            $result &= File::delTree(\Constants::CACHE_DIR);
         }
 
         return $result;
@@ -67,8 +71,8 @@ class Cache extends StaticElement
     public static function clearRuntimeDirs(): bool
     {
         $result = false;
-        if (file_exists(RUNTIME_DIR)) {
-            $result &= File::delTree(RUNTIME_DIR);
+        if (file_exists(\Constants::RUNTIME_DIR)) {
+            $result &= File::delTree(\Constants::RUNTIME_DIR);
         }
         return $result;
     }
@@ -76,8 +80,8 @@ class Cache extends StaticElement
     public static function clearRuntimeJsDirs(): bool
     {
         $result = false;
-        if (file_exists(RUNTIME_JS_DIR)) {
-            $result &= File::delTree(RUNTIME_JS_DIR);
+        if (file_exists(\Constants::RUNTIME_JS_DIR)) {
+            $result &= File::delTree(\Constants::RUNTIME_JS_DIR);
         }
         return $result;
     }

@@ -21,7 +21,7 @@ function useService(string $serviceClass): ?ServiceInterface
         $factoryFile = FrameworkRegistry::read($factoryClass);
         include_once $factoryFile;
         if (is_subclass_of($factoryClass, ServiceFactoryInterface::class)) {
-            $factory = new $factoryClass;
+            $factory = new $factoryClass();
             $result = $factory->create($serviceClass);
             break;
         }

@@ -52,9 +52,17 @@ class Compiler
      * @param string $destDir
      * @return void
      */
-    function copyTemplates(string $tagName, string $className, bool $hasBackendProps, string $entrypoint, array $arguments, string $srcDir, string $destDir): void
-    {
-        $templatesDir = Common::getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR;
+    function copyTemplates(
+        string $tagName,
+        string $className,
+        bool $hasBackendProps,
+        string $entrypoint,
+        array $arguments,
+        string $srcDir,
+        string $destDir
+    ): void {
+        $common = new Common();
+        $templatesDir = $common->getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR;
 
         $classTextMaker = new TemplateMaker($templatesDir . 'Base.class.tpl');
         $baseElementTextMaker = new TemplateMaker($templatesDir . 'BaseElement.tpl');
@@ -147,7 +155,12 @@ class Compiler
             });
             FUNC_BODY;
 
-            $componentTextMaker->make(['funcNamespace' => $namespace, 'funcName' => $className, 'funcBody' => $funcBody, 'html' => $baseTextMaker->getTemplate()]);
+            $componentTextMaker->make([
+                'funcNamespace' => $namespace,
+                'funcName' => $className,
+                'funcBody' => $funcBody,
+                'html' => $baseTextMaker->getTemplate(),
+            ]);
             $baseTextMaker->setTemplate($componentTextMaker->getTemplate());
         } else {
             $baseTextMaker->make(['endTemplate' => '',]);
@@ -156,7 +169,5 @@ class Compiler
         $classTextMaker->save($destDir . $className . CLASS_JS_EXTENSION);
         $baseElementTextMaker->save($destDir . $className . "Element" . JS_EXTENSION);
         $baseTextMaker->save($destDir . "$className.phtml");
-
-
     }
 }

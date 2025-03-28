@@ -1,19 +1,19 @@
 <?php
 
-$DONT_USE_DOCUMENT_ROOT = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
+$document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
 
-define('DONT_USE_IS_WEB_APP', $DONT_USE_DOCUMENT_ROOT !== '');
+define('DONT_USE_IS_WEB_APP', $document_root !== '');
 define('DONT_USE_IS_PHAR_APP', (Phar::running() !== ''));
 define('DONT_USE_IS_CLI_APP', (Phar::running() === '') && !DONT_USE_IS_WEB_APP);
 const DONT_USE_REL_CONFIG_DIR = 'config' . DIRECTORY_SEPARATOR;
 const DONT_USE_REL_CONFIG_APP = 'app';
 
 if (DONT_USE_IS_WEB_APP) {
-    define('DONT_USE_DOCUMENT_ROOT', $DONT_USE_DOCUMENT_ROOT);
+    define('DONT_USE_DOCUMENT_ROOT', $document_root);
 
-    $DONT_USE_SITE_ROOT = dirname(DONT_USE_DOCUMENT_ROOT) . DIRECTORY_SEPARATOR;
+    $site_root = dirname(DONT_USE_DOCUMENT_ROOT) . DIRECTORY_SEPARATOR;
 
-    define('DONT_USE_SITE_ROOT', $DONT_USE_SITE_ROOT);
+    define('DONT_USE_SITE_ROOT', $site_root);
     define('DONT_USE_CONFIG_DIR', DONT_USE_SITE_ROOT . DONT_USE_REL_CONFIG_DIR);
     define(
         'DONT_USE_CONFIG_FRAMEWORK',
@@ -41,12 +41,12 @@ if (DONT_USE_IS_WEB_APP) {
     define('DONT_USE_EPHECT_VENDOR_LIB', DONT_USE_EPHECT_VENDOR_SRC . 'Framework' . DIRECTORY_SEPARATOR);
     define('DONT_USE_EPHECT_VENDOR_APPS', DONT_USE_EPHECT_VENDOR_SRC . 'Apps' . DIRECTORY_SEPARATOR);
 
-    $DONT_USE_REWRITE_BASE = '/';
+    $rewrite_base = '/';
 
-    if (file_exists(DONT_USE_CONFIG_DIR . 'DONT_USE_REWRITE_BASE') && $DONT_USE_REWRITE_BASE = file_get_contents(DONT_USE_CONFIG_DIR . 'DONT_USE_REWRITE_BASE')) {
-        $DONT_USE_REWRITE_BASE = trim($DONT_USE_REWRITE_BASE);
+    if (file_exists(DONT_USE_CONFIG_DIR . 'rewrite_base') && $rewrite_base = file_get_contents(DONT_USE_CONFIG_DIR . 'rewrite_base')) {
+        $rewrite_base = trim($rewrite_base);
     }
-    define('DONT_USE_REWRITE_BASE', $DONT_USE_REWRITE_BASE);
+    define('DONT_USE_REWRITE_BASE', $rewrite_base);
 
     $scheme = 'http';
     if (str_contains($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
@@ -93,8 +93,7 @@ if (DONT_USE_IS_WEB_APP) {
 }
 
 if (!DONT_USE_IS_WEB_APP) {
-
-    $DONT_USE_SITE_ROOT = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
+    $site_root = (getcwd() ? getcwd() : __DIR__) . DIRECTORY_SEPARATOR;
 
     [$app_path] = get_included_files();
     $script_name = pathinfo($app_path, PATHINFO_BASENAME);
@@ -117,29 +116,25 @@ if (!DONT_USE_IS_WEB_APP) {
 
     $ephect_dir = $vendor_dir . 'framework' . DIRECTORY_SEPARATOR . 'Ephect' . DIRECTORY_SEPARATOR;
     $ajil_dir = $vendor_dir . 'javascripts' . DIRECTORY_SEPARATOR . 'Ajil' . DIRECTORY_SEPARATOR;
-    $DONT_USE_EPHECT_VENDOR_LIB = '';
-    $DONT_USE_EPHECT_VENDOR_APPS = '';
+    $ephect_vendor_lib = '';
+    $ephect_vendor_apps = '';
 
     define('DONT_USE_APP_NAME', $appName);
 
-    $DONT_USE_EPHECT_ROOT = Phar::running();
+    $ephect_root = Phar::running();
 
-    if (!DONT_USE_IS_PHAR_APP) {
-
-        if (file_exists(DONT_USE_SITE_ROOT . $portable_dir . $bootstrap)) {
-            $ephect_dir = $portable_dir;
-        }
-        $DONT_USE_EPHECT_VENDOR_LIB = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
-        $DONT_USE_EPHECT_VENDOR_APPS = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
-
-        $DONT_USE_EPHECT_ROOT = DONT_USE_SITE_ROOT . $DONT_USE_EPHECT_VENDOR_LIB;
-
+    if (file_exists(DONT_USE_SITE_ROOT . $portable_dir . $bootstrap)) {
+        $ephect_dir = $portable_dir;
     }
+    $ephect_vendor_lib = $ephect_dir . 'Framework' . DIRECTORY_SEPARATOR;
+    $ephect_vendor_apps = $ephect_dir . 'Apps' . DIRECTORY_SEPARATOR;
+
+    $ephect_root = DONT_USE_SITE_ROOT . $ephect_vendor_lib;
 
     define('DONT_USE_EPHECT_VENDOR_SRC', $ephect_dir);
     define('DONT_USE_AJIL_VENDOR_SRC', $ajil_dir);
-    define('DONT_USE_EPHECT_VENDOR_LIB', $DONT_USE_EPHECT_VENDOR_LIB);
-    define('DONT_USE_EPHECT_VENDOR_APPS', $DONT_USE_EPHECT_VENDOR_APPS);
+    define('DONT_USE_EPHECT_VENDOR_LIB', $ephect_vendor_lib);
+    define('DONT_USE_EPHECT_VENDOR_APPS', $ephect_vendor_apps);
 
     define('DONT_USE_EPHECT_APPS_ROOT', DONT_USE_SITE_ROOT . DONT_USE_EPHECT_VENDOR_APPS);
 
@@ -150,13 +145,48 @@ if (!DONT_USE_IS_WEB_APP) {
     define('DONT_USE_AJIL_ROOT', DONT_USE_SITE_ROOT . DONT_USE_AJIL_VENDOR_SRC);
 }
 
-define('DONT_USE_CONFIG_DOCROOT', file_exists(DONT_USE_CONFIG_DIR . 'DONT_USE_DOCUMENT_ROOT') ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'DONT_USE_DOCUMENT_ROOT')) : 'public');
-define('DONT_USE_CONFIG_HOSTNAME', file_exists(DONT_USE_CONFIG_DIR . 'hostname') ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'hostname')) : 'localhost');
-define('DONT_USE_CONFIG_NAMESPACE', file_exists(DONT_USE_CONFIG_DIR . 'namespace') ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'namespace')) : DONT_USE_APP_NAME);
-define('DONT_USE_CONFIG_COMMANDS', file_exists(DONT_USE_CONFIG_DIR . 'commands') ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'commands')) : 'Commands');
-define('DONT_USE_CONFIG_PAGES', file_exists(DONT_USE_CONFIG_DIR . 'pages') ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'pages')) : 'Pages');
-define('DONT_USE_CONFIG_LIBRARY', file_exists(DONT_USE_CONFIG_DIR . 'library') ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'library')) : 'Library');
-define('DONT_USE_CONFIG_COMPONENTS', file_exists(DONT_USE_CONFIG_DIR . 'components') ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'components')) : 'Components');
+define(
+    'DONT_USE_CONFIG_DOCROOT',
+    file_exists(DONT_USE_CONFIG_DIR . 'document_root')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'document_root'))
+        : 'public'
+);
+define(
+    'DONT_USE_CONFIG_HOSTNAME',
+    file_exists(DONT_USE_CONFIG_DIR . 'hostname')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'hostname'))
+        : 'localhost'
+);
+define(
+    'DONT_USE_CONFIG_NAMESPACE',
+    file_exists(DONT_USE_CONFIG_DIR . 'namespace')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'namespace'))
+        : DONT_USE_APP_NAME
+);
+define(
+    'DONT_USE_CONFIG_COMMANDS',
+    file_exists(DONT_USE_CONFIG_DIR . 'commands')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'commands'))
+        : 'Commands'
+);
+define(
+    'DONT_USE_CONFIG_PAGES',
+    file_exists(DONT_USE_CONFIG_DIR . 'pages')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'pages'))
+        : 'Pages'
+);
+define(
+    'DONT_USE_CONFIG_LIBRARY',
+    file_exists(DONT_USE_CONFIG_DIR . 'library')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'library'))
+        : 'Library'
+);
+define(
+    'DONT_USE_CONFIG_COMPONENTS',
+    file_exists(DONT_USE_CONFIG_DIR . 'components')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'components'))
+        : 'Components'
+);
 
 if (!DONT_USE_IS_WEB_APP) {
     define('DONT_USE_DOCUMENT_ROOT', DONT_USE_SITE_ROOT . DONT_USE_CONFIG_DOCROOT . DIRECTORY_SEPARATOR);
@@ -201,7 +231,7 @@ class Constants
     public const FULL_URI = DONT_USE_FULL_URI;
     public const FULL_SSL_URI = DONT_USE_FULL_SSL_URI;
     public const APP_CWD = DONT_USE_APP_CWD;
-    public const DONT_USE_EPHECT_APPS_ROOT = DONT_USE_DONT_USE_EPHECT_APPS_ROOT;
+    public const EPHECT_APPS_ROOT = DONT_USE_EPHECT_APPS_ROOT;
     public const CONFIG_DOCROOT = DONT_USE_CONFIG_DOCROOT;
     public const CONFIG_HOSTNAME = DONT_USE_CONFIG_HOSTNAME;
     public const CONFIG_NAMESPACE = DONT_USE_CONFIG_NAMESPACE;
@@ -209,7 +239,6 @@ class Constants
     public const CONFIG_PAGES = DONT_USE_CONFIG_PAGES;
     public const CONFIG_LIBRARY = DONT_USE_CONFIG_LIBRARY;
     public const CONFIG_COMPONENTS = DONT_USE_CONFIG_COMPONENTS;
-
     public const REL_RUNTIME_JS_DIR = 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
     public const REL_RUNTIME_CSS_DIR = 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
     public const RUNTIME_JS_DIR = DONT_USE_DOCUMENT_ROOT . self::REL_RUNTIME_JS_DIR;
@@ -252,9 +281,9 @@ class Constants
     public const ERROR_LOG = self::LOG_PATH . 'error.log';
     public const SQL_LOG = self::LOG_PATH . 'sql.log';
     public const ROUTES_JSON = self::RUNTIME_DIR . 'routes.json';
-
     public const FRAMEWORK_ROOT = DONT_USE_EPHECT_ROOT . 'Framework' . DIRECTORY_SEPARATOR;
-    public const HOOKS_ROOT = DONT_USE_EPHECT_ROOT . 'Hooks' . DIRECTORY_SEPARATOR;
+    public const HOOKS_DIR = 'Hooks';
+    public const HOOKS_ROOT = DONT_USE_EPHECT_ROOT . self::HOOKS_DIR . DIRECTORY_SEPARATOR;
     public const PLUGINS_ROOT = DONT_USE_EPHECT_ROOT . 'Plugins' . DIRECTORY_SEPARATOR;
     public const COMMANDS_ROOT = DONT_USE_EPHECT_ROOT . 'Commands' . DIRECTORY_SEPARATOR;
     public const CUSTOM_COMMANDS_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_COMMANDS . DIRECTORY_SEPARATOR;

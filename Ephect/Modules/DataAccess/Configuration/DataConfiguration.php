@@ -6,19 +6,15 @@ use Ephect\Framework\Configuration\AbstractConfiguration;
 
 abstract class DataConfiguration extends AbstractConfiguration
 {
-
     public function __construct(
         private readonly string $_driver = '',
         private readonly string $_host = '',
         private readonly string $_databaseName = '',
         private readonly string $_user = '',
         private readonly string $_password = '',
-        private readonly int    $_port = 0,
-
-    )
-    {
+        private readonly int $_port = 0,
+    ) {
         parent::__construct($this);
-
     }
 
     public function configure(): void

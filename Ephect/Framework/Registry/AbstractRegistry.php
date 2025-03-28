@@ -8,13 +8,13 @@ use Ephect\Framework\Utils\Text;
 
 abstract class AbstractRegistry implements RegistryInterface
 {
+    use ElementTrait;
+
     protected array $entries = [];
     protected bool $isLoaded = false;
     protected string $baseDirectory = \Constants::CACHE_DIR;
     protected string $cacheFilename = '';
     protected string $flatFilename = '';
-
-    use ElementTrait;
 
     public function _write(string $key, $value): void
     {
@@ -56,12 +56,12 @@ abstract class AbstractRegistry implements RegistryInterface
 
         if ($asArray) {
             $result = Text::jsonToPhpReturnedArray($result);
-            $EPHECT_ROOT = \Constants::EPHECT_ROOT;
+            $ephect_root = \Constants::EPHECT_ROOT;
             if (DIRECTORY_SEPARATOR === '\\') {
-                $EPHECT_ROOT = str_replace('\\', '\\\\', \Constants::EPHECT_ROOT);
+                $ephect_root = str_replace('\\', '\\\\', \Constants::EPHECT_ROOT);
             }
 
-            $result = str_replace('"' . $EPHECT_ROOT, 'EPHECT_ROOT . "', $result);
+            $result = str_replace('"' . $ephect_root, 'EPHECT_ROOT . "', $result);
             $result = str_replace('"' . \Constants::SRC_ROOT, 'SRC_ROOT . "', $result);
         }
 
@@ -126,5 +126,4 @@ abstract class AbstractRegistry implements RegistryInterface
 
         return $basename;
     }
-
 }

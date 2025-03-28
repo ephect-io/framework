@@ -24,10 +24,10 @@ final class PhpInfo
         $cat = 'general';
 
         if (!$asArray) {
-            $root = new stdClass;
-            $root->section = new stdClass;
+            $root = new stdClass();
+            $root->section = new stdClass();
             $root->section->name = $cat;
-            $root->section->values = new stdClass;
+            $root->section->values = new stdClass();
         }
 
         ob_start();
@@ -35,14 +35,13 @@ final class PhpInfo
         $lines = explode("\n", strip_tags(ob_get_clean(), "<tr><td><h2>"));
 
         foreach ($lines as $line) {
-
             if (false !== preg_match("~<h2>(.*)</h2>~", $line, $title) && ((isset($title[1]) && ($cat = $title[1])))) {
                 // new cat?
-                $cat = self::_formatKey($cat);
+                $cat = self::__formatKey($cat);
                 if (!$asArray) {
-                    $root->section = new stdClass;
+                    $root->section = new stdClass();
                     $root->section->name = $cat;
-                    $root->section->values = new stdClass;
+                    $root->section->values = new stdClass();
                 }
 
                 if ($asArray) {
@@ -53,8 +52,8 @@ final class PhpInfo
             }
 
             if (preg_match("~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~", $line, $val)) {
-                $key = self::_formatKey($val[1]);
-                $value = self::_formatValue($val[2]);
+                $key = self::__formatKey($val[1]);
+                $value = self::__formatValue($val[2]);
 
                 if ($cat !== 'php_variables') {
                     if (!$asArray) {
@@ -66,13 +65,13 @@ final class PhpInfo
                 }
 
                 if ($cat == 'php_variables') {
-                    if (preg_match('~\$_(server|\Constants::COOKIE)\[\'([a-z_]*)\'\]~', $key, $val)) {
+                    if (preg_match('~\$_(server|cookie)\[\'([a-z_]*)\'\]~', $key, $val)) {
                         $subcat = $val[1];
                         $subkey = $val[2];
 
                         if (!$asArray) {
                             if (!property_exists($root->section->values, $subcat)) {
-                                $root->section->values->$subcat = new stdClass;
+                                $root->section->values->$subcat = new stdClass();
                             }
                             $root->section->values->$subcat->$subkey = $value;
                         }
@@ -82,13 +81,19 @@ final class PhpInfo
                         }
                     }
                 }
-            } elseif (preg_match("~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~", $line, $val)) {
-                $key = self::_formatKey($val[1]);
-                $local = self::_formatValue($val[2]);
-                $master = self::_formatValue($val[3]);
+            } elseif (
+                preg_match(
+                    "~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~",
+                    $line,
+                    $val
+                )
+            ) {
+                $key = self::__formatKey($val[1]);
+                $local = self::__formatValue($val[2]);
+                $master = self::__formatValue($val[3]);
 
                 if (!$asArray) {
-                    $root->section->values->$key = new stdClass;
+                    $root->section->values->$key = new stdClass();
                     $root->section->values->$key->local = $local;
                     $root->section->values->$key->master = $master;
                 }
@@ -103,7 +108,7 @@ final class PhpInfo
         return $root;
     }
 
-    private static function _formatKey(string $key): string
+    private static function __formatKey(string $key): string
     {
         $key = trim($key);
         $key = str_replace('(', '', $key);
@@ -116,7 +121,7 @@ final class PhpInfo
         return $key;
     }
 
-    private static function _formatValue(string $value): string
+    private static function __formatValue(string $value): string
     {
         // $value = str_replace("\/", '/', $value);
 

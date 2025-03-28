@@ -32,12 +32,12 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
 
         if (file_exists(\Constants::CUSTOM_COMMANDS_ROOT)) {
             $customCommandFiles = File::walkTreeFiltered(\Constants::CUSTOM_COMMANDS_ROOT, ['php']);
-            $allFiles[] = (object)["root" => CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles];
+            $allFiles[] = (object)["root" => \Constants::CUSTOM_COMMANDS_ROOT, "files" => $customCommandFiles];
         }
 
         if (file_exists(\Constants::PLUGINS_ROOT)) {
             $moduleCommandFiles = File::walkTreeFiltered(\Constants::PLUGINS_ROOT, ['php']);
-            $allFiles[] = (object)["root" => PLUGINS_ROOT, "files" => $moduleCommandFiles];
+            $allFiles[] = (object)["root" => \Constants::PLUGINS_ROOT, "files" => $moduleCommandFiles];
         }
 
         [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
