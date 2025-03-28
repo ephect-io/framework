@@ -28,7 +28,6 @@ class BuildByNameStrategy implements BuiderStrategyInterface
         $error = '';
 
         try {
-
             $time_start = microtime(true);
 
             $functionArgs = $route === 'App' ? [] : RouterService::findRouteArguments($route);

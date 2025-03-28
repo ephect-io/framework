@@ -4,20 +4,23 @@ namespace Ephect\Modules\Forms\Components;
 
 interface FileComponentInterface extends ComponentInterface
 {
-    static function getFlatFilename(string $basename): string;
+    public static function getFlatFilename(string $basename): string;
 
-    function getSourceFilename(): string;
+    public function getSourceFilename(): string;
 
-    function getFlattenFilename(): string;
+    public function getFlattenFilename(): string;
 
-    function getFlattenSourceFilename(): string;
+    public function getFlattenSourceFilename(): string;
 
-    function load(string $filename = ''): bool;
+    public function load(string $filename = ''): bool;
 
-    function analyse(): void;
+    public function analyse(): void;
 
-    function parse(): void;
+    public function parse(): void;
 
-    function copyComponents(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string;
-
+    public function copyComponents(
+        array &$list,
+        ?string $motherUID = null,
+        ?ComponentInterface $component = null
+    ): ?string;
 }

@@ -4,10 +4,12 @@ namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Event\EventDispatcher;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Tree\Tree;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\ApplicationIgniter;
+use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntity;
@@ -15,6 +17,8 @@ use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Components\ComponentFactory;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
+use Ephect\Modules\Forms\Events\ComponentFinishedEvent;
+use Ephect\Modules\Forms\Events\PageFinishedEvent;
 use Ephect\Modules\Forms\Registry\CacheRegistry;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -233,7 +237,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 //        }
 
         [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
-        $html = ComponentRenderer::renderHTML($cacheFilename, $fqFunctionName, $functionArgs, $request);
+        $html = ComponentRenderer::renderHTML($this->motherUID, $cacheFilename, $fqFunctionName, $functionArgs, $request);
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
             File::safeWrite(\Constants::STATIC_DIR . $this->filename, $html);
         }
@@ -254,8 +258,14 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             $component->parse();
 
             $motherUID = $component->getMotherUID();
-
             $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
+
+            if ($motherUID !== $component->getUID()) {
+                $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
+                $dispatcher = new EventDispatcher();
+                $dispatcher->dispatch($finishedEvent);
+            }
+
         }
 
         return [$fqFunctionName, $cacheFilename];
@@ -298,7 +308,10 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
                 mkdir(\Constants::CACHE_DIR . $motherUID, 0775);
 
                 $flatFilename = CodeRegistry::getFlatFilename() . '.json';
-                copy(\Constants::CACHE_DIR . $flatFilename, \Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename);
+                copy(
+                    \Constants::CACHE_DIR . $flatFilename,
+                    \Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename
+                );
             }
         }
 

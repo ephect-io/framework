@@ -6,13 +6,13 @@ use Ephect\Framework\ElementInterface;
 
 interface ComponentDeclarationInterface extends ElementInterface
 {
-    function getType(): string;
+    public function getType(): string;
 
-    function getName(): string;
+    public function getName(): string;
 
-    function hasArguments(): bool;
+    public function hasArguments(): bool;
 
-    function getArguments(): ?array;
+    public function getArguments(): ?array;
 
-    function getComposition(): ?ComponentEntity;
+    public function getComposition(): ?ComponentEntity;
 }

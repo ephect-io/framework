@@ -24,7 +24,11 @@ interface ComponentInterface extends ElementInterface
 
     public function composedOf(): ?array;
 
-    public function renderComponent(string $motherUID, string $functionName, array|object|null $functionArgs = null): array;
+    public function renderComponent(
+        string $motherUID,
+        string $functionName,
+        array|object|null $functionArgs = null
+    ): array;
 
     public function render(): void;
 }

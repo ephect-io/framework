@@ -61,39 +61,39 @@ abstract class AbstractComponentParser extends AbstractTokenParser
             return;
         }
 
-        include_once \Constants::CACHE_DIR . $filename;
-
-        $reflection = new ReflectionFunction($funcName);
-        $attrs = $reflection->getAttributes();
-        $middlewaresList = [];
-        $middlewaresArgsList = [];
-        foreach ($attrs as $attr) {
-            $attrNew = $attr->newInstance();
-            if ($attrNew instanceof AttributeMiddlewareInterface) {
-                $middlewaresList[$attr->getName()] = [
-                    $attr->getArguments(),
-                    $attrNew->getMiddlewares(),
-                ];
-            }
-        }
-
-        if (count($middlewaresList)) {
-            FrameworkRegistry::load();
-            foreach ($middlewaresList as $key => $value) {
-                [$arguments, $middlewares] = $value;
-                foreach ($middlewares as $middlewareClass) {
-                    $filename = FrameworkRegistry::read($middlewareClass);
-                    include_once $filename;
-                    $middleware = new $middlewareClass();
-
-                    if ($middleware instanceof ComponentParserMiddlewareInterface) {
-                        $middleware->parse($parent, $motherUID, $funcName, $props, $arguments);
-                    }
-
-                    StateRegistry::saveByMotherUid($motherUID, true);
-//                    StateRegistry::save(true);
-                }
-            }
-        }
+//        include_once \Constants::CACHE_DIR . $filename;
+//
+//        $reflection = new ReflectionFunction($funcName);
+//        $attrs = $reflection->getAttributes();
+//        $middlewaresList = [];
+//        $middlewaresArgsList = [];
+//        foreach ($attrs as $attr) {
+//            $attrNew = $attr->newInstance();
+//            if ($attrNew instanceof AttributeMiddlewareInterface) {
+//                $middlewaresList[$attr->getName()] = [
+//                    $attr->getArguments(),
+//                    $attrNew->getMiddlewares(),
+//                ];
+//            }
+//        }
+//
+//        if (count($middlewaresList)) {
+//            FrameworkRegistry::load();
+//            foreach ($middlewaresList as $key => $value) {
+//                [$arguments, $middlewares] = $value;
+//                foreach ($middlewares as $middlewareClass) {
+//                    $filename = FrameworkRegistry::read($middlewareClass);
+//                    include_once $filename;
+//                    $middleware = new $middlewareClass();
+//
+//                    if ($middleware instanceof ComponentParserMiddlewareInterface) {
+//                        $middleware->parse($parent, $motherUID, $funcName, $props, $arguments);
+//                    }
+//
+//                    StateRegistry::saveByMotherUid($motherUID, true);
+////                    StateRegistry::save(true);
+//                }
+//            }
+//        }
     }
 }
