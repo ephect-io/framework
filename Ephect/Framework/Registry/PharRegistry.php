@@ -8,7 +8,7 @@ class PharRegistry extends AbstractStaticRegistry
 
     public static function reset(): void
     {
-        self::$instance = new PharRegistry;
+        self::$instance = new PharRegistry();
         self::$instance->_setCacheDirectory(RUNTIME_DIR);
         unlink(self::$instance->getCacheFilename());
     }
@@ -16,7 +16,7 @@ class PharRegistry extends AbstractStaticRegistry
     public static function getInstance(): RegistryInterface
     {
         if (self::$instance === null) {
-            self::$instance = new PharRegistry;
+            self::$instance = new PharRegistry();
             self::$instance->_setCacheDirectory(RUNTIME_DIR);
         }
 
@@ -29,7 +29,6 @@ class PharRegistry extends AbstractStaticRegistry
         $items = FrameworkRegistry::items();
 
         foreach ($items as $key => $value) {
-
             $value = str_replace(\Constants::EPHECT_ROOT, '', $value);
             $value = str_replace(DIRECTORY_SEPARATOR, '_', $value);
 

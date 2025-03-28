@@ -21,7 +21,7 @@ class WebComponent extends ApplicationComponent
             $common->getModuleSrcDir() . 'Templates' . DIRECTORY_SEPARATOR . 'Component.tpl'
         );
         $textMaker->make(['funcNamespace' => $namespace, 'funcName' => $function, 'funcBody' => '', 'html' => $html]);
-        $textMaker->save(COPY_DIR . $filename);
+        $textMaker->save(\Constants::COPY_DIR . $filename);
     }
 
     public function analyse(): void
@@ -38,5 +38,4 @@ class WebComponent extends ApplicationComponent
         parent::parse();
         $this->cacheHtml();
     }
-
 }

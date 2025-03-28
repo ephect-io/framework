@@ -51,9 +51,17 @@ class BuildByNameStrategy implements BuiderStrategyInterface
         }
 
         if ($error !== '') {
-            Console::writeLine("FATAL ERROR!%s %s", PHP_EOL, ConsoleColors::getColoredString($error, ConsoleColors::WHITE, ConsoleColors::BACKGROUND_RED));
+            Console::writeLine(
+                "FATAL ERROR!%s %s",
+                PHP_EOL,
+                ConsoleColors::getColoredString(
+                    $error,
+                    ConsoleColors::WHITE,
+                    ConsoleColors::BACKGROUND_RED
+                )
+            );
         }
 
-        File::safeWrite(STATIC_DIR . $filename, $html);
+        File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
     }
 }

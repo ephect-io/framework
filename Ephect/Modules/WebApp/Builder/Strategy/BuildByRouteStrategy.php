@@ -33,7 +33,10 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $outputFilename = "$route.out";
 
         Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-        Console::write("querying %s ... ", ConsoleColors::getColoredString(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, ConsoleColors::LIGHT_GREEN));
+        Console::write("querying %s ... ", ConsoleColors::getColoredString(
+            \Constants::CONFIG_HOSTNAME . ":$port" . $queryString,
+            ConsoleColors::LIGHT_GREEN)
+        );
 
         Console::getLogger()->info("Compiling %s ...", $route);
 
@@ -44,8 +47,8 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8';
         $headers[] = 'Accept-Encoding: gzip, deflate, br';
         $headers[] = 'Connection: keep-alive';
-        if (isset($_\Constants::COOKIE['PHPSESSID'])) {
-            $headers[] = "\Constants::COOKIE: PHPSESSID={$_\Constants::COOKIE['PHPSESSID']};";
+        if (isset($_COOKIE['PHPSESSID'])) {
+            $headers[] = "Cookie: PHPSESSID={$_COOKIE['PHPSESSID']};";
         }
         $headers[] = 'Upgrade-Insecure-Requests: 1';
         $headers[] = 'Sec-Fetch-Dest: document';
@@ -56,9 +59,9 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
 
         ob_start();
         [$code, $header, $html] = $curl->request(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
-        File::safeWrite(STATIC_DIR . $filename, $html);
+        File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
         $output = ob_get_clean();
-        File::safeWrite(LOG_PATH . $outputFilename, $output);
+        File::safeWrite(\Constants::LOG_PATH . $outputFilename, $output);
 
         $time_end = microtime(true);
 

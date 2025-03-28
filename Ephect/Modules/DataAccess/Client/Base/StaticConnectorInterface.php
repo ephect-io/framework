@@ -4,53 +4,53 @@ namespace Ephect\Modules\DataAccess\Client\Base;
 
 interface StaticConnectorInterface
 {
-    static function connect();
+    public static function connect();
 
-    static function isAlive();
+    public static function isAlive();
 
-    static function isConnected();
+    public static function isConnected();
 
-    static function query($sql);
+    public static function query($sql);
 
-    static function queryLog($sql, $filename, $lineNumber);
+    public static function queryLog($sql, $filename, $lineNumber);
 
-    static function formatLimitedQyery($sql, $offset, $count);
+    public static function formatLimitedQyery($sql, $offset, $count);
 
-    static function fetchArray($resource);
+    public static function fetchArray($resource);
 
-    static function nextResult($resource);
+    public static function nextResult($resource);
 
-    static function fetchObject($resource);
+    public static function fetchObject($resource);
 
-    static function numRows($resource);
+    public static function numRows($resource);
 
-    static function numFields($resource);
+    public static function numFields($resource);
 
-    static function fieldName($resource, $offset);
+    public static function fieldName($resource, $offset);
 
-    static function fieldLen($resource, $offset);
+    public static function fieldLen($resource, $offset);
 
-    static function fieldType($resource, $offset);
+    public static function fieldType($resource, $offset);
 
-    static function close();
+    public static function close();
 
-    static function kill();
+    public static function kill();
 
-    static function freeResult($resource);
+    public static function freeResult($resource);
 
-    static function error();
+    public static function error();
 
-    static function useTransactions($set);
+    public static function useTransactions($set);
 
-    static function beginTransaction();
+    public static function beginTransaction();
 
-    static function getTransactionLevel();
+    public static function getTransactionLevel();
 
-    static function commit();
+    public static function commit();
 
-    static function rollback();
+    public static function rollback();
 
-    static function identity();
+    public static function identity();
 
-    static function getRecordset($sql);
+    public static function getRecordset($sql);
 }

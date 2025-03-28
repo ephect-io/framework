@@ -21,7 +21,7 @@ function useRepository(string $repositoryClass): ?RepositoryInterface
         $factoryFile = FrameworkRegistry::read($factoryClass);
         include_once $factoryFile;
         if (is_subclass_of($factoryClass, RepositoryFactoryInterface::class)) {
-            $factory = new $factoryClass;
+            $factory = new $factoryClass();
             $result = $factory->create($repositoryClass);
             break;
         }

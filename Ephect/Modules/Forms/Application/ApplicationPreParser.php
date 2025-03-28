@@ -55,7 +55,7 @@ class ApplicationPreParser extends AbstractApplicationParser
 
         $filename = $component->getSourceFilename();
         File::safeWrite(
-            COPY_DIR . $filename,
+            \Constants::COPY_DIR . $filename,
             $component->getCode()
         );
         self::updateComponent($component);

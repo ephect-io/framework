@@ -19,7 +19,7 @@ class Lib extends AbstractCommandLib
             $constants['SCRIPT_ROOT'] = \Constants::SITE_ROOT;
             $constants['SRC_ROOT'] = \Constants::SRC_ROOT;
             $constants['SITE_ROOT'] = \Constants::SITE_ROOT;
-            $constants['IS_PHAR_APP'] = \Constants::IS_PHAR_APP ? 'TRUE' : 'FALSE';
+            $constants['IS_PHAR_APP'] = \Constants::IS_PHAR_APP ? 'true' : 'false';
             $constants['EPHECT_ROOT'] = \Constants::EPHECT_ROOT;
 
             // $constants['EPHECT_VENDOR_SRC'] = \Constants::EPHECT_VENDOR_SRC;
@@ -43,7 +43,11 @@ class Lib extends AbstractCommandLib
 
             Console::writeLine('Application constants are :');
             foreach ($constants as $key => $value) {
-                Console::writeLine(ConsoleColors::getColoredString($key, ConsoleColors::CYAN) . ' => ' . ConsoleColors::getColoredString($value, ConsoleColors::BLUE));
+                Console::writeLine(
+                    ConsoleColors::getColoredString($key, ConsoleColors::CYAN)
+                    . ' => '
+                    . ConsoleColors::getColoredString($value, ConsoleColors::BLUE)
+                );
             }
 
             return $constants;
