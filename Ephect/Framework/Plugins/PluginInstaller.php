@@ -47,8 +47,8 @@ class PluginInstaller
     public function install(): void
     {
         FrameworkRegistry::load(true);
-        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
-        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::CONFIG_APP . DIRECTORY_SEPARATOR;
+        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
 
         [$filename, $paths] = self::readPluginPaths();
         if (is_array($paths)) {
@@ -159,8 +159,8 @@ class PluginInstaller
 
         self::savePluginPaths($paths);
 
-        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
-        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::CONFIG_APP . DIRECTORY_SEPARATOR;
+        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
 
         $bootstrapFile = $srcDir . 'bootstrap.php';
         $constantsFile = $srcDir . 'constants.php';

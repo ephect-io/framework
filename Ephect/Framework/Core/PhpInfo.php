@@ -66,7 +66,7 @@ final class PhpInfo
                 }
 
                 if ($cat == 'php_variables') {
-                    if (preg_match('~\$_(server|cookie)\[\'([a-z_]*)\'\]~', $key, $val)) {
+                    if (preg_match('~\$_(server|\Constants::COOKIE)\[\'([a-z_]*)\'\]~', $key, $val)) {
                         $subcat = $val[1];
                         $subkey = $val[2];
 

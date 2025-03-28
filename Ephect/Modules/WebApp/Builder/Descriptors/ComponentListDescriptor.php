@@ -16,9 +16,9 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
 
         $descriptor = new ComponentDescriptor();
 
-        $bootstrapList = File::walkTreeFiltered(SRC_ROOT, ['phtml'], true);
+        $bootstrapList = File::walkTreeFiltered(\Constants::SRC_ROOT, ['phtml'], true);
         foreach ($bootstrapList as $key => $compFile) {
-            [$fqcn, $comp] = $descriptor->describe(SRC_ROOT, $compFile);
+            [$fqcn, $comp] = $descriptor->describe(\Constants::SRC_ROOT, $compFile);
             $result[$fqcn] = $comp;
         }
 
@@ -39,7 +39,7 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
             if (str_starts_with($path, 'vendor')) {
                 $path = realpath(siteRoot() . $path);
             }
-            $moduleConfigDir = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+            $moduleConfigDir = $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
             $moduleConfigDir = is_dir($moduleConfigDir) ? $moduleConfigDir : $path;
 
             $manifestReader = new ModuleManifestReader();

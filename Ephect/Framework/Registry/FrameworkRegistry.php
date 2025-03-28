@@ -76,7 +76,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
             }
 
             self::registerCustomClasses(\Constants::COMMANDS_ROOT);
-            self::registerCustomClasses(SRC_ROOT);
+            self::registerCustomClasses(\Constants::SRC_ROOT);
             self::registerModulesClasses();
 
             FrameworkRegistry::save(true);

@@ -24,7 +24,7 @@ class Application extends AbstractApplication
         $this->argv = $params[0];
         $this->argc = $params[1];
 
-        $this->appDirectory = APP_CWD;
+        $this->appDirectory = \Constants::APP_CWD;
 
         $this->loadInFile();
 

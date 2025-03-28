@@ -137,7 +137,7 @@ class Compiler
         $baseTextMaker->make(['AttributeList' => $thisAttributeList,]);
 
         if ($hasBackendProps) {
-            $namespace = CONFIG_NAMESPACE;
+            $namespace = \Constants::CONFIG_NAMESPACE;
 
             $baseTextMaker->make(['endTemplate' => '<h2>{{ foo }}</h2>',]);
 

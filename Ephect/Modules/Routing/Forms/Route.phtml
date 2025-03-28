@@ -23,7 +23,7 @@ function Route($children): string
         $router->addRoute($route);
         $router->saveRoutes();
 
-        if (!IS_WEB_APP) {
+        if (!\Constants::IS_WEB_APP) {
             return;
         }
 

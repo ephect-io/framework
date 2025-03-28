@@ -25,13 +25,13 @@ class Builder
         $commandNamespace = ucfirst($verb) . ucfirst($subject);
         $commandAttributes = 'verb: "' . $verb . '"';
         $commandAttributes = $subject !== "" ? $commandAttributes . ', subject: "' . $subject . '"' : $commandAttributes;
-        $commandTemplatesDir = EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR;
+        $commandTemplatesDir = \Constants::EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR;
 
         $mainTextMaker = new TemplateMaker($commandTemplatesDir . 'Main.tpl');
         $libTextMaker = new TemplateMaker($commandTemplatesDir . 'Lib.tpl');
 
         $mainTextMaker->make([
-            'ApplicationNamespace' => CONFIG_NAMESPACE,
+            'ApplicationNamespace' => \Constants::CONFIG_NAMESPACE,
             'CommandNamespace' => $commandNamespace,
             'CommandAttributes' => $commandAttributes,
             'Description' => $description,
@@ -39,7 +39,7 @@ class Builder
         ]);
 
         $libTextMaker->make([
-            'ApplicationNamespace' => CONFIG_NAMESPACE,
+            'ApplicationNamespace' => \Constants::CONFIG_NAMESPACE,
             'CommandNamespace' => $commandNamespace,
             'MethodName' => $methodName,
         ]);

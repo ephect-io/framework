@@ -14,8 +14,8 @@ class Common extends Utils
     public function getCustomWebComponentRoot(): string
     {
         $moduleTemplatesDir = $this->getModuleManifest()->getTemplates();
-        $customConfig = file_exists(CONFIG_DIR . 'webcomponents') ?
-            trim(file_get_contents(CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir;
-        return SRC_ROOT . $customConfig . DIRECTORY_SEPARATOR;
+        $customConfig = file_exists(\Constants::CONFIG_DIR . 'webcomponents') ?
+            trim(file_get_contents(\Constants::CONFIG_DIR . 'webcomponents')) : $moduleTemplatesDir;
+        return \Constants::SRC_ROOT . $customConfig . DIRECTORY_SEPARATOR;
     }
 }

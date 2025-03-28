@@ -27,8 +27,8 @@ class Lib extends AbstractCommandLib
             $commandName = $subject != "" ? $verb . ":" . $subject : ucfirst($verb);
             $commandDirectory = $subject != "" ? ucfirst($verb) . ucfirst($subject) : ucfirst($verb);
 
-            $destDir = SRC_ROOT . 'Commands' . DIRECTORY_SEPARATOR . $commandDirectory . DIRECTORY_SEPARATOR;
-            $srcDir = EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR;
+            $destDir = \Constants::SRC_ROOT . 'Commands' . DIRECTORY_SEPARATOR . $commandDirectory . DIRECTORY_SEPARATOR;
+            $srcDir = \Constants::EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR;
             $builder->copyTemplates($verb, $subject, $description, $methodName, $arguments, $srcDir, $destDir);
 
             Console::writeLine(ConsoleColors::getColoredString("Command ", ConsoleColors::BLUE) . "%s" . ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $commandName);

@@ -2,18 +2,18 @@
 
 function siteRoot(): string
 {
-    $siteRoot = SITE_ROOT;
-    $vendorPos = strpos(SITE_ROOT, 'vendor');
+    $siteRoot = DONT_USE_SITE_ROOT;
+    $vendorPos = strpos(DONT_USE_SITE_ROOT, 'vendor');
 
     if ($vendorPos > -1) {
-        $siteRoot = substr(SITE_ROOT, 0, $vendorPos);
+        $siteRoot = substr(DONT_USE_SITE_ROOT, 0, $vendorPos);
     }
 
     return $siteRoot;
 }
 function siteConfigPath(): string
 {
-    return siteRoot() . REL_CONFIG_DIR;
+    return siteRoot() . DONT_USE_REL_CONFIG_DIR;
 }
 
 function siteRuntimePath(): string
@@ -24,6 +24,6 @@ function siteRuntimePath(): string
 function siteSrcPath(): string
 {
     $configDir = siteConfigPath();
-    $srcDir = file_exists($configDir . REL_CONFIG_APP) ? trim(file_get_contents($configDir . REL_CONFIG_APP)) : REL_CONFIG_APP;
+    $srcDir = file_exists($configDir . DONT_USE_REL_CONFIG_APP) ? trim(file_get_contents($configDir . DONT_USE_REL_CONFIG_APP)) : DONT_USE_REL_CONFIG_APP;
     return siteRoot() . $srcDir . DIRECTORY_SEPARATOR;
 }

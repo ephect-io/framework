@@ -67,8 +67,8 @@ class Builder
                 if (str_starts_with($path, 'vendor')) {
                     $path = realpath(siteRoot() . $path);
                 }
-                $moduleSrcPathFile = $path . DIRECTORY_SEPARATOR . REL_CONFIG_DIR . REL_CONFIG_APP;
-                $moduleSrcPath = file_exists($moduleSrcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile) : $path . DIRECTORY_SEPARATOR . REL_CONFIG_APP;
+                $moduleSrcPathFile = $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR . \Constants::REL_CONFIG_APP;
+                $moduleSrcPath = file_exists($moduleSrcPathFile) ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile) : $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_APP;
                 $moduleSrcPath = is_dir($moduleSrcPath) ? $moduleSrcPath : $path . DIRECTORY_SEPARATOR;
 
 

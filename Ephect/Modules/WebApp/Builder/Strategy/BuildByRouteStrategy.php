@@ -18,7 +18,7 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
     public function build($route = 'Default'): void
     {
 
-        $port = trim(File::safeRead(CONFIG_DIR . 'dev_port') ?? '80');
+        $port = trim(File::safeRead(\Constants::CONFIG_DIR . 'dev_port') ?? '80');
 
         if ($route === 'App') {
             return;
@@ -33,7 +33,7 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $outputFilename = "$route.out";
 
         Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-        Console::write("querying %s ... ", ConsoleColors::getColoredString(CONFIG_HOSTNAME . ":$port" . $queryString, ConsoleColors::LIGHT_GREEN));
+        Console::write("querying %s ... ", ConsoleColors::getColoredString(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, ConsoleColors::LIGHT_GREEN));
 
         Console::getLogger()->info("Compiling %s ...", $route);
 
@@ -44,8 +44,8 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8';
         $headers[] = 'Accept-Encoding: gzip, deflate, br';
         $headers[] = 'Connection: keep-alive';
-        if (isset($_COOKIE['PHPSESSID'])) {
-            $headers[] = "Cookie: PHPSESSID={$_COOKIE['PHPSESSID']};";
+        if (isset($_\Constants::COOKIE['PHPSESSID'])) {
+            $headers[] = "\Constants::COOKIE: PHPSESSID={$_\Constants::COOKIE['PHPSESSID']};";
         }
         $headers[] = 'Upgrade-Insecure-Requests: 1';
         $headers[] = 'Sec-Fetch-Dest: document';
@@ -55,7 +55,7 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $headers[] = 'Cache-Control: no-cache';
 
         ob_start();
-        [$code, $header, $html] = $curl->request(CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
+        [$code, $header, $html] = $curl->request(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
         File::safeWrite(STATIC_DIR . $filename, $html);
         $output = ob_get_clean();
         File::safeWrite(LOG_PATH . $outputFilename, $output);

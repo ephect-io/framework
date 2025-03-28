@@ -11,9 +11,9 @@ class Lib extends AbstractCommandLib
     public function remove(string $package, string $version): void
     {
 
-        $binScript = SITE_ROOT . "vendor/bin/" . str_replace('/', '_', $package) . '_install.sh';
+        $binScript = \Constants::SITE_ROOT . "vendor/bin/" . str_replace('/', '_', $package) . '_install.sh';
         if (PHP_OS == 'WINNT') {
-            $binScript = SITE_ROOT . "vendor\\bin\\" . str_replace('/', '_', $package) . '_install.bat';
+            $binScript = \Constants::SITE_ROOT . "vendor\\bin\\" . str_replace('/', '_', $package) . '_install.bat';
         }
 
         if (file_exists($binScript)) {

@@ -30,7 +30,7 @@ class PharRegistry extends AbstractStaticRegistry
 
         foreach ($items as $key => $value) {
 
-            $value = str_replace(EPHECT_ROOT, '', $value);
+            $value = str_replace(\Constants::EPHECT_ROOT, '', $value);
             $value = str_replace(DIRECTORY_SEPARATOR, '_', $value);
 
             PharRegistry::write($key, $value);
