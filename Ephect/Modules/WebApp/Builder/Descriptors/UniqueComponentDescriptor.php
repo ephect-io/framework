@@ -26,7 +26,7 @@ class UniqueComponentDescriptor implements DescriptorInterface
             $parameters,
             $returnedType,
             $startsAt
-        ] = ElementUtils::getFunctionDefinitionFromFile(UNIQUE_DIR . $filename);
+        ] = ElementUtils::getFunctionDefinitionFromFile(\Constants::UNIQUE_DIR . $filename);
 
         Logger::create()->debug([
             'namespace' => $namespace,
@@ -67,7 +67,7 @@ class UniqueComponentDescriptor implements DescriptorInterface
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            File::safeWrite(COPY_DIR . $filename, $html);
+            File::safeWrite(\Constants::COPY_DIR . $filename, $html);
             $comp->load($filename);
         }
 

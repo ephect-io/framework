@@ -64,14 +64,12 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
     {
         $result = null;
         try {
-
             $config = new PdoConfiguration();
             if (!$config->loadConfiguration($confname)) {
                 throw new Exception("The configuration `$confname` was not found.");
             }
             $result = new PdoConnection($config);
-
-        } catch (Exception|PDOException $e) {
+        } catch (Exception | PDOException $e) {
             throw new PdoConnectionException('Something went wrong while building the connection.', 1, $e);
         } finally {
             return $result;
@@ -130,8 +128,7 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
             if (!$statement && count($this->_state->errorInfo()) > 0) {
                 throw new PDOException($this->_state->errorInfo()[2], $this->_state->errorInfo()[1], null);
             }
-
-        } catch (Exception|PDOException $ex) {
+        } catch (Exception | PDOException $ex) {
             self::getLogger()->sql($sql);
             if (is_array($params)) {
                 self::getLogger()->sql('WITH PARAMS ' . print_r($params, true));
@@ -139,7 +136,6 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
             self::getLogger()->error($ex);
             $error = $ex;
             $statement = null;
-
         } finally {
             $result = new PdoDataStatement($statement, $this, $sql, $error);
         }
@@ -250,5 +246,4 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
         unset($this->_state);
         return true;
     }
-
 }

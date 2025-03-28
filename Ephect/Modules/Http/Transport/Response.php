@@ -5,11 +5,10 @@ namespace Ephect\Modules\Http\Transport;
 class Response
 {
     public function __construct(
-        private ?string                $content = '',
+        private ?string $content = '',
         private HttpStatusCodeEnum|int $status = 200,
-        private array                  $headers = [],
-    )
-    {
+        private array $headers = [],
+    ) {
     }
 
     public function getContent(): string

@@ -8,7 +8,6 @@ use Ephect\Modules\Forms\Components\ChildrenInterface;
 
 class HtmlSaverService implements HtmlSaverServiceInterface
 {
-
     public function __construct(private readonly ChildrenInterface $children)
     {
     }
@@ -22,22 +21,21 @@ class HtmlSaverService implements HtmlSaverServiceInterface
 
     public function isPending(): bool
     {
-        return file_exists(\Constants::CACHE_DIR . $this->children->getName() . '.pending' . TXT_EXTENSION);
+        return file_exists(\Constants::CACHE_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION);
     }
 
     public function markAsPending(): void
     {
         $date = new DateTime();
         $timestamp = $date->getTimestamp();
-        $pendingTxt = \Constants::CACHE_DIR . $this->children->getName() . '.pending' . TXT_EXTENSION;
+        $pendingTxt = \Constants::CACHE_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION;
         File::safeWrite($pendingTxt, "const time = $timestamp");
     }
 
     public function storeHTML(string $html): void
     {
         $name = $this->children->getName();
-        $finalHTML = \Constants::DOCUMENT_ROOT . $name . DIRECTORY_SEPARATOR . $name . HTML_EXTENSION;
+        $finalHTML = \Constants::DOCUMENT_ROOT . $name . DIRECTORY_SEPARATOR . $name . \Constants::HTML_EXTENSION;
         File::safeWrite($finalHTML, $html);
     }
-
 }

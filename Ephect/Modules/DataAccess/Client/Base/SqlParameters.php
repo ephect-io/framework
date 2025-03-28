@@ -12,8 +12,6 @@ readonly class SqlParameters
         public string $Password = '',
         public string $DatabaseName = '',
         public string $ServerType = ServerType::SQLITE,
-    )
-    {
+    ) {
     }
-
 }

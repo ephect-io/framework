@@ -180,8 +180,15 @@ class RouterService implements RouterServiceInterface
     /**
      * @throws \ReflectionException
      */
-    public function renderRoute(bool $pageFound, string $path, array|object|null $query, int $error, int $responseCode, array $middlewares, string &$html): void
-    {
+    public function renderRoute(
+        bool $pageFound,
+        string $path,
+        array|object|null $query,
+        int $error,
+        int $responseCode,
+        array $middlewares,
+        string &$html
+    ): void {
         if (!$pageFound) {
             http_response_code($responseCode);
             $path = HttpErrorRegistry::read($responseCode);
@@ -242,8 +249,13 @@ class RouterService implements RouterServiceInterface
         return [$redirect, $parameters, $error, $code, $middlewares];
     }
 
-    private function matchRouteEx(string $method, string $rule, string $redirect, string $translation, bool $isExact): ?array
-    {
+    private function matchRouteEx(
+        string $method,
+        string $rule,
+        string $redirect,
+        string $translation,
+        bool $isExact
+    ): ?array {
         if ($method !== \Constants::REQUEST_METHOD) {
             return [$redirect, [], 401];
         }

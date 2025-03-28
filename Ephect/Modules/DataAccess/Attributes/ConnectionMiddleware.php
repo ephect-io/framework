@@ -11,10 +11,8 @@ class ConnectionMiddleware implements AttributeMiddlewareInterface
 {
 
     public function __construct(
-        private string $conf
-    )
-    {
-
+        protected string $conf
+    ) {
     }
 
     public function getMiddlewares(): array

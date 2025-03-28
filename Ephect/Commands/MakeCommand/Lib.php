@@ -4,7 +4,7 @@ namespace Ephect\Commands\MakeCommand;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\CLI\ConsoleOptions;
+use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Commands\Builder;
 use Exception;
@@ -15,13 +15,12 @@ class Lib extends AbstractCommandLib
     public function createCommandBase(): void
     {
         try {
-
             Console::writeLine(ConsoleColors::getColoredString("Creating a new command.", ConsoleColors::LIGHT_BLUE));
             Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColors::BLUE));
             Console::writeLine(ConsoleColors::getColoredString("Leaving the answer blank aborts the process on mandatory questions.", ConsoleColors::BROWN));
             Console::writeLine(ConsoleColors::getColoredString("Mandatory questions are marked with *.", ConsoleColors::BROWN));
 
-            $builder = new Builder;
+            $builder = new Builder();
             [$verb, $subject, $description, $methodName, $arguments] = $this->readLine();
 
             $commandName = $subject != "" ? $verb . ":" . $subject : ucfirst($verb);
@@ -31,10 +30,15 @@ class Lib extends AbstractCommandLib
             $srcDir = \Constants::EPHECT_ROOT . 'Templates' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR;
             $builder->copyTemplates($verb, $subject, $description, $methodName, $arguments, $srcDir, $destDir);
 
-            Console::writeLine(ConsoleColors::getColoredString("Command ", ConsoleColors::BLUE) . "%s" . ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $commandName);
+            Console::writeLine(
+                ConsoleColors::getColoredString("Command ", ConsoleColors::BLUE)
+                . "%s"
+                . ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE),
+                $commandName
+            );
             Console::writeLine("%s", $destDir);
         } catch (Exception $ex) {
-            Console::error($ex, ConsoleOptions::ErrorMessageOnly);
+            Console::error($ex, ConsoleOptionsEnum::ErrorMessageOnly);
         }
     }
 
@@ -44,7 +48,7 @@ class Lib extends AbstractCommandLib
      * @return array
      * @throws Exception
      */
-    function readLine(): array
+    private function readLine(): array
     {
         /**
          * Asking for the verb

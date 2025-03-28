@@ -13,7 +13,6 @@ use Throwable;
 
 class PdoDataStatement extends Element implements DataStatementInterface
 {
-
     private array $_values;
     private int $_fieldCount;
     private int $_rowCount;
@@ -26,9 +25,9 @@ class PdoDataStatement extends Element implements DataStatementInterface
     private bool $_hasException = false;
 
     public function __construct(
-        private readonly ?PDOStatement  $_statement,
-        private readonly PdoConnection  $_connection,
-        private readonly string         $_sql = '',
+        private readonly ?PDOStatement $_statement,
+        private readonly PdoConnection $_connection,
+        private readonly string $_sql = '',
         private readonly Throwable|null $_exception = null,
     )
     {
@@ -97,10 +96,9 @@ class PdoDataStatement extends Element implements DataStatementInterface
             if ($this->_schemaInfo !== null) {
                 $this->_rowCount = $this->_schemaInfo->getRowCount();
             } else {
-
                 try {
                     $this->_rowCount = $this->_statement->rowCount();
-                } catch (Exception|PDOException $ex) {
+                } catch (Exception | PDOException $ex) {
                     if (is_array($this->_values)) {
                         $this->_rowCount = count($this->_values);
                     } else {
@@ -116,7 +114,6 @@ class PdoDataStatement extends Element implements DataStatementInterface
     public function getFieldNames(): array
     {
         if (count($this->_colNames) == 0 && $this->_connection !== null) {
-
             $c = $this->getFieldCount();
             for ($i = 0; $i < $c; $i++) {
                 $this->_colNames[] = $this->getFieldName($i);
@@ -131,7 +128,7 @@ class PdoDataStatement extends Element implements DataStatementInterface
         if (!isset($this->_fieldCount)) {
             try {
                 $this->_fieldCount = $this->_statement->columnCount();
-            } catch (Exception|PDOException $ex) {
+            } catch (Exception | PDOException $ex) {
                 if (isset($this->_values[0])) {
                     $this->_fieldCount = count($this->_values[0]);
                 } else {

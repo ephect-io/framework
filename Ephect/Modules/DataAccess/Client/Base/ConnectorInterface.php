@@ -4,48 +4,47 @@ namespace Ephect\Modules\DataAccess\Client\Base;
 
 interface ConnectorInterface
 {
-    function connect();
+    public function connect();
 
-    function query($sql);
+    public function query($sql);
 
-    function queryLog($sql, $filename, $lineNumber);
+    public function queryLog($sql, $filename, $lineNumber);
 
-    function formatLimitedQyery($sql, $offset, $count);
+    public function formatLimitedQyery($sql, $offset, $count);
 
-    function fetchArray($resource);
+    public function fetchArray($resource);
 
-    function nextResult($resource);
+    public function nextResult($resource);
 
-    function fetchObject($resource);
+    public function fetchObject($resource);
 
-    function numRows($resource);
+    public function numRows($resource);
 
-    function numFields($resource);
+    public function numFields($resource);
 
-    function fieldName($resource, $offset);
+    public function fieldName($resource, $offset);
 
-    function fieldLen($resource, $offset);
+    public function fieldLen($resource, $offset);
 
-    function fieldType($resource, $offset);
+    public function fieldType($resource, $offset);
 
-    function close();
+    public function close();
 
-    function freeResult($resource);
+    public function freeResult($resource);
 
-    function error();
+    public function error();
 
-    function useTransactions($set);
+    public function useTransactions($set);
 
-    function beginTransaction();
+    public function beginTransaction();
 
-    function getTransactionLevel();
+    public function getTransactionLevel();
 
-    function commit();
+    public function commit();
 
-    function rollback();
+    public function rollback();
 
-    function identity();
+    public function identity();
 
-    function getRecordset($sql);
-
+    public function getRecordset($sql);
 }

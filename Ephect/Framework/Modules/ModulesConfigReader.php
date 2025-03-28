@@ -6,6 +6,7 @@ use Ephect\Framework\Manifest\ManifestReader;
 use Ephect\Framework\Utils\File;
 use ErrorException;
 use JsonException;
+
 use function siteRoot;
 
 class ModulesConfigReader extends ManifestReader
@@ -18,7 +19,7 @@ class ModulesConfigReader extends ManifestReader
     public function read(?string $manifestDirectory = null): ModulesConfigEntity
     {
         $json = File::safeRead(siteRoot() . "modules.json");
-        $struct = new ModulesConfigStructure;
+        $struct = new ModulesConfigStructure();
 
         if ($json !== null) {
             $struct->decode($json);
