@@ -11,7 +11,7 @@ class Component extends ApplicationComponent implements FileComponentInterface
     public function makeComponent(string $filename, string &$html): void
     {
         $info = (object)pathinfo($filename);
-        $namespace = CONFIG_NAMESPACE;
+        $namespace = \Constants::CONFIG_NAMESPACE;
         $function = $info->filename;
 
         $html = <<< COMPONENT

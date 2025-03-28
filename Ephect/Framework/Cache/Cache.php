@@ -18,14 +18,14 @@ class Cache extends StaticElement
     public static function cacheFilenameFromView(string $compName): string
     {
 
-        // $uri = bin2hex(REQUEST_URI);
+        // $uri = bin2hex(\Constants::REQUEST_URI);
         $uri = '';
         return REL_RUNTIME_DIR . strtolower($compName) . $uri . CLASS_EXTENSION;
     }
 
     public static function absoluteURL(string $relativeURL = ''): string
     {
-        return ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . REWRITE_BASE . $relativeURL;
+        return ((\Constants::HTTP_HOST !== \Constants::SERVER_NAME) ? \Constants::SERVER_HOST : \Constants::SERVER_ROOT) . \Constants::REWRITE_BASE . $relativeURL;
     }
 
     public static function cachePath(string $filepath): string

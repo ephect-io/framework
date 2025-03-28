@@ -10,7 +10,7 @@ class Utils
 
     public function getModuleDir()
     {
-        $moduleConfigDir = dirname($this->currentDirectory, 2) . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $moduleConfigDir = dirname($this->currentDirectory, 2) . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
 
         return (is_dir($moduleConfigDir) ?
             dirname($this->currentDirectory, 2) : dirname($this->currentDirectory)) . DIRECTORY_SEPARATOR;
@@ -23,7 +23,7 @@ class Utils
 
     public function getModuleConfDir()
     {
-        $moduleConfigDir = dirname($this->currentDirectory, 2) . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $moduleConfigDir = dirname($this->currentDirectory, 2) . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
         return is_dir($moduleConfigDir) ? $moduleConfigDir : dirname($this->currentDirectory) . DIRECTORY_SEPARATOR;
     }
 

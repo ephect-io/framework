@@ -12,14 +12,14 @@ class HooksRegistry
     {
     }
 
-    public static function register(string $path = EPHECT_ROOT): void
+    public static function register(string $path = \Constants::EPHECT_ROOT): void
     {
         self::create()->_register($path);
     }
 
-    protected function _register(string $path = EPHECT_ROOT): void
+    protected function _register(string $path = \Constants::EPHECT_ROOT): void
     {
-        if (!IS_PHAR_APP) {
+        if (!\Constants::IS_PHAR_APP) {
 
             if (!file_exists($path . HOOKS_DIR)) {
                 return;
@@ -42,7 +42,7 @@ class HooksRegistry
             File::safeWrite(\Constants::RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
         }
 
-        if (IS_PHAR_APP) {
+        if (\Constants::IS_PHAR_APP) {
             $hooksRegistry = File::safeRead(\Constants::RUNTIME_DIR . 'HooksRegistry.json');
 
             $hooks = json_decode($hooksRegistry);

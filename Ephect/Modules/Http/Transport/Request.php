@@ -10,7 +10,7 @@ class Request implements RequestInfoInterface
     public function __construct()
     {
         $this->info = new RequestInfo();
-        parse_str(QUERY_STRING, $params);
+        parse_str(\Constants::QUERY_STRING, $params);
 
         $this->headers = new RequestHeaders();
     }

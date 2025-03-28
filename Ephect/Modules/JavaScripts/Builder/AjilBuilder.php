@@ -13,7 +13,7 @@ class AjilBuilder
         $common = new Common();
         $srcdir = $common->getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Ajil' . DIRECTORY_SEPARATOR;
 
-        $js_filename = DOCUMENT_ROOT . 'ajil.js';
+        $js_filename = \Constants::DOCUMENT_ROOT . 'ajil.js';
 
         $filenames = [
             'core/main.js',
