@@ -44,7 +44,7 @@ abstract class AbstractApplication extends Element
     public static function setExecutionMode($myExecutionMode): void
     {
         if (!$myExecutionMode) {
-            $myExecutionMode = (IS_WEB_APP) ? 'debug' : 'prod';
+            $myExecutionMode = (\Constants::IS_WEB_APP) ? 'debug' : 'prod';
         }
 
         $prod = ($myExecutionMode == 'prod');
@@ -171,7 +171,7 @@ abstract class AbstractApplication extends Element
     public function loadInFile(): void
     {
         try {
-            $exist = $this->loadINI(CONFIG_DIR);
+            $exist = $this->loadINI(\Constants::CONFIG_DIR);
             if (!$exist) {
                 return;
             }

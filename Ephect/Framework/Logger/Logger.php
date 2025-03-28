@@ -45,8 +45,8 @@ class Logger
 
         $handle = fopen($filepath, 'a');
 
-        if (SRC_ROOT) {
-            $filename = substr($filename, strlen(SRC_ROOT));
+        if (\Constants::SRC_ROOT) {
+            $filename = substr($filename, strlen(\Constants::SRC_ROOT));
         }
         $message = date('Y-m-d h:i:s') . (isset($filename) ? ":$filename" : '') . ($line > -1 ? ":$line" : '') . " : $message" . PHP_EOL;
         fwrite($handle, $message . PHP_EOL);
@@ -113,10 +113,10 @@ class Logger
 
     public function getPhpErrorLog(): string
     {
-        if (!file_exists(DOCUMENT_ROOT . 'php_errors.log')) {
+        if (!file_exists(\Constants::DOCUMENT_ROOT . 'php_errors.log')) {
             return '';
         }
-        return file_get_contents(DOCUMENT_ROOT . 'php_errors.log');
+        return file_get_contents(\Constants::DOCUMENT_ROOT . 'php_errors.log');
     }
 
     public function clearAll(): void
@@ -137,8 +137,8 @@ class Logger
             unlink(\Constants::SQL_LOG);
         }
 
-        if (file_exists(DOCUMENT_ROOT . 'php_errors.log')) {
-            unlink(DOCUMENT_ROOT . 'php_errors.log');
+        if (file_exists(\Constants::DOCUMENT_ROOT . 'php_errors.log')) {
+            unlink(\Constants::DOCUMENT_ROOT . 'php_errors.log');
         }
     }
 }

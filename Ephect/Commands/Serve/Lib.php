@@ -17,14 +17,14 @@ class Lib extends AbstractCommandLib
         $egg = new CommonLib($this->parent);
         $port = $this->getPort();
 
-        File::safeWrite(CONFIG_DIR . 'dev_port', $port);
+        File::safeWrite(\Constants::CONFIG_DIR . 'dev_port', $port);
 
         $cmd = new Command();
         $php = $cmd->which('php');
 
         Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
         Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
-        $cmd->execute($php, '-S', "localhost:$port", '-t', CONFIG_DOCROOT);
+        $cmd->execute($php, '-S', "localhost:$port", '-t', \Constants::CONFIG_DOCROOT);
         Console::writeLine("Serving the application locally ...");
     }
 

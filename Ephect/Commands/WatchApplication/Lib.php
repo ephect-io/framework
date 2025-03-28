@@ -11,7 +11,7 @@ class Lib extends AbstractCommandLib
     {
         $watcher = new Watcher;
 
-        $watcher->watch(SRC_ROOT, ['phtml', 'php']);
+        $watcher->watch(\Constants::SRC_ROOT, ['phtml', 'php']);
     }
 }
 

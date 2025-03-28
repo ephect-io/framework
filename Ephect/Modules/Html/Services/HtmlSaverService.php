@@ -36,7 +36,7 @@ class HtmlSaverService implements HtmlSaverServiceInterface
     public function storeHTML(string $html): void
     {
         $name = $this->children->getName();
-        $finalHTML = DOCUMENT_ROOT . $name . DIRECTORY_SEPARATOR . $name . HTML_EXTENSION;
+        $finalHTML = \Constants::DOCUMENT_ROOT . $name . DIRECTORY_SEPARATOR . $name . HTML_EXTENSION;
         File::safeWrite($finalHTML, $html);
     }
 

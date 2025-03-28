@@ -207,12 +207,12 @@ class RouterService implements RouterServiceInterface
 
     public function doRouting(): ?array
     {
-        if (!IS_WEB_APP) {
+        if (!\Constants::IS_WEB_APP) {
             return null;
         }
 
         $routes = require RouteRegistry::getMovedPhpFilename();
-        $method = REQUEST_METHOD;
+        $method = \Constants::REQUEST_METHOD;
         $methodRoutes = !isset($routes[$method]) ? null : $routes[$method];
 
         if (null === $methodRoutes) {
@@ -244,7 +244,7 @@ class RouterService implements RouterServiceInterface
 
     private function matchRouteEx(string $method, string $rule, string $redirect, string $translation, bool $isExact): ?array
     {
-        if ($method !== REQUEST_METHOD) {
+        if ($method !== \Constants::REQUEST_METHOD) {
             return [$redirect, [], 401];
         }
 
@@ -256,8 +256,8 @@ class RouterService implements RouterServiceInterface
             $suffix = '$' . $suffix;
         }
 
-        // $request_uri = \preg_replace('@' . $rule . '@', $redirect, REQUEST_URI);
-        preg_match($prefix . $rule . $suffix, REQUEST_URI, $matches);
+        // \Constants::REQUEST_URI = \preg_replace('@' . $rule . '@', $redirect, \Constants::REQUEST_URI);
+        preg_match($prefix . $rule . $suffix, \Constants::REQUEST_URI, $matches);
         $request_uri = !isset($matches[0]) ? '' : $matches[0][0];
 
 
@@ -266,10 +266,10 @@ class RouterService implements RouterServiceInterface
         }
 
         if ($translation !== '') {
-            $request_uri = preg_replace($prefix . $rule . $suffix, $translation, REQUEST_URI);
+            $request_uri = preg_replace($prefix . $rule . $suffix, $translation, \Constants::REQUEST_URI);
         }
 
-        $baseurl = parse_url(SERVER_HOST . $request_uri);
+        $baseurl = parse_url(\Constants::SERVER_HOST . $request_uri);
 
         $parameters = [];
 

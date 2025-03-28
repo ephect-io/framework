@@ -65,12 +65,12 @@ class Application extends AbstractApplication
     public function displayConstants(): array
     {
         $constants = [];
-        $constants['REWRITE_BASE'] = REWRITE_BASE;
-        $constants['DOCUMENT_ROOT'] = DOCUMENT_ROOT;
-        $constants['HTTP_PROTOCOL'] = HTTP_PROTOCOL;
-        $constants['SRC_ROOT'] = SRC_ROOT;
-        $constants['EPHECT_ROOT'] = EPHECT_ROOT;
-        $constants['APP_NAME'] = APP_NAME;
+        $constants['REWRITE_BASE'] = \Constants::REWRITE_BASE;
+        $constants['DOCUMENT_ROOT'] = \Constants::DOCUMENT_ROOT;
+        $constants['HTTP_PROTOCOL'] = \Constants::HTTP_PROTOCOL;
+        $constants['SRC_ROOT'] = \Constants::SRC_ROOT;
+        $constants['EPHECT_ROOT'] = \Constants::EPHECT_ROOT;
+        $constants['APP_NAME'] = \Constants::APP_NAME;
         $constants['APP_ROOT'] = \Constants::APP_ROOT;
         $constants['CONTROLLER_ROOT'] = \Constants::CONTROLLER_ROOT;
         $constants['MODEL_ROOT'] = \Constants::MODEL_ROOT;
@@ -87,20 +87,20 @@ class Application extends AbstractApplication
         $constants['ERROR_LOG'] = \Constants::ERROR_LOG;
         $constants['APP_DATA'] = \Constants::APP_DATA;
         $constants['APP_BUSINESS'] = \Constants::APP_BUSINESS;
-        $constants['HTTP_USER_AGENT'] = HTTP_USER_AGENT;
-        $constants['HTTP_HOST'] = HTTP_HOST;
-        $constants['HTTP_ORIGIN'] = HTTP_ORIGIN;
-        $constants['HTTP_ACCEPT'] = HTTP_ACCEPT;
-        $constants['HTTP_PORT'] = HTTP_PORT;
-        $constants['REQUEST_URI'] = REQUEST_URI;
-        $constants['REQUEST_METHOD'] = REQUEST_METHOD;
-        $constants['QUERY_STRING'] = QUERY_STRING;
-        $constants['SERVER_NAME'] = SERVER_NAME;
-        $constants['SERVER_HOST'] = SERVER_HOST;
-        $constants['SERVER_ROOT'] = SERVER_ROOT;
-        $constants['BASE_URI'] = BASE_URI;
-        $constants['FULL_URI'] = FULL_URI;
-        $constants['FULL_SSL_URI'] = FULL_SSL_URI;
+        $constants['HTTP_USER_AGENT'] = \Constants::HTTP_USER_AGENT;
+        $constants['HTTP_HOST'] = \Constants::HTTP_HOST;
+        $constants['HTTP_ORIGIN'] = \Constants::HTTP_ORIGIN;
+        $constants['HTTP_ACCEPT'] = \Constants::HTTP_ACCEPT;
+        $constants['HTTP_PORT'] = \Constants::HTTP_PORT;
+        $constants['REQUEST_URI'] = \Constants::REQUEST_URI;
+        $constants['REQUEST_METHOD'] = \Constants::REQUEST_METHOD;
+        $constants['QUERY_STRING'] = \Constants::QUERY_STRING;
+        $constants['SERVER_NAME'] = \Constants::SERVER_NAME;
+        $constants['SERVER_HOST'] = \Constants::SERVER_HOST;
+        $constants['SERVER_ROOT'] = \Constants::SERVER_ROOT;
+        $constants['BASE_URI'] = \Constants::BASE_URI;
+        $constants['FULL_URI'] = \Constants::FULL_URI;
+        $constants['FULL_SSL_URI'] = \Constants::FULL_SSL_URI;
 
         StateRegistry::writeItem('console', 'buffer', $constants);
 

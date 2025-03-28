@@ -56,8 +56,8 @@ class ModuleInstaller
     public function install(): void
     {
         FrameworkRegistry::load(true);
-        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
-        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::CONFIG_APP . DIRECTORY_SEPARATOR;
+        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
         $srcDir = is_dir($srcDir) ? $srcDir : $this->workingDirectory;
         $configDir = is_dir($configDir) ? $configDir : $this->workingDirectory;
 
@@ -170,8 +170,8 @@ class ModuleInstaller
 
         self::saveModulePaths($paths);
 
-        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . CONFIG_APP . DIRECTORY_SEPARATOR;
-        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . REL_CONFIG_DIR;
+        $srcDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::CONFIG_APP . DIRECTORY_SEPARATOR;
+        $configDir = $this->workingDirectory . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
         $srcDir = is_dir($srcDir) ? $srcDir : $this->workingDirectory;
         $configDir = is_dir($configDir) ? $configDir : $this->workingDirectory;
 
