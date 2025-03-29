@@ -9,7 +9,7 @@ class PharRegistry extends AbstractStaticRegistry
     public static function reset(): void
     {
         self::$instance = new PharRegistry();
-        self::$instance->_setCacheDirectory(RUNTIME_DIR);
+        self::$instance->__setCacheDirectory(RUNTIME_DIR);
         unlink(self::$instance->getCacheFilename());
     }
 
@@ -17,7 +17,7 @@ class PharRegistry extends AbstractStaticRegistry
     {
         if (self::$instance === null) {
             self::$instance = new PharRegistry();
-            self::$instance->_setCacheDirectory(RUNTIME_DIR);
+            self::$instance->__setCacheDirectory(RUNTIME_DIR);
         }
 
         return self::$instance;
