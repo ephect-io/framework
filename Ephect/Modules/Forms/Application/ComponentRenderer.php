@@ -3,7 +3,7 @@
 namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\Event\EventDispatcher;
-use Ephect\Modules\Forms\Events\ComponentFinishedEvent;
+use Ephect\Modules\Forms\Events\PageFinishedEvent;
 use Ephect\Modules\Http\Transport\Request;
 use ReflectionFunction;
 use stdClass;
@@ -14,11 +14,13 @@ class ComponentRenderer
      * @throws \ReflectionException
      */
     public static function renderHTML(
+        string $motherUID,
         string $cacheFilename,
         string $fqFunctionName,
         array|object|null $functionArgs = null,
         ?Request $request = null
     ): string {
+        $props = new stdClass();
         include_once \Constants::CACHE_DIR . $cacheFilename;
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
@@ -56,7 +58,7 @@ class ComponentRenderer
             $html = ob_get_clean();
         }
 
-        $finishedEvent = new ComponentFinishedEvent($cacheFilename, $fqFunctionName, $html);
+        $finishedEvent = new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props);
         $dispatcher = new EventDispatcher();
         $dispatcher->dispatch($finishedEvent);
 
