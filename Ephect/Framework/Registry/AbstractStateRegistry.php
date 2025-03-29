@@ -9,9 +9,9 @@ use Ephect\Framework\Utils\Text;
 abstract class AbstractStateRegistry extends AbstractRegistry implements RegistryInterface
 {
 
-    public function _saveByMotherUid(string $motherUid, bool $asArray = false): void
+    public function __saveByMotherUid(string $motherUid, bool $asArray = false): void
     {
-        $entries = $this->_items();
+        $entries = $this->__items();
 
         $result = json_encode($entries, JSON_PRETTY_PRINT);
 
@@ -19,19 +19,18 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
             $result = Text::jsonToPhpReturnedArray($result);
         }
 
-        $this->_setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
-        $registryFilename = $this->_getCacheFileName($asArray);
+        $this->__setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
+        $registryFilename = $this->__getCacheFileName($asArray);
         $len = File::safeWrite($registryFilename, $result);
-
     }
 
-    public function _loadByMotherUid(string $motherUid, bool $asArray = false): void
+    public function __loadByMotherUid(string $motherUid, bool $asArray = false): void
     {
-        $this->_setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
-        $this->_load($asArray);
+        $this->__setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
+        $this->__load($asArray);
     }
 
-    public function _writeItem(string|int $item, ...$params): void
+    public function __writeItem(string|int $item, ...$params): void
     {
         $concat = function (string|int $key, mixed $value) use ($item): mixed {
             $result = $value;
@@ -66,7 +65,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         }
     }
 
-    public function _unshift(string|int $item, string|int $key, mixed $value): void
+    public function __unshift(string|int $item, string|int $key, mixed $value): void
     {
         if (!isset($this->entries[$item])) {
             $this->push($item, $key, $value);
@@ -85,7 +84,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         array_unshift($this->entries[$item][$key], $value);
     }
 
-    public function _push(string|int $item, string|int $key, mixed $value): void
+    public function __push(string|int $item, string|int $key, mixed $value): void
     {
         if (!isset($this->entries[$item])) {
             $this->entries[$item] = [];
@@ -104,7 +103,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         array_push($this->entries[$item][$key], $value);
     }
 
-    public function _keys(string|null $item = null): array
+    public function __keys(string|null $item = null): array
     {
         if ($item === null) {
             return array_keys($this->entries);
@@ -115,7 +114,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         }
     }
 
-    public function _item(string|int $item, string|null $value = null): ?array
+    public function __item(string|int $item, string|null $value = null): ?array
     {
         if ($item === '' || $item === null) {
             return null;
@@ -134,12 +133,11 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         }
 
         return null;
-
     }
 
-    public function _ini(string $section, string|null $key = null): string|null
+    public function __ini(string $section, string|null $key = null): string|null
     {
-        $section = $this->_readItem('ini', $section);
+        $section = $this->__readItem('ini', $section);
         $value = null;
 
         if ($key === null) {
@@ -153,7 +151,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         return $value;
     }
 
-    public function _readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
+    public function __readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
     {
         $result = null;
 

@@ -14,7 +14,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
     {
         $runtimeDir = siteRuntimePath();
         self::$instance = new FrameworkRegistry();
-        self::$instance->_setCacheDirectory($runtimeDir);
+        self::$instance->__setCacheDirectory($runtimeDir);
         unlink(self::$instance->getCacheFilename());
     }
 
@@ -23,7 +23,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
         if (self::$instance === null) {
             $runtimeDir = siteRuntimePath();
             self::$instance = new FrameworkRegistry();
-            self::$instance->_setCacheDirectory($runtimeDir);
+            self::$instance->__setCacheDirectory($runtimeDir);
         }
 
         return self::$instance;
@@ -44,21 +44,27 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 }
 
                 if (str_ends_with($filename, 'Interface.php')) {
-                    [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
+                    [$namespace, $interface] = ElementUtils::getInterfaceDefinitionFromFile(
+                        \Constants::FRAMEWORK_ROOT . $filename
+                    );
                     $fqname = $namespace . '\\' . $interface;
                     FrameworkRegistry::write($fqname, \Constants::FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
                 if (str_ends_with($filename, 'Enum.php')) {
-                    [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
+                    [$namespace, $enum] = ElementUtils::getEnumDefinitionFromFile(
+                        \Constants::FRAMEWORK_ROOT . $filename
+                    );
                     $fqname = $namespace . '\\' . $enum;
                     FrameworkRegistry::write($fqname, \Constants::FRAMEWORK_ROOT . $filename);
                     continue;
                 }
 
                 if (str_ends_with($filename, 'Trait.php')) {
-                    [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
+                    [$namespace, $trait] = ElementUtils::getTraitDefinitionFromFile(
+                        \Constants::FRAMEWORK_ROOT . $filename
+                    );
                     $fqname = $namespace . '\\' . $trait;
                     FrameworkRegistry::write($fqname, \Constants::FRAMEWORK_ROOT . $filename);
                     continue;
@@ -67,7 +73,9 @@ class FrameworkRegistry extends AbstractStaticRegistry
                 [$namespace, $class] = ElementUtils::getClassDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
                 $fqname = $namespace . '\\' . $class;
                 if ($class === '') {
-                    [$namespace, $function] = ElementUtils::getFunctionDefinitionFromFile(\Constants::FRAMEWORK_ROOT . $filename);
+                    [$namespace, $function] = ElementUtils::getFunctionDefinitionFromFile(
+                        \Constants::FRAMEWORK_ROOT . $filename
+                    );
                     $fqname = $namespace . '\\' . $function;
                 }
                 if ($fqname !== '\\') {
