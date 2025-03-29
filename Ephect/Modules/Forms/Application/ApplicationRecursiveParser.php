@@ -3,20 +3,25 @@
 namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\Utils\File;
-use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
-use Ephect\Modules\Forms\Generators\ComponentParser;
 use Ephect\Modules\Forms\Generators\ParserService;
 
-class ApplicationRecursiveParser
+class ApplicationRecursiveParser extends AbstractApplicationParser
 {
     use ComponentCodeTrait;
 
+    public static function parse(FileComponentInterface $component): void
+    {
+        $parser = new self();
+        $parser->__parse($component);
+    }
+
     /**
+     * @param FileComponentInterface $component
      * @return void
      */
-    public static function parse(FileComponentInterface $component): void
+    protected function __parse(FileComponentInterface $component): void
     {
         CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $component->getMotherUID());
         CodeRegistry::load();
@@ -61,43 +66,25 @@ class ApplicationRecursiveParser
             \Constants::CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
             $component->getCode()
         );
-        self::updateComponent($component);
+        $this->updateComponent($component);
 
         $parser->doChildSlots($component);
         $component->applyCode($parser->getHtml());
-        self::updateComponent($component);
+        $this->updateComponent($component);
 
         while ($component->getDeclaration()->getComposition() !== null) {
             $parser->doOpenComponents($component);
             $component->applyCode($parser->getHtml());
-            self::updateComponent($component);
+            $this->updateComponent($component);
 
             $parser->doClosedComponents($component);
             $component->applyCode($parser->getHtml());
-            self::updateComponent($component);
+            $this->updateComponent($component);
 
             $parser->doIncludes($component);
             $component->applyCode($parser->getHtml());
         }
 
         CodeRegistry::save();
-    }
-
-    public static function updateComponent(FileComponentInterface $component): string
-    {
-        $uid = $component->getUID();
-        $motherUID = $component->getMotherUID();
-        $filename = $component->getSourceFilename();
-
-        $comp = new Component($uid, $motherUID);
-        $comp->load($filename);
-        $parser = new ComponentParser($comp);
-        $struct = $parser->doDeclaration($uid);
-        $decl = $struct->toArray();
-
-        CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        CodeRegistry::save();
-
-        return $filename;
     }
 }

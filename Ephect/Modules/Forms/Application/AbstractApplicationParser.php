@@ -14,9 +14,9 @@ abstract class AbstractApplicationParser
     /**
      * @return void
      */
-    abstract public static function parse(FileComponentInterface $component): void;
+    abstract protected function __parse(FileComponentInterface $component): void;
 
-    public static function updateComponent(FileComponentInterface $component): string
+    public function updateComponent(FileComponentInterface $component): string
     {
         $uid = $component->getUID();
         $motherUID = $component->getMotherUID();

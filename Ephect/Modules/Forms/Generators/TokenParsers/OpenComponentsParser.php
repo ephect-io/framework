@@ -121,12 +121,12 @@ final class OpenComponentsParser extends AbstractComponentParser
 
             $this->result[] = $componentName;
 
-            $list = CodeRegistry::read($fqComponentName);
-            $struct = new ComponentDeclarationStructure($list);
-            $decl = new ComponentDeclaration($struct);
-            $hasAttrs = $decl->hasAttributes();
-
-            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props, $hasAttrs);
+//            $list = CodeRegistry::read($fqComponentName);
+//            $struct = new ComponentDeclarationStructure($list);
+//            $decl = new ComponentDeclaration($struct);
+//            $hasAttrs = $decl->hasAttributes();
+//
+//            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props, $hasAttrs);
 
             $previous = $item;
         };

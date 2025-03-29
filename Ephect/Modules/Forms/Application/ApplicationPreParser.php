@@ -13,7 +13,7 @@ class ApplicationPreParser extends AbstractApplicationParser
     /**
      * @return void
      */
-    public static function parse(FileComponentInterface $component): void
+    public function __invoke(FileComponentInterface $component): void
     {
         CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $component->getMotherUID());
         CodeRegistry::load();
@@ -58,7 +58,7 @@ class ApplicationPreParser extends AbstractApplicationParser
             \Constants::COPY_DIR . $filename,
             $component->getCode()
         );
-        self::updateComponent($component);
+        $this->updateComponent($component);
 
         CodeRegistry::save();
     }

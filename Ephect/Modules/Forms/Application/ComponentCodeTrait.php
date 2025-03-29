@@ -13,7 +13,7 @@ trait ComponentCodeTrait
         return $this->code;
     }
 
-    function applyCode(string $code): void
+    public function applyCode(string $code): void
     {
         $this->code = $code;
     }
