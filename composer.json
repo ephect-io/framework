@@ -1,5 +1,5 @@
 {
-    "name": "ephect-io/fullmoon",
+    "name": "ephect-io/framework",
     "type": "library",
     "description": "Effective PHP",
     "homepage": "https://ephect.io",
@@ -27,6 +27,6 @@
         "ext-mysqlnd": "*"
     },
     "bin": [
-        "bin/ephect-io_fullmoon_install.sh"
+        "bin/ephect-io_framework_install.sh"
     ]
 }
