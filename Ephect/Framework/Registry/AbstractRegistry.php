@@ -16,12 +16,12 @@ abstract class AbstractRegistry implements RegistryInterface
     protected string $cacheFilename = '';
     protected string $flatFilename = '';
 
-    public function _write(string $key, $value): void
+    public function __write(string $key, $value): void
     {
         $this->entries[$key] = $value;
     }
 
-    public function _read($key, $value = null): mixed
+    public function __read($key, $value = null): mixed
     {
         if (!isset($this->entries[$key])) {
             return null;
@@ -38,19 +38,19 @@ abstract class AbstractRegistry implements RegistryInterface
         return $this->entries[$key][$value];
     }
 
-    public function _delete(string $key): void
+    public function __delete(string $key): void
     {
         unset($this->entries[$key]);
     }
 
-    public function _exists(string $key): bool
+    public function __exists(string $key): bool
     {
         return isset($this->entries[$key]);
     }
 
-    public function _save(bool $asArray = false): bool
+    public function __save(bool $asArray = false): bool
     {
-        $entries = $this->_items();
+        $entries = $this->__items();
 
         $result = json_encode($entries, JSON_PRETTY_PRINT);
 
@@ -65,36 +65,36 @@ abstract class AbstractRegistry implements RegistryInterface
             $result = str_replace('"' . \Constants::SRC_ROOT, 'SRC_ROOT . "', $result);
         }
 
-        $registryFilename = $this->_getCacheFileName($asArray);
+        $registryFilename = $this->__getCacheFileName($asArray);
         $len = File::safeWrite($registryFilename, $result);
 
         return $len !== null;
     }
 
-    public function _items(): array
+    public function __items(): array
     {
         return $this->entries;
     }
 
-    public function _getCacheFileName(bool $asArray = false): string
+    public function __getCacheFileName(bool $asArray = false): string
     {
         if ($this->cacheFilename === '') {
-            $this->cacheFilename = $this->baseDirectory . $this->_getFlatFilename($asArray);
+            $this->cacheFilename = $this->baseDirectory . $this->__getFlatFilename($asArray);
         }
 
         return $this->cacheFilename . ($asArray ? '.php' : '.json');
     }
 
-    public function _getFlatFilename(): string
+    public function __getFlatFilename(): string
     {
         return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_', get_class($this)));
     }
 
-    public function _load(bool $asArray = false): bool
+    public function __load(bool $asArray = false): bool
     {
         $this->isLoaded = false;
 
-        $registryFilename = $this->_getCacheFileName($asArray);
+        $registryFilename = $this->__getCacheFileName($asArray);
 
         $ok = is_file($registryFilename);
 
@@ -112,13 +112,13 @@ abstract class AbstractRegistry implements RegistryInterface
         return $this->isLoaded;
     }
 
-    public function _setCacheDirectory(string $directory): void
+    public function __setCacheDirectory(string $directory): void
     {
         $directory = substr($directory, -1) !== DIRECTORY_SEPARATOR ? $directory . DIRECTORY_SEPARATOR : $directory;
         $this->baseDirectory = $directory;
     }
 
-    protected function _shortClassName(): string
+    protected function __shortClassName(): string
     {
         $fqname = get_class($this);
         $nameParts = explode('\\', $fqname);

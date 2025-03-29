@@ -4,23 +4,23 @@ namespace Ephect\Framework\Registry;
 
 interface RegistryInterface
 {
-    function _write(string $key, $value): void;
+    public function __write(string $key, $value): void;
 
-    function _read($key, $value = null): mixed;
+    public function __read($key, $value = null): mixed;
 
-    function _items(): array;
+    public function __items(): array;
 
-    function _save(bool $asArray = false): bool;
+    public function __save(bool $asArray = false): bool;
 
-    function _load(bool $asArray = false): bool;
+    public function __load(bool $asArray = false): bool;
 
-    function _exists(string $key): bool;
+    public function __exists(string $key): bool;
 
-    function _delete(string $key): void;
+    public function __delete(string $key): void;
 
-    function _setCacheDirectory(string $directory): void;
+    public function __setCacheDirectory(string $directory): void;
 
-    function _getCacheFilename(bool $asArray = false): string;
+    public function __getCacheFilename(bool $asArray = false): string;
 
-    function _getFlatFilename(): string;
+    public function __getFlatFilename(): string;
 }

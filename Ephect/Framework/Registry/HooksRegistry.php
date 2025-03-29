@@ -8,16 +8,16 @@ class HooksRegistry
 {
     private static $instance = null;
 
-    private function __construct()
+    private function ___construct()
     {
     }
 
     public static function register(string $path = \Constants::EPHECT_ROOT): void
     {
-        self::create()->_register($path);
+        self::create()->__register($path);
     }
 
-    protected function _register(string $path = \Constants::EPHECT_ROOT): void
+    protected function __register(string $path = \Constants::EPHECT_ROOT): void
     {
         if (!\Constants::IS_PHAR_APP) {
             if (!file_exists($path . \Constants::HOOKS_DIR)) {
@@ -31,13 +31,10 @@ class HooksRegistry
                     continue;
                 }
 
-                array_push(
-                    $hooks,
-                    str_replace(
-                        DIRECTORY_SEPARATOR,
-                        '_',
-                        \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename
-                    )
+                $hooks[] = str_replace(
+                    DIRECTORY_SEPARATOR,
+                    '_',
+                    \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename
                 );
 
                 include $path . \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename;
