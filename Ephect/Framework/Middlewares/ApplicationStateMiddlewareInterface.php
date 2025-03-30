@@ -4,5 +4,5 @@ namespace Ephect\Framework\Middlewares;
 
 interface ApplicationStateMiddlewareInterface
 {
-    public function ignite(object $arguments);
+    public function __invoke(object $arguments);
 }

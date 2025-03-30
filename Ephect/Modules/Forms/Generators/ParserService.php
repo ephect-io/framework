@@ -2,6 +2,7 @@
 
 namespace Ephect\Modules\Forms\Generators;
 
+use Ephect\Modules\Forms\Application\ApplicationComponent;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Generators\TokenParsers\ArraysParser;
@@ -223,7 +224,7 @@ class ParserService implements ParserServiceInterface
         foreach ($componentList as $componentName) {
             [$fqFunctionName, $cacheFilename] = $component->renderComponent($motherUID, $componentName);
 
-            $include = str_replace('%s', $cacheFilename, INCLUDE_PLACEHOLDER);
+            $include = str_replace('%s', $cacheFilename, ApplicationComponent::INCLUDE_PLACEHOLDER);
 
             $re = '/(namespace +[\w\\\\]+;)/m';
             preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);

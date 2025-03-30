@@ -2,12 +2,9 @@
 
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
-use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
-use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
-use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 final class ClosedComponentsParser extends AbstractComponentParser
@@ -30,9 +27,23 @@ final class ClosedComponentsParser extends AbstractComponentParser
         if ($cmpz === null) {
             return;
         }
+        $props = $this->doArgumentsToString($decl->getArguments()) ?? '';
+
+        if ($decl->hasAttributes()) {
+            $this->declareMiddlewares(
+                $muid,
+                $parent,
+                $decl,
+                $this->component->getFullyQualifiedFunction(),
+                $props,
+            );
+        }
 
         $subject = $this->html;
 
+        /**
+         * @throws \ReflectionException
+         */
         $closure = function (
             ComponentEntityInterface $item,
             int $index
@@ -63,19 +74,23 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $fqFuncName = ComponentRegistry::read($componentName);
             $componentRender = "\t\t\t<?php \$fn = \\{$fqFuncName}($props); \$fn(); ?>\n";
 
-            $list = CodeRegistry::read($fqFuncName);
-            $struct = new ComponentDeclarationStructure($list);
-            $decl = new ComponentDeclaration($struct);
-            $hasAttrs = $decl->hasAttributes();
-
             $subject = str_replace($component, $componentRender, $subject);
-
-            $this->result[] = $componentName;
 
             $filename = $this->component->getSourceFilename();
             File::safeWrite(\Constants::CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
 //            $this->declareMiddlewares($parent, $muid, $fqFuncName, $props, $hasAttrs);
+            $decl = ComponentDeclaration::byName($fqFuncName);
+            $this->declareMiddlewares($muid, $parent, $decl, $fqFuncName, $props);
+
+            $this->result[] = $componentName;
+
+            /**
+             * TODO Make a listener for this feature
+             */
+//            $attributesEvent = new ComponentAttributesEvent($this->component, $item);
+//            $dispatcher = new EventDispatcher();
+//            $dispatcher->dispatch($attributesEvent);
         };
 
         if ($child != null) {

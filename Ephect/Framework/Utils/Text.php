@@ -79,59 +79,65 @@ class Text
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
 
-        $entryRx = '/( +)?((.*) =>)?(((array) \()| \'?((.|\s)*?)\'?,)?(\n)?/';
+        $entryRx = '/( +)?((.*) =>)?(((array) \()| \'?((.|\s)*?)\'?,$)?(\n)?/m';
         $closeArrayRx = '/^( +)?\),?(\n)?/';
 
         $isSpinning = false;
         $countSpinning = 0;
         $isDirty = false;
-        while (strlen($buffer) > 0 && !$isSpinning) {
-            $isDirty = false;
 
-            if (preg_match($closeArrayRx, $buffer, $matches)) {
-                $indent = !isset($matches[1]) ? '' : $matches[1];
-                $convert .= $indent . ']' . ($indent == '' ? '' : ',');
-                $convert .= "\n";
-                $stringLen = strlen($matches[0]);
-                $buffer = substr($buffer, $stringLen);
-                $isDirty = true;
-            } else if (preg_match($entryRx, $buffer, $matches)) {
-                $indent = !isset($matches[1]) ? '' : $matches[1];
-                $convert .= $indent;
-                $key = !isset($matches[3]) ? '' : $matches[3];
+        try {
+            while (strlen($buffer) > 0 && !$isSpinning) {
+                $isDirty = false;
 
-                if (isset($matches[6]) && $matches[6] == 'array') {
-                    $convert .= !empty($key) ? $key . ' => [' : '[';
-
+                if (preg_match($closeArrayRx, $buffer, $matches)) {
+                    $indent = !isset($matches[1]) ? '' : $matches[1];
+                    $convert .= $indent . ']' . ($indent == '' ? '' : ',');
+                    $convert .= "\n";
                     $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $isDirty = true;
-                } else {
-                    $value = !isset($matches[4]) ? '' : $matches[4];
+                } else if (preg_match($entryRx, $buffer, $matches)) {
+                    $indent = !isset($matches[1]) ? '' : $matches[1];
+                    $convert .= $indent;
+                    $key = !isset($matches[3]) ? '' : $matches[3];
 
-                    if (isset($matches[7]) && str_starts_with($matches[7], 'function')) {
-                        $value = stripslashes($matches[7]) . ',';
-                    }
+                    if (isset($matches[6]) && $matches[6] == 'array') {
+                        $convert .= !empty($key) ? $key . ' => [' : '[';
 
-                    if ($key[0] == "'") {
-                        $convert .= $key . ' => ' . $value;
+                        $stringLen = strlen($matches[0]);
+                        $buffer = substr($buffer, $stringLen);
+                        $isDirty = true;
                     } else {
-                        $convert .= $value;
+                        $value = !isset($matches[4]) ? '' : $matches[4];
+
+                        if (isset($matches[7]) && str_starts_with($matches[7], 'function')) {
+                            $value = stripslashes($matches[7]) . ',';
+                        }
+
+                        if ($key !== '' && $key[0] == "'") {
+                            $convert .= $key . ' => ' . $value;
+                        } else {
+                            $convert .= $value;
+                        }
+
+                        $stringLen = strlen($matches[0]);
+                        $buffer = substr($buffer, $stringLen);
+                        $isDirty = true;
                     }
+                    $convert .= "\n";
 
-                    $stringLen = strlen($matches[0]);
-                    $buffer = substr($buffer, $stringLen);
-                    $isDirty = true;
                 }
-                $convert .= "\n";
 
+                if (!$isDirty) {
+                    $countSpinning++;
+                }
+
+                $isSpinning = $countSpinning > 10;
             }
 
-            if (!$isDirty) {
-                $countSpinning++;
-            }
-
-            $isSpinning = $countSpinning > 10;
+        } catch (\Exception $exception) {
+            throw new Exception("Something went wrong while converting array to string", 1, $exception);
         }
 
         if (!$prettify) {

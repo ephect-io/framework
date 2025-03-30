@@ -3,20 +3,19 @@
 namespace Ephect\Framework\Event\Service;
 
 use Ephect\Framework\Event\EventDispatcher;
-use Ephect\Framework\Event\EventListenerInterface;
 use Ephect\Framework\Services\ServiceProviderInterface;
+
 use function Ephect\Hooks\useState;
 
-class EventServiceProvider implements ServiceProviderInterface
+readonly class EventServiceProvider implements ServiceProviderInterface
 {
-
     /**
      * @param EventDispatcher $dispatcher
-     * @param array<array<string, EventListenerInterface>> $eventListeners
+     * @param array<class-string, array<class-string>> $eventListeners
      */
     public function __construct(
-        private readonly EventDispatcher $dispatcher,
-        private readonly array $eventListeners = [],
+        private EventDispatcher $dispatcher,
+        private array $eventListeners = [],
     ) {
     }
 

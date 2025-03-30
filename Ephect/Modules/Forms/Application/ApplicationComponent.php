@@ -27,13 +27,12 @@ use Exception;
 use Ephect\Modules\Forms\Generators\ParserService;
 use ReflectionException;
 
-define('INCLUDE_PLACEHOLDER', "include_once \Constants::CACHE_DIR . '%s';");
-define('USE_PLACEHOLDER', "use %s;" . PHP_EOL);
-
 abstract class ApplicationComponent extends Tree implements FileComponentInterface
 {
     use ElementTrait;
     use ComponentCodeTrait;
+
+    public const INCLUDE_PLACEHOLDER = "include_once \Constants::CACHE_DIR . '%s';";
 
     protected ?ComponentDeclaration $declaration = null;
     protected ?ComponentEntity $entity = null;
@@ -79,9 +78,13 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             return false;
         }
 
-        $this->code = File::safeRead(\Constants::CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
-        if ($this->code === null) {
-            $this->code = File::safeRead(\Constants::COPY_DIR . $this->filename);
+        if (file_exists($this->filename)) {
+            $this->code = File::safeRead($this->filename);
+        } else {
+            $this->code = File::safeRead(\Constants::CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
+            if ($this->code === null) {
+                $this->code = File::safeRead(\Constants::COPY_DIR . $this->filename);
+            }
         }
 
         [
@@ -168,9 +171,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         }
         CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $this->getMotherUID());
 
-        $list = CodeRegistry::read($fqName);
-        $struct = new ComponentDeclarationStructure($list);
-        $decl = new ComponentDeclaration($struct);
+        $decl = ComponentDeclaration::byName($fqName);
 
         $this->declaration = $decl;
     }
@@ -237,7 +238,13 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 //        }
 
         [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
-        $html = ComponentRenderer::renderHTML($this->motherUID, $cacheFilename, $fqFunctionName, $functionArgs, $request);
+        $html = ComponentRenderer::renderHTML(
+            $this->motherUID,
+            $cacheFilename,
+            $fqFunctionName,
+            $functionArgs,
+            $request
+        );
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
             File::safeWrite(\Constants::STATIC_DIR . $this->filename, $html);
         }
@@ -265,7 +272,6 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
                 $dispatcher = new EventDispatcher();
                 $dispatcher->dispatch($finishedEvent);
             }
-
         }
 
         return [$fqFunctionName, $cacheFilename];

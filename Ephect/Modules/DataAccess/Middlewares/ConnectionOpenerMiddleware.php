@@ -9,7 +9,7 @@ use function Ephect\Hooks\useState;
 class ConnectionOpenerMiddleware implements ApplicationStateMiddlewareInterface
 {
 
-    public function ignite(object $arguments)
+    public function __invoke(object $arguments)
     {
         $conn = PdoConnection::opener($arguments->conf);
         useState(["$arguments->conf" => $conn,]);

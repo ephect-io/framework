@@ -9,11 +9,16 @@ use Ephect\Modules\Forms\Generators\ParserService;
 
 class ApplicationPreParser extends AbstractApplicationParser
 {
+    public static function parse(FileComponentInterface $component): void
+    {
+        $parser = new ApplicationPreParser();
+        $parser->__parse($component);
+    }
 
     /**
      * @return void
      */
-    public function __invoke(FileComponentInterface $component): void
+    protected function __parse(FileComponentInterface $component): void
     {
         CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $component->getMotherUID());
         CodeRegistry::load();
@@ -22,7 +27,7 @@ class ApplicationPreParser extends AbstractApplicationParser
 
         $parser->doAttributes($component);
 
-        $parser->doUses($component);
+//        $parser->doUses($component);
         $parser->doUsesAs($component);
 
         $parser->doHeredoc($component);
@@ -62,5 +67,4 @@ class ApplicationPreParser extends AbstractApplicationParser
 
         CodeRegistry::save();
     }
-
 }

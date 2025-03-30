@@ -4,7 +4,7 @@ namespace Ephect\Framework\Registry;
 
 class CommandRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?CommandRegistry $instance = null;
 
     public static function reset(): void
     {
@@ -12,7 +12,7 @@ class CommandRegistry extends AbstractStaticRegistry
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): CommandRegistry
     {
         if (self::$instance === null) {
             self::$instance = new CommandRegistry();

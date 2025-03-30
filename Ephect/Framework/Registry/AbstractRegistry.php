@@ -78,9 +78,7 @@ abstract class AbstractRegistry implements RegistryInterface
 
     public function __getCacheFileName(bool $asArray = false): string
     {
-        if ($this->cacheFilename === '') {
-            $this->cacheFilename = $this->baseDirectory . $this->__getFlatFilename($asArray);
-        }
+        $this->cacheFilename = $this->baseDirectory . $this->__getFlatFilename($asArray);
 
         return $this->cacheFilename . ($asArray ? '.php' : '.json');
     }

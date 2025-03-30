@@ -37,9 +37,13 @@ class EventDispatcher implements EventDispatcherInterface
      */
     public function getListenersForEvent(StoppableEventInterface $event): iterable
     {
-        if (count($this->listeners) === 0) {
-            [$events] = useState(get: 'events');
+        [$events] = useState(get: 'events');
 
+        if ($events === null) {
+            return [];
+        }
+
+        if (count($this->listeners) === 0) {
             foreach ($events as $eventClass => $listeners) {
                 foreach (array_unique($listeners) as $listener) {
                     $this->addListener($eventClass, new $listener());

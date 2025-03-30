@@ -3,27 +3,24 @@
 namespace Ephect\Framework\Web;
 
 use Ephect\Framework\Middlewares\ApplicationStateMiddlewareInterface;
-use Ephect\Framework\Registry\FrameworkRegistry;
 use function Ephect\Hooks\useState;
 
 class ApplicationIgniter
 {
     public function ignite(): void
     {
+        [$middlewares] = useState(get: 'middlewares');
 
-        [$state] = useState();
-
-        if ($state === null || !isset($state['middlewares'])) {
+        if ($middlewares === null) {
             return;
         }
 
-        $middlewares = (object)$state['middlewares'];
         foreach ($middlewares as $className => $arguments) {
-            $filename = FrameworkRegistry::read($className);
-            if (is_file($filename) && is_subclass_of($className, ApplicationStateMiddlewareInterface::class)) {
-                include_once $filename;
+//            $filename = FrameworkRegistry::read($className);
+            if (class_exists($className) && class_implements($className, ApplicationStateMiddlewareInterface::class)) {
+//                include_once $filename;
                 $middleware = new $className();
-                $middleware->ignite((object)$arguments);
+                $middleware((object)$arguments);
             }
         }
     }
