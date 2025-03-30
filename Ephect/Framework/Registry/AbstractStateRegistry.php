@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Registry;
 
-
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 
@@ -19,14 +18,14 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
             $result = Text::jsonToPhpReturnedArray($result);
         }
 
-        $this->__setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
+        $this->__setCacheDirectory(\Constants::CACHE_DIR . $motherUid);
         $registryFilename = $this->__getCacheFileName($asArray);
         $len = File::safeWrite($registryFilename, $result);
     }
 
     public function __loadByMotherUid(string $motherUid, bool $asArray = false): void
     {
-        $this->__setCacheDirectory(\Constants::CACHE_DIR . DIRECTORY_SEPARATOR . $motherUid);
+        $this->__setCacheDirectory(\Constants::CACHE_DIR . $motherUid);
         $this->__load($asArray);
     }
 

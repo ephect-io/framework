@@ -2,7 +2,6 @@
 
 namespace Ephect\Modules\DataAccess\Middlewares;
 
-use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Middlewares\ComponentParserMiddlewareInterface;
 
@@ -18,9 +17,7 @@ class ConnectionParserMiddleware implements ComponentParserMiddlewareInterface
         array $arguments
     ): void {
 //        StateRegistry::saveByMotherUid($motherUID, true);
-//        StateRegistry::load(true);
         useState(["middlewares" => [ConnectionOpenerMiddleware::class => (object)$arguments],]);
-        StateRegistry::saveByMotherUid($motherUID, true);
 //        StateRegistry::save(true);
     }
 }

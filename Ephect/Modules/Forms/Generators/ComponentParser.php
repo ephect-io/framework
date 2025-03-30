@@ -3,6 +3,8 @@
 namespace Ephect\Modules\Forms\Generators;
 
 use Ephect\Framework\Crypto\Crypto;
+use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -23,20 +25,61 @@ class ComponentParser extends Parser implements ParserInterface
         ComponentRegistry::load();
     }
 
+    public function doReflection(): array
+    {
+        $fqFuncName = $this->component->getFullyQualifiedFunction();
+        $filename = ComponentRegistry::read($fqFuncName);
+        $sourceDir = \Constants::UNIQUE_DIR;
+
+        [
+            $namespace,
+            $functionName,
+            $parameters,
+            $returnedType,
+            $startsAt
+        ] = ElementUtils::getFunctionDefinitionFromFile($sourceDir . $filename);
+
+        if ($functionName == '') {
+            return  [null, null, null];
+        }
+
+        include_once $sourceDir . $filename;
+
+        $fqFuncName = $namespace . '\\' . $functionName;
+
+        $ref = new \ReflectionFunction($fqFuncName);
+        $refParameters = $ref->getParameters();
+        $refAttributes = $ref->getAttributes();
+        $refReturnType = $ref->getReturnType();
+
+        $arguments = array_map(function ($parameter) {
+            return $parameter->getName();
+        }, $refParameters);
+
+        $attributes = array_map(function ($attribute) {
+            return [
+                'name' => get_class($attribute->newInstance()),
+                'arguments' => $attribute->getArguments(),
+            ];
+        }, $refAttributes);
+
+        return [$arguments, $attributes, $refReturnType?->getName()];
+    }
+
     public function doDeclaration(string $uid = ''): ComponentDeclarationStructure
     {
         if ($uid == '') {
             $uid = Crypto::createUID();
         }
+        [$args, $attrs, $return] = $this->doReflection();
         $this->doComponents();
         $func = $this->doFunctionDeclaration();
-        $attrs = $this->doAttributes();
         $decl = [
             'uid' => $uid,
             'type' => $func[0],
             'name' => $func[1],
-            'arguments' => $func[2],
-            'attributes' => $attrs,
+            'arguments' => $args ?? [],
+            'attributes' => $attrs ?? [],
             'composition' => $this->list
         ];
 

@@ -5,36 +5,36 @@ namespace Ephect\Hooks;
 use Ephect\Framework\Registry\StateRegistry;
 
 /**
- * @param array|object|null $state
+ * @param array|object|null $store
  * @return array
  */
-function useStore(array|object|null $state = null, string $get = ''): array
+function useStore(array|object|null $store = null, string $get = ''): array
 {
-    if ($state !== null && $get !== '') {
+    if ($store !== null && $get !== '') {
         throw new \InvalidArgumentException(
             "You can't assign a state and get an indexed value at once. Pass one or zero argument."
         );
     }
 
-    $setState = function (array|object $state): void {
-        StateRegistry::writeItem('store', $state);
+    $setStore = function (array|object $store): void {
+        StateRegistry::writeItem('store', $store);
     };
 
-    if ($state !== null) {
-        $setState($state);
+    if ($store !== null) {
+        $setStore($store);
 
-        $json = json_encode($state);
-        $state = json_decode($json);
+        $json = json_encode($store);
+        $store = json_decode($json);
     } else {
-        $state = StateRegistry::item('store');
+        $store = StateRegistry::item('store');
 
-        $json = json_encode($state);
-        $state = json_decode($json);
+        $json = json_encode($store);
+        $store = json_decode($json);
 
         if ($get !== '') {
-            return [$state[$get] ?? null, $setState];
+            return [$store->$get ?? null, $setStore];
         }
     }
 
-    return [$state, $setState];
+    return [$store, $setStore];
 }

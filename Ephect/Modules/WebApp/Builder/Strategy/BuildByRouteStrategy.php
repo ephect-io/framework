@@ -57,11 +57,11 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $headers[] = 'Pragma: no-cache';
         $headers[] = 'Cache-Control: no-cache';
 
-        ob_start();
-        [$code, $header, $html] = $curl->request(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
-        File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
-        $output = ob_get_clean();
-        File::safeWrite(\Constants::LOG_PATH . $outputFilename, $output);
+//        ob_start();
+        $curl->request(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
+//        File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
+//        ob_get_clean();
+//        File::safeWrite(\Constants::LOG_PATH . $outputFilename, $output);
 
         $time_end = microtime(true);
 

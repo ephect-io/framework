@@ -3,13 +3,11 @@
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
 use Ephect\Framework\Middlewares\AttributeMiddlewareInterface;
-use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\Text;
+use Ephect\Modules\Forms\Components\ComponentDeclarationInterface;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Middlewares\ComponentParserMiddlewareInterface;
-use Ephect\Modules\Forms\Registry\ComponentRegistry;
-use ReflectionFunction;
 
 abstract class AbstractComponentParser extends AbstractTokenParser
 {
@@ -42,58 +40,56 @@ abstract class AbstractComponentParser extends AbstractTokenParser
      * @throws \ReflectionException
      */
     public function declareMiddlewares(
-        ComponentEntityInterface|null $parent,
         string $motherUID,
-        string $funcName,
-        string $props,
-        bool $hasAttributes
+        ComponentEntityInterface|null $parent,
+        ComponentDeclarationInterface $declaration,
+        string $fqItemName,
+        string $props
     ): void {
+
         /**
          * Mandatory test: Parent is not always null!
          */
-        if ($parent == null || !$hasAttributes) {
+        if ($parent == null || !$declaration->hasAttributes()) {
             return;
         }
 
-        $filename = $motherUID . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
+        $attrs = $declaration->getAttributes();
 
-        if (!is_file(\Constants::CACHE_DIR . $filename)) {
-            return;
+        $middlewaresList = [];
+        foreach ($attrs as $attr) {
+            if (!isset($attr['name'])) {
+                continue;
+            }
+
+            $attr = (object)$attr;
+
+            if (count($attr->arguments) > 0) {
+                $attrNew = new $attr->name(...$attr->arguments);
+            } else {
+                $attrNew = new $attr->name();
+            }
+
+            if ($attrNew instanceof AttributeMiddlewareInterface) {
+                $middlewaresList[$attr->name] = [
+                    $attr->arguments,
+                    $attrNew->getMiddlewares(),
+                ];
+            }
         }
 
-//        include_once \Constants::CACHE_DIR . $filename;
-//
-//        $reflection = new ReflectionFunction($funcName);
-//        $attrs = $reflection->getAttributes();
-//        $middlewaresList = [];
-//        $middlewaresArgsList = [];
-//        foreach ($attrs as $attr) {
-//            $attrNew = $attr->newInstance();
-//            if ($attrNew instanceof AttributeMiddlewareInterface) {
-//                $middlewaresList[$attr->getName()] = [
-//                    $attr->getArguments(),
-//                    $attrNew->getMiddlewares(),
-//                ];
-//            }
-//        }
-//
-//        if (count($middlewaresList)) {
-//            FrameworkRegistry::load();
-//            foreach ($middlewaresList as $key => $value) {
-//                [$arguments, $middlewares] = $value;
-//                foreach ($middlewares as $middlewareClass) {
-//                    $filename = FrameworkRegistry::read($middlewareClass);
-//                    include_once $filename;
-//                    $middleware = new $middlewareClass();
-//
-//                    if ($middleware instanceof ComponentParserMiddlewareInterface) {
-//                        $middleware->parse($parent, $motherUID, $funcName, $props, $arguments);
-//                    }
-//
-//                    StateRegistry::saveByMotherUid($motherUID, true);
-////                    StateRegistry::save(true);
-//                }
-//            }
-//        }
+        if (count($middlewaresList)) {
+            foreach ($middlewaresList as $key => $value) {
+                [$arguments, $middlewares] = $value;
+                foreach ($middlewares as $middlewareClass) {
+                    $middleware = new $middlewareClass();
+                    if ($middleware instanceof ComponentParserMiddlewareInterface) {
+                        $middleware->parse($parent, $motherUID, $fqItemName, $props, $arguments);
+                    }
+
+                    StateRegistry::saveByMotherUid($motherUID, true);
+                }
+            }
+        }
     }
 }

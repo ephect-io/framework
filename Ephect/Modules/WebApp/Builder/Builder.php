@@ -50,7 +50,7 @@ class Builder
 //            $descriptor = new UniqueComponentListDescriptor();
 //            $descriptor->describe();
 //            UniqueCodeRegistry::save();
-//
+
             CodeRegistry::load();
 
             $descriptor = new ComponentListDescriptor();
@@ -105,7 +105,7 @@ class Builder
             $fqRoute = ComponentRegistry::read($route);
             $comp = $this->list[$fqRoute];
 
-            $comp->copyComponents($this->list);
+//            $comp->copyComponents($this->list);
         }
 
         $this->routes = $routes;

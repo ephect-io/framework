@@ -10,7 +10,7 @@ function Router($children): string
 {
     useEffect(function (/* bool */ $hasRouted, /* object */ $service, /* string */ $path, /* string */ $html) {
 
-        $service = new RouterService;
+        $service = new RouterService();
         if (RouteRegistry::hasMoved()) {
             [$path, $query, $error, $code, $middlewares] = $service->doRouting();
             $service->renderRoute($code === 200, $path, $query, $error, $code, $middlewares, $html);

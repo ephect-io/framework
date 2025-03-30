@@ -10,11 +10,11 @@ class PluginDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
-        File::safeMkDir(\Constants::COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
-        copy($sourceDir . $filename, \Constants::COPY_DIR . $filename);
+        $relativeDir = str_replace(\Constants::EPHECT_ROOT, '', $sourceDir);
+        File::safeCopy($sourceDir . $filename, \Constants::COPY_DIR . $relativeDir . $filename);
 
         $plugin = new Plugin();
-        $plugin->load($filename);
+        $plugin->load($relativeDir . $filename);
         $plugin->analyse();
 
         PluginRegistry::write($filename, $plugin->getUID());

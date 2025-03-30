@@ -4,35 +4,34 @@ namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\Logger\Logger;
 
-class StateRegistry extends AbstractStateRegistry implements StateRegistryInterface
+class MemoryRegistry extends AbstractStateRegistry implements StateRegistryInterface
 {
     use StaticRegistryTrait;
 
-    private static ?StateRegistryInterface $instance = null;
+    private static ?RegistryInterface $instance = null;
 
     public static function reset(): void
     {
-        self::$instance = new StateRegistry();
-        unlink(self::$instance->getCacheFilename());
+        self::$instance = new MemoryRegistry();
     }
 
-    public static function saveByMotherUid(string $motherUid, bool $asArray = false): void
-    {
-        static::getInstance()->__saveByMotherUid($motherUid, $asArray);
-    }
-
-    public static function getInstance(): StateRegistryInterface
+    public static function getInstance(): RegistryInterface
     {
         if (self::$instance === null) {
-            self::$instance = new StateRegistry();
+            self::$instance = new MemoryRegistry();
         }
 
         return self::$instance;
     }
 
-    public static function loadByMotherUid(string $motherUid, bool $asArray = false): void
+    public static function save(bool $asArray = false): bool
     {
-        static::getInstance()->__loadByMotherUid($motherUid, $asArray);
+        return $asArray;
+    }
+
+    public static function load(bool $asArray = false): bool
+    {
+        return $asArray;
     }
 
     public static function dump(string $key): void
@@ -70,8 +69,4 @@ class StateRegistry extends AbstractStateRegistry implements StateRegistryInterf
         return static::getInstance()->__keys($item = null);
     }
 
-    public static function ini(string $section, string|null $key = null): string|null
-    {
-        return static::getInstance()->__ini($section, $key);
-    }
 }

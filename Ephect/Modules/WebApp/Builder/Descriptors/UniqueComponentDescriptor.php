@@ -18,15 +18,25 @@ use ReflectionClass;
 
 class UniqueComponentDescriptor implements DescriptorInterface
 {
+    /**
+     * @param string $sourceDir
+     * @param string $filename
+     * @return array|null[]
+     * @throws \ReflectionException
+     */
     public function describe(string $sourceDir, string $filename): array
     {
+        Logger::create()->debug([$sourceDir . $filename], __FILE__, __LINE__);
+
+        $fullFilename = $sourceDir . $filename;
+
         [
             $namespace,
             $functionName,
             $parameters,
             $returnedType,
             $startsAt
-        ] = ElementUtils::getFunctionDefinitionFromFile(\Constants::UNIQUE_DIR . $filename);
+        ] = ElementUtils::getFunctionDefinitionFromFile($sourceDir . $filename);
 
         Logger::create()->debug([
             'namespace' => $namespace,
@@ -40,7 +50,7 @@ class UniqueComponentDescriptor implements DescriptorInterface
             return [null, null];
         }
 
-        include_once $filename;
+        include_once $fullFilename;
 
         $fqFuncName = $namespace . '\\' . $functionName;
 
@@ -55,20 +65,22 @@ class UniqueComponentDescriptor implements DescriptorInterface
 
         $attributes = array_map(function ($attribute) {
             return [
-                'name' => $attribute->getName(),
+                'name' => get_class($attribute->newInstance()),
                 'arguments' => $attribute->getArguments(),
             ];
         }, $refAttributes);
 
         $comp = new Component();
-        $comp->load($filename);
+        $comp->load($fullFilename);
+
+        $fullCopyFilename = str_replace(\Constants::UNIQUE_DIR, \Constants::COPY_DIR, $fullFilename);
 
         $parser = new ParserService();
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            File::safeWrite(\Constants::COPY_DIR . $filename, $html);
-            $comp->load($filename);
+            File::safeWrite($fullCopyFilename, $html);
+            $comp->load($fullCopyFilename);
         }
 
         $comp->analyse();

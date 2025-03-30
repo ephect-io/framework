@@ -15,7 +15,7 @@ class Lib extends AbstractCommandLib
         $application->clearRuntime();
         $application->clearLogs();
 
-        $builder = new Builder;
+        $builder = new Builder();
         $builder->describeComponents();
         $builder->prepareRoutedComponents();
 

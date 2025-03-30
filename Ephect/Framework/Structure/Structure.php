@@ -39,7 +39,7 @@ class Structure implements StructureInterface
 
     private function recursiveEncode(StructureInterface $structure)
     {
-        $result = new stdClass;
+        $result = new stdClass();
 
         $ref = new ReflectionClass($structure);
         $publicProps = $ref->getProperties(ReflectionProperty::IS_PUBLIC);

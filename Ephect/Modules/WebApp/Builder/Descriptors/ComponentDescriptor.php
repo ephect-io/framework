@@ -14,18 +14,18 @@ class ComponentDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
-        File::safeMkDir(\Constants::COPY_DIR . pathinfo($filename, PATHINFO_DIRNAME));
-        copy($sourceDir . $filename, \Constants::COPY_DIR . $filename);
+        $relativeDir = str_replace(\Constants::APP_ROOT, '', $sourceDir);
+        File::safeCopy($sourceDir . $filename, \Constants::COPY_DIR . $relativeDir . $filename);
 
         $comp = new Component();
-        $comp->load($filename);
+        $comp->load($relativeDir . $filename);
 
         $parser = new ParserService();
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            File::safeWrite(\Constants::COPY_DIR . $filename, $html);
-            $comp->load($filename);
+            File::safeWrite(\Constants::COPY_DIR . $relativeDir . $filename, $html);
+            $comp->load($relativeDir . $filename);
         }
 
         $comp->analyse();
@@ -36,7 +36,7 @@ class ComponentDescriptor implements DescriptorInterface
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        ComponentRegistry::write($filename, $uid);
+        ComponentRegistry::write($relativeDir . $filename, $uid);
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
