@@ -7,15 +7,15 @@ use Ephect\Framework\Registry\RegistryInterface;
 
 class CacheRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?CacheRegistry $instance = null;
 
     public static function reset(): void
     {
-        self::$instance = new CacheRegistry;
+        self::$instance = new CacheRegistry();
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): CacheRegistry
     {
         if (self::$instance === null) {
             self::$instance = new CacheRegistry();

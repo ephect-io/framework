@@ -7,18 +7,18 @@ use Ephect\Framework\Registry\RegistryInterface;
 
 class HttpErrorRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?HttpErrorRegistry $instance = null;
 
     public static function reset(): void
     {
-        self::$instance = new HttpErrorRegistry;
+        self::$instance = new HttpErrorRegistry();
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): HttpErrorRegistry
     {
         if (self::$instance === null) {
-            self::$instance = new HttpErrorRegistry;
+            self::$instance = new HttpErrorRegistry();
         }
 
         return self::$instance;

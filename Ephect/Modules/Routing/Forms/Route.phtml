@@ -5,7 +5,7 @@ namespace  Ephect\Modules\Routing\Forms;
 use Ephect\Modules\Routing\Builder\RouteBuilder;
 use Ephect\Modules\Routing\Services\RouterService;
 use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useStore;
+use function Ephect\Hooks\useMemory;
 
 function Route($children): string
 {
@@ -31,11 +31,9 @@ function Route($children): string
 
         [$path, $query, $code] = $router->matchRoute($route);
 
-        [$state] = useStore();
-        $routes = $state->routes ?? [];
-
+        [$routes] = useMemory(get: 'routes') ?? [];
         $routes[] = ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
-        useStore(['routes' => $routes]);
+        useMemory(['routes' => $routes]);
 
     });
 

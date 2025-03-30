@@ -4,9 +4,7 @@ namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
-use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
-use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 final class OpenComponentsParser extends AbstractComponentParser
@@ -25,10 +23,25 @@ final class OpenComponentsParser extends AbstractComponentParser
             return;
         }
 
+        $props = $this->doArgumentsToString($decl->getArguments()) ?? '';
+
+        if ($decl->hasAttributes()) {
+            $this->declareMiddlewares(
+                $this->component->getMotherUID(),
+                null,
+                $decl,
+                $this->component->getFullyQualifiedFunction(),
+                $props,
+            );
+        }
+
         $subject = $this->html;
 
         $previous = null;
 
+        /**
+         * @throws \ReflectionException
+         */
         $closure = function (
             ComponentEntityInterface $item,
             int $index
@@ -121,12 +134,11 @@ final class OpenComponentsParser extends AbstractComponentParser
 
             $this->result[] = $componentName;
 
-//            $list = CodeRegistry::read($fqComponentName);
-//            $struct = new ComponentDeclarationStructure($list);
-//            $decl = new ComponentDeclaration($struct);
-//            $hasAttrs = $decl->hasAttributes();
-//
-//            $this->declareMiddlewares($parent, $motherUID, $fqComponentName, $props, $hasAttrs);
+            $decl = ComponentDeclaration::byName($fqComponentName);
+            $this->declareMiddlewares($motherUID, $parent, $decl, $fqComponentName, $props);
+//            $attributesEvent = new ComponentAttributesEvent($this->component, $item);
+//            $dispatcher = new EventDispatcher();
+//            $dispatcher->dispatch($attributesEvent);
 
             $previous = $item;
         };

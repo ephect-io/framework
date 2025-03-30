@@ -3,6 +3,7 @@
 namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Framework\Element;
+use Ephect\Modules\Forms\Registry\CodeRegistry;
 
 class ComponentDeclaration extends Element implements ComponentDeclarationInterface
 {
@@ -24,6 +25,13 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
         $this->flatComposition = $struct->composition;
     }
 
+    public static function byName(string $componentName): ComponentDeclaration
+    {
+        $list = CodeRegistry::read($componentName);
+        $struct = new ComponentDeclarationStructure($list);
+        return new static($struct);
+    }
+
     public function getType(): string
     {
         return $this->type;
@@ -36,7 +44,7 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
 
     public function hasArguments(): bool
     {
-        return count($this->arguments) > 0;
+        return $this->attributes !== null && count($this->arguments) > 0;
     }
 
     public function getArguments(): ?array

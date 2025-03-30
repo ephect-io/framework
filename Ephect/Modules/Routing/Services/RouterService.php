@@ -11,6 +11,7 @@ use Ephect\Modules\Routing\Base\RouteInterface;
 use Ephect\Modules\Routing\Registry\HttpErrorRegistry;
 use Ephect\Modules\Routing\Registry\RouteRegistry;
 
+use function Ephect\Hooks\useMemory;
 use function Ephect\Hooks\useStore;
 
 class RouterService implements RouterServiceInterface
@@ -150,19 +151,19 @@ class RouterService implements RouterServiceInterface
     public function findRoute(string &$html): void
     {
         $html = '';
-        [$state] = useStore();
+        [$routes] = useMemory(get: 'routes');
 
-        if (!isset($state->routes)) {
+        if (count($routes ?? []) === 0) {
             return;
         }
 
         $responseCode = 404;
         $query = [];
 
-        $c = count($state->routes);
+        $c = count($routes);
 
         for ($i = 0; $i < $c; $i++) {
-            $route = $state->routes[$i];
+            $route = $routes[$i];
             $path = $route->path;
             $query = $route->query;
             $error = $route->error;
@@ -358,6 +359,6 @@ class RouterService implements RouterServiceInterface
 
     public function purgeCopies(): void
     {
-        File::delTree(\Constants::COPY_DIR);
+//        File::delTree(\Constants::COPY_DIR);
     }
 }

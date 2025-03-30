@@ -19,7 +19,7 @@ function useState(?array $state = null, string $get = ''): array
     }
 
     $setState = function (array $state): void {
-        StateRegistry::writeItem('state', $state);
+        StateRegistry::write('state', $state);
     };
 
     if ($state !== null) {
@@ -32,5 +32,4 @@ function useState(?array $state = null, string $get = ''): array
     }
 
     return [$state, $setState];
-
 }

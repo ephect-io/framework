@@ -7,22 +7,22 @@ use Ephect\Framework\Registry\RegistryInterface;
 
 class RouteRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?RouteRegistry $instance = null;
 
     public static function addMiddleware(string $middleware): void
     {
-        self::getInstance()->_addMiddleware($middleware);
+        self::getInstance()->__addMiddleware($middleware);
     }
 
-    public function _addMiddleware(string $middleware): void
+    public function __addMiddleware(string $middleware): void
     {
-        $this->_write('middlewares', $middleware);
+        $this->__write('middlewares', $middleware);
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): RouteRegistry
     {
         if (self::$instance === null) {
-            self::$instance = new RouteRegistry;
+            self::$instance = new RouteRegistry();
         }
 
         return self::$instance;
@@ -30,7 +30,7 @@ class RouteRegistry extends AbstractStaticRegistry
 
     public static function reset(): void
     {
-        self::$instance = new RouteRegistry;
+        self::$instance = new RouteRegistry();
         unlink(self::$instance->getCacheFilename());
     }
 

@@ -7,14 +7,11 @@ use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
-use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 use Ephect\Modules\Routing\Services\RouterService;
 use Ephect\Modules\WebApp\Builder\Copiers\TemplatesCopyMaker;
 use Ephect\Modules\WebApp\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\PluginListDescriptor;
-use Ephect\Modules\WebApp\Builder\Descriptors\UniqueComponentDescriptor;
-use Ephect\Modules\WebApp\Builder\Descriptors\UniqueComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Routing\Finder;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByRouteStrategy;
@@ -50,15 +47,15 @@ class Builder
 //            $descriptor = new UniqueComponentListDescriptor();
 //            $descriptor->describe();
 //            UniqueCodeRegistry::save();
-//
+
             CodeRegistry::load();
 
             $descriptor = new ComponentListDescriptor();
             $components = $descriptor->describe();
             $this->list = [...$this->list, ...$components];
 
-            CodeRegistry::save();
-            ComponentRegistry::save();
+//            CodeRegistry::save();
+//            ComponentRegistry::save();
         }
 
         if (!PluginRegistry::load()) {
@@ -86,9 +83,9 @@ class Builder
             $plugins = $descriptor->describe();
             $this->list = [...$this->list, ...$plugins];
 
-            CodeRegistry::save();
-            PluginRegistry::save();
-            ComponentRegistry::save();
+//            CodeRegistry::save();
+//            PluginRegistry::save();
+//            ComponentRegistry::save();
         }
     }
 
@@ -105,7 +102,7 @@ class Builder
             $fqRoute = ComponentRegistry::read($route);
             $comp = $this->list[$fqRoute];
 
-            $comp->copyComponents($this->list);
+//            $comp->copyComponents($this->list);
         }
 
         $this->routes = $routes;

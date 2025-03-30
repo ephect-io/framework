@@ -4,7 +4,7 @@ namespace Ephect\Framework\Registry;
 
 class PharRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?PharRegistry $instance = null;
 
     public static function reset(): void
     {
@@ -13,7 +13,7 @@ class PharRegistry extends AbstractStaticRegistry
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): PharRegistry
     {
         if (self::$instance === null) {
             self::$instance = new PharRegistry();

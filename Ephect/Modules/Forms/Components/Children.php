@@ -31,7 +31,7 @@ class Children extends Entity implements ChildrenInterface
         $this->buffer = $struct->buffer;
     }
 
-    function getName(): string
+    public function getName(): string
     {
         return $this->name;
     }

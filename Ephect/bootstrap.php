@@ -21,7 +21,6 @@ include FRAMEWORK_PATH . 'ElementTrait.php';
 include FRAMEWORK_PATH . 'ElementUtils.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'RegistryInterface.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'StaticRegistryInterface.php';
-include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'StateRegistryInterface.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'AbstractRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'StaticRegistryTrait.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'AbstractStaticRegistry.php';

@@ -13,5 +13,4 @@ interface ComponentParserMiddlewareInterface
         string $props,
         array $arguments
     ): void;
-
 }
