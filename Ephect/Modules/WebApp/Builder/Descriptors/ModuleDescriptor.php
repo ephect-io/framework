@@ -3,7 +3,6 @@
 namespace Ephect\Modules\WebApp\Builder\Descriptors;
 
 use Constants;
-use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentInterface;

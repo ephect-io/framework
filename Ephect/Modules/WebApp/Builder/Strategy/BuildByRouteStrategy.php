@@ -35,11 +35,10 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
         Console::write("querying %s ... ", ConsoleColors::getColoredString(
             \Constants::CONFIG_HOSTNAME . ":$port" . $queryString,
-            ConsoleColors::LIGHT_GREEN)
-        );
+            ConsoleColors::LIGHT_GREEN
+        ));
 
         Console::getLogger()->info("Compiling %s ...", $route);
-
 
         $curl = new Curl();
         $time_start = microtime(true);
@@ -57,11 +56,9 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $headers[] = 'Pragma: no-cache';
         $headers[] = 'Cache-Control: no-cache';
 
-//        ob_start();
+        ob_start();
         $curl->request(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
-//        File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
-//        ob_get_clean();
-//        File::safeWrite(\Constants::LOG_PATH . $outputFilename, $output);
+        ob_get_clean();
 
         $time_end = microtime(true);
 

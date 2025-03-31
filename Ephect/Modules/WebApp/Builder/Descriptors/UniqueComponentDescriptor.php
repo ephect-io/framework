@@ -7,9 +7,7 @@ use Ephect\Framework\ElementUtils;
 use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\Component;
-use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntity;
-use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 use Ephect\Modules\Forms\Generators\ComponentParser;
@@ -26,8 +24,6 @@ class UniqueComponentDescriptor implements DescriptorInterface
      */
     public function describe(string $sourceDir, string $filename): array
     {
-        Logger::create()->debug([$sourceDir . $filename], __FILE__, __LINE__);
-
         $fullFilename = $sourceDir . $filename;
 
         [
@@ -37,14 +33,6 @@ class UniqueComponentDescriptor implements DescriptorInterface
             $returnedType,
             $startsAt
         ] = ElementUtils::getFunctionDefinitionFromFile($sourceDir . $filename);
-
-        Logger::create()->debug([
-            'namespace' => $namespace,
-            'functionName' => $functionName,
-            'parameters' => $parameters,
-            'returnedType' => $returnedType,
-            'startsAt' => $startsAt
-        ]);
 
         if ($functionName == '') {
             return [null, null];
