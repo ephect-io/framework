@@ -10,11 +10,11 @@ use Ephect\Framework\Registry\MemoryRegistry;
  * @return array<mixed, \Closure>
  * @throws \InvalidArgumentException
  */
-function useMemory(?array $memory = null, string $get = ''): array
+function useMemory(array|object|null $memory = null, string $get = ''): array
 {
     if ($memory !== null && $get !== '') {
         throw new \InvalidArgumentException(
-            "You can't assign a memory and get an indexed value at once. Pass one or zero argument."
+            "You can't assign an object in memory and get an indexed value at once. Pass one or zero argument."
         );
     }
 

@@ -8,7 +8,7 @@ use Ephect\Framework\Utils\Text;
 abstract class AbstractStateRegistry extends AbstractRegistry implements RegistryInterface
 {
 
-    public function __saveByMotherUid(string $motherUid, bool $asArray = false): void
+    protected function __saveByMotherUid(string $motherUid, bool $asArray = false): void
     {
         $entries = $this->__items();
 
@@ -23,13 +23,13 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         $len = File::safeWrite($registryFilename, $result);
     }
 
-    public function __loadByMotherUid(string $motherUid, bool $asArray = false): void
+    protected function __loadByMotherUid(string $motherUid, bool $asArray = false): void
     {
         $this->__setCacheDirectory(\Constants::CACHE_DIR . $motherUid);
         $this->__load($asArray);
     }
 
-    public function __writeItem(string|int $item, ...$params): void
+    protected function __writeItem(string|int $item, ...$params): void
     {
         $concat = function (string|int $key, mixed $value) use ($item): mixed {
             $result = $value;
@@ -64,7 +64,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         }
     }
 
-    public function __unshift(string|int $item, string|int $key, mixed $value): void
+    protected function __unshift(string|int $item, string|int $key, mixed $value): void
     {
         if (!isset($this->entries[$item])) {
             $this->push($item, $key, $value);
@@ -83,7 +83,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         array_unshift($this->entries[$item][$key], $value);
     }
 
-    public function __push(string|int $item, string|int $key, mixed $value): void
+    protected function __push(string|int $item, string|int $key, mixed $value): void
     {
         if (!isset($this->entries[$item])) {
             $this->entries[$item] = [];
@@ -99,10 +99,10 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
             $this->entries[$item][$key][] = $tmp;
         }
 
-        array_push($this->entries[$item][$key], $value);
+        $this->entries[$item][$key][] = $value;
     }
 
-    public function __keys(string|null $item = null): array
+    protected function __keys(string|null $item = null): array
     {
         if ($item === null) {
             return array_keys($this->entries);
@@ -113,7 +113,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         }
     }
 
-    public function __item(string|int $item, string|null $value = null): ?array
+    protected function __item(string|int $item, string|null $value = null): ?array
     {
         if ($item === '' || $item === null) {
             return null;
@@ -134,7 +134,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         return null;
     }
 
-    public function __ini(string $section, string|null $key = null): string|null
+    protected function __ini(string $section, string|null $key = null): string|null
     {
         $section = $this->__readItem('ini', $section);
         $value = null;
@@ -150,7 +150,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         return $value;
     }
 
-    public function __readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
+    protected function __readItem(string|int $item, string|int $key, mixed $defaultValue = null): mixed
     {
         $result = null;
 

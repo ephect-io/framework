@@ -87,7 +87,13 @@ class Decomposer extends Parser implements ParserInterface
     {
         $this->doComponents();
         $func = $this->doFunctionDeclaration();
-        $decl = ['uid' => $uid, 'type' => $func[0], 'name' => $func[1], 'arguments' => $func[2], 'composition' => $this->list];
+        $decl = [
+            'uid' => $uid,
+            'type' => $func[0],
+            'name' => $func[1],
+            'arguments' => $func[2],
+            'composition' => $this->list
+        ];
 
         return new ComponentDeclarationStructure($decl);
     }
@@ -264,7 +270,6 @@ class Decomposer extends Parser implements ParserInterface
 
 
         while (count($allTags) && !$isFinished && !$isSpinning) {
-
             if ($i === $l) {
                 $i = 0;
                 $allTags = array_values($allTags);
@@ -297,7 +302,6 @@ class Decomposer extends Parser implements ParserInterface
                 $nextMatch = $allTags[$i + 1];
 
                 if (!$this->isCloseTag($tag) && $this->isCloseTag($nextMatch)) {
-
                     if ($tag['name'] !== $nextMatch['name']) {
                         unset($allTags[$i]);
                         $singleTags[] = $tag;
@@ -416,7 +420,6 @@ class Decomposer extends Parser implements ParserInterface
         preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-
             $args = $this->doFunctionArguments($match[3]);
             $result = [$match[1], $match[2], $args];
         }

@@ -4,11 +4,11 @@ namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\Logger\Logger;
 
-class StateRegistry extends AbstractStateRegistry implements StateRegistryInterface
+class StateRegistry extends AbstractStateRegistry implements RegistryInterface
 {
     use StaticRegistryTrait;
 
-    private static ?StateRegistryInterface $instance = null;
+    private static ?StateRegistry $instance = null;
 
     public static function reset(): void
     {
@@ -21,7 +21,7 @@ class StateRegistry extends AbstractStateRegistry implements StateRegistryInterf
         static::getInstance()->__saveByMotherUid($motherUid, $asArray);
     }
 
-    public static function getInstance(): StateRegistryInterface
+    public static function getInstance(): StateRegistry
     {
         if (self::$instance === null) {
             self::$instance = new StateRegistry();

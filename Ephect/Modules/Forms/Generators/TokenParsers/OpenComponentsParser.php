@@ -39,6 +39,9 @@ final class OpenComponentsParser extends AbstractComponentParser
 
         $previous = null;
 
+        /**
+         * @throws \ReflectionException
+         */
         $closure = function (
             ComponentEntityInterface $item,
             int $index

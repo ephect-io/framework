@@ -171,9 +171,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         }
         CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $this->getMotherUID());
 
-        $list = CodeRegistry::read($fqName);
-        $struct = new ComponentDeclarationStructure($list);
-        $decl = new ComponentDeclaration($struct);
+        $decl = ComponentDeclaration::byName($fqName);
 
         $this->declaration = $decl;
     }

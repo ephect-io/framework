@@ -9,7 +9,6 @@ use stdClass;
 
 class Structure implements StructureInterface
 {
-
     public function __construct(object|array|null $props = null)
     {
         if (!is_array($props) && !is_object($props)) {
@@ -23,6 +22,13 @@ class Structure implements StructureInterface
 
             $this->{$key} = $value;
         }
+    }
+
+    public static function create(...$params): static
+    {
+        $struct = new static(...$params);
+
+        return $struct;
     }
 
     public function toArray(): array
@@ -122,7 +128,7 @@ class Structure implements StructureInterface
             if (isset($values[$propName])) {
                 if (!$propType->isBuiltin() && in_array(StructureInterface::class, class_implements($propType->getName()))) {
                     $propClass = $propType->getName();
-                    $structureChild = new $propClass;
+                    $structureChild = new $propClass();
                     $structure->{$propName} = $this->recursiveDecode($structureChild, $values[$propName]);
                 } else {
                     $structure->{$propName} = $values[$propName];
@@ -132,5 +138,4 @@ class Structure implements StructureInterface
 
         return $structure;
     }
-
 }

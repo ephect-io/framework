@@ -7,7 +7,7 @@ use Ephect\Framework\Registry\RegistryInterface;
 
 class RouteRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?RouteRegistry $instance = null;
 
     public static function addMiddleware(string $middleware): void
     {
@@ -19,7 +19,7 @@ class RouteRegistry extends AbstractStaticRegistry
         $this->__write('middlewares', $middleware);
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): RouteRegistry
     {
         if (self::$instance === null) {
             self::$instance = new RouteRegistry();

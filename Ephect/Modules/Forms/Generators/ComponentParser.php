@@ -4,6 +4,8 @@ namespace Ephect\Modules\Forms\Generators;
 
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Structure\Structure;
+use Ephect\Framework\Structure\StructureInterface;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -24,6 +26,9 @@ class ComponentParser extends Parser implements ParserInterface
         ComponentRegistry::load();
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function doReflection(): array
     {
         $fqFuncName = $this->component->getFullyQualifiedFunction();

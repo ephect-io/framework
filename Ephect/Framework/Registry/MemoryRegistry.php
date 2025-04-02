@@ -4,18 +4,18 @@ namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\Logger\Logger;
 
-class MemoryRegistry extends AbstractStateRegistry implements StateRegistryInterface
+class MemoryRegistry extends AbstractStateRegistry implements RegistryInterface
 {
     use StaticRegistryTrait;
 
-    private static ?RegistryInterface $instance = null;
+    private static ?MemoryRegistry $instance = null;
 
     public static function reset(): void
     {
         self::$instance = new MemoryRegistry();
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): MemoryRegistry
     {
         if (self::$instance === null) {
             self::$instance = new MemoryRegistry();

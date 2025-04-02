@@ -8,7 +8,7 @@ use Ephect\Framework\Utils\File;
 
 class FrameworkRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?FrameworkRegistry $instance = null;
 
     public static function reset(): void
     {
@@ -18,7 +18,7 @@ class FrameworkRegistry extends AbstractStaticRegistry
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): AbstractStaticRegistry
+    public static function getInstance(): FrameworkRegistry
     {
         if (self::$instance === null) {
             $runtimeDir = siteRuntimePath();

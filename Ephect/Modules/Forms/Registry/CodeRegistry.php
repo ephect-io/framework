@@ -7,7 +7,7 @@ use Ephect\Framework\Registry\RegistryInterface;
 
 class CodeRegistry extends AbstractStaticRegistry
 {
-    private static ?RegistryInterface $instance = null;
+    private static ?CodeRegistry $instance = null;
 
     public static function reset(): void
     {
@@ -15,7 +15,7 @@ class CodeRegistry extends AbstractStaticRegistry
         unlink(self::$instance->getCacheFilename());
     }
 
-    public static function getInstance(): RegistryInterface
+    public static function getInstance(): CodeRegistry
     {
         if (self::$instance === null) {
             self::$instance = new CodeRegistry();

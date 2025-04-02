@@ -42,7 +42,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
     public function declareMiddlewares(
         string $motherUID,
         ComponentEntityInterface|null $parent,
-        ComponentDeclarationInterface $declaration,
+        ?ComponentDeclarationInterface $declaration,
         string $fqItemName,
         string $props
     ): void {
@@ -50,7 +50,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         /**
          * Mandatory test: Parent is not always null!
          */
-        if ($parent == null || !$declaration->hasAttributes()) {
+        if ($parent == null || $declaration == null || !$declaration->hasAttributes()) {
             return;
         }
 
