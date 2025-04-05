@@ -9,29 +9,33 @@ use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 final class ClosedComponentsParser extends AbstractComponentParser
 {
+    /**
+     * @throws \ReflectionException
+     */
     public function do(null|string|array|object $parameter = null): void
     {
         $this->result = [];
 
         $comp = $this->component;
         $decl = $comp->getDeclaration();
-        $cmpz = $decl->getComposition();
+        // First level entity
+        $fle = $decl->getComposition();
 
         $parent = null;
         $child = null;
         if ($parameter != null) {
             [$parent, $child] = $parameter;
         }
-        $muid = $comp->getMotherUID();
+        $motherUID = $comp->getMotherUID();
 
-        if ($cmpz === null) {
+        if ($fle === null) {
             return;
         }
         $props = $this->doArgumentsToString($decl->getArguments()) ?? '';
 
         if ($decl->hasAttributes()) {
             $this->declareMiddlewares(
-                $muid,
+                $motherUID,
                 $parent,
                 $decl,
                 $this->component->getFullyQualifiedFunction(),
@@ -45,28 +49,28 @@ final class ClosedComponentsParser extends AbstractComponentParser
          * @throws \ReflectionException
          */
         $closure = function (
-            ComponentEntityInterface $item,
+            ComponentEntityInterface $child,
             int $index
         ) use (
             &$subject,
             &$result,
             $parent,
-            $muid
+            $motherUID
         ) {
 
-            if ($item->hasCloser()) {
+            if ($child->hasCloser()) {
                 return;
             }
 
-            $uid = $item->getUID();
-            $component = $item->getText();
-            $componentName = $item->getName();
+            $uid = $child->getUID();
+            $component = $child->getText();
+            $componentName = $child->getName();
             $componentArgs = [];
             $componentArgs['uid'] = $uid;
 
             $props = '';
-            if ($item->props() !== null) {
-                $componentArgs = array_merge($componentArgs, $item->props());
+            if ($child->props() !== null) {
+                $componentArgs = array_merge($componentArgs, $child->props());
                 $propsArgs = self::doArgumentsToString($componentArgs);
                 $props = "(object) " . $propsArgs ?? "[]";
             }
@@ -77,28 +81,31 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $subject = str_replace($component, $componentRender, $subject);
 
             $filename = $this->component->getSourceFilename();
-            File::safeWrite(\Constants::CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+            File::safeWrite(
+                \Constants::CACHE_DIR . $child->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
+                $subject
+            );
 
-//            $this->declareMiddlewares($parent, $muid, $fqFuncName, $props, $hasAttrs);
+//            $this->declareMiddlewares($parent, $motherUID, $fqFuncName, $props, $hasAttrs);
             $decl = ComponentDeclaration::byName($fqFuncName);
-            $this->declareMiddlewares($muid, $parent, $decl, $fqFuncName, $props);
+            $this->declareMiddlewares($motherUID, $parent, $decl, $fqFuncName, $props);
 
             $this->result[] = $componentName;
 
             /**
              * TODO Make a listener for this feature
              */
-//            $attributesEvent = new ComponentAttributesEvent($this->component, $item);
+//            $attributesEvent = new ComponentAttributesEvent($this->component, $child);
 //            $dispatcher = new EventDispatcher();
 //            $dispatcher->dispatch($attributesEvent);
         };
 
         if ($child != null) {
             $closure($child, 0);
-        } elseif (!$cmpz->hasChildren()) {
-            $closure($cmpz, 0);
-        } elseif ($cmpz->hasChildren()) {
-            $cmpz->forEach($closure, $cmpz);
+        } elseif (!$fle->hasChildren()) {
+            $closure($fle, 0);
+        } elseif ($fle->hasChildren()) {
+            $fle->forEach($closure, $fle);
         }
 
         $this->html = $subject;

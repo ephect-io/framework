@@ -118,6 +118,16 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $new;
     }
 
+    public static function createByEntity(ComponentEntity $entity): static
+    {
+        $new = new static($entity->getUID(), $entity->getMotherUID());
+        $new->code = $entity->getContents();
+        $new->filename = $entity->getFilename();
+        $new->uid = $entity->getUID();
+        $new->elementList = $entity->items();
+        return $new;
+    }
+
     /**
      * @throws Exception
      */

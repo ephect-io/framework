@@ -37,12 +37,20 @@ class CopyAsUniqueStrategy implements CopierStrategyInterface
         ] = ElementUtils::getFunctionDefinition($contents);
 
         if ($startsAt == -1) {
-            $comp = Component::createByHtml($contents);
+            $comp = new Component($functionName);
             $comp->makeComponent($filename, $contents);
         }
 
-        $contents = str_replace('namespace ' . \Constants::CONFIG_NAMESPACE, 'namespace ' .  $this->uniqueDomain, $contents);
-        $contents = preg_replace('/^use ' . \Constants::CONFIG_NAMESPACE . '/m', 'use ' .  $this->uniqueDomain, $contents);
+        $contents = str_replace(
+            'namespace ' . \Constants::CONFIG_NAMESPACE,
+            'namespace ' .  $this->uniqueDomain,
+            $contents
+        );
+        $contents = preg_replace(
+            '/^use ' . \Constants::CONFIG_NAMESPACE . '/m',
+            'use ' .  $this->uniqueDomain,
+            $contents
+        );
         $contents = preg_replace(
             '/^use function ' . \Constants::CONFIG_NAMESPACE . '/m',
             'use function ' .  $this->uniqueDomain,

@@ -12,9 +12,9 @@ use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 class ComponentParser extends Parser implements ParserInterface
 {
-    private const TERMINATOR = '/';
-    private const OPEN_TAG = '<';
-    private const CLOSE_TAG = '>';
+    private const string TERMINATOR = '/';
+    private const string OPEN_TAG = '<';
+    private const string CLOSE_TAG = '>';
     protected array $depths = [];
     protected array $idListByDepth = [];
     protected array $list = [];
@@ -70,6 +70,9 @@ class ComponentParser extends Parser implements ParserInterface
         return [$arguments, $attributes, $refReturnType?->getName()];
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function doDeclaration(string $uid = ''): ComponentDeclarationStructure
     {
         if ($uid == '') {

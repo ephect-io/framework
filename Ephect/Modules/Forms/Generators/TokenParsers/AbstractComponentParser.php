@@ -2,6 +2,7 @@
 
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Middlewares\AttributeMiddlewareInterface;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Utils\Text;
@@ -50,7 +51,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         /**
          * Mandatory test: Parent is not always null!
          */
-        if ($parent == null || $declaration == null || !$declaration->hasAttributes()) {
+        if ($declaration == null || !$declaration->hasAttributes()) {
             return;
         }
 
@@ -84,6 +85,10 @@ abstract class AbstractComponentParser extends AbstractTokenParser
                 foreach ($middlewares as $middlewareClass) {
                     $middleware = new $middlewareClass();
                     if ($middleware instanceof ComponentParserMiddlewareInterface) {
+                        Logger::create()->debug([
+                            'classname' => $fqItemName,
+                            'middleware' => $middlewareClass
+                        ]);
                         $middleware->parse($parent, $motherUID, $fqItemName, $props, $arguments);
                     }
 

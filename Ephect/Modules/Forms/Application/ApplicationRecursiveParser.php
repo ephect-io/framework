@@ -28,7 +28,7 @@ class ApplicationRecursiveParser extends AbstractApplicationParser
 
         $parser = new ParserService();
 
-        $parser->doAttributes($component);
+//        $parser->doAttributes($component);
 
 //        $parser->doUses($component);
         $parser->doUsesAs($component);

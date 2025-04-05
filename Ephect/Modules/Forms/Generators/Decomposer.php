@@ -10,9 +10,9 @@ use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 class Decomposer extends Parser implements ParserInterface
 {
-    private const TERMINATOR = '/';
-    private const OPEN_TAG = '&lt;';
-    private const CLOSE_TAG = '&gt;';
+    private const string TERMINATOR = '/';
+    private const string OPEN_TAG = '&lt;';
+    private const string CLOSE_TAG = '&gt;';
     protected array $depths = [];
     protected array $idListByDepth = [];
     protected array $list = [];
@@ -64,9 +64,9 @@ class Decomposer extends Parser implements ParserInterface
             $letter = '';
             if ($quote === '"') {
                 $letter = 'R';
-            } else if ($quote === '\'') {
+            } elseif ($quote === '\'') {
                 $letter = 'Q';
-            } else if ($quote === '`') {
+            } elseif ($quote === '`') {
                 $letter = 'G';
             }
 
@@ -136,7 +136,6 @@ class Decomposer extends Parser implements ParserInterface
         $this->depths[$depth] = 1;
 
         while (count($workTags) && !$isFinished && !$isSpinning) {
-
             if ($i === $l) {
                 $i = 0;
                 $workTags = array_values($workTags);
@@ -183,7 +182,11 @@ class Decomposer extends Parser implements ParserInterface
                     $closer['parentId'] = $item['id'];
                     $closer['contents']['startsAt'] = $item['endsAt'] + 1; // uniqid();
                     $closer['contents']['endsAt'] = $closer['startsAt'] - 1; // uniqid();
-                    $contents = substr($this->html, $closer['contents']['startsAt'], $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1);
+                    $contents = substr(
+                        $this->html,
+                        $closer['contents']['startsAt'],
+                        $closer['contents']['endsAt'] - $closer['contents']['startsAt'] + 1
+                    );
                     $closer['contents']['text'] = '!#base64#' . base64_encode($contents);
 
                     $item['closer'] = $closer;
@@ -229,10 +232,7 @@ class Decomposer extends Parser implements ParserInterface
     {
         $result = [];
 
-        $re = <<< REGEX
-        /&lt;\/?($rule)((\s|.*?)*)\/?&gt;/
-        REGEX;
-
+        $re = "/&lt;\/?($rule)((\s|.*?)*)\/?&gt;/";
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
 
         $i = 0;
@@ -268,7 +268,6 @@ class Decomposer extends Parser implements ParserInterface
         $singleTags = [];
         $regularTags = [];
 
-
         while (count($allTags) && !$isFinished && !$isSpinning) {
             if ($i === $l) {
                 $i = 0;
@@ -296,7 +295,6 @@ class Decomposer extends Parser implements ParserInterface
 
                 continue;
             }
-
 
             if ($i + 1 < $l) {
                 $nextMatch = $allTags[$i + 1];

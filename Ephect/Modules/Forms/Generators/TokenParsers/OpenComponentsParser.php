@@ -3,29 +3,39 @@
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 final class OpenComponentsParser extends AbstractComponentParser
 {
+    /**
+     * @throws \ReflectionException
+     */
     public function do(null|string|array|object $parameter = null): void
     {
         $this->result = [];
         $this->useVariables = $parameter;
 
+
         $comp = $this->component;
         $comp->resetDeclaration();
         $decl = $comp->getDeclaration();
-        $cmpz = $decl->getComposition();
+        // First level entity
+        $fle = $decl->getComposition();
 
-        if ($cmpz === null || !$cmpz->hasCloser()) {
+        if ($fle === null || !$fle->hasCloser()) {
             return;
         }
 
         $props = $this->doArgumentsToString($decl->getArguments()) ?? '';
 
         if ($decl->hasAttributes()) {
+            if ($this->component->getClass() == 'CPasCher\\Home') {
+                $dummy = 0;
+            }
+
             $this->declareMiddlewares(
                 $this->component->getMotherUID(),
                 null,
@@ -58,7 +68,11 @@ final class OpenComponentsParser extends AbstractComponentParser
                 /**
                  * Mandatory for middleware parsing...
                  */
-                $p = new ClosedComponentsParser($comp);
+                if ($comp->getClass() == 'CPasCher\\Home') {
+                    $dummy = 0;
+                }
+                $child = Component::createByEntity($item);
+                $p = new ClosedComponentsParser($child);
                 $p->do([$parent, $item]);
                 return;
             }
@@ -143,10 +157,10 @@ final class OpenComponentsParser extends AbstractComponentParser
             $previous = $item;
         };
 
-        $closure($cmpz, 0);
-        if ($cmpz->hasChildren()) {
-            $parent = $cmpz;
-            $cmpz->forEach($closure, $cmpz);
+        $closure($fle, 0);
+        if ($fle->hasChildren()) {
+            $parent = $fle;
+            $fle->forEach($closure, $fle);
         }
 
         $this->html = $subject;
