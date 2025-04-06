@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Modules\WebApp\Builder\Routing;
+namespace Ephect\Modules\WebApp\Builder\Finders;
 
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
@@ -9,9 +9,9 @@ use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Routing\Builder\RouteBuilder;
 
-class Finder
+class RoutesFinder implements FinderInterface
 {
-    public function searchForRoutes(): array
+    public function find(): array
     {
         $result = [];
 

@@ -31,6 +31,7 @@ class Application extends AbstractApplication
         if (!ComponentRegistry::load()) {
             $compiler = new Builder();
             $compiler->describeComponents();
+            $compiler->preparePagesList();
             $compiler->prepareRoutedComponents();
         }
 
