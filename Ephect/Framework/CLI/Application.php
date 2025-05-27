@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\CLI;
 
-use Ephect\Commands\Constants\Lib;
+use Ephect\Commands\ShowConstants\Lib;
 use Ephect\Framework\Commands\ApplicationCommands;
 use Ephect\Framework\Commands\CommandRunner;
 use Ephect\Framework\Core\AbstractApplication;
