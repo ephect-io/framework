@@ -24,7 +24,9 @@
         "ext-readline": "*",
         "ext-pdo": "*",
         "ext-sqlite3": "*",
-        "ext-mysqlnd": "*"
+        "ext-mysqlnd": "*",
+        "ext-simplexml": "*",
+        "ext-libxml": "*"
     },
     "bin": [
         "bin/ephect-io_framework_install.sh"
