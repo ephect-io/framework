@@ -11,6 +11,7 @@ use Ephect\Framework\Utils\Text;
 use ErrorException;
 use JsonException;
 
+use function Ephect\Hooks\useState;
 use function siteConfigPath;
 
 class ModuleInstaller
@@ -34,6 +35,8 @@ class ModuleInstaller
             $bootstrap = new $fqBootstrap();
             $bootstrap->boot();
         }
+
+        useState(['eventProvider' => []]);
     }
 
     public static function readModuleBootstrapPaths(): array
