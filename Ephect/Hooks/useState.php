@@ -24,8 +24,15 @@ function useState(?array $state = null, string $get = ''): array
 
     if ($state !== null) {
         $setState($state);
+
+        $json = json_encode($state);
+        $state = json_decode($json, true);
     } else {
         $state = StateRegistry::item('state');
+
+        $json = json_encode($state);
+        $state = json_decode($json, true);
+
         if ($get !== '') {
             return [$state[$get] ?? null, $setState];
         }

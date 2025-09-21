@@ -7,7 +7,7 @@ use Ephect\Framework\Registry\MemoryRegistry;
 /**
  * @param array<array<int|string, int|string>>|null $memory
  * @param string $get
- * @return array<mixed, \Closure>
+ * @return array
  * @throws \InvalidArgumentException
  */
 function useMemory(array|object|null $memory = null, string $get = ''): array
@@ -22,19 +22,15 @@ function useMemory(array|object|null $memory = null, string $get = ''): array
         MemoryRegistry::writeItem('memory', $memory);
     };
 
+
     if ($memory !== null) {
         $setMemory($memory);
-
-        $json = json_encode($memory);
-        $memory = json_decode($json);
     } else {
         $memory = MemoryRegistry::item('memory');
 
-        $json = json_encode($memory);
-        $memory = json_decode($json);
-
-        if ($get !== '') {
-            return [$memory->$get ?? null, $setMemory];
+        if ($get !== '' && isset($memory[$get])) {
+            $value = (is_array($memory) ? $memory[$get] : $memory->$get) ;
+            return [$value, $setMemory];
         }
     }
 

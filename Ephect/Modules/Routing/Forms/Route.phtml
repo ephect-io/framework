@@ -32,7 +32,7 @@ function Route($children): string
         [$path, $query, $code] = $router->matchRoute($route);
 
         [$routes] = useMemory(get: 'routes') ?? [];
-        $routes[] = ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
+        $routes[] = (object)['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
         useMemory(['routes' => $routes]);
 
     });
