@@ -166,8 +166,8 @@ class Compiler
             $baseTextMaker->make(['endTemplate' => '',]);
         }
 
-        $classTextMaker->save($destDir . $className . CLASS_JS_EXTENSION);
-        $baseElementTextMaker->save($destDir . $className . "Element" . JS_EXTENSION);
+        $classTextMaker->save($destDir . $className . \Constants::CLASS_JS_EXTENSION);
+        $baseElementTextMaker->save($destDir . $className . "Element" . \Constants::JS_EXTENSION);
         $baseTextMaker->save($destDir . "$className.phtml");
     }
 }

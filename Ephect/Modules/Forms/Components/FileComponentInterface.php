@@ -8,6 +8,8 @@ interface FileComponentInterface extends ComponentInterface
 
     public function getSourceFilename(): string;
 
+    public function getStandardFilename(): string;
+
     public function getFlattenFilename(): string;
 
     public function getFlattenSourceFilename(): string;

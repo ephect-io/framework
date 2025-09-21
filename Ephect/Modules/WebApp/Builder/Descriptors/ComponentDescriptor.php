@@ -14,18 +14,20 @@ class ComponentDescriptor implements DescriptorInterface
 {
     public function describe(string $sourceDir, string $filename): array
     {
-        $relativeDir = str_replace(\Constants::APP_ROOT, '', $sourceDir);
-        File::safeCopy($sourceDir . $filename, \Constants::COPY_DIR . $relativeDir . $filename);
+        $relativeFile =
+            str_replace(\Constants::APP_ROOT, '', $sourceDir) .
+            str_replace(pathinfo($filename, PATHINFO_EXTENSION), 'php', $filename);
+        File::safeCopy($sourceDir . $filename, \Constants::COPY_DIR . $relativeFile);
 
         $comp = new Component();
-        $comp->load($relativeDir . $filename);
+        $comp->load($relativeFile);
 
         $parser = new ParserService();
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            File::safeWrite(\Constants::COPY_DIR . $relativeDir . $filename, $html);
-            $comp->load($relativeDir . $filename);
+            File::safeWrite(\Constants::COPY_DIR . $relativeFile, $html);
+            $comp->load($relativeFile);
         }
 
         $comp->analyse();
@@ -36,7 +38,7 @@ class ComponentDescriptor implements DescriptorInterface
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        ComponentRegistry::write($relativeDir . $filename, $uid);
+        ComponentRegistry::write($relativeFile, $uid);
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);

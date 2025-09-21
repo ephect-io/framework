@@ -287,6 +287,11 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $this->filename;
     }
 
+    public function getStandardFilename(): string
+    {
+        return str_replace(pathinfo($this->filename, PATHINFO_EXTENSION), 'php', $this->filename);
+    }
+
     public function getFlattenSourceFilename(): string
     {
         return static::getFlatFilename($this->filename);

@@ -48,7 +48,8 @@ class CopyAsUniqueStrategy implements CopierStrategyInterface
             'use function ' .  $this->uniqueDomain,
             $contents
         );
+        $actualFilename = \Constants::UNIQUE_DIR . $root . $dirname . $basename;
 
-        File::safeWrite(\Constants::UNIQUE_DIR . $root . $dirname . $basename, $contents);
+        File::safeWrite(str_replace(pathinfo($actualFilename, PATHINFO_EXTENSION), 'php', $actualFilename), $contents);
     }
 }
