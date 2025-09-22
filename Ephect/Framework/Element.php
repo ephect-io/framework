@@ -7,11 +7,10 @@ use ReflectionException;
 
 class Element extends StaticElement implements ElementInterface
 {
-
     use ElementTrait;
 
     protected array $children = [];
-    private ?ReflectionClass $_reflection = null;
+    private ?ReflectionClass $reflection = null;
 
     public function __construct(?ElementInterface $parent = null, ?string $id = null)
     {
@@ -65,10 +64,10 @@ class Element extends StaticElement implements ElementInterface
 
     public function getReflection(): ?ReflectionClass
     {
-        if ($this->_reflection == null) {
-            $this->_reflection = new ReflectionClass(get_class($this));
+        if ($this->reflection == null) {
+            $this->reflection = new ReflectionClass(get_class($this));
         }
-        return $this->_reflection;
+        return $this->reflection;
     }
 
     public function addChild(ElementInterface $child): void

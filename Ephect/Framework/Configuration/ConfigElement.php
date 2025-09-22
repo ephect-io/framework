@@ -7,31 +7,31 @@ use Ephect\Framework\Element;
 class ConfigElement extends Element
 {
 
-    private $_name = '';
-    private $_value = '';
-    private $_type = '';
+    private string $name = '';
+    private string $value = '';
+    private string $type = '';
 
     public function __construct($id, $name, $value)
     {
         parent::__construct($this);
         $this->id = $id;
-        $this->_name = $name;
-        $this->_value = $value;
+        $this->name = $name;
+        $this->value = $value;
     }
 
     public function getName(): string
     {
-        return $this->_name;
+        return $this->name;
     }
 
     public function getValue(): string
     {
-        return $this->_value;
+        return $this->value;
     }
 
     public function getType(): string
     {
-        return $this->_type;
+        return $this->type;
     }
 
 
