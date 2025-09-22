@@ -10,6 +10,7 @@ use Ephect\Modules\Http\Transport\Request;
 use Ephect\Modules\Routing\Base\RouteInterface;
 use Ephect\Modules\Routing\Registry\HttpErrorRegistry;
 use Ephect\Modules\Routing\Registry\RouteRegistry;
+use Ephect\Modules\WebApp\Registry\PageRegistry;
 
 use function Ephect\Hooks\useMemory;
 use function Ephect\Hooks\useStore;
@@ -209,7 +210,11 @@ class RouterService implements RouterServiceInterface
                 call_user_func($middleware);
             }
         }
-        $comp = new Component($path);
+
+        $page = PageRegistry::read($path);
+        $uid = PageRegistry::read($page);
+
+        $comp = new Component($path, $uid);
         $comp->render($query, $request);
     }
 

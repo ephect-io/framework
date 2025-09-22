@@ -2,11 +2,13 @@
 
 namespace Ephect\Modules\Routing\Builder;
 
+use Ephect\Framework\ElementUtils;
 use Ephect\Modules\Forms\Components\Children;
 use Ephect\Modules\Routing\Base\RouteInterface;
 use Ephect\Modules\Routing\Base\RouteStructure;
 use Ephect\Modules\Routing\Entities\RouteEntity;
 use Ephect\Modules\Forms\Builders\AbstractBuilder;
+use Ephect\Modules\WebApp\Registry\PageRegistry;
 
 class RouteBuilder extends AbstractBuilder
 {
@@ -25,7 +27,24 @@ class RouteBuilder extends AbstractBuilder
 
         return $route;
     }
+    /**
+     * @throws \Exception
+     */
+    public static function normalizeRedirect(string $redirect): string
+    {
+        $redirect = ElementUtils::normalizeClassname($redirect);
+        $pageFilename = PageRegistry::read($redirect);
 
+        if ($pageFilename === null) {
+            throw new \Exception("Redirect component [$redirect] not found");
+        }
+
+        return $redirect;
+    }
+
+    /**
+     * @throws \Exception
+     */
     private function translateQueryStringRoute(RouteInterface $route): RouteInterface
     {
 
@@ -46,7 +65,6 @@ class RouteBuilder extends AbstractBuilder
         }
 
         if ($translated === $rule && $translated !== '/') {
-
             $re = '/(\W*)(\w+)(.*)/m';
             $subst = '/$2';
 
@@ -60,11 +78,15 @@ class RouteBuilder extends AbstractBuilder
 //             }
         }
 
+        $redirect = $route->getRedirect();
+        // TODO: check if it works
+        //$redirect = self::normalizeRedirect($redirect);
+
         $struct = new RouteStructure([
             'method' => $route->getMethod(),
             'rule' => $rule,
             'normalized' => $rule,
-            'redirect' => $route->getRedirect(),
+            'redirect' => $redirect,
             'translation' => $translated,
             'error' => $route->getError(),
             'exact' => $route->isExact()
@@ -75,7 +97,6 @@ class RouteBuilder extends AbstractBuilder
 
     private function translateNamedArgumentsRoute(RouteInterface $route): RouteInterface
     {
-
         $rule = $route->getRule();
 
         $re = '/(\(\w+\))/m';
@@ -100,11 +121,15 @@ class RouteBuilder extends AbstractBuilder
             $translated = preg_replace('@' . $match . '@m', $subst, $translated, 1);
         }
 
+        $redirect = $route->getRedirect();
+        // TODO: check if it works
+        //$redirect = self::normalizeRedirect($redirect);
+
         $struct = new RouteStructure([
             'method' => $route->getMethod(),
             'rule' => $normalized,
             'normalized' => $rule,
-            'redirect' => $route->getRedirect(),
+            'redirect' => $redirect,
             'translation' => $translated,
             'error' => $route->getError(),
             'exact' => $route->isExact()

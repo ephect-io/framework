@@ -17,6 +17,7 @@ class Lib extends AbstractCommandLib
 
         $builder = new Builder();
         $builder->describeComponents();
+        $builder->preparePagesList();
         $builder->prepareRoutedComponents();
 
         $builder->buildAllRoutes();

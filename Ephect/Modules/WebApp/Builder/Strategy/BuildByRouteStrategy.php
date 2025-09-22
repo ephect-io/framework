@@ -17,6 +17,9 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
      */
     public function build($route = 'Default'): void
     {
+        // TODO: check if it works
+//        $fqRouteParts = explode('\\', $route);
+//        $route = array_pop($fqRouteParts);
 
         $port = trim(File::safeRead(\Constants::CONFIG_DIR . 'dev_port') ?? '80');
 

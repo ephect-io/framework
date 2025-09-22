@@ -12,7 +12,9 @@ use Ephect\Modules\WebApp\Builder\Copiers\TemplatesCopyMaker;
 use Ephect\Modules\WebApp\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\PluginListDescriptor;
-use Ephect\Modules\WebApp\Builder\Routing\Finder;
+use Ephect\Modules\WebApp\Builder\Finders\PagesFinder;
+use Ephect\Modules\WebApp\Builder\Finders\RoutesFinder;
+use Ephect\Modules\WebApp\Builder\Registerer\PageRegisterer;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByRouteStrategy;
 use Exception;
@@ -89,14 +91,26 @@ class Builder
         }
     }
 
+    public function preparePagesList(): void
+    {
+        $pagesFinder = new PagesFinder();
+        $pagesList = $pagesFinder->find();
+
+        $pagesRegisterer = new PageRegisterer();
+        $pagesRegisterer->register($pagesList);
+    }
+
     public function prepareRoutedComponents(): void
     {
         CodeRegistry::load();
         ComponentRegistry::load();
 
-        $routes = (new Finder())->searchForRoutes();
+        $routes = (new RoutesFinder())->find();
+        // TODO: check if it works
+//        $fqApp = ComponentRegistry::read('App');
+        $fqApp = 'App';
 
-        array_unshift($routes, 'App');
+        array_unshift($routes, $fqApp);
 
         foreach ($routes as $route) {
             $fqRoute = ComponentRegistry::read($route);
@@ -114,6 +128,7 @@ class Builder
     public function buildAllRoutes(): void
     {
         (new BuildByNameStrategy())->build('App');
+        // TODO: check if it works
         $this->routes = RouterService::findRouteNames();
 
         $buildByRoute = new BuildByRouteStrategy();

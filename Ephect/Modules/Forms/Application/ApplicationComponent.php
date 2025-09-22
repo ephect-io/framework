@@ -37,14 +37,14 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     protected ?ComponentDeclaration $declaration = null;
     protected ?ComponentEntity $entity = null;
 
-    public function __construct(?string $id = null, string $motherUID = '')
+    public function __construct(?string $id = null, ?string $motherUID = null)
     {
         parent::__construct([]);
 
         $this->id = $id ?: '';
         if ($id === null) {
             $this->getUID();
-            $this->motherUID = $motherUID ?: $this->uid;
+            $this->motherUID = $motherUID ?? $this->uid;
 
             return;
         }
@@ -66,7 +66,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             $this->function = self::functionName($this->class);
         }
 
-        $this->motherUID = $motherUID ?: $this->uid;
+        $this->motherUID = $motherUID ?? $this->uid;
     }
 
     public function load(?string $filename = null): bool

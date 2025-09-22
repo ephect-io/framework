@@ -153,4 +153,16 @@ final class ElementUtils
 
         return [$namespace, $className, $pos];
     }
+
+    public static function normalizeClassname(string $classname): string
+    {
+        $classNameParts = explode('\\', $classname);
+        if (count($classNameParts) === 1) {
+            $classname = \Constants::CONFIG_NAMESPACE . '\\' . $classname;
+        }
+
+        return $classname;
+    }
+
+
 }
