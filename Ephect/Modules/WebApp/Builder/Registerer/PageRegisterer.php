@@ -12,7 +12,7 @@ class PageRegisterer implements RegistererInterface
     {
         PageRegistry::load();
         foreach ($values as $page) {
-            $uid = Crypto::createUID();
+            $uid = Crypto::createOID();
             $filename = \Constants::CUSTOM_PAGES_ROOT . $page;
 
             [

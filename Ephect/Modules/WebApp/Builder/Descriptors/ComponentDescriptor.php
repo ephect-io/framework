@@ -9,6 +9,7 @@ use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Generators\ComponentParser;
 use Ephect\Modules\Forms\Generators\ParserService;
+use Ephect\Modules\WebApp\Registry\PageRegistry;
 
 class ComponentDescriptor implements DescriptorInterface
 {
@@ -33,6 +34,12 @@ class ComponentDescriptor implements DescriptorInterface
         $comp->analyse();
 
         $uid = $comp->getUID();
+        $pageFile = PageRegistry::read($comp->getFullyQualifiedFunction());
+        $pageUid = $pageFile !== null ? PageRegistry::read($pageFile) : null;
+        if ($pageUid !== null) {
+            $uid = $pageUid;
+        }
+
         $parser = new ComponentParser($comp);
         $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
