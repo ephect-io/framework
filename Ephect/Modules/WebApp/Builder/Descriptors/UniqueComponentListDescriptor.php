@@ -12,7 +12,7 @@ class UniqueComponentListDescriptor implements ComponentListDescriptorInterface
 
         $descriptor = new UniqueComponentDescriptor();
 
-        $bootstrapList = File::walkTreeFiltered(\Constants::UNIQUE_DIR, ['phtml'], true);
+        $bootstrapList = File::walkTreeFiltered(\Constants::UNIQUE_DIR, ['php'], true);
         foreach ($bootstrapList as $key => $compFile) {
             [$fqcn, $comp] = $descriptor->describe(\Constants::UNIQUE_DIR, $compFile);
             if ($fqcn === null) {

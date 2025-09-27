@@ -8,7 +8,7 @@ use RecursiveIteratorIterator;
 
 class File
 {
-    public static function walkTreeFiltered($path, $filter = [], $noDepth = false): array
+    public static function walkTreeFiltered($path, $filter = [], $maxDepth1 = false): array
     {
         $result = [];
 
@@ -16,7 +16,7 @@ class File
 
         $iterator = null;
 
-        if ($noDepth) {
+        if ($maxDepth1) {
             $iterator = dir($path);
 
             while ($file = $iterator->read()) {
