@@ -1,0 +1,11 @@
+<?php
+
+namespace Ephect\Plugins\Import;
+
+function Import($props): string
+{
+
+    return (<<< HTML
+    import {{ props->export }} from {{ props->from }}
+    HTML);
+}

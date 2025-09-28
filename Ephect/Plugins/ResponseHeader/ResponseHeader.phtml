@@ -1,0 +1,22 @@
+<?php
+namespace Ephect\Plugins;
+
+use function Ephect\Hooks\useEffect;
+
+function ResponseHeader($props): string
+{
+    useEffect(function () use ($props, /* bool */ &$hasDirectives, /* string */ &$directives) {
+        $directives = $props->directive;
+        $hasDirectives = count($directives) > 0;
+    });
+
+    return (<<< HTML
+    <% 
+        if (%hasDirectives) {
+            foreach(%directives as %directive) {
+                header(%directive);
+            }
+        }
+    %>
+    HTML);
+}

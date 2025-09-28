@@ -1,0 +1,33 @@
+<?php
+
+namespace QuickStart;
+
+function Mother($children): string
+{
+
+    return (<<< HTML
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>
+            <Slot name="title">
+                Mother!
+            </Slot>
+            </title>
+            <Slot name="stylesheets">
+            </Slot>
+        </head>
+
+        <body>
+            <div class="App" >
+            <HeaderAndFooter>
+                {{ children }}
+            </HeaderAndFooter>
+            </div>
+            <Slot name="javascripts">
+            </Slot>
+        </body>
+    </html>
+    HTML);
+}

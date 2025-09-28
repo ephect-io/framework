@@ -1,0 +1,44 @@
+<?php
+
+namespace QuickStart;
+
+use function Ephect\Hooks\useEffect;
+
+function World($props): string
+{
+
+    useEffect(function($props, /* string */ $firstname, /* string */ $lastname, /* string */ $adjective) {
+        $firstname = $props->name;
+        $lastname = $props->lname;
+        $adjective = "Amazing!";
+    });
+
+    return (<<< HTML
+    <First>
+        <Slot name="title">Ephect!</Slot>
+        <Slot name="stylesheets">
+            <link rel="stylesheet" href="/css/index.css" />
+            <link rel="stylesheet" href="/css/app.css" />
+        </Slot>
+        <Slot name="main">
+            <section>
+            <h2>Main slot</h2>
+                <p>
+                    Hello&nbsp;{{ firstname }} {{ lastname }}!
+                </p>
+            </section>
+        </Slot>
+        <Slot name="second">
+            <section>
+            <h2>Second slot</h2>
+                <p>
+                You did it! <strong> {{ adjective }} </strong>
+                </p>
+            </section>
+        </Slot>
+        <section>
+            This section is between Main and Second sections.
+        </section>
+    </First>
+    HTML);
+}

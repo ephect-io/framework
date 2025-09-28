@@ -1,0 +1,32 @@
+# Yarn stuff
+.editorconfig
+.gitattributes
+.yarnrc.yml
+yarn-error.log
+.yarn
+
+# Code editors temporary files 
+.vscode
+.devcontainer
+*.code-workspace
+.idea
+.project
+.buildpath
+.settings
+nbproject
+
+# Composer
+vendor
+
+# NodeJS
+node_modules
+
+# Docker setup
+docker
+docker-compose.yml
+
+# Misc log files
+php_errors.log
+
+# Trash files 
+.DS_Store

@@ -1,0 +1,34 @@
+<?php
+
+namespace QuickStart;
+
+use Com as QuickStartCom;
+use function Ephect\Hooks\useState;
+
+function Home(): string
+{
+    useState(['m' => ['n' => 'with a']]);
+
+    return (<<< HTML
+    <Mother>
+        <Slot name="title">Ephect in action!</Slot>
+        <Slot name="stylesheets">
+            <link rel="stylesheet" href="/css/index.css" />
+            <link rel="stylesheet" href="/css/app.css" />
+        </Slot>
+        <div class="App-content" >
+            <code-writer source="/Com/Com.html" use-highlight-js="false" ></code-writer>
+            <QuickStartCom message="Hello World!" from="the app" />
+        </div>
+        <Slot name="javascripts">
+            <script type="module" src="/modules/human-writes.min.js"></script>
+            <script src="ajil.js"
+                data-init="doSomething"
+                data-depends="/js/fake-dep.js"
+                data-sources="/js/home.js"
+            >
+            </script>
+        </Slot>
+    </Mother>
+    HTML);
+}

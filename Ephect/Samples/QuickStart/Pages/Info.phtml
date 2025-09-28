@@ -1,0 +1,14 @@
+<?php
+
+namespace QuickStart;
+
+function Info(): string
+{
+    ob_start();
+    phpinfo();
+    $info = ob_get_clean();
+
+    return (<<< HTML
+        {{ info }}
+    HTML);
+}
