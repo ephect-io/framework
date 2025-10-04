@@ -87,9 +87,9 @@ class Builder
             $plugins = $descriptor->describe();
             $this->list = [...$this->list, ...$plugins];
 
-            //            CodeRegistry::save();
-            //            PluginRegistry::save();
-            //            ComponentRegistry::save();
+            CodeRegistry::save();
+            PluginRegistry::save();
+            ComponentRegistry::save();
         }
     }
 

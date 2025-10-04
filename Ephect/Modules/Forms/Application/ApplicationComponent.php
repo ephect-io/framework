@@ -9,9 +9,7 @@ use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Tree\Tree;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\ApplicationIgniter;
-use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
-use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Components\ComponentFactory;
@@ -257,21 +255,24 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         array|object|null $functionArgs = null
     ): array {
         [$fqFunctionName, $cacheFilename, $isCached] = ComponentFinder::find($functionName, $motherUID);
-        if (!$isCached) {
-            ComponentRegistry::load();
 
-            $fqName = ComponentRegistry::read($functionName);
-            $component = ComponentFactory::create($fqName, $motherUID);
-            $component->parse();
+        if ($isCached) {
+            return [$fqFunctionName, $cacheFilename];
+        }
 
-            $motherUID = $component->getMotherUID();
-            $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
+        ComponentRegistry::load();
 
-            if ($motherUID !== $component->getUID()) {
-                $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
-                $dispatcher = new EventDispatcher();
-                $dispatcher->dispatch($finishedEvent);
-            }
+        $fqName = ComponentRegistry::read($functionName);
+        $component = ComponentFactory::create($fqName, $motherUID);
+        $component->parse();
+
+        $motherUID = $component->getMotherUID();
+        $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
+
+        if ($motherUID !== $component->getUID()) {
+            $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
+            $dispatcher = new EventDispatcher();
+            $dispatcher->dispatch($finishedEvent);
         }
 
         return [$fqFunctionName, $cacheFilename];
@@ -356,5 +357,19 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     protected function cacheJavascript(): ?string
     {
         return $this->cacheFile(\Constants::RUNTIME_JS_DIR);
+    }
+
+    public function findDependencies(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?array
+    {
+        $composition = $this->composedOf();
+        if ($composition === null) {
+            return null;
+        }
+
+        $list = array_map(function ($item) {
+            return $item->getFullyQualifiedFunction();
+        }, $composition);
+
+        return $list[0] ?? null;
     }
 }

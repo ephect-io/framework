@@ -9,6 +9,7 @@ use Ephect\Modules\WebComponent\Builder\Parser;
 use Ephect\Modules\WebComponent\Common;
 use Ephect\Modules\WebComponent\Manifest\ManifestEntity;
 use Ephect\Modules\WebComponent\Manifest\ManifestReader;
+use PHPUnit\TextUI\Configuration\Constant;
 
 final class WebComponentService implements WebComponentServiceInterface
 {
@@ -96,7 +97,7 @@ final class WebComponentService implements WebComponentServiceInterface
     public function storeHTML(string $html): void
     {
         $name = $this->children->getName();
-        $finalHTML = $this->customWebcomponentRoot . $name . DIRECTORY_SEPARATOR . $name . HTML_EXTENSION;
+        $finalHTML = $this->customWebcomponentRoot . $name . DIRECTORY_SEPARATOR . $name . Constants::HTML_EXTENSION;
         File::safeWrite($finalHTML, $html);
     }
 }

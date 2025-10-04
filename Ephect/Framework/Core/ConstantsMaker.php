@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\Core;
 
+use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 
@@ -9,25 +10,27 @@ class ConstantsMaker
 {
     private array $constants = [];
 
+    private bool $isWebApp = false;
+
     public function __construct()
     {
-        $this->make();
+        $this->define();
     }
 
-    private function make()
+    private function define()
     {
         // TODO: Implement __invoke() method.
         $document_root = isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR : '';
 
-        $isWebApp = $document_root !== '';
-        $this->constants['DONT_USE_IS_WEB_APP'] = $isWebApp;
+        $this->isWebApp = $document_root !== '';
+        $this->constants['DONT_USE_IS_WEB_APP'] = $this->isWebApp;
         $this->constants['DONT_USE_IS_PHAR_APP'] = false; //(Phar::running() !== '');
         //        $this->constants['DONT_USE_IS_CLI_APP'] = (Phar::running() === '') && !DONT_USE_IS_WEB_APP;
-        $this->constants['DONT_USE_IS_CLI_APP'] = !$isWebApp;
+        $this->constants['DONT_USE_IS_CLI_APP'] = !$this->isWebApp;
         $this->constants['DONT_USE_REL_CONFIG_DIR'] = 'config' . DIRECTORY_SEPARATOR;
         $this->constants['DONT_USE_REL_CONFIG_APP'] = 'app';
 
-        if ($isWebApp) {
+        if ($this->isWebApp) {
             $this->constants['DONT_USE_DOCUMENT_ROOT'] = $document_root;
 
             $site_root = dirname($this->constants['DONT_USE_DOCUMENT_ROOT']) . DIRECTORY_SEPARATOR;
@@ -102,7 +105,7 @@ class ConstantsMaker
             $this->constants['DONT_USE_FULL_SSL_URI'] = 'https://' . $this->constants['DONT_USE_BASE_URI'];
         }
 
-        if (!$isWebApp) {
+        if (!$this->isWebApp) {
             [$app_path] = get_included_files();
             $script_name = pathinfo($app_path, PATHINFO_BASENAME);
             $script_dir = pathinfo($app_path, PATHINFO_DIRNAME);
@@ -162,7 +165,7 @@ class ConstantsMaker
         $this->constants['DONT_USE_CONFIG_LIBRARY'] = file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'library') ? trim(file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'library')) : 'Library';
         $this->constants['DONT_USE_CONFIG_COMPONENTS'] = file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'components') ? trim(file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'components')) : 'Components';
 
-        if (!$isWebApp) {
+        if (!$this->isWebApp) {
             $this->constants['DONT_USE_DOCUMENT_ROOT'] = $this->constants['DONT_USE_SITE_ROOT'] . $this->constants['DONT_USE_CONFIG_DOCROOT'] . DIRECTORY_SEPARATOR;
         }
         $this->constants['REL_RUNTIME_JS_DIR'] = 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
@@ -224,8 +227,23 @@ class ConstantsMaker
         $this->constants['MJS_EXTENSION'] = '.mjs';
         $this->constants['TPL_EXTENSION'] = '.tpl';
         $this->constants['TXT_EXTENSION'] = '.txt';
+    }
 
-        $filename = $this->constants['DONT_USE_EPHECT_ROOT'] . ($isWebApp ? 'web' : 'cli') . 'constants.php';
+    public function list(): array
+    {
+        return $this->constants;
+    }
+
+    public function log(): void
+    {
+        foreach ($this->constants as $key => $value) {
+            Console::Log($key . ' => ' . $value);
+        }
+    }
+
+    public function make()
+    {
+        $filename = $this->constants['DONT_USE_EPHECT_ROOT'] . ($this->isWebApp ? 'web' : 'cli') . '_constants.php';
 
         $lines = "<?php" . PHP_EOL;
         foreach ($this->constants as $key => $value) {

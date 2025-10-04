@@ -5,10 +5,7 @@ namespace Ephect\Modules\Forms\Generators\TokenParsers;
 use Ephect\Modules\Forms\Generators\TypesParserTrait;
 use JetBrains\PhpStorm\Deprecated;
 
-/**
- * Deprecated
- */
-#[Deprecated("it does not work", "useEffect", "0.3")]
+/** @deprecated It's useless for now */
 final class UseSlotParser extends AbstractTokenParser
 {
     use TypesParserTrait;
