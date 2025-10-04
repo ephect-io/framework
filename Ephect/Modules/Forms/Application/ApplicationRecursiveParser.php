@@ -30,7 +30,7 @@ class ApplicationRecursiveParser extends AbstractApplicationParser
 
         $parser->doAttributes($component);
 
-//        $parser->doUses($component);
+        //        $parser->doUses($component);
         $parser->doUsesAs($component);
 
         $parser->doHeredoc($component);

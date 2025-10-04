@@ -9,7 +9,6 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Launch PHP embedded server on available port starting from the one in config.")]
 class Main extends AbstractCommand
 {
-
     public function run(): int
     {
         $lib = new Lib($this->application);

@@ -3,21 +3,24 @@
 namespace Ephect\Framework\Utils;
 
 use ZipArchive;
+
 use function mkdir;
 
 class Zip
 {
     //put your code here
-    function inflate($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true): bool
+    public function inflate($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true): bool
     {
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
 
         if (!$zip->open($src_file)) {
             return false;
         }
 
         $splitter = ($create_zip_name_dir === true) ? "." : "/";
-        if ($dest_dir === false) $dest_dir = substr($src_file, 0, strrpos($src_file, $splitter)) . "/";
+        if ($dest_dir === false) {
+            $dest_dir = substr($src_file, 0, strrpos($src_file, $splitter)) . "/";
+        }
 
         // Create the directories to the destination dir if they don't already exist
         if (!file_exists($dest_dir)) {

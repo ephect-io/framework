@@ -5,6 +5,7 @@ namespace Ephect\Modules\WebComponent\Middlewares;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Middlewares\ComponentParserMiddlewareInterface;
+
 use function Ephect\Hooks\useState;
 
 class WebComponentParserMiddleware implements ComponentParserMiddlewareInterface
@@ -14,6 +15,6 @@ class WebComponentParserMiddleware implements ComponentParserMiddlewareInterface
         StateRegistry::loadByMotherUid($motherUID, true);
         useState(["middlewares" => [WebComponentBuilderMiddleware::class => (object)$arguments],]);
         StateRegistry::saveByMotherUid($motherUID, true);
-//        StateRegistry::save(true);
+        //        StateRegistry::save(true);
     }
 }

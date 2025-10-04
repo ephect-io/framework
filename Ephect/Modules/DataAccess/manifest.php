@@ -1,4 +1,5 @@
 <?php
+
 return [
     "tag" => "DbalConnection",
     "name" => "ephect-io/data-access",

@@ -3,10 +3,10 @@
 namespace Ephect\Framework\Core;
 
 use Ephect\Framework\Registry\FrameworkRegistry;
+use Exception;
 
 class Autoloader
 {
-
     /**
      * Registers the autoloader class with the PHP SPL autoloader.
      *
@@ -14,12 +14,19 @@ class Autoloader
      */
     public static function register(bool $prepend = false): void
     {
-        spl_autoload_register(array(new self, 'load'), true, $prepend);
+        spl_autoload_register(array(new self(), 'load'), true, $prepend);
     }
 
     public static function load($className): void
     {
         $classFilename = FrameworkRegistry::read($className);
+
+        /**
+         * Activate only for debug
+         */
+        if (empty($classFilename)) {
+            throw new Exception("Class $className not found");
+        }
 
         include $classFilename;
     }

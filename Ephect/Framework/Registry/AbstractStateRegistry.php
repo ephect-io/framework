@@ -7,7 +7,6 @@ use Ephect\Framework\Utils\Text;
 
 abstract class AbstractStateRegistry extends AbstractRegistry implements RegistryInterface
 {
-
     protected function __saveByMotherUid(string $motherUid, bool $asArray = false): void
     {
         $entries = $this->__items();

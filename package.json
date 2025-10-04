@@ -1,0 +1,11 @@
+{
+  "name": "framework",
+  "packageManager": "yarn@4.9.2",
+  "dependencies": {
+    "simple-git": "^3.28.0"
+  },
+  "type": "module",
+  "scripts": {
+    "squash": "node scripts/gsam.js $@"
+  }
+}

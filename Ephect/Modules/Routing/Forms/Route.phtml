@@ -1,25 +1,19 @@
 <?php
 
-namespace Ephect\Plugins\Route;
+namespace  Ephect\Modules\Routing\Forms;
 
-use Ephect\Framework\Components\Children;
-use Ephect\Plugins\Router\RouterService;
-use stdClass;
+use Ephect\Modules\Routing\Builder\RouteBuilder;
+use Ephect\Modules\Routing\Services\RouterService;
 use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useState;
+use function Ephect\Hooks\useMemory;
 
 function Route($children): string
 {
     useEffect(function ($children, /* bool */ $onError, /* string */ $html) {
 
         $props = $children;
-        if(method_exists($children, "props")) {
-            $args = $children->props();
-
-            $props = new stdClass;
-            foreach ($args as $field => $value) {
-                $props->{$field} = urldecode($value);
-            }
+        if (method_exists($children, "props")) {
+            $props = $children->props();
         }
 
         $routeBuilder = new RouteBuilder($props);
@@ -37,11 +31,9 @@ function Route($children): string
 
         [$path, $query, $code] = $router->matchRoute($route);
 
-        [$state, $setState] = useState();
-        $routes = $state->routes ?? [];
-
-        array_push($routes, ['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,]);
-        useState(['routes' => $routes]);
+        [$routes] = useMemory(get: 'routes') ?? [];
+        $routes[] = (object)['path' => $path, 'query' => $query, 'error' => $error, 'code' => $code,];
+        useMemory(['routes' => $routes]);
 
     });
 

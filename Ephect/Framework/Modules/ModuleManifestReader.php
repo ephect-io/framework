@@ -9,7 +9,6 @@ use JsonException;
 
 class ModuleManifestReader extends ManifestReader
 {
-
     /**
      * @throws JsonException
      * @throws ErrorException

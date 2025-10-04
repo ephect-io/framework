@@ -15,7 +15,7 @@ class ModuleParser implements ParserTypeInterface
 
     public function parse(): array
     {
-        $comp = new $this->moduleEntrypointClass;
+        $comp = new $this->moduleEntrypointClass();
         $comp->load($this->filename);
         $comp->analyse();
 

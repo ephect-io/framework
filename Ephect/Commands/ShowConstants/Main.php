@@ -9,7 +9,6 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Display the application constants.")]
 class Main extends AbstractCommand
 {
-
     public function run(): int
     {
         $lib = new Lib($this->application);

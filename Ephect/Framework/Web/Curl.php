@@ -54,8 +54,6 @@ class Curl
         $code = (int)$info['http_code'];
         curl_close($ch);
 
-        $result = [$code, $header, $content];
-
-        return $result;
+        return [$code, $header, $content];
     }
 }

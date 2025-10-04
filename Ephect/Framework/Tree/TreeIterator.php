@@ -7,7 +7,6 @@ use RecursiveIterator;
 
 class TreeIterator implements RecursiveIterator
 {
-
     use ElementTrait;
 
     protected int $count = 0;

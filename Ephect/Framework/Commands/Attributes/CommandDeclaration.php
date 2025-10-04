@@ -12,7 +12,6 @@ class CommandDeclaration
         public string $subject = '',
         public string $desc = '',
         public bool   $isPhar = false
-    )
-    {
+    ) {
     }
 }

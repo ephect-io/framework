@@ -4,7 +4,6 @@ namespace Ephect\Modules\Http\Transport;
 
 readonly class RequestHeaders
 {
-
     public array $list;
 
     public function __construct()

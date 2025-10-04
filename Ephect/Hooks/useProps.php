@@ -28,7 +28,7 @@ function useProps(Closure $callback, ?object $props = null): void
 
     $hasProps = $props !== null;
 
-    $newProps = !$hasProps ? new stdClass : $props;
+    $newProps = !$hasProps ? new stdClass() : $props;
     $newArgs = [];
 
     foreach ($params as $name => $param) {

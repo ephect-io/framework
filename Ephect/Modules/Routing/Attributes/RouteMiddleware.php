@@ -1,14 +1,16 @@
 <?php
 
-namespace Ephect\Plugins\Route\Attributes;
+namespace Ephect\Modules\Routing\Attributes;
 
 use Attribute;
+use Ephect\Framework\Middlewares\AttributeMiddlewareInterface;
+use Ephect\Modules\Routing\Middlewares\RouteParserMiddleware;
 
-#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_FUNCTION)]
-class RouteMiddleware
+#[Attribute(Attribute::TARGET_FUNCTION)]
+class RouteMiddleware implements AttributeMiddlewareInterface
 {
-    public function __construct(
-    )
+    public function getMiddlewares(): array
     {
+        return [RouteParserMiddleware::class];
     }
 }

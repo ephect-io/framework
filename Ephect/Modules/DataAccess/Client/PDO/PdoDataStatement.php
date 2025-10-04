@@ -29,8 +29,7 @@ class PdoDataStatement extends Element implements DataStatementInterface
         private readonly PdoConnection $_connection,
         private readonly string $_sql = '',
         private readonly Throwable|null $_exception = null,
-    )
-    {
+    ) {
         parent::__construct($this);
 
         $this->_hasException = ($this->_exception instanceof PDOException);
@@ -39,10 +38,10 @@ class PdoDataStatement extends Element implements DataStatementInterface
             $this->_native_connection = $this->_connection->getState();
             $this->_config = $this->_connection->getConfiguration();
             $this->_driver = $this->_config->getDriver();
-//            $this->_schemaInfo = $this->_connection->getSchemaInfo();
-//            if ($this->_sql !== null) {
-//                $this->_schemaInfo->setQuery($this->_sql);
-//            }
+            //            $this->_schemaInfo = $this->_connection->getSchemaInfo();
+            //            if ($this->_sql !== null) {
+            //                $this->_schemaInfo->setQuery($this->_sql);
+            //            }
         }
     }
 

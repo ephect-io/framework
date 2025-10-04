@@ -20,7 +20,7 @@ class Builder
      * @param string $destDir
      * @return void
      */
-    function copyTemplates(string $verb, string $subject, string $description, string $methodName, array $arguments, string $srcDir, string $destDir): void
+    public function copyTemplates(string $verb, string $subject, string $description, string $methodName, array $arguments, string $srcDir, string $destDir): void
     {
         $commandNamespace = ucfirst($verb) . ucfirst($subject);
         $commandAttributes = 'verb: "' . $verb . '"';

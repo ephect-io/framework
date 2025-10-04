@@ -14,7 +14,7 @@ final class BreakerParser extends AbstractTokenParser
 
         /*        if(strpos($result,'?> <?') > -1) {*/
         /*            $result = str_replace('?> <?', '', $result);*/
-//        }
+        //        }
 
         $this->result = $result;
     }

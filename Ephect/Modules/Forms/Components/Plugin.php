@@ -7,7 +7,6 @@ use Ephect\Modules\Forms\Registry\PluginRegistry;
 
 class Plugin extends Component implements FileComponentInterface
 {
-
     public function makeComponent(string $filename, string &$html): void
     {
     }

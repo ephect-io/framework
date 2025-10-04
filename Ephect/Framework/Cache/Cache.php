@@ -9,7 +9,6 @@ use Throwable;
 
 class Cache extends StaticElement
 {
-
     public static function getCacheFilename(string $basename): string
     {
         return \Constants::CACHE_DIR . str_replace('/', '_', $basename);
@@ -29,7 +28,7 @@ class Cache extends StaticElement
             \Constants::HTTP_HOST !== \Constants::SERVER_NAME
                 ? \Constants::SERVER_HOST
                 : \Constants::SERVER_ROOT
-            ) . \Constants::REWRITE_BASE . $relativeURL;
+        ) . \Constants::REWRITE_BASE . $relativeURL;
     }
 
     public static function cachePath(string $filepath): string

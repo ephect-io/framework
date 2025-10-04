@@ -9,7 +9,6 @@ use Throwable;
 
 class Lib extends AbstractCommandLib
 {
-
     public function displayConstants(): array
     {
         try {
@@ -58,4 +57,3 @@ class Lib extends AbstractCommandLib
         }
     }
 }
-

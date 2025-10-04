@@ -4,25 +4,25 @@ namespace Ephect\Framework\Registry;
 
 interface StaticRegistryInterface
 {
-    static function getInstance(): AbstractRegistryInterface;
+    public static function getInstance(): RegistryInterface;
 
-    static function write(string $key, $item): void;
+    public static function write(string $key, $item): void;
 
-    static function read($key, $item = null);
+    public static function read($key, $item = null);
 
-    static function items(): array;
+    public static function items(): array;
 
-    static function cache(): bool;
+    public static function save(): bool;
 
-    static function uncache(): bool;
+    public static function load(): bool;
 
-    static function delete(string $key): void;
+    public static function delete(string $key): void;
 
-    static function exists(string $key): bool;
+    public static function exists(string $key): bool;
 
-    static function setCacheDirectory(string $directory): void;
+    public static function setCacheDirectory(string $directory): void;
 
-    static function getCacheFilename(): string;
+    public static function getCacheFilename(): string;
 
-    static function getFlatFilename(): string;
+    public static function getFlatFilename(): string;
 }

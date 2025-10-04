@@ -10,7 +10,6 @@ use Exception;
 
 class Compiler
 {
-
     /**
      * Second creation step of the WebComponent
      *
@@ -24,7 +23,7 @@ class Compiler
      * @return void
      * @throws Exception
      */
-    function saveManifest(string $tagName, string $className, string $entrypoint, array $arguments, string $destDir): void
+    public function saveManifest(string $tagName, string $className, string $entrypoint, array $arguments, string $destDir): void
     {
 
         $struct = new ManifestStructure([
@@ -52,7 +51,7 @@ class Compiler
      * @param string $destDir
      * @return void
      */
-    function copyTemplates(
+    public function copyTemplates(
         string $tagName,
         string $className,
         bool $hasBackendProps,

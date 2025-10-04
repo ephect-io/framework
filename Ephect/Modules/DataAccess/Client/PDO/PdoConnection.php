@@ -15,13 +15,12 @@ use PDOStatement;
 
 class PdoConnection extends AbstractConfiguration implements SqlConnectionInterface
 {
+    use CrudQueriesTrait;
     private PDO $_state;
     private PdoConfiguration $_config;
     private string $_dsn = '';
     private array|null $_params = null;
     private AbstractPdoSchemaInfo $_SchemaInfo;
-
-    use CrudQueriesTrait;
 
     public function __construct(PdoConfiguration $config)
     {
@@ -170,13 +169,13 @@ class PdoConnection extends AbstractConfiguration implements SqlConnectionInterf
 
     public function addSelectLimit($start, $count)
     {
-//        $driver = strtolower($this->_activeConnection->getDriver());
-//        if(strstr($driver, 'mysql')) {
+        //        $driver = strtolower($this->_activeConnection->getDriver());
+        //        if(strstr($driver, 'mysql')) {
         $start = (!$start) ? 1 : $start;
         $sql = $this->getSelectQuery() . PHP_EOL . ' LIMIT ' . (($start - 1) * $count) . ', ' . $count . PHP_EOL;
 
         $this->setSelectQuery($sql);
-//        }
+        //        }
     }
 
     public function showTables(): ?PdoDataStatement

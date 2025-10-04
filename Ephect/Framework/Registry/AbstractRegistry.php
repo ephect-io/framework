@@ -6,22 +6,22 @@ use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 
-abstract class AbstractRegistry implements AbstractRegistryInterface
+abstract class AbstractRegistry implements RegistryInterface
 {
-    private array $entries = [];
-    private bool $isLoaded = false;
-    private string $baseDirectory = CACHE_DIR;
-    private string $cacheFilename = '';
-    private string $flatFilename = '';
-
     use ElementTrait;
 
-    public function _write(string $key, $value): void
+    protected array $entries = [];
+    protected bool $isLoaded = false;
+    protected string $baseDirectory = \Constants::CACHE_DIR;
+    protected string $cacheFilename = '';
+    protected string $flatFilename = '';
+
+    public function __write(string $key, $value): void
     {
         $this->entries[$key] = $value;
     }
 
-    public function _read($key, $value = null): mixed
+    public function __read($key, $value = null): mixed
     {
         if (!isset($this->entries[$key])) {
             return null;
@@ -38,96 +38,85 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
         return $this->entries[$key][$value];
     }
 
-    public function _delete(string $key): void
+    public function __delete(string $key): void
     {
         unset($this->entries[$key]);
     }
 
-    public function _exists(string $key): bool
+    public function __exists(string $key): bool
     {
         return isset($this->entries[$key]);
     }
 
-    public function _cache(bool $asArray = false): bool
+    public function __save(bool $asArray = false): bool
     {
-        $result = '';
-
-        $entries = $this->_items();
+        $entries = $this->__items();
 
         $result = json_encode($entries, JSON_PRETTY_PRINT);
 
         if ($asArray) {
             $result = Text::jsonToPhpReturnedArray($result);
-            $EPHECT_ROOT = \Constants::EPHECT_ROOT;
+            $ephect_root = \Constants::EPHECT_ROOT;
             if (DIRECTORY_SEPARATOR === '\\') {
-                $EPHECT_ROOT = str_replace('\\', '\\\\', \Constants::EPHECT_ROOT);
+                $ephect_root = str_replace('\\', '\\\\', \Constants::EPHECT_ROOT);
             }
 
-            $result = str_replace('"' . $EPHECT_ROOT, 'EPHECT_ROOT . "', $result);
+            $result = str_replace('"' . $ephect_root, 'EPHECT_ROOT . "', $result);
             $result = str_replace('"' . \Constants::SRC_ROOT, 'SRC_ROOT . "', $result);
         }
 
-        $registryFilename = $this->_getCacheFileName($asArray);
+        $registryFilename = $this->__getCacheFileName($asArray);
         $len = File::safeWrite($registryFilename, $result);
 
         return $len !== null;
     }
 
-    public function _items(): array
+    public function __items(): array
     {
         return $this->entries;
     }
 
-    public function _getCacheFileName(bool $asArray = false): string
+    public function __getCacheFileName(bool $asArray = false): string
     {
-        if ($this->cacheFilename === '') {
-            $this->cacheFilename = $this->baseDirectory . $this->_getFlatFilename($asArray);
-        }
+        $this->cacheFilename = $this->baseDirectory . $this->__getFlatFilename($asArray);
 
         return $this->cacheFilename . ($asArray ? '.php' : '.json');
     }
 
-    public function _getFlatFilename(): string
+    public function __getFlatFilename(): string
     {
         return $this->flatFilename ?: $this->flatFilename = strtolower(str_replace('\\', '_', get_class($this)));
     }
 
-    public function _uncache(bool $asArray = false): bool
+    public function __load(bool $asArray = false): bool
     {
         $this->isLoaded = false;
 
-        $registryFilename = $this->_getCacheFileName($asArray);
-        $text = File::safeRead($registryFilename);
-        $this->isLoaded = $text !== null;
+        $registryFilename = $this->__getCacheFileName($asArray);
 
-        if ($this->isLoaded && !$asArray) {
+        $ok = is_file($registryFilename);
+
+        if ($ok && !$asArray) {
+            $text = file_get_contents($registryFilename);
             $this->entries = json_decode($text, JSON_OBJECT_AS_ARRAY);
+            $this->isLoaded = true;
         }
 
-        if ($this->isLoaded && $asArray) {
-
-            $fn = function () use ($registryFilename) {
-                return include $registryFilename;
-            };
-
-            $dictionary = $fn();
-
-            $this->entries = [];
-            foreach ($dictionary as $key => $value) {
-                $this->entries[$key] = $value;
-            }
+        if ($ok && $asArray) {
+            $this->entries = require $registryFilename;
+            $this->isLoaded = true;
         }
 
         return $this->isLoaded;
     }
 
-    public function _setCacheDirectory(string $directory): void
+    public function __setCacheDirectory(string $directory): void
     {
         $directory = substr($directory, -1) !== DIRECTORY_SEPARATOR ? $directory . DIRECTORY_SEPARATOR : $directory;
         $this->baseDirectory = $directory;
     }
 
-    private function _shortClassName(): string
+    protected function __shortClassName(): string
     {
         $fqname = get_class($this);
         $nameParts = explode('\\', $fqname);
@@ -135,5 +124,4 @@ abstract class AbstractRegistry implements AbstractRegistryInterface
 
         return $basename;
     }
-
 }

@@ -35,8 +35,8 @@ class AuthenticationService extends StaticElement
             return $result;
         }
 
-//        $userId = $this->getUserId();
-//        $login = $this->getUserName();
+        //        $userId = $this->getUserId();
+        //        $login = $this->getUserName();
 
         $connection = PdoDataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
@@ -50,8 +50,8 @@ class AuthenticationService extends StaticElement
 
         $token = Crypto::createToken('');
         $connection->query(
-            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
-            , ['token' => $token, 'userId' => $userId, 'login' => $login]
+            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);",
+            ['token' => $token, 'userId' => $userId, 'login' => $login]
         );
 
         $result = $token;
@@ -102,8 +102,8 @@ class AuthenticationService extends StaticElement
         $connection = PdoDataAccess::getCryptoDB();
         $token = Crypto::createToken('');
         $stmt = $connection->query(
-            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
-            , ['token' => $token, 'userId' => $userId, 'login' => $login]
+            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);",
+            ['token' => $token, 'userId' => $userId, 'login' => $login]
         );
 
         return ($token || $stmt->fetch()) ? $token : $result;

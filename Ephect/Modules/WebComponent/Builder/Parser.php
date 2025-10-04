@@ -6,7 +6,6 @@ use Ephect\Modules\Forms\Generators\RawHtmlParser;
 
 class Parser extends RawHtmlParser
 {
-
     private string $template = '';
     private string $script = '';
     private string $style = '';

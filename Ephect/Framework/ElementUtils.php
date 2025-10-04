@@ -8,7 +8,6 @@ use function strlen;
 
 final class ElementUtils
 {
-
     public static function getNamespaceFromFQClassName($fqClassName): string
     {
         $classParts = explode('\\', $fqClassName);
@@ -44,6 +43,29 @@ final class ElementUtils
         $pos = $matches[5][1];
 
         return [$namespace, $functionName, $parameters, $returnedType, $pos];
+    }
+
+    public static function getEnumDefinitionFromFile($filepath): ?array
+    {
+        $contents = File::safeRead($filepath);
+
+        if ($contents === null) {
+            return null;
+        }
+
+        return self::getEnumDefinition($contents);
+    }
+
+    public static function getEnumDefinition($contents): ?array
+    {
+        [$namespace, $pos] = self::grabKeywordName('namespace', $contents, ';');
+        [$enumName, $pos] = self::grabKeywordName('enum', $contents, ' ');
+        $pos = strpos($contents, '{', $pos);
+
+        $enumName = trim($enumName, '{');
+        $enumName = trim($enumName);
+
+        return [$namespace, $enumName, $pos];
     }
 
     public static function grabKeywordName(string $keyword, string $classText, string $delimiter): array
@@ -130,4 +152,16 @@ final class ElementUtils
 
         return [$namespace, $className, $pos];
     }
+
+    public static function normalizeClassname(string $classname): string
+    {
+        $classNameParts = explode('\\', $classname);
+        if (count($classNameParts) === 1) {
+            $classname = \Constants::CONFIG_NAMESPACE . '\\' . $classname;
+        }
+
+        return $classname;
+    }
+
+
 }

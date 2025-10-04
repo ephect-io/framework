@@ -6,11 +6,11 @@ use Ephect\Framework\Manifest\ManifestReader;
 use Ephect\Framework\Utils\File;
 use ErrorException;
 use JsonException;
+
 use function siteRoot;
 
 class ComposerConfigReader extends ManifestReader
 {
-
     /**
      * @throws JsonException
      * @throws ErrorException
@@ -18,7 +18,7 @@ class ComposerConfigReader extends ManifestReader
     public function read(?string $manifestDirectory = null): ComposerConfigEntity
     {
         $json = File::safeRead(siteRoot() . "composer.json");
-        $struct = new ComposerConfigStructure;
+        $struct = new ComposerConfigStructure();
         $struct->decode($json);
 
         return new ComposerConfigEntity($struct);

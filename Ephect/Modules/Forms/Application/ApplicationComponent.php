@@ -226,16 +226,16 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     {
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
             StateRegistry::loadByMotherUid($this->motherUID, true);
-//            StateRegistry::load(true);
+            //            StateRegistry::load(true);
             $stateIgniter = new ApplicationIgniter();
             $stateIgniter->ignite();
         }
 
-//        $trueStaticFile = STATIC_DIR . pathinfo($this->filename, PATHINFO_FILENAME) . PREHTML_EXTENSION;
-//        if ($html = File::safeRead($trueStaticFile) != null && $this->motherUID == $this->uid && $this->id !== 'App')  {
-//            echo $html;
-//            return;
-//        }
+        //        $trueStaticFile = STATIC_DIR . pathinfo($this->filename, PATHINFO_FILENAME) . PREHTML_EXTENSION;
+        //        if ($html = File::safeRead($trueStaticFile) != null && $this->motherUID == $this->uid && $this->id !== 'App')  {
+        //            echo $html;
+        //            return;
+        //        }
 
         [$fqFunctionName, $cacheFilename] = $this->renderComponent($this->motherUID, $this->function, $functionArgs);
         $html = ComponentRenderer::renderHTML(

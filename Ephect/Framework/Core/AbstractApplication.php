@@ -177,15 +177,15 @@ abstract class AbstractApplication extends Element
                 return;
             }
 
-            $this->appName = StateRegistry::read('application', 'name');
-            $this->appTitle = StateRegistry::read('application', 'title');
+            $this->appName = StateRegistry::readItem('application', 'name');
+            $this->appTitle = StateRegistry::readItem('application', 'title');
 
         } catch (Throwable $ex) {
             Console::error($ex);
         }
     }
 
-    public function help(): void
+    public function help(): int
     {
         $help = '';
         Console::writeLine($this->getName());
@@ -195,6 +195,8 @@ abstract class AbstractApplication extends Element
             $help .= $desc;
         }
         Console::writeLine($help);
+
+        return 0;
     }
 
     public function getName(): string|null
@@ -228,7 +230,7 @@ abstract class AbstractApplication extends Element
 
     abstract protected function execute(): int;
 
-//    protected function execute(): int {
-//        return 0;
-//    }
+    //    protected function execute(): int {
+    //        return 0;
+    //    }
 }

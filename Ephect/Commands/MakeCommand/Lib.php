@@ -11,7 +11,6 @@ use Exception;
 
 class Lib extends AbstractCommandLib
 {
-
     public function createCommandBase(): void
     {
         try {

@@ -7,7 +7,6 @@ use Ephect\Modules\Forms\Components\ComponentInterface;
 
 class ModuleListDescriptor implements ComponentListDescriptorInterface
 {
-
     public function __construct(private readonly string $modulePath)
     {
     }

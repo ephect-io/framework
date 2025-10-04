@@ -136,9 +136,9 @@ final class OpenComponentsParser extends AbstractComponentParser
 
             $decl = ComponentDeclaration::byName($fqComponentName);
             $this->declareMiddlewares($motherUID, $parent, $decl, $fqComponentName, $props);
-//            $attributesEvent = new ComponentAttributesEvent($this->component, $item);
-//            $dispatcher = new EventDispatcher();
-//            $dispatcher->dispatch($attributesEvent);
+            //            $attributesEvent = new ComponentAttributesEvent($this->component, $item);
+            //            $dispatcher = new EventDispatcher();
+            //            $dispatcher->dispatch($attributesEvent);
 
             $previous = $item;
         };

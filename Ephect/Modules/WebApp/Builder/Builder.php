@@ -47,10 +47,10 @@ class Builder
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies
 
-//            UniqueCodeRegistry::load();
-//            $descriptor = new UniqueComponentListDescriptor();
-//            $descriptor->describe();
-//            UniqueCodeRegistry::save();
+            //            UniqueCodeRegistry::load();
+            //            $descriptor = new UniqueComponentListDescriptor();
+            //            $descriptor->describe();
+            //            UniqueCodeRegistry::save();
 
             CodeRegistry::load();
 
@@ -58,8 +58,8 @@ class Builder
             $components = $descriptor->describe();
             $this->list = [...$this->list, ...$components];
 
-//            CodeRegistry::save();
-//            ComponentRegistry::save();
+            //            CodeRegistry::save();
+            //            ComponentRegistry::save();
         }
 
         if (!PluginRegistry::load()) {
@@ -87,9 +87,9 @@ class Builder
             $plugins = $descriptor->describe();
             $this->list = [...$this->list, ...$plugins];
 
-//            CodeRegistry::save();
-//            PluginRegistry::save();
-//            ComponentRegistry::save();
+            //            CodeRegistry::save();
+            //            PluginRegistry::save();
+            //            ComponentRegistry::save();
         }
     }
 
@@ -109,7 +109,7 @@ class Builder
 
         $routes = (new RoutesFinder())->find();
         // TODO: check if it works
-//        $fqApp = ComponentRegistry::read('App');
+        //        $fqApp = ComponentRegistry::read('App');
         $fqApp = 'App';
 
         array_unshift($routes, $fqApp);
@@ -118,7 +118,7 @@ class Builder
             $fqRoute = ComponentRegistry::read($route);
             $comp = $this->list[$fqRoute];
 
-//            $comp->copyComponents($this->list);
+            //            $comp->copyComponents($this->list);
         }
 
         $this->routes = $routes;

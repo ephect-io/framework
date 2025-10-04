@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpArrayWriteIsNotUsedInspection */
+<?php
+
+/** @noinspection PhpArrayWriteIsNotUsedInspection */
 
 namespace Ephect\Modules\Forms\Generators;
 
@@ -213,8 +215,8 @@ class Decomposer extends Parser implements ParserInterface
         }
 
         ksort($list);
-//        $l = count($list);
-//        for ($i = 0; $i < $l; $i++) {}
+        //        $l = count($list);
+        //        for ($i = 0; $i < $l; $i++) {}
 
         $maxDepth = count($this->depths);
         for ($i = $maxDepth; $i > -1; $i--) {

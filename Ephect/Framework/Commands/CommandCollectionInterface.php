@@ -4,5 +4,5 @@ namespace Ephect\Framework\Commands;
 
 interface CommandCollectionInterface
 {
-    function commands(): array;
+    public function commands(): array;
 }
