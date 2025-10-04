@@ -9,9 +9,8 @@ class Lib extends AbstractCommandLib
 {
     public function watch(): void
     {
-        $watcher = new Watcher;
+        $watcher = new Watcher();
 
         $watcher->watch(\Constants::SRC_ROOT, ['phtml', 'php']);
     }
 }
-

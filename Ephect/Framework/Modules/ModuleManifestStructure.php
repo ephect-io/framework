@@ -2,7 +2,6 @@
 
 namespace Ephect\Framework\Modules;
 
-
 use Ephect\Framework\Manifest\ManifestStructure;
 
 class ModuleManifestStructure extends ManifestStructure

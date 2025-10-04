@@ -8,7 +8,7 @@ final class NamespaceParser extends AbstractTokenParser
     {
         $re = '/namespace( +)(\w+)( +)?;( +)?/';
         $subst = 'namespace \\2;';
-//        $subst = 'namespace ' . "$parameter\\\\" . '\\2;';
+        //        $subst = 'namespace ' . "$parameter\\\\" . '\\2;';
 
         $str = $this->html;
 

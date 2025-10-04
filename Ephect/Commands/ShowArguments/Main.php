@@ -10,7 +10,6 @@ use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 #[CommandDeclaration(desc: "Show the application arguments.")]
 class Main extends AbstractCommand
 {
-
     public function run(): int
     {
         $data = ['argv' => $this->application->getArgv(), 'argc' => $this->application->getArgc()];

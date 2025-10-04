@@ -97,7 +97,7 @@ class Text
                     $stringLen = strlen($matches[0]);
                     $buffer = substr($buffer, $stringLen);
                     $isDirty = true;
-                } else if (preg_match($entryRx, $buffer, $matches)) {
+                } elseif (preg_match($entryRx, $buffer, $matches)) {
                     $indent = !isset($matches[1]) ? '' : $matches[1];
                     $convert .= $indent;
                     $key = !isset($matches[3]) ? '' : $matches[3];

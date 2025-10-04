@@ -230,7 +230,7 @@ abstract class AbstractApplication extends Element
 
     abstract protected function execute(): int;
 
-//    protected function execute(): int {
-//        return 0;
-//    }
+    //    protected function execute(): int {
+    //        return 0;
+    //    }
 }

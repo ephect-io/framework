@@ -51,9 +51,9 @@ class Application extends AbstractApplication
     {
         $app = new Component('App');
 
-//        ob_start();
+        //        ob_start();
         $app->render();
-//        $this->html = ob_get_clean();
+        //        $this->html = ob_get_clean();
 
         return 0;
     }

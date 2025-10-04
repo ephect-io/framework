@@ -73,9 +73,9 @@ class RouteBuilder extends AbstractBuilder
             /**
              * TODO: watch out how it behaves in more use cases
              */
-//             if ($translated === $rule) {
-//                 return $route;
-//             }
+            //             if ($translated === $rule) {
+            //                 return $route;
+            //             }
         }
 
         $redirect = $route->getRedirect();

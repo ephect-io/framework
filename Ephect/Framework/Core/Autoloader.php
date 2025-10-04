@@ -7,7 +7,6 @@ use Exception;
 
 class Autoloader
 {
-
     /**
      * Registers the autoloader class with the PHP SPL autoloader.
      *
@@ -15,7 +14,7 @@ class Autoloader
      */
     public static function register(bool $prepend = false): void
     {
-        spl_autoload_register(array(new self, 'load'), true, $prepend);
+        spl_autoload_register(array(new self(), 'load'), true, $prepend);
     }
 
     public static function load($className): void

@@ -5,11 +5,11 @@ namespace Ephect\Framework\Modules\Composer;
 use Ephect\Framework\Manifest\ManifestEntity;
 use Ephect\Framework\Structure\StructureTrait;
 use Override;
+
 use function siteRoot;
 
 class ComposerConfigEntity extends ManifestEntity
 {
-
     use StructureTrait;
 
     private string $name;

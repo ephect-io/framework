@@ -6,7 +6,6 @@ use function Ephect\Hooks\useState;
 
 class EventDispatcher implements EventDispatcherInterface
 {
-
     private iterable $listeners = [];
 
     /**

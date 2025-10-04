@@ -7,7 +7,6 @@ use Ephect\Modules\WebApp\Builder\Builder;
 
 class Lib extends AbstractCommandLib
 {
-
     public function build(): void
     {
         $application = $this->parent;
@@ -23,4 +22,3 @@ class Lib extends AbstractCommandLib
         $builder->buildAllRoutes();
     }
 }
-

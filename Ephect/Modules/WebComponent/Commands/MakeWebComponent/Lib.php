@@ -12,7 +12,6 @@ use Exception;
 
 class Lib extends AbstractCommandLib
 {
-
     public function createWebcomponentBase(): void
     {
         try {
@@ -21,7 +20,7 @@ class Lib extends AbstractCommandLib
             Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColors::BLUE));
             Console::writeLine(ConsoleColors::getColoredString("Leave the answer blank to pass to the next question or to abort the process.", ConsoleColors::BROWN));
 
-            $builder = new Compiler;
+            $builder = new Compiler();
             [$tagName, $className, $hasBackendProps, $entrypoint, $arguments] = $this->readLine();
 
             $common = new Common();
@@ -46,7 +45,7 @@ class Lib extends AbstractCommandLib
      * @return array
      * @throws Exception
      */
-    function readLine(): array
+    public function readLine(): array
     {
         /**
          * Asking the tag name.

@@ -8,12 +8,10 @@ use Ephect\Framework\Element;
 
 class CommandRunner extends Element
 {
-
     public function __construct(
         private readonly Application                $_application,
         private readonly CommandCollectionInterface $_commands
-    )
-    {
+    ) {
     }
 
     public function run(): int

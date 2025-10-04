@@ -8,7 +8,6 @@ use Ephect\Modules\Forms\Generators\ParserServiceInterface;
 
 abstract class AbstractTokenParser implements TokenParserInterface
 {
-
     protected ?string $html = '';
     protected ?FileComponentInterface $component = null;
     protected string|array|bool|null $result = null;

@@ -86,7 +86,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
                 $subject
             );
 
-//            $this->declareMiddlewares($parent, $motherUID, $fqFuncName, $props, $hasAttrs);
+            //            $this->declareMiddlewares($parent, $motherUID, $fqFuncName, $props, $hasAttrs);
             $decl = ComponentDeclaration::byName($fqFuncName);
             $this->declareMiddlewares($motherUID, $parent, $decl, $fqFuncName, $props);
 
@@ -95,9 +95,9 @@ final class ClosedComponentsParser extends AbstractComponentParser
             /**
              * TODO Make a listener for this feature
              */
-//            $attributesEvent = new ComponentAttributesEvent($this->component, $child);
-//            $dispatcher = new EventDispatcher();
-//            $dispatcher->dispatch($attributesEvent);
+            //            $attributesEvent = new ComponentAttributesEvent($this->component, $child);
+            //            $dispatcher = new EventDispatcher();
+            //            $dispatcher->dispatch($attributesEvent);
         };
 
         if ($child != null) {

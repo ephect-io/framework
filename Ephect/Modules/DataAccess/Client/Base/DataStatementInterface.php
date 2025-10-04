@@ -1,4 +1,5 @@
 <?php
+
 namespace Ephect\Modules\DataAccess\Client\Base;
 
 interface DataStatementInterface
@@ -19,5 +20,3 @@ interface DataStatementInterface
 
     public function getFieldLen(int $i): int;
 }
-
-?>

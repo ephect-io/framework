@@ -1,10 +1,12 @@
 <?php
+
 declare(ticks=1);
 
 namespace Ephect\Framework\CLI\FileSystem;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Utils\File;
+
 use function Ephect\Hooks\useInterval;
 
 class Watcher
@@ -29,7 +31,9 @@ class Watcher
 
         }, 100);
 
-        while (true) usleep(1);
+        while (true) {
+            usleep(1);
+        }
 
     }
 

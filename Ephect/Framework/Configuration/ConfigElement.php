@@ -6,7 +6,6 @@ use Ephect\Framework\Element;
 
 class ConfigElement extends Element
 {
-
     private string $name = '';
     private string $value = '';
     private string $type = '';

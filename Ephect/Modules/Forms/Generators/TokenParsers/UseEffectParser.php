@@ -6,7 +6,6 @@ use Ephect\Modules\Forms\Generators\TypesParserTrait;
 
 final class UseEffectParser extends AbstractTokenParser
 {
-
     use TypesParserTrait;
 
     public function do(null|string|array|object $parameter = null): void

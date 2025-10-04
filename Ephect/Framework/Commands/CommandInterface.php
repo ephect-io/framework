@@ -4,5 +4,5 @@ namespace Ephect\Framework\Commands;
 
 interface CommandInterface
 {
-    function run(): int;
+    public function run(): int;
 }

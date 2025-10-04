@@ -13,7 +13,6 @@ use Throwable;
 
 class BuildByNameStrategy implements BuiderStrategyInterface
 {
-
     public function build(string $route): void
     {
         PluginRegistry::load();

@@ -3,6 +3,7 @@
 namespace Ephect\Framework\Core;
 
 use Ephect\Framework\Registry\StateRegistry;
+
 use function pathinfo;
 
 trait IniLoaderTrait
@@ -13,7 +14,7 @@ trait IniLoaderTrait
             return false;
         }
 
-        $ini = parse_ini_file($path . 'app.ini', TRUE, INI_SCANNER_TYPED);
+        $ini = parse_ini_file($path . 'app.ini', true, INI_SCANNER_TYPED);
         if (isset($ini['application']['name'])) {
             StateRegistry::writeItem('application', 'name', $ini['application']['name']);
         }

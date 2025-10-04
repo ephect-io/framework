@@ -9,7 +9,6 @@ use Ephect\Modules\WebComponent\Middlewares\WebComponentParserMiddleware;
 #[Attribute(Attribute::TARGET_FUNCTION)]
 class WebComponentZeroConf implements AttributeMiddlewareInterface
 {
-
     public function getMiddlewares(): array
     {
         return [

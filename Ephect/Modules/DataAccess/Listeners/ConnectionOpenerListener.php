@@ -7,6 +7,7 @@ use Ephect\Framework\Event\EventListenerInterface;
 use Ephect\Modules\DataAccess\Client\PDO\PdoConnection;
 use Ephect\Modules\DataAccess\Events\ConnectionOpenerEvent;
 use Ephect\Modules\Forms\Events\PageFinishedEvent;
+
 use function Ephect\Hooks\useMemory;
 
 class ConnectionOpenerListener implements EventListenerInterface

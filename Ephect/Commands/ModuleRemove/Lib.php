@@ -47,4 +47,3 @@ class Lib extends AbstractCommandLib
     }
 
 }
-

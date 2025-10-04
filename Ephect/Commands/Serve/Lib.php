@@ -11,7 +11,6 @@ use Ephect\Framework\Utils\File;
 
 class Lib extends AbstractCommandLib
 {
-
     public function Serve(): void
     {
         $egg = new CommonLib($this->parent);
@@ -47,4 +46,3 @@ class Lib extends AbstractCommandLib
         return $port;
     }
 }
-

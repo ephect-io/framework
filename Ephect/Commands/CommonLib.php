@@ -9,7 +9,6 @@ use Ephect\Framework\Utils\File;
 
 class CommonLib extends Element
 {
-
     /**
      * Constructor
      */

@@ -7,17 +7,17 @@ use Ephect\Framework\Tree\TreeInterface;
 
 interface ChildrenInterface extends TreeInterface, ElementInterface
 {
-    function getAttributes(): string;
+    public function getAttributes(): string;
 
-    function getAttribute(string $attribute): string|bool|null;
+    public function getAttribute(string $attribute): string|bool|null;
 
-    function parentProps(): array|object;
+    public function parentProps(): array|object;
 
-    function props(): array|object;
+    public function props(): array|object;
 
-    function getAllProps(): array|object;
+    public function getAllProps(): array|object;
 
-    function render(): void;
+    public function render(): void;
 
-    function getName(): string;
+    public function getName(): string;
 }

@@ -9,9 +9,6 @@ class JsonProperty
 {
     public function __construct(
         private string $name,
-    )
-    {
+    ) {
     }
 }
-
-

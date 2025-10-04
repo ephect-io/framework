@@ -1,32 +1,44 @@
 {
-    "name": "ephect-io/framework",
-    "type": "library",
-    "description": "Effective PHP",
-    "homepage": "https://ephect.io",
-    "license": "GPL-3.0+",
-    "version": "0.7.2",
-    "authors": [{
-        "name": "David Blanchard",
-        "email": "dpjb@hotmail.fr",
-        "homepage": "https://ephect.io",
-        "role": "Creator"
-    }],
-    "autoload": {
-        "psr-4": {
-            "Ephect\\": "Ephect"
-        }
-    },
-    "require": {
-        "php": "^8.2",
-        "ext-iconv": "*",
-        "ext-curl": "*",
-        "ext-zip": "*",
-        "ext-readline": "*",
-        "ext-pdo": "*",
-        "ext-sqlite3": "*",
-        "ext-mysqlnd": "*"
-    },
-    "bin": [
-        "bin/ephect-io_framework_install.sh"
-    ]
+  "name": "ephect-io/framework",
+  "type": "library",
+  "description": "Effective PHP",
+  "homepage": "https://ephect.io",
+  "license": "GPL-3.0+",
+  "version": "0.7.2",
+  "authors": [
+    {
+      "name": "David Blanchard",
+      "email": "dpjb@hotmail.fr",
+      "homepage": "https://ephect.io",
+      "role": "Creator"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Ephect\\": "Ephect"
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "ext-iconv": "*",
+    "ext-curl": "*",
+    "ext-zip": "*",
+    "ext-readline": "*",
+    "ext-pdo": "*",
+    "ext-sqlite3": "*",
+    "ext-mysqlnd": "*",
+    "ext-libxml": "*"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^v3.88.2",
+    "phpunit/phpunit": "^12.4.0",
+    "squizlabs/php_codesniffer": "^4.0.0"
+  },
+  "scripts": {
+    "lint": "vendor/bin/phpcs",
+    "lint:fix": "vendor/bin/php-cs-fixer fix ./Ephect && vendor/bin/php-cs-fixer fix ./Ephect"
+  },
+  "bin": [
+    "bin/ephect-io_framework_install.sh"
+  ]
 }

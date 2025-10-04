@@ -8,7 +8,6 @@ use SQLite3;
 
 class PdoSqliteSchemaInfo extends AbstractPdoSchemaInfo
 {
-
     public function getInfo($index): ?object
     {
         $name = '';

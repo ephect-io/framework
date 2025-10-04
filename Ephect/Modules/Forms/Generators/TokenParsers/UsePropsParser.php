@@ -11,7 +11,6 @@ use JetBrains\PhpStorm\Deprecated;
 #[Deprecated("it does not work", "useEffect", "0.3")]
 final class UsePropsParser extends AbstractTokenParser
 {
-
     use TypesParserTrait;
 
     public function do(null|string|array|object $parameter = null): void

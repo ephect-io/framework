@@ -8,7 +8,6 @@ use Ephect\Modules\DataAccess\Configuration\JsonConfiguration;
 
 class PdoConfiguration extends JsonConfiguration
 {
-
     public function __construct(
         private string $_driver = '',
         private string $_host = '',
@@ -16,8 +15,7 @@ class PdoConfiguration extends JsonConfiguration
         private string $_user = '',
         private string $_password = '',
         private string $_port = '',
-    )
-    {
+    ) {
         parent::__construct($this);
         $this->canConfigure = false;
     }

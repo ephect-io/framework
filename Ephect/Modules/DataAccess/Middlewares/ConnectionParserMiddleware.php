@@ -20,18 +20,18 @@ class ConnectionParserMiddleware implements ComponentParserMiddlewareInterface
         string $props,
         array $arguments
     ): void {
-//        StateRegistry::saveByMotherUid($motherUID, true);
+        //        StateRegistry::saveByMotherUid($motherUID, true);
         useState(["middlewares" => [ConnectionOpenerMiddleware::class => (object)$arguments],]);
         $middleware = new ConnectionOpenerMiddleware();
         $middleware((object) $arguments);
 
         $eventsProvider = useState(get: 'eventsProvider');
         // TODO: Fix event dispatcher issue
-//        Logger::create()->dump('eventsProvider', $eventsProvider);
-//        $connectionEvent = new ConnectionOpenerEvent((object) $arguments);
-//        $dispatcher = new EventDispatcher();
-//        $dispatcher->dispatch($connectionEvent);
+        //        Logger::create()->dump('eventsProvider', $eventsProvider);
+        //        $connectionEvent = new ConnectionOpenerEvent((object) $arguments);
+        //        $dispatcher = new EventDispatcher();
+        //        $dispatcher->dispatch($connectionEvent);
 
-//        StateRegistry::save(true);
+        //        StateRegistry::save(true);
     }
 }

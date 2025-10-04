@@ -13,7 +13,7 @@ class Main extends AbstractCommand
 {
     public function run(): int
     {
-        $egg = new Common;
+        $egg = new Common();
         $egg->createCommonTrees();
         $lib = new Lib($this->application);
         $lib->makeSkeleton();

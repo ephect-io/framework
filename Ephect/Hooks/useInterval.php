@@ -11,13 +11,17 @@ function useInterval($callback, $ms, $max = 0): void
         static $busy = false;
         static $n = 0;
 
-        if ($busy) return;
+        if ($busy) {
+            return;
+        }
 
         $busy = true;
 
         $now = microtime(true);
         while ($now - $last > $seconds) {
-            if ($max && $n == $max) break;
+            if ($max && $n == $max) {
+                break;
+            }
             ++$n;
 
             $last += $seconds;

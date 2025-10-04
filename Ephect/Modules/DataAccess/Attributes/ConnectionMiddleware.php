@@ -9,7 +9,6 @@ use Ephect\Modules\DataAccess\Middlewares\ConnectionParserMiddleware;
 #[Attribute(Attribute::TARGET_FUNCTION)]
 class ConnectionMiddleware implements AttributeMiddlewareInterface
 {
-
     public function __construct(
         protected string $conf
     ) {

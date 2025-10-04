@@ -11,7 +11,6 @@ use function siteRoot;
 
 class ModulesConfigReader extends ManifestReader
 {
-
     /**
      * @throws JsonException
      * @throws ErrorException

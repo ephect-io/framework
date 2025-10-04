@@ -10,7 +10,6 @@ use Ephect\Samples\Common;
 
 class Lib extends AbstractCommandLib
 {
-
     public function makeSkeleton(): void
     {
         Console::writeLine(ConsoleColors::getColoredString("Publishing QuickStart files...", ConsoleColors::BLUE));
@@ -37,4 +36,3 @@ class Lib extends AbstractCommandLib
         }
     }
 }
-

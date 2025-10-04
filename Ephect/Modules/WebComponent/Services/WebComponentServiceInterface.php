@@ -6,7 +6,6 @@ use Ephect\Modules\WebComponent\Manifest\ManifestEntity;
 
 interface WebComponentServiceInterface
 {
-
     public function isPending(): bool;
 
     public function markAsPending(): void;

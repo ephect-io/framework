@@ -22,7 +22,7 @@ class ConstantsMaker
         $isWebApp = $document_root !== '';
         $this->constants['DONT_USE_IS_WEB_APP'] = $isWebApp;
         $this->constants['DONT_USE_IS_PHAR_APP'] = false; //(Phar::running() !== '');
-//        $this->constants['DONT_USE_IS_CLI_APP'] = (Phar::running() === '') && !DONT_USE_IS_WEB_APP;
+        //        $this->constants['DONT_USE_IS_CLI_APP'] = (Phar::running() === '') && !DONT_USE_IS_WEB_APP;
         $this->constants['DONT_USE_IS_CLI_APP'] = !$isWebApp;
         $this->constants['DONT_USE_REL_CONFIG_DIR'] = 'config' . DIRECTORY_SEPARATOR;
         $this->constants['DONT_USE_REL_CONFIG_APP'] = 'app';
@@ -247,4 +247,3 @@ class ConstantsMaker
     }
 
 };
-
