@@ -32,13 +32,14 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     use ElementTrait;
     use ComponentCodeTrait;
 
-    public const INCLUDE_PLACEHOLDER = "include_once \Constants::CACHE_DIR . '%s';";
+    public const INCLUDE_PLACEHOLDER = "";
 
     protected ?ComponentDeclaration $declaration = null;
     protected ?ComponentEntity $entity = null;
 
-    public function __construct(?string $id = null, ?string $motherUID = null)
-    {
+    public function __construct(?string $id = null, ?string $motherUID = null,
+        protected string $buildDirectory = \Constants::CACHE_DIR,
+    ) {
         parent::__construct([]);
 
         $this->id = $id ?: '';
@@ -81,7 +82,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         if (file_exists($this->filename)) {
             $this->code = File::safeRead($this->filename);
         } else {
-            $this->code = File::safeRead(\Constants::CACHE_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
+            $this->code = File::safeRead($this->buildDirectory . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
             if ($this->code === null) {
                 $this->code = File::safeRead(\Constants::COPY_DIR . $this->filename);
             }
@@ -169,7 +170,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
                 throw new Exception('Please the component is defined in the registry before asking for its entity');
             }
         }
-        CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $this->getMotherUID());
+        CodeRegistry::setCacheDirectory($this->buildDirectory . $this->getMotherUID());
 
         $decl = ComponentDeclaration::byName($fqName);
 
@@ -213,7 +214,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     public function analyse(): void
     {
-        $parser = new ParserService();
+        $parser = new ParserService($this->buildDirectory);
         $parser->doUses($this);
         $parser->doUsesAs($this);
         $parser->doAttributes($this);
@@ -242,8 +243,9 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             $this->motherUID,
             $cacheFilename,
             $fqFunctionName,
+            $this->buildDirectory,
             $functionArgs,
-            $request
+            $request,
         );
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
             File::safeWrite(\Constants::STATIC_DIR . $this->filename, $html);
@@ -279,7 +281,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     public function parse(): void
     {
-        ApplicationRecursiveParser::parse($this);
+        ApplicationRecursiveParser::parse($this, $this->buildDirectory);
     }
 
     public function getSourceFilename(): string
@@ -315,13 +317,13 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         if ($component === null) {
             $component = $this;
             $motherUID = $component->getUID();
-            if (!file_exists(\Constants::CACHE_DIR . $motherUID)) {
-                mkdir(\Constants::CACHE_DIR . $motherUID, 0775);
+            if (!file_exists($this->buildDirectory . $motherUID)) {
+                mkdir($this->buildDirectory . $motherUID, 0775);
 
                 $flatFilename = CodeRegistry::getFlatFilename() . '.json';
                 copy(
-                    \Constants::CACHE_DIR . $flatFilename,
-                    \Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $flatFilename
+                    $this->buildDirectory . $flatFilename,
+                    $this->buildDirectory . $motherUID . DIRECTORY_SEPARATOR . $flatFilename
                 );
             }
         }
@@ -331,7 +333,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     protected function cacheHtml(): ?string
     {
-        return $this->cacheFile(\Constants::CACHE_DIR);
+        return $this->cacheFile($this->buildDirectory);
     }
 
     private function cacheFile($cacheDir): ?string

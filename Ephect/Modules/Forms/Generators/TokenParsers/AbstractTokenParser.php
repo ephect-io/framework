@@ -9,18 +9,23 @@ use Ephect\Modules\Forms\Generators\ParserServiceInterface;
 abstract class AbstractTokenParser implements TokenParserInterface
 {
     protected ?string $html = '';
-    protected ?FileComponentInterface $component = null;
     protected string|array|bool|null $result = null;
     protected array $funcVariables = [];
     protected array $useVariables = [];
     protected array $useTypes = [];
-    protected ?ParserServiceInterface $parent = null;
 
-    public function __construct(FileComponentInterface $comp, ?ParserServiceInterface $parent = null)
-    {
+    public function __construct(
+        protected ?FileComponentInterface $component,
+        protected string $buildDirectory,
+        protected ?ParserServiceInterface $parent = null,
+    ) {
         $this->parent = $parent;
-        $this->component = $comp;
-        $this->html = $comp->getCode();
+        $this->html = $this->component->getCode();
+    }
+
+    public function getBuildDirectory(): string
+    {
+        return $this->buildDirectory;
     }
 
     public function getHtml(): string
@@ -55,7 +60,7 @@ abstract class AbstractTokenParser implements TokenParserInterface
 
     public function doUncache(): bool
     {
-        CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $this->component->getMotherUID());
+        CodeRegistry::setCacheDirectory($this->buildDirectory . $this->component->getMotherUID());
         return CodeRegistry::load();
     }
 

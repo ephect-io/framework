@@ -14,15 +14,19 @@ use Ephect\Modules\Forms\Generators\TokenParsers\AbstractComponentParser;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
+use function Ephect\Hooks\useMemory;
+
 class ComponentAttributesEvent extends Event
 {
     private ?ComponentDeclaration $declaration = null;
+    private string $buildDirectory;
 
     public function __construct(
         private readonly ComponentInterface $parent,
         private readonly ComponentEntityInterface $entity,
     ) {
         CodeRegistry::load();
+        [$this->buildDirectory] = useMemory(get: 'buildDirectory');
     }
 
     public function getEntity(): ComponentEntityInterface
@@ -43,7 +47,7 @@ class ComponentAttributesEvent extends Event
     public function getCacheFilename(): string
     {
         $filename = $this->parent->getSourceFilename();
-        return \Constants::CACHE_DIR . $this->parent->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
+        return $this->buildDirectory . $this->parent->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
     }
 
     public function getParent(): ?ElementInterface

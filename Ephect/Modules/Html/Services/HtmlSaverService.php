@@ -6,10 +6,16 @@ use DateTime;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ChildrenInterface;
 
+use function Ephect\Hooks\useMemory;
+
 class HtmlSaverService implements HtmlSaverServiceInterface
 {
-    public function __construct(private readonly ChildrenInterface $children)
-    {
+    public function __construct(
+        private readonly ChildrenInterface $children,
+        private string $buildDirectory,
+    ) {
+        [$this->buildDirectory] = useMemory(get: 'buildDirectory');
+
     }
 
     public function canRender(): bool
@@ -21,14 +27,15 @@ class HtmlSaverService implements HtmlSaverServiceInterface
 
     public function isPending(): bool
     {
-        return file_exists(\Constants::CACHE_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION);
+
+        return file_exists($this->buildDirectory . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION);
     }
 
     public function markAsPending(): void
     {
         $date = new DateTime();
         $timestamp = $date->getTimestamp();
-        $pendingTxt = \Constants::CACHE_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION;
+        $pendingTxt = $this->buildDirectory . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION;
         File::safeWrite($pendingTxt, "const time = $timestamp");
     }
 

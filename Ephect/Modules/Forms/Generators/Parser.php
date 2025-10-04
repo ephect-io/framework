@@ -10,7 +10,7 @@ class Parser implements ParserInterface
     protected ?string $html = '';
     protected ?ComponentInterface $component = null;
 
-    public function __construct(string|ComponentInterface $comp)
+    public function __construct(string|ComponentInterface $comp, protected string $buildDirectory = \Constants::CACHE_DIR)
     {
         if (is_string($comp)) {
             $this->component = null;
@@ -24,7 +24,7 @@ class Parser implements ParserInterface
 
     public function doUncache(): bool
     {
-        CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $this->component->getMotherUID());
+        CodeRegistry::setCacheDirectory($this->buildDirectory . $this->component->getMotherUID());
         return CodeRegistry::load();
     }
 
@@ -76,4 +76,8 @@ class Parser implements ParserInterface
         return $result;
     }
 
+    public function getBuildDirectory(): string
+    {
+        return $this->buildDirectory;
+    }
 }

@@ -13,4 +13,6 @@ interface ParserInterface
     public function doUncache(): bool;
 
     public function doArguments(string $componentArgs): ?array;
+
+    public function getBuildDirectory(): string;
 }

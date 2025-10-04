@@ -9,6 +9,8 @@ use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Plugins\Authentication\AuthenticationService;
 use Throwable;
 
+use function Ephect\Hooks\useMemory;
+
 abstract class AbstractApplication extends Element
 {
     use IniLoaderTrait;
@@ -35,6 +37,7 @@ abstract class AbstractApplication extends Element
     public function __construct()
     {
         parent::__construct();
+        useMemory(['buildDirectory' => \Constants::CACHE_DIR]);
     }
 
     public static function getExecutionMode(): string

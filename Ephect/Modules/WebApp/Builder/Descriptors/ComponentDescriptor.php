@@ -13,6 +13,10 @@ use Ephect\Modules\WebApp\Registry\PageRegistry;
 
 class ComponentDescriptor implements DescriptorInterface
 {
+    public function __construct(protected string $buildDirectory)
+    {
+    }
+
     public function describe(string $sourceDir, string $filename): array
     {
         $relativeFile =
@@ -23,7 +27,7 @@ class ComponentDescriptor implements DescriptorInterface
         $comp = new Component();
         $comp->load($relativeFile);
 
-        $parser = new ParserService();
+        $parser = new ParserService($this->buildDirectory);
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();

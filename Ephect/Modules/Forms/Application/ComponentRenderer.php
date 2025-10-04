@@ -8,6 +8,8 @@ use Ephect\Modules\Http\Transport\Request;
 use ReflectionFunction;
 use stdClass;
 
+use function Ephect\Hooks\useMemory;
+
 class ComponentRenderer
 {
     /**
@@ -17,11 +19,13 @@ class ComponentRenderer
         string $motherUID,
         string $cacheFilename,
         string $fqFunctionName,
+        string $buildDirectory,
         array|object|null $functionArgs = null,
-        ?Request $request = null
+        ?Request $request = null,
     ): string {
         $props = new stdClass();
-        include_once \Constants::CACHE_DIR . $cacheFilename;
+
+        include_once $buildDirectory . $cacheFilename;
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();

@@ -23,6 +23,10 @@ use ReflectionClass;
 
 class UniqueComponentDescriptor implements DescriptorInterface
 {
+    public function __construct(protected string $buildDirectory)
+    {
+    }
+
     /**
      * @param string $sourceDir
      * @param string $filename
@@ -67,9 +71,9 @@ class UniqueComponentDescriptor implements DescriptorInterface
         $comp = new Component();
         $comp->load($sourceDir . $filename);
 
-        $fullCopyFilename = str_replace(\Constants::UNIQUE_DIR, \Constants::COPY_DIR, $fullFilename);
+//        $fullCopyFilename = str_replace(\Constants::UNIQUE_DIR, \Constants::COPY_DIR, $fullFilename);
 
-        $parser = new ParserService();
+        $parser = new ParserService($this->buildDirectory);
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();

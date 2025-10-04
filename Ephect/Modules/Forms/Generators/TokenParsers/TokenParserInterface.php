@@ -10,5 +10,7 @@ interface TokenParserInterface extends ParserServiceInterface
 
     public function doUncache(): bool;
 
+    public function getBuildDirectory(): string;
+
     public function do(null|string|array|object $parameter = null): void;
 }

@@ -49,91 +49,91 @@ final class InlineCodeParser extends AbstractTokenParser
 
     public function doIf(string $html): string
     {
-        $parser = new IfParser($this->component);
+        $parser = new IfParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doElseIf(string $html): string
     {
-        $parser = new ElseIfParser($this->component);
+        $parser = new ElseIfParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doElse(string $html): string
     {
-        $parser = new ElseParser($this->component);
+        $parser = new ElseParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doForeach(string $html): string
     {
-        $parser = new ForeachParser($this->component);
+        $parser = new ForeachParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doFor(string $html): string
     {
-        $parser = new ForParser($this->component);
+        $parser = new ForParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doWhile(string $html): string
     {
-        $parser = new WhileParser($this->component);
+        $parser = new WhileParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doDo(string $html): string
     {
-        $parser = new DoParser($this->component);
+        $parser = new DoParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doDoWhile(string $html): string
     {
-        $parser = new DoWhileParser($this->component);
+        $parser = new DoWhileParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doBreaker(string $html): string
     {
-        $parser = new BreakerParser($this->component);
+        $parser = new BreakerParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doEnd(string $html): string
     {
-        $parser = new EndParser($this->component);
+        $parser = new EndParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doOperation(string $html): string
     {
-        $parser = new OperationParser($this->component);
+        $parser = new OperationParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doPhpTags(string $html): string
     {
-        $parser = new PhpTagsParser($this->component);
+        $parser = new PhpTagsParser($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }
 
     public function doEchoes(string $html): string
     {
-        $parser = new EchoParser($this->component);
+        $parser = new EchoParser($this->component, $this->buildDirectory);
         $parser->do([
             "html" => $html,
             "useVariables" => $this->useVariables,
@@ -145,7 +145,7 @@ final class InlineCodeParser extends AbstractTokenParser
 
     public function doValues(string $html): string
     {
-        $parser = new ValuesParser($this->component);
+        $parser = new ValuesParser($this->component, $this->buildDirectory);
         $parser->do([
             "html" => $html,
             "useVariables" => $this->useVariables,
@@ -157,7 +157,7 @@ final class InlineCodeParser extends AbstractTokenParser
 
     public function doVariables(): void
     {
-        $parser = new VariablesParser($this->component);
+        $parser = new VariablesParser($this->component, $this->buildDirectory);
         $parser->do([
             "useVariables" => $this->useVariables,
         ]);
@@ -168,7 +168,7 @@ final class InlineCodeParser extends AbstractTokenParser
 
     public function doPhpCleaner(string $html): string
     {
-        $parser = new PhpTagsCleaner($this->component);
+        $parser = new PhpTagsCleaner($this->component, $this->buildDirectory);
         $parser->do($html);
         return $parser->getResult();
     }

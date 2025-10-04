@@ -11,22 +11,22 @@ class ApplicationRecursiveParser extends AbstractApplicationParser
 {
     use ComponentCodeTrait;
 
-    public static function parse(FileComponentInterface $component): void
+    public static function parse(FileComponentInterface $component, string $buildDirectory): void
     {
         $parser = new self();
-        $parser->__parse($component);
+        $parser->__parse($component, $buildDirectory);
     }
 
     /**
      * @param FileComponentInterface $component
      * @return void
      */
-    protected function __parse(FileComponentInterface $component): void
+    protected function __parse(FileComponentInterface $component, string $buildDirectory): void
     {
-        CodeRegistry::setCacheDirectory(\Constants::CACHE_DIR . $component->getMotherUID());
+        CodeRegistry::setCacheDirectory($buildDirectory . $component->getMotherUID());
         CodeRegistry::load();
 
-        $parser = new ParserService();
+        $parser = new ParserService($buildDirectory);
 
         $parser->doAttributes($component);
 
@@ -63,7 +63,7 @@ class ApplicationRecursiveParser extends AbstractApplicationParser
 
         $filename = $component->getSourceFilename();
         File::safeWrite(
-            \Constants::CACHE_DIR . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
+            $buildDirectory . $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
             $component->getCode()
         );
         $this->updateComponent($component);

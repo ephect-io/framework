@@ -20,6 +20,7 @@ use Ephect\Modules\WebApp\Builder\Registerer\PageRegisterer;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByNameStrategy;
 use Ephect\Modules\WebApp\Builder\Strategy\BuildByRouteStrategy;
 use Exception;
+use function Ephect\Hooks\useMemory;
 
 class Builder
 {
@@ -44,17 +45,23 @@ class Builder
             File::safeMkDir(\Constants::STATIC_DIR);
             File::safeMkDir(\Constants::STORE_DIR);
 
+
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies
 
-            //            UniqueCodeRegistry::load();
-            //            $descriptor = new UniqueComponentListDescriptor();
-            //            $descriptor->describe();
-            //            UniqueCodeRegistry::save();
+//            useMemory(['buildDirectory' => \Constants::UNIQUE_DIR]);
+//
+//            UniqueCodeRegistry::load();
+//            $descriptor = new UniqueComponentListDescriptor(\Constants::UNIQUE_DIR);
+//            $descriptor->describe();
+//            UniqueCodeRegistry::save();
 
             CodeRegistry::load();
 
-            $descriptor = new ComponentListDescriptor();
+            useMemory(['buildDirectory' => \Constants::CACHE_DIR]);
+
+
+            $descriptor = new ComponentListDescriptor(\Constants::CACHE_DIR);
             $components = $descriptor->describe();
             $this->list = [...$this->list, ...$components];
 

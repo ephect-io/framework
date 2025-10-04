@@ -10,11 +10,15 @@ use function siteSrcPath;
 
 class ComponentListDescriptor implements ComponentListDescriptorInterface
 {
+     public function __construct(protected string $buildDirectory)
+     {
+     }
+
     public function describe(string $templateDir = ''): array
     {
         $result = [];
 
-        $descriptor = new ComponentDescriptor();
+        $descriptor = new ComponentDescriptor($this->buildDirectory);
 
         $bootstrapList = File::walkTreeFiltered(\Constants::SRC_ROOT, ['phtml'], true);
         foreach ($bootstrapList as $key => $compFile) {

@@ -5,6 +5,8 @@ namespace Ephect\Modules\Routing\Registry;
 use Ephect\Framework\Registry\AbstractStaticRegistry;
 use Ephect\Framework\Registry\RegistryInterface;
 
+use function Ephect\Hooks\useMemory;
+
 class RouteRegistry extends AbstractStaticRegistry
 {
     private static ?RouteRegistry $instance = null;
@@ -52,11 +54,13 @@ class RouteRegistry extends AbstractStaticRegistry
 
     public static function getMovedPhpFilename(): string
     {
-        return \Constants::CACHE_DIR . 'routes.php';
+        [$buildDirectory] = useMemory(get: 'buildDirectory');
+        return $buildDirectory . 'routes.php';
     }
 
     public static function getMovedFilename(): string
     {
-        return \Constants::CACHE_DIR . 'routes.json';
+        [$buildDirectory] = useMemory(get: 'buildDirectory');
+        return $buildDirectory . 'routes.json';
     }
 }

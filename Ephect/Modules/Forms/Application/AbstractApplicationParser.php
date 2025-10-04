@@ -14,7 +14,7 @@ abstract class AbstractApplicationParser
     /**
      * @return void
      */
-    abstract protected function __parse(FileComponentInterface $component): void;
+    abstract protected function __parse(FileComponentInterface $component, string $buildDirectory): void;
 
     public function updateComponent(FileComponentInterface $component): string
     {

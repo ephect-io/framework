@@ -31,6 +31,12 @@ php_errors.log
 # Trash files 
 .DS_Store
 
+# CodeSniffer
+phpcs.xml.dist
+phpcs.xml
+.php-cs-fixer.cache
+
+
 # Ephect cache
 cache
 runtime

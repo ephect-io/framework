@@ -24,6 +24,8 @@ use Ephect\Modules\Forms\Generators\TokenParsers\UsesParser;
 use Ephect\Modules\Forms\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Modules\Forms\Generators\TokenParsers\View\InlineCodeParser;
 
+use function Ephect\Hooks\useMemory;
+
 class ParserService implements ParserServiceInterface
 {
     protected ?object $component = null;
@@ -37,6 +39,10 @@ class ParserService implements ParserServiceInterface
     protected array $openComponentList = [];
     protected string|array|bool|null $result = null;
 
+    public function __construct(protected string $buildDirectory = \Constants::CACHE_DIR)
+    {
+    }
+
     public function getChildren(): ?object
     {
         return $this->children;
@@ -44,7 +50,7 @@ class ParserService implements ParserServiceInterface
 
     public function doChildSlots(FileComponentInterface $component): void
     {
-        $p = new ChildSlotsParser($component);
+        $p = new ChildSlotsParser($component, $this->buildDirectory);
         $p->do();
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
@@ -71,35 +77,35 @@ class ParserService implements ParserServiceInterface
     }
     public function doUses(FileComponentInterface $component): void
     {
-        $p = new UsesParser($component);
+        $p = new UsesParser($component, $this->buildDirectory);
         $p->do();
         $this->useTypes = array_merge($this->useTypes, $p->getUses());
     }
 
     public function doUsesAs(FileComponentInterface $component): void
     {
-        $p = new UsesAsParser($component);
+        $p = new UsesAsParser($component, $this->buildDirectory);
         $p->do();
         $this->useTypes = array_merge($this->useTypes, $p->getUses());
     }
 
     public function doReturnType(FileComponentInterface $component): void
     {
-        $p = new ReturnTypeParser($component);
+        $p = new ReturnTypeParser($component, $this->buildDirectory);
         $p->do();
         $this->html = $p->getHtml();
     }
 
     public function doAttributes(FileComponentInterface $component): void
     {
-        $p = new AttributesParser($component);
+        $p = new AttributesParser($component, $this->buildDirectory);
         $p->do();
         $this->attributes = $p->getResult();
     }
 
     public function doHeredoc(FileComponentInterface $component): void
     {
-        $p = new HeredocParser($component);
+        $p = new HeredocParser($component, $this->buildDirectory);
         $p->do();
         $this->html = $p->getHtml();
     }
@@ -109,7 +115,7 @@ class ParserService implements ParserServiceInterface
         $this->doHtml($component);
         $text = $this->result;
 
-        $p = new InlineCodeParser($component);
+        $p = new InlineCodeParser($component, $this->buildDirectory);
         $p->do([
             "html" => $text,
             "useVariables" => $this->useVariables,
@@ -124,7 +130,7 @@ class ParserService implements ParserServiceInterface
 
     public function doHtml(FileComponentInterface $component): void
     {
-        $p = new HtmlParser($component);
+        $p = new HtmlParser($component, $this->buildDirectory);
         $p->do();
         $this->result = $p->getResult();
     }
@@ -141,14 +147,14 @@ class ParserService implements ParserServiceInterface
 
     public function doChildrenDeclaration(FileComponentInterface $component): void
     {
-        $p = new ChildrenDeclarationParser($component);
+        $p = new ChildrenDeclarationParser($component, $this->buildDirectory);
         $p->do();
         $this->children = (object)$p->getResult();
     }
 
     public function doArrays(FileComponentInterface $component): void
     {
-        $p = new ArraysParser($component);
+        $p = new ArraysParser($component, $this->buildDirectory);
         $p->do($this->useVariables);
         $this->useVariables = $p->getUseVariables();
         $this->html = $p->getHtml();
@@ -156,14 +162,14 @@ class ParserService implements ParserServiceInterface
 
     public function doUseEffect(FileComponentInterface $component): void
     {
-        $p = new UseEffectParser($component);
+        $p = new UseEffectParser($component, $this->buildDirectory);
         $p->do();
         $this->html = $p->getHtml();
     }
 
     public function doUseVariables(FileComponentInterface $component): void
     {
-        $p = new UseVariablesParser($component);
+        $p = new UseVariablesParser($component, $this->buildDirectory);
         $p->do($this->useVariables);
         $this->useVariables = $p->getUseVariables();
         $this->html = $p->getHtml();
@@ -171,28 +177,28 @@ class ParserService implements ParserServiceInterface
 
     public function doModuleComponent(FileComponentInterface $component): void
     {
-        $p = new ModuleComponentParser($component);
+        $p = new ModuleComponentParser($component, $this->buildDirectory);
         $p->do($this->useVariables);
         $this->useVariables = $p->getUseVariables();
     }
 
     public function doNamespace(FileComponentInterface $component): void
     {
-        $p = new NamespaceParser($component);
+        $p = new NamespaceParser($component, $this->buildDirectory);
         $p->do($component->getMotherUID());
         $this->html = $p->getHtml();
     }
 
     public function doFragments(FileComponentInterface $component): void
     {
-        $p = new FragmentsParser($component);
+        $p = new FragmentsParser($component, $this->buildDirectory);
         $p->do();
         $this->html = $p->getHtml();
     }
 
     public function doClosedComponents(FileComponentInterface $component): void
     {
-        $p = new ClosedComponentsParser($component);
+        $p = new ClosedComponentsParser($component, $this->buildDirectory);
         $p->do();
         $this->componentList = $p->getResult();
         $this->html = $p->getHtml();
@@ -200,7 +206,7 @@ class ParserService implements ParserServiceInterface
 
     public function doOpenComponents(FileComponentInterface $component): void
     {
-        $p = new OpenComponentsParser($component);
+        $p = new OpenComponentsParser($component, $this->buildDirectory);
         $p->do($this->useVariables);
         $this->openComponentList = $p->getResult();
         $this->html = $p->getHtml();
@@ -208,7 +214,7 @@ class ParserService implements ParserServiceInterface
 
     public function doEmptyComponents(FileComponentInterface $component): void
     {
-        $p = new EmptyComponentsParser($component);
+        $p = new EmptyComponentsParser($component, $this->buildDirectory);
         $p->do();
         $this->html = $p->getHtml();
         $this->result = $p->getResult();
@@ -224,7 +230,8 @@ class ParserService implements ParserServiceInterface
         foreach ($componentList as $componentName) {
             [$fqFunctionName, $cacheFilename] = $component->renderComponent($motherUID, $componentName);
 
-            $include = str_replace('%s', $cacheFilename, ApplicationComponent::INCLUDE_PLACEHOLDER);
+            $includePlaceholder = "include_once '$this->buildDirectory' . '%s';";
+            $include = str_replace('%s', $cacheFilename, $includePlaceholder);
 
             $re = '/(namespace +[\w\\\\]+;)/m';
             preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);

@@ -6,11 +6,15 @@ use Ephect\Framework\Utils\File;
 
 class UniqueComponentListDescriptor implements ComponentListDescriptorInterface
 {
+    public function __construct(protected string $buildDirectory)
+    {
+    }
+
     public function describe(string $templateDir = ''): array
     {
         $result = [];
 
-        $descriptor = new UniqueComponentDescriptor();
+        $descriptor = new UniqueComponentDescriptor($this->buildDirectory);
 
         $bootstrapList = File::walkTreeFiltered(\Constants::UNIQUE_DIR, ['php'], true);
         foreach ($bootstrapList as $key => $compFile) {

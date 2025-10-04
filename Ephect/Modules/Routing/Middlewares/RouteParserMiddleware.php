@@ -13,6 +13,8 @@ use Ephect\Modules\Routing\Entities\RouteEntity;
 use Ephect\Modules\Routing\Registry\RouteRegistry;
 use Exception;
 
+use function Ephect\Hooks\useMemory;
+
 class RouteParserMiddleware implements ComponentParserMiddlewareInterface
 {
     public function parse(
@@ -27,9 +29,10 @@ class RouteParserMiddleware implements ComponentParserMiddlewareInterface
         }
 
         $filename = $motherUID . DIRECTORY_SEPARATOR . ComponentRegistry::read($funcName);
+        [$buildDirectory] = useMemory(get: 'buildDirectory');
 
         $route = new RouteEntity(new RouteStructure($parent->props()));
-        $middlewareHtml = "function() {\n\tinclude_once \\Constants::CACHE_DIR . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
+        $middlewareHtml = "function() {\n\tinclude_once $buildDirectory . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
 
         $decl = ComponentDeclaration::byName($funcName);
         $attrs = $decl->getAttributes();

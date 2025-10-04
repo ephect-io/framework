@@ -9,7 +9,7 @@ trait ComponentParserMiddlewareAggregatorTrait
 {
     use AggregatorTrait;
 
-    protected function aggregateComponentParserMiddlewares()
+    protected function aggregateComponentParserMiddlewares(): void
     {
         $middlewaresList = $this->list;
         $existingMiddlewaresList = [];
