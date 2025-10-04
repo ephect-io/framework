@@ -2,6 +2,7 @@
 
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
@@ -15,6 +16,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
     public function do(null|string|array|object $parameter = null): void
     {
         $this->result = [];
+        $this->useTypes = $this->parent ? $this->parent->getUses() : [];
 
         $comp = $this->component;
         $decl = $comp->getDeclaration();
@@ -75,18 +77,19 @@ final class ClosedComponentsParser extends AbstractComponentParser
                 $props = "(object) " . $propsArgs ?? "[]";
             }
 
+            Logger::create()->debug($this->useTypes);
+
             $fqFuncName = ComponentRegistry::read($componentName);
-            $componentRender = "\t\t\t<?php \$fn = \\{$fqFuncName}($props); \$fn(); ?>\n";
+            $componentRender = "\t\t\t<?php \$fn = {$componentName}($props); \$fn(); ?>\n";
 
             $subject = str_replace($component, $componentRender, $subject);
 
             $filename = $this->component->getSourceFilename();
             File::safeWrite(
-                \Constants::CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
+                \Constants::BUILD_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
                 $subject
             );
 
-            //            $this->declareMiddlewares($parent, $motherUID, $fqFuncName, $props, $hasAttrs);
             $decl = ComponentDeclaration::byName($fqFuncName);
             $this->declareMiddlewares($motherUID, $parent, $decl, $fqFuncName, $props);
 

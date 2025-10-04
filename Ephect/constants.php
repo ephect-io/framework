@@ -267,6 +267,8 @@ class Constants
     public const RUNTIME_DIR = DONT_USE_SITE_ROOT . self::REL_RUNTIME_DIR;
     public const REL_CACHE_DIR = 'cache' . DIRECTORY_SEPARATOR;
     public const CACHE_DIR = DONT_USE_SITE_ROOT . self::REL_CACHE_DIR;
+    public const REL_BUILD_DIR = 'build' . DIRECTORY_SEPARATOR;
+    public const BUILD_DIR = self::CACHE_DIR . self::REL_BUILD_DIR;
     public const REL_STATIC_DIR = 'static' . DIRECTORY_SEPARATOR;
     public const STATIC_DIR = self::CACHE_DIR . self::REL_STATIC_DIR;
     public const REL_STORE_DIR = 'store' . DIRECTORY_SEPARATOR;

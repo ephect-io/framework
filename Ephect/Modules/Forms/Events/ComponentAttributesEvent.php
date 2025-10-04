@@ -43,7 +43,7 @@ class ComponentAttributesEvent extends Event
     public function getCacheFilename(): string
     {
         $filename = $this->parent->getSourceFilename();
-        return \Constants::CACHE_DIR . $this->parent->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
+        return \Constants::BUILD_DIR . $this->parent->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
     }
 
     public function getParent(): ?ElementInterface

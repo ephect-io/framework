@@ -12,9 +12,11 @@ abstract class AbstractRegistry implements RegistryInterface
 
     protected array $entries = [];
     protected bool $isLoaded = false;
-    protected string $baseDirectory = \Constants::CACHE_DIR;
+    protected string $baseDirectory = \Constants::BUILD_DIR;
     protected string $cacheFilename = '';
     protected string $flatFilename = '';
+
+    protected string $buildDirectory = \Constants::BUILD_DIR;
 
     public function __write(string $key, $value): void
     {

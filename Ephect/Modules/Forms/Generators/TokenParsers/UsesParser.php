@@ -9,19 +9,18 @@ final class UsesParser extends AbstractTokenParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
-        $re = '/use[ ]+([\w\\\\ ]*)\\\\([\w]*)([ ]*)?;/m';
+        $re = '/use\s+(function\s+)?([\w\\\\]+)\\\\(\w+)\s*?;/m';
 
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-            $componentNamespace = trim($match[1], '\\');
-            $componentFunction = $match[2];
+            $componentNamespace = trim($match[2], '\\');
+            $componentFunction = $match[3];
 
             $fqFunction = $componentNamespace . '\\' . $componentFunction;
             $this->useTypes[] = $fqFunction;
 
-            $frameworkUse = FrameworkRegistry::read($fqFunction);
-            if ($frameworkUse !== null) {
+            if (FrameworkRegistry::read($fqFunction) !== null) {
                 continue;
             }
 

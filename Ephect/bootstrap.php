@@ -5,6 +5,7 @@ use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Plugins\PluginInstaller;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\HooksRegistry;
+use Ephect\Framework\Registry\StateRegistry;
 
 //define('DIRECTORY_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
 define('FRAMEWORK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Framework' . DIRECTORY_SEPARATOR);
@@ -38,3 +39,43 @@ Autoloader::register();
 
 ModuleInstaller::loadBootstraps();
 PluginInstaller::loadBootstraps();
+
+function import(array|string $components, string $from): array
+{
+    if (is_string($components)) {
+        $components = [$components];
+    }
+
+    StateRegistry::load();
+    $knownImports = StateRegistry::read("imports");
+
+
+    $imports = array_map(function ($component) use ($from) {
+        return "use {$from}\\{$component};";
+    }, $components);
+
+    if (is_array($knownImports)) {
+        $imports = [...$knownImports, ...$imports];
+    }   
+
+    StateRegistry::write("imports", $imports);
+    
+    StateRegistry::save();
+
+    return $imports;
+}
+
+
+function realImport(string $from,  array|string $components, string $parentFunction, string $motherUID): void
+{
+    if (is_string($components)) {
+        $components = [$components];
+    }
+
+    $imports = array_map(function ($component) use ($from) {
+        return "use {$from}\\{$component};";
+    }, $components);
+
+    StateRegistry::write("imports.{$parentFunction}", $imports);
+    StateRegistry::saveByMotherUid($motherUID);
+}

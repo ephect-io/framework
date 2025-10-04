@@ -41,8 +41,8 @@ class Builder
         if (!ComponentRegistry::load()) {
             File::safeMkDir(\Constants::CACHE_DIR);
             File::safeMkDir(\Constants::COPY_DIR);
+            File::safeMkDir(\Constants::BUILD_DIR);
             File::safeMkDir(\Constants::STATIC_DIR);
-            File::safeMkDir(\Constants::STORE_DIR);
 
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies
@@ -87,9 +87,9 @@ class Builder
             $plugins = $descriptor->describe();
             $this->list = [...$this->list, ...$plugins];
 
-            //            CodeRegistry::save();
-            //            PluginRegistry::save();
-            //            ComponentRegistry::save();
+            CodeRegistry::save();
+            PluginRegistry::save();
+            ComponentRegistry::save();
         }
     }
 

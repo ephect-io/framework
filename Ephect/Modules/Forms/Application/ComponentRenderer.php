@@ -21,7 +21,7 @@ class ComponentRenderer
         ?Request $request = null
     ): string {
         $props = new stdClass();
-        include_once \Constants::CACHE_DIR . $cacheFilename;
+        include_once \Constants::BUILD_DIR . $cacheFilename;
 
         $funcReflection = new ReflectionFunction($fqFunctionName);
         $funcParams = $funcReflection->getParameters();
