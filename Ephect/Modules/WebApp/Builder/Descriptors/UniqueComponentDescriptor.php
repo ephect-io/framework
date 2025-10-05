@@ -73,16 +73,16 @@ class UniqueComponentDescriptor implements DescriptorInterface
 
 //        $fullCopyFilename = str_replace(\Constants::UNIQUE_DIR, \Constants::COPY_DIR, $fullFilename);
 
-        $parser = new ParserService($this->buildDirectory);
-        $parser->doEmptyComponents($comp);
-        if ($parser->getResult() === true) {
-            $html = $parser->getHtml();
-            File::safeWrite(\Constants::COPY_DIR . $filename, $html);
-            $comp->load(\Constants::COPY_DIR . $filename);
-        }
+//        $parser = new ParserService($this->buildDirectory);
+//        $parser->doEmptyComponents($comp);
+//        if ($parser->getResult() === true) {
+//            $html = $parser->getHtml();
+//            File::safeWrite(\Constants::COPY_DIR . $filename, $html);
+//            $comp->load(\Constants::COPY_DIR . $filename);
+//        }
 
-        $comp->analyse();
-
+//        $comp->analyse();
+//
         $uid = $comp->getUID();
         $parser = new ComponentParser($comp);
         $struct = $parser->doDeclaration($uid);
@@ -96,20 +96,20 @@ class UniqueComponentDescriptor implements DescriptorInterface
             'arguments' => $arguments,
             'attributes' => $attributes,
             'returnType' => $refReturnType->getName(),
-            'composition' => $decl['composition'],
+            'composition' => null, //$decl['composition'],
         ];
 
         //TODO: register middlewares if any
-        $this->registerMiddlewares($uid, $declaration);
+//        $this->registerMiddlewares($uid, $declaration);
 
         //TODO: register events if any
 
         UniqueCodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
-        ComponentRegistry::write($filename, $uid);
+        ComponentRegistry::write($filename, $comp->getUID());
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
 
-        $entity = ComponentEntity::buildFromArray($struct->composition);
-        $comp->add($entity);
+//        $entity = ComponentEntity::buildFromArray($struct->composition);
+//        $comp->add($entity);
 
         return [$comp->getFullyQualifiedFunction(), $comp];
     }

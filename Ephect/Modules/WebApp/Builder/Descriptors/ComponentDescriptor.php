@@ -4,6 +4,7 @@ namespace Ephect\Modules\WebApp\Builder\Descriptors;
 
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\Component;
+use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -36,9 +37,10 @@ class ComponentDescriptor implements DescriptorInterface
         }
 
         $comp->analyse();
+        $fqFunction = $comp->getFullyQualifiedFunction();
 
         $uid = $comp->getUID();
-        $pageFile = PageRegistry::read($comp->getFullyQualifiedFunction());
+        $pageFile = PageRegistry::read($fqFunction);
         $pageUid = $pageFile !== null ? PageRegistry::read($pageFile) : null;
         if ($pageUid !== null) {
             $uid = $pageUid;
@@ -46,6 +48,9 @@ class ComponentDescriptor implements DescriptorInterface
 
         $parser = new ComponentParser($comp);
         $struct = $parser->doDeclaration($uid);
+        $decl = new ComponentDeclaration($struct);
+        $parser->registerMiddlewares($fqFunction, $decl);
+
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);

@@ -32,7 +32,7 @@ class RouteParserMiddleware implements ComponentParserMiddlewareInterface
         [$buildDirectory] = useMemory(get: 'buildDirectory');
 
         $route = new RouteEntity(new RouteStructure($parent->props()));
-        $middlewareHtml = "function() {\n\tinclude_once $buildDirectory . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
+        $middlewareHtml = "function() {\n\tinclude_once '$buildDirectory' . '$filename';\n\t\$fn = \\{$funcName}($props); \$fn();\n}\n";
 
         $decl = ComponentDeclaration::byName($funcName);
         $attrs = $decl->getAttributes();

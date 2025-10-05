@@ -4,10 +4,15 @@ namespace Ephect\Modules\Forms\Generators;
 
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\ElementUtils;
+use Ephect\Framework\Logger\Logger;
+use Ephect\Framework\Middlewares\AttributeMiddlewareInterface;
+use Ephect\Framework\Registry\MiddlewareRegistry;
 use Ephect\Framework\Structure\Structure;
 use Ephect\Framework\Structure\StructureInterface;
+use Ephect\Modules\Forms\Components\ComponentDeclarationInterface;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
+use Ephect\Modules\Forms\Middlewares\ComponentParserMiddlewareInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 
 class ComponentParser extends Parser implements ParserInterface
@@ -73,6 +78,63 @@ class ComponentParser extends Parser implements ParserInterface
     /**
      * @throws \ReflectionException
      */
+    public function registerMiddlewares(
+        string $motherUID,
+        ComponentDeclarationInterface $declaration,
+    ): void {
+
+        Logger::create()->dump(__METHOD__ . '::declaration', $declaration);
+
+        /**
+         * Mandatory test: Parent is not always null!
+         */
+        if (!$declaration->hasAttributes()) {
+            return;
+        }
+
+        $attrs = $declaration->getAttributes();
+
+        $middlewaresList = [];
+        foreach ($attrs as $attr) {
+            if (!isset($attr['name'])) {
+                continue;
+            }
+
+            $attr = (object)$attr;
+
+            if (count($attr->arguments) > 0) {
+                $attrNew = new $attr->name(...$attr->arguments);
+            } else {
+                $attrNew = new $attr->name();
+            }
+
+            if ($attrNew instanceof AttributeMiddlewareInterface) {
+                $middlewaresList[$attr->name] = [
+                    $attr->arguments,
+                    $attrNew->getMiddlewares(),
+                ];
+            }
+        }
+
+        if (count($middlewaresList)) {
+            foreach ($middlewaresList as $key => $value) {
+                [$arguments, $middlewares] = $value;
+                foreach ($middlewares as $middlewareClass) {
+                    $middleware = new $middlewareClass();
+                    if ($middleware instanceof ComponentParserMiddlewareInterface) {
+                        MiddlewareRegistry::write($middlewareClass, $arguments);
+                    }
+
+                }
+            }
+
+            MiddlewareRegistry::save();
+        }
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
     public function doDeclaration(string $uid = ''): ComponentDeclarationStructure
     {
         if ($uid == '') {
@@ -87,6 +149,7 @@ class ComponentParser extends Parser implements ParserInterface
             'name' => $func[1],
             'arguments' => $args ?? [],
             'attributes' => $attrs ?? [],
+            'returnType' => $return,
             'composition' => $this->list
         ];
 

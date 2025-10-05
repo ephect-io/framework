@@ -2,6 +2,7 @@
 
 namespace Ephect\Modules\WebApp\Builder\Parsers;
 
+use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -22,6 +23,8 @@ class ModuleParser implements ParserTypeInterface
         $uid = $comp->getUID();
         $parser = new ComponentParser($comp);
         $struct = $parser->doDeclaration($uid);
+        $decl = new ComponentDeclaration($struct);
+        $parser->registerMiddlewares($comp->getFullyQualifiedFunction(), $decl);
         $decl = $struct->toArray();
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
