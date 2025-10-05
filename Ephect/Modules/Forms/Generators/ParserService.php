@@ -2,6 +2,7 @@
 
 namespace Ephect\Modules\Forms\Generators;
 
+use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Modules\Forms\Application\ApplicationComponent;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -39,7 +40,7 @@ class ParserService implements ParserServiceInterface
     protected array $openComponentList = [];
     protected string|array|bool|null $result = null;
 
-    public function __construct(protected string $buildDirectory = \Constants::CACHE_DIR)
+    public function __construct(protected string $buildDirectory = \Constants::BUILD_DIR)
     {
     }
 
@@ -228,10 +229,14 @@ class ParserService implements ParserServiceInterface
         $motherUID = $component->getMotherUID();
 
         foreach ($componentList as $componentName) {
-            [$fqFunctionName, $cacheFilename] = $component->renderComponent($motherUID, $componentName);
+            [$fqFunction, $cacheFilename] = $component->renderComponent($motherUID, $componentName);
 
-            $includePlaceholder = "include_once '$this->buildDirectory' . '%s';";
-            $include = str_replace('%s', $cacheFilename, $includePlaceholder);
+//            FrameworkRegistry::load();
+//            FrameworkRegistry::write($fqFunction, \Constants::BUILD_DIR . $cacheFilename);
+//            FrameworkRegistry::save(true);
+
+//            $use = sprintf("use function %s;", $fqFunction);
+            $include = sprintf("include_once '%s%s';", $this->buildDirectory, $cacheFilename);
 
             $re = '/(namespace +[\w\\\\]+;)/m';
             preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);

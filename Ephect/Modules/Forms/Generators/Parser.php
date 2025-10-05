@@ -10,7 +10,7 @@ class Parser implements ParserInterface
     protected ?string $html = '';
     protected ?ComponentInterface $component = null;
 
-    public function __construct(string|ComponentInterface $comp, protected string $buildDirectory = \Constants::CACHE_DIR)
+    public function __construct(string|ComponentInterface $comp, protected string $buildDirectory = \Constants::BUILD_DIR)
     {
         if (is_string($comp)) {
             $this->component = null;

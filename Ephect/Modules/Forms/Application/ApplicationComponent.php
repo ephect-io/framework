@@ -32,13 +32,11 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     use ElementTrait;
     use ComponentCodeTrait;
 
-    public const INCLUDE_PLACEHOLDER = "";
-
     protected ?ComponentDeclaration $declaration = null;
     protected ?ComponentEntity $entity = null;
 
     public function __construct(?string $id = null, ?string $motherUID = null,
-        protected string $buildDirectory = \Constants::CACHE_DIR,
+        protected string $buildDirectory = \Constants::BUILD_DIR,
     ) {
         parent::__construct([]);
 

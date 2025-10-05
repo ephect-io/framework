@@ -33,7 +33,7 @@ class HooksRegistry
 
                 $hooks[] = str_replace(
                     DIRECTORY_SEPARATOR,
-                    '_',
+                    PHP_OS === 'WINNT' ? DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR  : DIRECTORY_SEPARATOR,
                     \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename
                 );
 

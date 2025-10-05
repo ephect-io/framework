@@ -27,18 +27,18 @@ class Lib extends AbstractCommandLib
 
             if (\Constants::APP_NAME !== 'egg') {
                 $constants['APP_ROOT'] = \Constants::APP_ROOT;
-                $constants['APP_SCRIPTS'] = APP_SCRIPTS;
-                $constants['APP_BUSINESS'] = APP_BUSINESS;
-                $constants['MODEL_ROOT'] = MODEL_ROOT;
-                $constants['VIEW_ROOT'] = VIEW_ROOT;
-                $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
-                $constants['REST_ROOT'] = REST_ROOT;
-                $constants['APP_DATA'] = APP_DATA;
+                $constants['APP_SCRIPTS'] = \Constants::APP_SCRIPTS;
+                $constants['APP_BUSINESS'] = \Constants::APP_BUSINESS;
+                $constants['MODEL_ROOT'] = \Constants::MODEL_ROOT;
+                $constants['VIEW_ROOT'] = \Constants::VIEW_ROOT;
+                $constants['CONTROLLER_ROOT'] = \Constants::CONTROLLER_ROOT;
+                $constants['REST_ROOT'] = \Constants::REST_ROOT;
+                $constants['APP_DATA'] = \Constants::APP_DATA;
                 $constants['CACHE_DIR'] = \Constants::CACHE_DIR;
             }
-            $constants['LOG_PATH'] = LOG_PATH;
-            $constants['DEBUG_LOG'] = DEBUG_LOG;
-            $constants['ERROR_LOG'] = ERROR_LOG;
+            $constants['LOG_PATH'] = \Constants::LOG_PATH;
+            $constants['DEBUG_LOG'] = \Constants::DEBUG_LOG;
+            $constants['ERROR_LOG'] = \Constants::ERROR_LOG;
 
             Console::writeLine('Application constants are :');
             foreach ($constants as $key => $value) {

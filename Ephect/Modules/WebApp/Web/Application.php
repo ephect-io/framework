@@ -4,6 +4,7 @@ namespace Ephect\Modules\WebApp\Web;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Core\AbstractApplication;
+use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\HooksRegistry;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Modules\Forms\Components\Component;
@@ -11,6 +12,7 @@ use Ephect\Modules\Forms\Registry\CacheRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
 use Ephect\Modules\WebApp\Builder\Builder;
+use Ephect\Modules\WebApp\Services\BuildService;
 
 class Application extends AbstractApplication
 {
@@ -29,12 +31,12 @@ class Application extends AbstractApplication
         $this->loadInFile();
         StateRegistry::load();
         if (!ComponentRegistry::load()) {
-            $compiler = new Builder();
-            $compiler->preparePagesList();
-            $compiler->describeComponents();
-            $compiler->prepareRoutedComponents();
+            $service = new BuildService();
+            $service->build();
         }
 
+//        FrameworkRegistry::registerBuiltComponents();
+//        FrameworkRegistry::save(true);
         CacheRegistry::load();
         PluginRegistry::load();
         HooksRegistry::register(\Constants::APP_ROOT);
@@ -82,6 +84,7 @@ class Application extends AbstractApplication
         $constants['RUNTIME_DIR'] = \Constants::RUNTIME_DIR;
         $constants['REL_RUNTIME_JS_DIR'] = \Constants::REL_RUNTIME_JS_DIR;
         $constants['RUNTIME_JS_DIR'] = \Constants::RUNTIME_JS_DIR;
+        $constants['BUILD_DIR'] = \Constants::BUILD_DIR;
         $constants['CACHE_DIR'] = \Constants::CACHE_DIR;
         $constants['LOG_PATH'] = \Constants::LOG_PATH;
         $constants['DEBUG_LOG'] = \Constants::DEBUG_LOG;

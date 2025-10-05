@@ -41,27 +41,19 @@ class Builder
     {
         if (!ComponentRegistry::load()) {
             File::safeMkDir(\Constants::CACHE_DIR);
+            File::safeMkDir(\Constants::BUILD_DIR);
             File::safeMkDir(\Constants::COPY_DIR);
             File::safeMkDir(\Constants::STATIC_DIR);
             File::safeMkDir(\Constants::STORE_DIR);
 
-
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies
 
-//            useMemory(['buildDirectory' => \Constants::UNIQUE_DIR]);
-//
-//            UniqueCodeRegistry::load();
-//            $descriptor = new UniqueComponentListDescriptor(\Constants::UNIQUE_DIR);
-//            $descriptor->describe();
-//            UniqueCodeRegistry::save();
-
             CodeRegistry::load();
 
-            useMemory(['buildDirectory' => \Constants::CACHE_DIR]);
+            useMemory(['buildDirectory' => \Constants::BUILD_DIR]);
 
-
-            $descriptor = new ComponentListDescriptor(\Constants::CACHE_DIR);
+            $descriptor = new ComponentListDescriptor(\Constants::BUILD_DIR);
             $components = $descriptor->describe();
             $this->list = [...$this->list, ...$components];
 

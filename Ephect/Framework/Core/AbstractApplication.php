@@ -37,7 +37,7 @@ abstract class AbstractApplication extends Element
     public function __construct()
     {
         parent::__construct();
-        useMemory(['buildDirectory' => \Constants::CACHE_DIR]);
+        useMemory(['buildDirectory' => \Constants::BUILD_DIR]);
     }
 
     public static function getExecutionMode(): string

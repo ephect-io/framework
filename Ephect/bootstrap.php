@@ -28,6 +28,7 @@ include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'FrameworkRegistry.p
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'HooksRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'AbstractStateRegistry.php';
 include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'StateRegistry.php';
+include FRAMEWORK_PATH . 'Registry' . DIRECTORY_SEPARATOR . 'MemoryRegistry.php';
 include FRAMEWORK_PATH . 'Modules' . DIRECTORY_SEPARATOR . 'ModuleInstaller.php';
 include FRAMEWORK_PATH . 'Plugins' . DIRECTORY_SEPARATOR . 'PluginInstaller.php';
 
