@@ -100,20 +100,28 @@ final class OpenComponentsParser extends AbstractComponentParser
             $fqComponentName = ComponentRegistry::read($componentName);
 
             $preComponentBody = '';
-            $pkey = "\$children";
-            if (count($propsKeys) === 1 && ($propsKeys[0] === "\$children" || $propsKeys[0] === "\$slot")) {
+            $pkey = '$children';
+            if (count($propsKeys) === 1 && ($propsKeys[0] === $pkey || $propsKeys[0] === '$slot')) {
                 $pkey = $propsKeys[0];
-                $preComponentBody .= "\t\t\t<?php if(method_exists({$pkey}, 'props')) {\n";
-                $preComponentBody .= "\t\t\t  \$props = {$pkey}->props();\n";
-                $preComponentBody .= "\t\t\t  foreach(\$props as \$key => \$value) {\n";
-                $preComponentBody .= "\t\t\t    $\$key = \$value;\n";
-                $preComponentBody .= "\t\t\t  }\n";
-                $preComponentBody .= "\t\t\t} ?>\n";
+                $preComponentBody = <<<PCB
+            <?php if(method_exists({$pkey}, 'props')) {
+                \$props = {$pkey}->props();
+                foreach(\$props as \$key => \$value) {
+                    $\$key = \$value;
+                }
+            } ?>
+PCB;
             }
 
-            $componentRender = "<?php \$struct = new \\Ephect\\Modules\\Forms\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>\n\n$preComponentBody$componentBody\n<?php\n}, 'motherUID' => '$motherUID', 'uid' => '$uid', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]);\n";
-            $componentRender .= "\t\t\t{$pkey} = new \\Ephect\\Modules\\Forms\\Components\\Children(\$struct);\n";
-            $componentRender .= "\t\t\t\$fn = \\$fqComponentName({$pkey}); \$fn(); ?>\n";
+            $componentRender = <<< PHP
+            <?php \$struct = new \\Ephect\\Modules\\Forms\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>
+                    $preComponentBody$componentBody
+            <?php
+            }, 'motherUID' => '$motherUID', 'uid' => '$uid', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]);
+            {$pkey} = new \\Ephect\\Modules\\Forms\\Components\\Children(\$struct);
+            \$fn = \\$fqComponentName({$pkey}); \$fn(); 
+            ?>
+            PHP;
 
             $preg_opener = preg_quote($opener, '/');
             $preg_closer = preg_quote($closer, '/');
@@ -130,7 +138,7 @@ final class OpenComponentsParser extends AbstractComponentParser
             $subject = str_replace($outerComponentBody, $componentRender, $subject);
 
             $filename = $this->component->getSourceFilename();
-            File::safeWrite(\Constants::CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
+            File::safeWrite(\Constants::BUILD_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename, $subject);
 
             $this->result[] = $componentName;
 

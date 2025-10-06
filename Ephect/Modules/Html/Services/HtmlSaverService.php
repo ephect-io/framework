@@ -21,14 +21,14 @@ class HtmlSaverService implements HtmlSaverServiceInterface
 
     public function isPending(): bool
     {
-        return file_exists(\Constants::CACHE_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION);
+        return file_exists(\Constants::BUILD_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION);
     }
 
     public function markAsPending(): void
     {
         $date = new DateTime();
         $timestamp = $date->getTimestamp();
-        $pendingTxt = \Constants::CACHE_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION;
+        $pendingTxt = \Constants::BUILD_DIR . $this->children->getName() . '.pending' . \Constants::TXT_EXTENSION;
         File::safeWrite($pendingTxt, "const time = $timestamp");
     }
 

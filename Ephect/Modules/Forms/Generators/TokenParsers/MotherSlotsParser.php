@@ -80,8 +80,8 @@ class MotherSlotsParser extends AbstractTokenParser
         }
 
         if ($parentHtml !== '') {
-            File::safeWrite(\Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
-            File::safeWrite(\Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getSourceFilename(), $this->html);
+            File::safeWrite(\Constants::BUILD_DIR . $motherUID . DIRECTORY_SEPARATOR . $parentFilename, $parentHtml);
+            File::safeWrite(\Constants::BUILD_DIR . $motherUID . DIRECTORY_SEPARATOR . $this->component->getSourceFilename(), $this->html);
         }
 
         if ($doc->getCount() > 0) {

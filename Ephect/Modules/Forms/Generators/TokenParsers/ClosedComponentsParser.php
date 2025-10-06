@@ -82,7 +82,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
 
             $filename = $this->component->getSourceFilename();
             File::safeWrite(
-                \Constants::CACHE_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
+                \Constants::BUILD_DIR . $this->component->getMotherUID() . DIRECTORY_SEPARATOR . $filename,
                 $subject
             );
 

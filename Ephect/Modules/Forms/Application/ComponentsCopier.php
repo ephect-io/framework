@@ -11,7 +11,7 @@ class ComponentsCopier
 {
     public static function copy(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?string
     {
-        $cachedir = \Constants::CACHE_DIR . $motherUID . DIRECTORY_SEPARATOR;
+        $cachedir = \Constants::BUILD_DIR . $motherUID . DIRECTORY_SEPARATOR;
         $componentList = $component->composedOf();
         $copyFile = $component->getSourceFilename();
         $copyPath = pathinfo($copyFile, PATHINFO_DIRNAME);

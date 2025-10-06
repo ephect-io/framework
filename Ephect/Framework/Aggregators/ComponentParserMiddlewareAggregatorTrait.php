@@ -13,8 +13,8 @@ trait ComponentParserMiddlewareAggregatorTrait
     {
         $middlewaresList = $this->list;
         $existingMiddlewaresList = [];
-        if (file_exists(\Constants::CACHE_DIR . 'componentsParserMiddlewares.php')) {
-            $existingMiddlewaresList = require \Constants::CACHE_DIR . 'componentsParserMiddlewares.php';
+        if (file_exists(\Constants::BUILD_DIR . 'componentsParserMiddlewares.php')) {
+            $existingMiddlewaresList = require \Constants::BUILD_DIR . 'componentsParserMiddlewares.php';
         }
 
         if (is_array($existingMiddlewaresList)) {
@@ -26,6 +26,6 @@ trait ComponentParserMiddlewareAggregatorTrait
 
         $middlewares = Text::jsonToPhpReturnedArray($json);
 
-        File::safeWrite(\Constants::CACHE_DIR . 'componentsParserMiddlewares.php', $middlewares);
+        File::safeWrite(\Constants::BUILD_DIR . 'componentsParserMiddlewares.php', $middlewares);
     }
 }

@@ -165,5 +165,9 @@ class FrameworkRegistry extends AbstractStaticRegistry
         }
     }
 
+    public static function registerBuiltComponents()
+    {
+        self::registerCustomClasses(\Constants::BUILD_DIR);
+    }
 
 }

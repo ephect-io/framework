@@ -14,6 +14,12 @@ class Cache extends StaticElement
         return \Constants::CACHE_DIR . str_replace('/', '_', $basename);
     }
 
+    public static function getBuildFilename(string $basename): string
+    {
+        return \Constants::BUILD_DIR . str_replace('/', '_', $basename);
+    }
+
+
     public static function cacheFilenameFromView(string $compName): string
     {
 
@@ -38,7 +44,7 @@ class Cache extends StaticElement
 
     public static function cacheFile($filename, $content): void
     {
-        $filename = \Constants::CACHE_DIR . $filename;
+        $filename = \Constants::BUILD_DIR . $filename;
         file_put_contents($filename, $content);
     }
 

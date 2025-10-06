@@ -4,6 +4,7 @@ namespace Ephect\Modules\WebApp\Commands\Build;
 
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Modules\WebApp\Builder\Builder;
+use Ephect\Modules\WebApp\Services\BuildService;
 
 class Lib extends AbstractCommandLib
 {
@@ -14,11 +15,10 @@ class Lib extends AbstractCommandLib
         $application->clearRuntime();
         $application->clearLogs();
 
-        $builder = new Builder();
-        $builder->describeComponents();
-        $builder->preparePagesList();
-        $builder->prepareRoutedComponents();
+        $service = new BuildService();
+        $builder = $service->build();
 
         $builder->buildAllRoutes();
+
     }
 }
