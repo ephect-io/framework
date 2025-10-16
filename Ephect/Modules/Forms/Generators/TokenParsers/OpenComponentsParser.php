@@ -52,7 +52,7 @@ final class OpenComponentsParser extends AbstractComponentParser
             &$previous,
             &$parent
         ) {
-            $parent = $previous != null && $previous->getDepth() < $item->getDepth() ? $previous : null;
+            $parent = $previous !== null && $previous->getDepth() < $item->getDepth() ? $previous : null;
 
             if (!$item->hasCloser()) {
                 /**
@@ -103,14 +103,14 @@ final class OpenComponentsParser extends AbstractComponentParser
             $pkey = '$children';
             if (count($propsKeys) === 1 && ($propsKeys[0] === $pkey || $propsKeys[0] === '$slot')) {
                 $pkey = $propsKeys[0];
-                $preComponentBody = <<<PCB
-            <?php if(method_exists({$pkey}, 'props')) {
+                $preComponentBody = <<<PHP
+            <?php if (method_exists({$pkey}, 'props')) {
                 \$props = {$pkey}->props();
                 foreach(\$props as \$key => \$value) {
                     $\$key = \$value;
                 }
             } ?>
-PCB;
+PHP;
             }
 
             $componentRender = <<< PHP

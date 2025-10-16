@@ -224,7 +224,8 @@ class ParserService implements ParserServiceInterface
         foreach ($componentList as $componentName) {
             [$fqFunctionName, $cacheFilename] = $component->renderComponent($motherUID, $componentName);
 
-            $include = str_replace('%s', $cacheFilename, ApplicationComponent::INCLUDE_PLACEHOLDER);
+            $include = sprintf(ApplicationComponent::INCLUDE_PLACEHOLDER, $cacheFilename);
+            $use = sprintf("use %s;", $fqFunctionName);
 
             $re = '/(namespace +[\w\\\\]+;)/m';
             preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
