@@ -5,6 +5,7 @@ use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Plugins\PluginInstaller;
 use Ephect\Framework\Registry\FrameworkRegistry;
 use Ephect\Framework\Registry\HooksRegistry;
+use Ephect\Framework\Registry\StateRegistry;
 
 //define('DIRECTORY_SEPARATOR', Phar::running() ? '_' : DIRECTORY_SEPARATOR);
 define('FRAMEWORK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Framework' . DIRECTORY_SEPARATOR);
@@ -38,3 +39,20 @@ Autoloader::register();
 
 ModuleInstaller::loadBootstraps();
 PluginInstaller::loadBootstraps();
+
+function import(string $from, array $components): array
+{
+    return array_map(function ($component) use ($from) {
+        return "use function {$from}\\{$component};";
+    }, $components);    
+}
+
+
+function realImport(string $from, array $components, string $parentFunction, string $motherUID): void
+{
+    $imports = array_map(function ($component) use ($from) {
+        return "use {$from}\\{$component};";
+    }, $components);
+    StateRegistry::write("imports.{$parentFunction}", $imports);
+    StateRegistry::saveByMotherUid($motherUID);
+}
