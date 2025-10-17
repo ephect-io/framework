@@ -85,10 +85,13 @@ trait TreeTrait
     {
         foreach ($tree as $key => $item) {
             if ($item->hasChildren()) {
-                $this->forEach($callback, $item, $breakOn);
+                $this->forEachRecursive($callback, $item, $breakOn);
             }
 
             call_user_func($callback, $item, $key);
+            if ($breakOn != null && $breakOn()) {
+                break;
+            }
         }
     }
 

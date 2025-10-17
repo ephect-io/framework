@@ -7,9 +7,9 @@ use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
 
-class ComponentsCopier
+class ComponentDependencyFinder
 {
-    public static function copy(array &$list, ?string $motherUID = null, ?FileComponentInterface $component = null): ?string
+    public static function find(array &$list, ?string $motherUID = null, ?FileComponentInterface $component = null): ?string
     {
         $cachedir = \Constants::BUILD_DIR . $motherUID . DIRECTORY_SEPARATOR;
         $componentList = $component->composedOf();
@@ -51,11 +51,7 @@ class ComponentsCopier
             if ($nextComponent === null) {
                 continue;
             }
-            $component->copyComponents($list, $motherUID, $nextComponent);
-        }
-
-        if (!file_exists($cachedir . $copyFile)) {
-            copy(\Constants::COPY_DIR . $copyFile, $cachedir . $copyFile);
+            $component->findDependencies($list, $motherUID, $nextComponent);
         }
 
         return $copyFile;

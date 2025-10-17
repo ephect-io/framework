@@ -40,19 +40,42 @@ Autoloader::register();
 ModuleInstaller::loadBootstraps();
 PluginInstaller::loadBootstraps();
 
-function import(string $from, array $components): array
+function import(array|string $components, string $from): array
 {
-    return array_map(function ($component) use ($from) {
-        return "use function {$from}\\{$component};";
-    }, $components);    
-}
+    if (is_string($components)) {
+        $components = [$components];
+    }
+
+    StateRegistry::load();
+    $knownImports = StateRegistry::read("imports");
 
 
-function realImport(string $from, array $components, string $parentFunction, string $motherUID): void
-{
     $imports = array_map(function ($component) use ($from) {
         return "use {$from}\\{$component};";
     }, $components);
+
+    if (is_array($knownImports)) {
+        $imports = [...$knownImports, ...$imports];
+    }   
+
+    StateRegistry::write("imports", $imports);
+    
+    StateRegistry::save();
+
+    return $imports;
+}
+
+
+function realImport(string $from,  array|string $components, string $parentFunction, string $motherUID): void
+{
+    if (is_string($components)) {
+        $components = [$components];
+    }
+
+    $imports = array_map(function ($component) use ($from) {
+        return "use {$from}\\{$component};";
+    }, $components);
+
     StateRegistry::write("imports.{$parentFunction}", $imports);
     StateRegistry::saveByMotherUid($motherUID);
 }

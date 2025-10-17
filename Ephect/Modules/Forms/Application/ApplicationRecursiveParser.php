@@ -81,8 +81,8 @@ class ApplicationRecursiveParser extends AbstractApplicationParser
             $component->applyCode($parser->getHtml());
             $this->updateComponent($component);
 
-            // $parser->doIncludes($component);
-            // $component->applyCode($parser->getHtml());
+            $parser->doIncludes($component);
+            $component->applyCode($parser->getHtml());
         }
 
         CodeRegistry::save();

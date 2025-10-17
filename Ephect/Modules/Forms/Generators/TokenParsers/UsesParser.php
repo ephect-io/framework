@@ -15,10 +15,12 @@ final class UsesParser extends AbstractTokenParser
 
         foreach ($matches as $match) {
             $componentNamespace = trim($match[1], '\\');
+            $componentNamespace = str_replace('function ', '', $componentNamespace);
             $componentFunction = $match[2];
 
             $fqFunction = $componentNamespace . '\\' . $componentFunction;
             $this->useTypes[] = $fqFunction;
+
 
             $frameworkUse = FrameworkRegistry::read($fqFunction);
             if ($frameworkUse !== null) {

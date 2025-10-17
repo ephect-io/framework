@@ -25,4 +25,11 @@ interface FileComponentInterface extends ComponentInterface
         ?string $motherUID = null,
         ?ComponentInterface $component = null
     ): ?string;
+
+    public function findDependencies(
+        array &$list,
+        ?string $motherUID = null,
+        ?ComponentInterface $component = null
+    ): ?array;
+
 }
