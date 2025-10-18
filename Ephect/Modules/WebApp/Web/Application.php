@@ -36,6 +36,8 @@ class Application extends AbstractApplication
             $service->build();
         }
 
+//        FrameworkRegistry::registerBuiltComponents();
+//        FrameworkRegistry::save(true);
         CacheRegistry::load();
         PluginRegistry::load();
         HooksRegistry::register(\Constants::APP_ROOT);
