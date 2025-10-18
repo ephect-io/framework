@@ -216,45 +216,6 @@ class ParserService implements ParserServiceInterface
         $this->result = $p->getResult();
     }
 
-    public function redoIncludes(FileComponentInterface $component): void
-    {
-
-        $nsre = '/(namespace +([\w\\\\]+);)/m';
-        preg_match_all($nsre, $this->html, $matches, PREG_SET_ORDER, 0);
-
-        if (!isset($matches[0])) {
-            $nsre = '/(<\?php)/m';
-        }
-
-        $ns = $matches[0][2];
-        $subst = '$1' . PHP_EOL . '<Include />';
-
-        $re = '/(use +function +([\w\\\\]+);)/m';
-        preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-            if (!isset($match[1])) {
-                continue;
-            }
-
-            $fqFunctionName = $match[2];
-            $filename = ComponentRegistry::read($ns . '\\' . $fqFunctionName);
-            if ($filename === null) {
-                $filename = ComponentRegistry::read($fqFunctionName);
-                if ($filename === null) {
-                    continue;
-                }
-            }
-
-            $buildFilename = $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
-            $include = sprintf(ApplicationComponent::INCLUDE_PLACEHOLDER, $buildFilename);
-
-            $this->html = str_replace($match[1], '', $this->html);
-            $this->html = preg_replace($nsre, $subst, $this->html, 1);
-            $this->html = str_replace('<Include />', $include, $this->html);
-        }
-    }
-
     public function doIncludes(FileComponentInterface $component): void
     {
         $componentList = array_unique(array_merge($this->componentList, $this->openComponentList));
