@@ -10,7 +10,7 @@ final class UsesAsParser extends AbstractTokenParser
     {
         $compNamespace = $this->component->getNamespace();
 
-        $re = '/use[ ]+([\w\\\\]*\\\\)?([\w]*)[ ]+as[ ]+([\w]*);/m';
+        $re = '/use\s+([\w\\\\]*\\\\)?(\w*)\s+as\s+(\w*);/m';
 
         preg_match_all($re, $this->html, $matches, PREG_SET_ORDER, 0);
 
@@ -28,5 +28,4 @@ final class UsesAsParser extends AbstractTokenParser
             ComponentRegistry::write($componentAlias, $fqFunctionName);
         }
     }
-
 }

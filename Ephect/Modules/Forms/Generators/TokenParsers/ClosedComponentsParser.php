@@ -2,6 +2,7 @@
 
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
@@ -74,6 +75,10 @@ final class ClosedComponentsParser extends AbstractComponentParser
                 $propsArgs = self::doArgumentsToString($componentArgs);
                 $props = "(object) " . $propsArgs ?? "[]";
             }
+
+            $uses = $this->getUses();
+
+            Logger::create()->debug($this->useTypes);
 
             $fqFuncName = ComponentRegistry::read($componentName);
             $componentRender = "\t\t\t<?php \$fn = \\{$fqFuncName}($props); \$fn(); ?>\n";

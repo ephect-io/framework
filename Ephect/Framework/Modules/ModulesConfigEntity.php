@@ -15,14 +15,14 @@ class ModulesConfigEntity extends ManifestEntity
     private array $modules = [];
     private array $modulesDev = [];
 
-    public function __construct(?ModulesConfigStructure $structure = null)
+    public function __construct(private ?ModulesConfigStructure $structure = null)
     {
         $this->filename = siteRoot() . "modules.json";
 
         parent::__construct($structure);
 
         if ($structure instanceof ModulesConfigStructure) {
-            $this->bindStructure($this->structure);
+            $this->bindStructure($structure);
         }
     }
 

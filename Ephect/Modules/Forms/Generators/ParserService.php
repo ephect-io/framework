@@ -70,6 +70,7 @@ class ParserService implements ParserServiceInterface
     {
         return $this->attributes;
     }
+
     public function doUses(FileComponentInterface $component): void
     {
         $p = new UsesParser($component);
@@ -247,12 +248,11 @@ class ParserService implements ParserServiceInterface
 
             $buildFilename = $component->getMotherUID() . DIRECTORY_SEPARATOR . $filename;
             $include = sprintf(ApplicationComponent::INCLUDE_PLACEHOLDER, $buildFilename);
-     
+
             $this->html = str_replace($match[1], '', $this->html);
             $this->html = preg_replace($nsre, $subst, $this->html, 1);
             $this->html = str_replace('<Include />', $include, $this->html);
         }
-
     }
 
     public function doIncludes(FileComponentInterface $component): void

@@ -11,7 +11,7 @@ class ComponentFactory
     {
 
         $filename = ComponentRegistry::read($fullyQualifiedName);
-        $isPlugin = $filename === null && ($filename = PluginRegistry::read($fullyQualifiedName)) !== null;
+        $isPlugin = empty($filename) && !empty($filename = PluginRegistry::read($fullyQualifiedName));
 
         if ($isPlugin) {
             $uid = PluginRegistry::read($filename);

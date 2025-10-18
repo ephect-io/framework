@@ -26,7 +26,7 @@ class ModuleParser implements ParserTypeInterface
 
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
         ComponentRegistry::write($this->filename, $uid);
-        ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());
+        ComponentRegistry::write($uid, $comp->getFullyQualifiedFunction());
 
         $entity = ComponentEntity::buildFromArray($struct->composition);
         $comp->add($entity);
