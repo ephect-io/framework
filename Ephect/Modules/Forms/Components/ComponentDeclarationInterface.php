@@ -12,9 +12,11 @@ interface ComponentDeclarationInterface extends ElementInterface
 
     public function hasArguments(): bool;
 
+    public function getArguments(): ?array;
+
     public function hasAttributes(): bool;
 
-    public function getArguments(): ?array;
+    public function getAttributes(): ?array;
 
     public function getComposition(): ?ComponentEntity;
 }
