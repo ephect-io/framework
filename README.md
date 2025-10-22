@@ -216,9 +216,9 @@ It will render:
 - useQueryArgument: to filter the value passed as parameter to the query,
 - useSlot: to bind variables nested in slots to the parent component.
 
-## CLI tool *egg*
+## CLI tool *use*
 
-**Ephect** comes with a CLI tool called *egg*. The main feature of **egg** is to build the code of the whole application at once. This is done in one command: *php egg build*. The benefits of this approach are the errors management and the increase of velocity of the application.
+**Ephect** comes with a CLI tool called *use*. The main feature of **use** is to build the code of the whole application at once. This is done in one command: *php use build*. The benefits of this approach are the errors management and the increase of velocity of the application.
 
 ### Error handling
 
@@ -256,7 +256,7 @@ where *myproject* is the name of your project.
 
 Move to *myproject* directory and type:
 
-    php egg make:quickstart
+    php use make:quickstart
 
 You will see a **app** directory in which you will find the standard structure of an Ephect application and a **public** directory in which is stored the index.php.
 
@@ -273,7 +273,7 @@ To run the application without setting up a web server, you need to serve the ap
 Open another terminal, move to your project directory and type:
 
 ```bash
-php egg serve
+php use serve
 ```
 
 Come back to the first terminal and type
