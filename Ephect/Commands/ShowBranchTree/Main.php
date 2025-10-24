@@ -14,8 +14,8 @@ class Main extends AbstractCommand
     {
         $dir = 'master' . DIRECTORY_SEPARATOR . 'ephect-master' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ephect';
 
-        $egg = new CommonLib($this->application);
-        $egg->displayTree($dir);
+        $use = new CommonLib($this->application);
+        $use->displayTree($dir);
 
         return 0;
     }

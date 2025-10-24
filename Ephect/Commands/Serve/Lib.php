@@ -13,7 +13,7 @@ class Lib extends AbstractCommandLib
 {
     public function Serve(): void
     {
-        $egg = new CommonLib($this->parent);
+        $use = new CommonLib($this->parent);
         $port = $this->getPort();
 
         File::safeWrite(\Constants::CONFIG_DIR . 'dev_port', $port);

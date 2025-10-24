@@ -12,7 +12,7 @@ class Main extends AbstractCommand
 {
     public function run(): int
     {
-        $egg = new CommonLib($this->application);
-        $egg->displayTree(\Constants::APP_DIR);
+        $use = new CommonLib($this->application);
+        $use->displayTree(\Constants::APP_DIR);
     }
 }

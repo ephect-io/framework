@@ -25,7 +25,7 @@ class Lib extends AbstractCommandLib
             // $constants['EPHECT_VENDOR_LIB'] = \Constants::EPHECT_VENDOR_LIB;
             // $constants['EPHECT_VENDOR_APPS'] = \Constants::EPHECT_VENDOR_APPS;
 
-            if (\Constants::APP_NAME !== 'egg') {
+            if (\Constants::APP_NAME !== 'use') {
                 $constants['APP_ROOT'] = \Constants::APP_ROOT;
                 $constants['APP_SCRIPTS'] = \Constants::APP_SCRIPTS;
                 $constants['APP_BUSINESS'] = \Constants::APP_BUSINESS;

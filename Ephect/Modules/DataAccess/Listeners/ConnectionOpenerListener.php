@@ -19,7 +19,7 @@ class ConnectionOpenerListener implements EventListenerInterface
      */
     public function __invoke(Event|ConnectionOpenerEvent $event): void
     {
-        $arguments = $event->getArguments();
+        $arguments = $event->getProps();
         $conn = PdoConnection::opener($arguments->conf);
         useMemory(["$arguments->conf" => $conn,]);
     }

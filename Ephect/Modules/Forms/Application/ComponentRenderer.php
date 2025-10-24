@@ -41,7 +41,7 @@ class ComponentRenderer
         } else {
             $props = null;
             if (count($functionArgs) > 0) {
-                $props = $functionArgs;
+                $props = (object)$functionArgs;
             }
 
             if ($bodyProps !== null) {
@@ -52,6 +52,7 @@ class ComponentRenderer
                     $props->{$field} = $value;
                 }
             }
+
             ob_start();
             $fn = call_user_func($fqFunctionName, $props);
             $fn();

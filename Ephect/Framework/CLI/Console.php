@@ -2,6 +2,7 @@
 
 namespace Ephect\Framework\CLI;
 
+use Constants;
 use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementTrait;
@@ -15,7 +16,7 @@ class Console extends Element
 
     public static function write(string|array|object|null $string, ...$params): void
     {
-        if (\Constants::IS_WEB_APP) {
+        if (Constants::IS_WEB_APP) {
             return;
         }
 
@@ -26,7 +27,7 @@ class Console extends Element
 
     public static function writeLine(string|array|object|null $string, ...$params): void
     {
-        if (\Constants::IS_WEB_APP) {
+        if (Constants::IS_WEB_APP) {
             return;
         }
 
@@ -80,7 +81,7 @@ class Console extends Element
     {
         $string = $string ?: '';
 
-        if (\Constants::IS_WEB_APP) {
+        if (Constants::IS_WEB_APP) {
             self::getLogger()->info($string);
             return;
         }
@@ -93,7 +94,7 @@ class Console extends Element
     {
         $string = $string ?: '';
 
-        if (\Constants::IS_WEB_APP) {
+        if (Constants::IS_WEB_APP) {
             self::getLogger()->debug($string);
             return;
         }
@@ -104,7 +105,7 @@ class Console extends Element
 
     public static function error(Throwable $ex, ConsoleOptionsEnum $options = ConsoleOptionsEnum::None): void
     {
-        if (\Constants::IS_WEB_APP) {
+        if (Constants::IS_WEB_APP) {
             self::getLogger()->error($ex);
             return;
         }
