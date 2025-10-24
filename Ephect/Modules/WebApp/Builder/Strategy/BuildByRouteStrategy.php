@@ -36,12 +36,10 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $outputFilename = "$route.out";
 
         Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-        Console::write("querying %s ... ", ConsoleColors::getColoredString(
+        Console::write("requesting %s ... ", ConsoleColors::getColoredString(
             \Constants::CONFIG_HOSTNAME . ":$port" . $queryString,
             ConsoleColors::LIGHT_GREEN
         ));
-
-        Console::getLogger()->info("Compiling %s ...", $route);
 
         $curl = new Curl();
         $time_start = microtime(true);
