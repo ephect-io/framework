@@ -14,8 +14,8 @@ class Main extends AbstractCommand
         $principal = include_once __DIR__ . DIRECTORY_SEPARATOR  . "Logo.php";
         echo $principal . PHP_EOL;
 
-        $egg = new Lib($this->application);
-        $egg->build();
+        $use = new Lib($this->application);
+        $use->build();
 
         return 0;
     }

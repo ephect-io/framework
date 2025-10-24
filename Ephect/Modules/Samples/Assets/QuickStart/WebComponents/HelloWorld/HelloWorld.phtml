@@ -1,0 +1,50 @@
+<?php
+namespace QuickStart;
+
+use Ephect\Modules\Webcomponent\Forms\Webcomponent;
+
+use function Ephect\Hooks\useEffect;
+
+function HelloWorld($slot): string
+{
+
+useEffect(function ($slot, /* string */ $foo) {
+    $foo = "It works!"; 
+});
+
+return (<<< HTML
+<WebComponent>
+<template id="HelloWorld">
+    <h1>
+        ${result}
+    </h1>
+    <slot></slot>
+    <h2>{{ foo }}</h2>
+</template>
+<script>
+    import HelloWorld from "./HelloWorld.class.js"
+    import HelloWorldElement from "./HelloWorldElement.js"
+
+    /**
+     * Rename the component
+     */
+    class HelloWorldComponent extends HelloWorldElement {
+
+        renderTemplate() {
+            /**
+             * The magic starts here
+             */
+            const base = new HelloWorld()
+            const result = base.sayHello(this.word)
+
+            this.shadowRoot.innerHTML = document.getElementById('HelloWorld').innerHTML
+        }
+
+    }
+
+    customElements.define('hello-world', HelloWorldComponent);
+</script>
+
+</WebComponent>
+HTML);
+}
