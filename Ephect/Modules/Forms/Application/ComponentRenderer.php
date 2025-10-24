@@ -52,6 +52,11 @@ class ComponentRenderer
                     $props->{$field} = $value;
                 }
             }
+
+            if(is_array($props)){
+                $props = (object)$props;
+            }
+
             ob_start();
             $fn = call_user_func($fqFunctionName, $props);
             $fn();
