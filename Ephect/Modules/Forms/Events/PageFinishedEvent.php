@@ -10,7 +10,7 @@ class PageFinishedEvent extends Event
         private readonly string $motherUID,
         private readonly string $cacheFilename,
         private readonly string $componentName,
-        private readonly object $props,
+        private readonly ?object $props,
     ) {
     }
 
@@ -29,7 +29,7 @@ class PageFinishedEvent extends Event
         return $this->componentName;
     }
 
-    public function getProps(): object
+    public function getProps(): ?object
     {
         return $this->props;
     }
