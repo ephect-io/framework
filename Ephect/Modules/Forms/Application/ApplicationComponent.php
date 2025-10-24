@@ -16,7 +16,6 @@ use Ephect\Modules\Forms\Components\ComponentFactory;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Events\ComponentFinishedEvent;
-use Ephect\Modules\Forms\Events\PageFinishedEvent;
 use Ephect\Modules\Forms\Registry\CacheRegistry;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
