@@ -12,6 +12,13 @@ class HtmlSaverService implements HtmlSaverServiceInterface
     {
     }
 
+    public function canRefresh(): bool
+    {
+        $canRefresh = $this->children->getAttribute('refresh') ?? false;
+
+        return $canRefresh;
+    }
+
     public function canRender(): bool
     {
         $canRender = $this->children->getAttribute('render') ?? true;
