@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Modules\Html\Services;
+namespace Ephect\Modules\Forms\Services;
 
 interface HtmlSaverServiceInterface
 {
