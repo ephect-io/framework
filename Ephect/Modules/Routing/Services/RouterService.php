@@ -13,7 +13,6 @@ use Ephect\Modules\Routing\Registry\RouteRegistry;
 use Ephect\Modules\WebApp\Registry\PageRegistry;
 
 use function Ephect\Hooks\useMemory;
-use function Ephect\Hooks\useStore;
 
 class RouterService implements RouterServiceInterface
 {
@@ -191,14 +190,53 @@ class RouterService implements RouterServiceInterface
         array $middlewares,
         string &$html
     ): void {
-        if (!$pageFound) {
+        if ($responseCode >= 400) {
             http_response_code($responseCode);
             $path = HttpErrorRegistry::read($responseCode);
 
             if (ComponentRegistry::read($path) === null) {
-                $html = 'Page not found';
+                $html = 'Unknown error';
                 $html = ($responseCode === 400) ? 'Bad request' : $html;
                 $html = ($responseCode === 401) ? 'Unauthorized' : $html;
+                $html = ($responseCode === 403) ? 'Forbidden' : $html;
+                $html = ($responseCode === 404) ? 'Page not found' : $html;
+                $html = ($responseCode === 405) ? 'Method not allowed' : $html;
+                $html = ($responseCode === 406) ? 'Not acceptable' : $html;
+                $html = ($responseCode === 407) ? 'Proxy authentication required' : $html;
+                $html = ($responseCode === 408) ? 'Request timeout' : $html;
+                $html = ($responseCode === 409) ? 'Conflict' : $html;
+                $html = ($responseCode === 410) ? 'Gone' : $html;
+                $html = ($responseCode === 411) ? 'Length required' : $html;
+                $html = ($responseCode === 412) ? 'Precondition failed' : $html;
+                $html = ($responseCode === 413) ? 'Payload too large' : $html;
+                $html = ($responseCode === 414) ? 'URI too long' : $html;
+                $html = ($responseCode === 415) ? 'Unsupported media type' : $html;
+                $html = ($responseCode === 416) ? 'Range not satisfiable' : $html;
+                $html = ($responseCode === 417) ? 'Expectation failed' : $html;
+                $html = ($responseCode === 418) ? 'I\'m a teapot' : $html;
+                $html = ($responseCode === 421) ? 'Misdirected request' : $html;
+                $html = ($responseCode === 422) ? 'Unprocessable entity' : $html;
+                $html = ($responseCode === 423) ? 'Locked' : $html;
+                $html = ($responseCode === 424) ? 'Failed dependency' : $html;
+                $html = ($responseCode === 425) ? 'Too early' : $html;
+                $html = ($responseCode === 426) ? 'Upgrade required' : $html;
+                $html = ($responseCode === 428) ? 'Precondition required' : $html;
+                $html = ($responseCode === 429) ? 'Too many requests' : $html;
+                $html = ($responseCode === 431) ? 'Request header fields too large' : $html;
+                $html = ($responseCode === 451) ? 'Unavailable For Legal Reasons' : $html;
+                $html = ($responseCode === 500) ? 'Internal server error' : $html;
+                $html = ($responseCode === 501) ? 'Not implemented' : $html;
+                $html = ($responseCode === 502) ? 'Bad gateway' : $html;
+                $html = ($responseCode === 503) ? 'Service unavailable' : $html;
+                $html = ($responseCode === 504) ? 'Gateway timeout' : $html;
+                $html = ($responseCode === 505) ? 'HTTP version not supported' : $html;
+                $html = ($responseCode === 506) ? 'Variant also negotiates' : $html;
+                $html = ($responseCode === 507) ? 'Insufficient storage' : $html;
+                $html = ($responseCode === 508) ? 'Loop detected' : $html;
+                $html = ($responseCode === 509) ? 'Bandwidth limit exceeded' : $html;
+                $html = ($responseCode === 510) ? 'Not extended' : $html;
+                $html = ($responseCode === 511) ? 'Network authentication required' : $html;
+
                 return;
             }
         }
