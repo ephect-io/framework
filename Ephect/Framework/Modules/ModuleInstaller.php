@@ -24,7 +24,7 @@ class ModuleInstaller
     {
         [$filename, $paths] = self::readModulePaths();
         foreach ($paths as $path) {
-            $bootstrapFile = $path . DIRECTORY_SEPARATOR . "bootstrap.php";
+            $bootstrapFile = $path . DIRECTORY_SEPARATOR . "Bootstrap.php";
 
             if (!file_exists($bootstrapFile)) {
                 continue;
