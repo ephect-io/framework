@@ -223,7 +223,10 @@ class ConstantsMaker
         $this->constants['PREHTML_EXTENSION'] = '.phtml';
         $this->constants['CSS_EXTENSION'] = '.css';
         $this->constants['JS_EXTENSION'] = '.js';
+        $this->constants['TS_EXTENSION'] = '.ts';
+        $this->constants['JSON_EXTENSION'] = '.json';
         $this->constants['CLASS_JS_EXTENSION'] = '.class.js';
+        $this->constants['CLASS_TS_EXTENSION'] = '.class.ts';
         $this->constants['MJS_EXTENSION'] = '.mjs';
         $this->constants['TPL_EXTENSION'] = '.tpl';
         $this->constants['TXT_EXTENSION'] = '.txt';

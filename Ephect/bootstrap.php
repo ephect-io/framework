@@ -32,6 +32,9 @@ include FRAMEWORK_PATH . 'Modules' . DIRECTORY_SEPARATOR . 'ModuleInstaller.php'
 include FRAMEWORK_PATH . 'Plugins' . DIRECTORY_SEPARATOR . 'PluginInstaller.php';
 
 HooksRegistry::register();
+if(is_dir(\Constants::CUSTOM_HOOKS_ROOT)) {
+    HooksRegistry::register(\Constants::CUSTOM_HOOKS_ROOT);
+}
 FrameworkRegistry::register();
 
 Autoloader::register();
