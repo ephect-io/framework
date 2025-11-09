@@ -8,15 +8,33 @@ use Ephect\Framework\Utils\Text;
 class HooksRegistry
 {
     private static $instance = null;
+    private static string $hooksFile = \Constants::RUNTIME_DIR . 'HooksRegistry.php';
 
     private function ___construct()
     {
     }
 
-    public static function register(string $path = \Constants::EPHECT_ROOT . \Constants::HOOKS_DIR): void
+    public static function load(): void
+    {
+        self::create()->__load();
+    }
+
+    public static function register(string $path = \Constants::HOOKS_ROOT): void
     {
         self::create()->__register($path);
     }
+
+    protected function __load(): void
+    {
+        if (!file_exists(self::$hooksFile)) {
+            return;
+        }
+
+        $hooks = include self::$hooksFile;
+        foreach ($hooks as $hook) {
+            include $hook;
+        }
+    }   
 
     protected function __register(string $path): void
     {
@@ -41,25 +59,18 @@ class HooksRegistry
                     $path . $filename
                 );
 
-                if(file_exists($path . DIRECTORY_SEPARATOR . $filename)) {
-                    include $path . DIRECTORY_SEPARATOR . $filename;
+            }
+            
+            if(file_exists($hooksFile) !== false) {
+                $existingHooks = include $hooksFile;
+                if(is_array($existingHooks)) {
+                    $hooks = array_unique([...$existingHooks, ...$hooks]);
                 }
             }
 
             $hooksRegistry = Text::jsonToPhpReturnedArray(json_encode($hooks));
 
             File::safeWrite($hooksFile, $hooksRegistry);
-        }
-
-        if (\Constants::IS_PHAR_APP) {
-            $hooksRegistry = File::safeRead($hooksFile);
-
-            $hooks = json_decode($hooksRegistry);
-            $hooks = $hooks->hooks;
-
-            foreach ($hooks as $hook) {
-                include $hook;
-            }
         }
     }
 
