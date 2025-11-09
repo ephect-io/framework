@@ -110,6 +110,7 @@ class ParserService implements ParserServiceInterface
     {
         $this->doHtml($component);
         $text = $this->result;
+        $this->html = $component->getCode();
 
         $p = new InlineCodeParser($component);
         $p->do([
