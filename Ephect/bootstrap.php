@@ -38,8 +38,9 @@ if(file_exists(\Constants::CUSTOM_HOOKS_ROOT) && is_dir(\Constants::CUSTOM_HOOKS
 HooksRegistry::load();
 
 FrameworkRegistry::register();
-
 Autoloader::register();
 
-ModuleInstaller::loadBootstraps();
+ModuleInstaller::findAllAndInitialize();
 PluginInstaller::loadBootstraps();
+
+HooksRegistry::load();

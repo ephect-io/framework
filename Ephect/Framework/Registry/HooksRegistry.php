@@ -32,7 +32,7 @@ class HooksRegistry
 
         $hooks = include self::$hooksFile;
         foreach ($hooks as $hook) {
-            include $hook;
+            include_once $hook;
         }
     }   
 
