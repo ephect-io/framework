@@ -1,9 +1,8 @@
 <?php
 
-namespace Ephect\Hooks;
+namespace Ephect\Modules\DataAccess\Hooks;
 
 use Ephect\Framework\Registry\FrameworkRegistry;
-use Ephect\Framework\Repositories\RepositoryFactory;
 use Ephect\Framework\Repositories\RepositoryFactoryInterface;
 use Ephect\Framework\Repositories\RepositoryInterface;
 
