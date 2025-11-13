@@ -2,8 +2,8 @@
 
 namespace Ephect\Framework\Core;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Registry\FrameworkRegistry;
-use Exception;
 
 class Autoloader
 {
@@ -20,16 +20,9 @@ class Autoloader
     public static function load($className): void
     {
         $classFilename = FrameworkRegistry::read($className);
-
-        /**
-         * Only handle framework classes - let other autoloaders handle other classes
-         */
         if (empty($classFilename)) {
-            // Only throw exception for framework classes, let other autoloaders handle the rest
-            if (str_starts_with($className, 'Ephect\\') || str_starts_with($className, 'DevRez\\')) {
-                throw new Exception("Class $className not found");
-            }
-            return; // Let other autoloaders try
+            Logger::create()->debug("Autoloader: Class `$className` not found in registry");
+            return;
         }
 
         include $classFilename;
