@@ -194,6 +194,13 @@ define(
         : 'Hooks'
 );
 
+define(
+    'DONT_USE_CONFIG_AUTOLOAD',
+    file_exists(DONT_USE_CONFIG_DIR . 'autoload')
+        ? (trim(file_get_contents(DONT_USE_CONFIG_DIR . 'autoload')) == 'true') 
+        : false
+);
+
 if (!DONT_USE_IS_WEB_APP) {
     define('DONT_USE_DOCUMENT_ROOT', DONT_USE_SITE_ROOT . DONT_USE_CONFIG_DOCROOT . DIRECTORY_SEPARATOR);
 }
@@ -246,6 +253,7 @@ class Constants
     public const CONFIG_LIBRARY = DONT_USE_CONFIG_LIBRARY;
     public const CONFIG_COMPONENTS = DONT_USE_CONFIG_COMPONENTS;
     public const CONFIG_HOOKS = DONT_USE_CONFIG_HOOKS;
+    public const CONFIG_AUTOLOAD = DONT_USE_CONFIG_AUTOLOAD;
     public const REL_RUNTIME_JS_DIR = 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
     public const REL_RUNTIME_CSS_DIR = 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
     public const RUNTIME_JS_DIR = DONT_USE_DOCUMENT_ROOT . self::REL_RUNTIME_JS_DIR;

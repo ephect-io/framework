@@ -164,6 +164,8 @@ class ConstantsMaker
         $this->constants['DONT_USE_CONFIG_PAGES'] = file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'pages') ? trim(file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'pages')) : 'Pages';
         $this->constants['DONT_USE_CONFIG_LIBRARY'] = file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'library') ? trim(file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'library')) : 'Library';
         $this->constants['DONT_USE_CONFIG_COMPONENTS'] = file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'components') ? trim(file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'components')) : 'Components';
+        $this->constants['DONT_USE_CONFIG_HOOKS'] = file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'hooks') ? trim(file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'hooks')) : 'Hooks';
+        $this->constants['DONT_USE_CONFIG_AUTOLOAD'] = file_exists($this->constants['DONT_USE_CONFIG_DIR'] . 'autoload') ? trim(file_get_contents($this->constants['DONT_USE_CONFIG_DIR'] . 'autoload') == 'true') : false;
 
         if (!$this->isWebApp) {
             $this->constants['DONT_USE_DOCUMENT_ROOT'] = $this->constants['DONT_USE_SITE_ROOT'] . $this->constants['DONT_USE_CONFIG_DOCROOT'] . DIRECTORY_SEPARATOR;
@@ -217,6 +219,9 @@ class ConstantsMaker
         $this->constants['CUSTOM_COMMANDS_ROOT'] = $this->constants['DONT_USE_SRC_ROOT'] . $this->constants['DONT_USE_CONFIG_COMMANDS'] . DIRECTORY_SEPARATOR;
         $this->constants['CUSTOM_PAGES_ROOT'] = $this->constants['DONT_USE_SRC_ROOT'] . $this->constants['DONT_USE_CONFIG_PAGES'] . DIRECTORY_SEPARATOR;
         $this->constants['CUSTOM_COMPONENTS_ROOT'] = $this->constants['DONT_USE_SRC_ROOT'] . $this->constants['DONT_USE_CONFIG_COMPONENTS'] . DIRECTORY_SEPARATOR;
+        $this->constants['CUSTOM_HOOKS_ROOT'] = $this->constants['DONT_USE_SRC_ROOT'] . $this->constants['DONT_USE_CONFIG_HOOKS'] . DIRECTORY_SEPARATOR;
+        $this->constants['CONFIG_AUTOLOAD'] = $this->constants['DONT_USE_CONFIG_AUTOLOAD'];
+
 
         $this->constants['CLASS_EXTENSION'] = '.class.php';
         $this->constants['HTML_EXTENSION'] = '.html';
