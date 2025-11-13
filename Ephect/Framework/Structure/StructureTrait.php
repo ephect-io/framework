@@ -6,9 +6,11 @@ use Error;
 
 trait StructureTrait
 {
+    protected StructureInterface $structure;
+
     protected function bindStructure(StructureInterface $structure)
     {
-
+        $this->structure = $structure;
         foreach ($structure as $key => $value) {
             if (!property_exists($this, $key)) {
                 $class = get_class($this);
@@ -17,5 +19,10 @@ trait StructureTrait
 
             $this->{$key} = $value;
         }
+    }
+
+    public function getStructure(): StructureInterface
+    {
+        return $this->structure;
     }
 }

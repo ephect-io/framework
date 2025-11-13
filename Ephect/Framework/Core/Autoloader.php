@@ -22,10 +22,14 @@ class Autoloader
         $classFilename = FrameworkRegistry::read($className);
 
         /**
-         * Activate only for debug
+         * Only handle framework classes - let other autoloaders handle other classes
          */
         if (empty($classFilename)) {
-            throw new Exception("Class $className not found");
+            // Only throw exception for framework classes, let other autoloaders handle the rest
+            if (str_starts_with($className, 'Ephect\\') || str_starts_with($className, 'DevRez\\')) {
+                throw new Exception("Class $className not found");
+            }
+            return; // Let other autoloaders try
         }
 
         include $classFilename;
