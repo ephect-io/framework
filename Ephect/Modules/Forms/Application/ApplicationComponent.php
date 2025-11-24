@@ -357,4 +357,18 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
     {
         return $this->cacheFile(\Constants::RUNTIME_JS_DIR);
     }
+
+    public function findDependencies(array &$list, ?string $motherUID = null, ?ComponentInterface $component = null): ?array
+    {
+        $composition = $this->composedOf();
+        if ($composition === null) {
+            return null;
+        }
+
+        $list = array_map(function ($item) {
+            return $item->getFullyQualifiedFunction();
+        }, $composition);
+
+        return $list[0] ?? null;
+    }
 }

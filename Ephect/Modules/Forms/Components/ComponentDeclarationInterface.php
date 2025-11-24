@@ -14,5 +14,9 @@ interface ComponentDeclarationInterface extends ElementInterface
 
     public function getArguments(): ?array;
 
+    public function hasAttributes(): bool;
+
+    public function getAttributes(): ?array;
+
     public function getComposition(): ?ComponentEntity;
 }

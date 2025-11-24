@@ -13,6 +13,7 @@ final class OpenComponentsParser extends AbstractComponentParser
     {
         $this->result = [];
         $this->useVariables = $parameter;
+        $this->useTypes = $this->parent ? $this->parent->getUses() : [];
 
         $comp = $this->component;
         $comp->resetDeclaration();
@@ -52,7 +53,7 @@ final class OpenComponentsParser extends AbstractComponentParser
             &$previous,
             &$parent
         ) {
-            $parent = $previous != null && $previous->getDepth() < $item->getDepth() ? $previous : null;
+            $parent = $previous !== null && $previous->getDepth() < $item->getDepth() ? $previous : null;
 
             if (!$item->hasCloser()) {
                 /**
@@ -103,14 +104,14 @@ final class OpenComponentsParser extends AbstractComponentParser
             $pkey = '$children';
             if (count($propsKeys) === 1 && ($propsKeys[0] === $pkey || $propsKeys[0] === '$slot')) {
                 $pkey = $propsKeys[0];
-                $preComponentBody = <<<PCB
-            <?php if(method_exists({$pkey}, 'props')) {
+                $preComponentBody = <<<PHP
+            <?php if (method_exists({$pkey}, 'props')) {
                 \$props = {$pkey}->props();
                 foreach(\$props as \$key => \$value) {
                     $\$key = \$value;
                 }
             } ?>
-PCB;
+PHP;
             }
 
             $componentRender = <<< PHP
@@ -119,7 +120,7 @@ PCB;
             <?php
             }, 'motherUID' => '$motherUID', 'uid' => '$uid', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]);
             {$pkey} = new \\Ephect\\Modules\\Forms\\Components\\Children(\$struct);
-            \$fn = \\$fqComponentName({$pkey}); \$fn(); 
+            \$fn = $componentName({$pkey}); \$fn(); 
             ?>
             PHP;
 
@@ -144,9 +145,12 @@ PCB;
 
             $decl = ComponentDeclaration::byName($fqComponentName);
             $this->declareMiddlewares($motherUID, $parent, $decl, $fqComponentName, $props);
-            //            $attributesEvent = new ComponentAttributesEvent($this->component, $item);
-            //            $dispatcher = new EventDispatcher();
-            //            $dispatcher->dispatch($attributesEvent);
+            /**
+             * TODO Make a listener for this feature
+             * $attributesEvent = new ComponentAttributesEvent($this->component, $item);
+             * $dispatcher = new EventDispatcher();
+             * $dispatcher->dispatch($attributesEvent);
+             */
 
             $previous = $item;
         };

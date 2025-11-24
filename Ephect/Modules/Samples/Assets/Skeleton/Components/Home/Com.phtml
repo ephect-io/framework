@@ -1,21 +1,21 @@
 <?php
 
-namespace QuickStart;
+namespace QuickStart\Components\Home;
 
 use function Ephect\Hooks\useEffect;
 use function Ephect\Hooks\useStore;
+use function Skeleton\Components\Home\Dummy;
+use function Ephect\Modules\Html\Forms\HtmlSaver;
 
 function Com($props): string
 {
     useEffect(function ($props, /* string */ $b, /* string */ $c, /* string */ $d, /* string */ $m) {
-
         $b = 'It is a';
         $c = 'functional component';
         $d = $props->from;
         [$state] = useStore();
 
         $m = $state->m;
-
     });
 
 return (<<< HTML

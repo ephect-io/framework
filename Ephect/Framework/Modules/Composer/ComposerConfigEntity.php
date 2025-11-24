@@ -32,7 +32,7 @@ class ComposerConfigEntity extends ManifestEntity
 
     private array $requireDev = [];
 
-    public function __construct(?ComposerConfigStructure $structure = null)
+    public function __construct(private ?ComposerConfigStructure $structure = null)
     {
         $this->filename = siteRoot() . "composer.json";
 
