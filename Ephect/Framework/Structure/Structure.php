@@ -36,11 +36,12 @@ class Structure implements StructureInterface
         return get_object_vars($this);
     }
 
-    public function encode(int $jsonOptions = JSON_PRETTY_PRINT): string
+    public function encode(int $jsonOptions = JSON_PRETTY_PRINT, bool $asArray = false): array|string
     {
         $result = $this->recursiveEncode($this);
+        $json = json_encode($result, $jsonOptions);
 
-        return json_encode($result, $jsonOptions);
+        return $asArray ? json_decode($json, $asArray) : $json;
     }
 
     private function recursiveEncode(StructureInterface $structure)
@@ -98,7 +99,7 @@ class Structure implements StructureInterface
         $this->recursiveDecode($this, $array);
     }
 
-    private function recursiveDecode(StructureInterface $structure, array $values)
+    private function recursiveDecode(StructureInterface $structure, array $values): StructureInterface
     {
         $ref = new ReflectionClass($structure);
         $publicProps = $ref->getProperties(ReflectionProperty::IS_PUBLIC);
