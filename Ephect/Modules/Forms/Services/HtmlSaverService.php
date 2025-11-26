@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Modules\Html\Services;
+namespace Ephect\Modules\Forms\Services;
 
 use DateTime;
 use Ephect\Framework\Utils\File;
@@ -10,6 +10,13 @@ class HtmlSaverService implements HtmlSaverServiceInterface
 {
     public function __construct(private readonly ChildrenInterface $children)
     {
+    }
+
+    public function canRefresh(): bool
+    {
+        $canRefresh = $this->children->getAttribute('refresh') ?? false;
+
+        return $canRefresh;
     }
 
     public function canRender(): bool

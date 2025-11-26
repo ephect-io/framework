@@ -1,15 +1,13 @@
 <?php
 
-namespace Ephect\Modules\Html\Forms;
+namespace Ephect\Modules\Forms\Forms;
 
-use Ephect\Modules\Html\Services\HtmlSaverService;
+use Ephect\Modules\Forms\Services\HtmlSaverService;
 use function Ephect\Hooks\useEffect;
 
 function HtmlSaver($children): string
 {
-    useEffect(function($children, $service) {
-        $service = new HtmlSaverService($children);
-    });
+    $service = new HtmlSaverService($children);
 
     return (<<< HTML
         @if %service->canRender() do
@@ -20,6 +18,9 @@ function HtmlSaver($children): string
                 %html = { children };
                 %service->storeHTML(%html);
                 %service->markAsPending();
+            } elseif (%service->canRefresh()) {
+                %html = { children };
+                %service->storeHTML(%html);
             }
         %>
     HTML);
