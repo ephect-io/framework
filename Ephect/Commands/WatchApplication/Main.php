@@ -11,8 +11,8 @@ class Main extends AbstractCommand
 {
     public function run(): int
     {
-        $egg = new Lib($this->application);
-        $egg->watch();
+        $use = new Lib($this->application);
+        $use->watch();
 
         return 0;
     }
