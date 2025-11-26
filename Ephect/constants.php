@@ -187,6 +187,19 @@ define(
         ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'components'))
         : 'Components'
 );
+define(
+    'DONT_USE_CONFIG_HOOKS',
+    file_exists(DONT_USE_CONFIG_DIR . 'hooks')
+        ? trim(file_get_contents(DONT_USE_CONFIG_DIR . 'hooks'))
+        : 'Hooks'
+);
+
+define(
+    'DONT_USE_CONFIG_AUTOLOAD',
+    file_exists(DONT_USE_CONFIG_DIR . 'autoload')
+        ? (trim(file_get_contents(DONT_USE_CONFIG_DIR . 'autoload')) == 'true') 
+        : false
+);
 
 if (!DONT_USE_IS_WEB_APP) {
     define('DONT_USE_DOCUMENT_ROOT', DONT_USE_SITE_ROOT . DONT_USE_CONFIG_DOCROOT . DIRECTORY_SEPARATOR);
@@ -239,6 +252,8 @@ class Constants
     public const CONFIG_PAGES = DONT_USE_CONFIG_PAGES;
     public const CONFIG_LIBRARY = DONT_USE_CONFIG_LIBRARY;
     public const CONFIG_COMPONENTS = DONT_USE_CONFIG_COMPONENTS;
+    public const CONFIG_HOOKS = DONT_USE_CONFIG_HOOKS;
+    public const CONFIG_AUTOLOAD = DONT_USE_CONFIG_AUTOLOAD;
     public const REL_RUNTIME_JS_DIR = 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
     public const REL_RUNTIME_CSS_DIR = 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
     public const RUNTIME_JS_DIR = DONT_USE_DOCUMENT_ROOT . self::REL_RUNTIME_JS_DIR;
@@ -291,15 +306,18 @@ class Constants
     public const CUSTOM_COMMANDS_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_COMMANDS . DIRECTORY_SEPARATOR;
     public const CUSTOM_PAGES_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_PAGES . DIRECTORY_SEPARATOR;
     public const CUSTOM_COMPONENTS_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_COMPONENTS . DIRECTORY_SEPARATOR;
+    public const CUSTOM_HOOKS_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_HOOKS . DIRECTORY_SEPARATOR;
 
     public const CLASS_EXTENSION = '.class.php';
     public const HTML_EXTENSION = '.html';
     public const PREHTML_EXTENSION = '.phtml';
     public const CSS_EXTENSION = '.css';
     public const JS_EXTENSION = '.js';
+    public const JSON_EXTENSION = '.json';
     public const CLASS_JS_EXTENSION = '.class.js';
+    public const TS_EXTENSION = '.ts';
+    public const CLASS_TS_EXTENSION = '.class.ts';
     public const MJS_EXTENSION = '.mjs';
     public const TPL_EXTENSION = '.tpl';
     public const TXT_EXTENSION = '.txt';
-
 }

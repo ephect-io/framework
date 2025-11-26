@@ -3,28 +3,50 @@
 namespace Ephect\Framework\Registry;
 
 use Ephect\Framework\Utils\File;
+use Ephect\Framework\Utils\Text;
 
 class HooksRegistry
 {
     private static $instance = null;
+    private static string $hooksFile = \Constants::RUNTIME_DIR . 'HooksRegistry.php';
 
     private function ___construct()
     {
     }
 
-    public static function register(string $path = \Constants::EPHECT_ROOT): void
+    public static function load(): void
+    {
+        self::create()->__load();
+    }
+
+    public static function register(string $path = \Constants::HOOKS_ROOT): void
     {
         self::create()->__register($path);
     }
 
-    protected function __register(string $path = \Constants::EPHECT_ROOT): void
+    protected function __load(): void
     {
+        if (!file_exists(self::$hooksFile)) {
+            return;
+        }
+
+        $hooks = include self::$hooksFile;
+        foreach ($hooks as $hook) {
+            include_once $hook;
+        }
+    }   
+
+    protected function __register(string $path): void
+    {
+        $hooksFile = \Constants::RUNTIME_DIR . 'HooksRegistry.php';
+
         if (!\Constants::IS_PHAR_APP) {
-            if (!file_exists($path . \Constants::HOOKS_DIR)) {
+            if (!file_exists($path)) {
                 return;
             }
+
             $hooks = [];
-            $dir_handle = opendir($path . \Constants::HOOKS_DIR);
+            $dir_handle = opendir($path);
 
             while (false !== $filename = readdir($dir_handle)) {
                 if ($filename == '.' || $filename == '..') {
@@ -34,26 +56,21 @@ class HooksRegistry
                 $hooks[] = str_replace(
                     DIRECTORY_SEPARATOR,
                     PHP_OS === 'WINNT' ? DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR  : DIRECTORY_SEPARATOR,
-                    \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename
+                    $path . $filename
                 );
 
-                include $path . \Constants::HOOKS_DIR . DIRECTORY_SEPARATOR . $filename;
+            }
+            
+            if(file_exists($hooksFile) !== false) {
+                $existingHooks = include $hooksFile;
+                if(is_array($existingHooks)) {
+                    $hooks = array_unique([...$existingHooks, ...$hooks]);
+                }
             }
 
-            $hooksRegistry = ['Hooks' => $hooks];
+            $hooksRegistry = Text::jsonToPhpReturnedArray(json_encode($hooks));
 
-            File::safeWrite(\Constants::RUNTIME_DIR . 'HooksRegistry.json', json_encode($hooksRegistry));
-        }
-
-        if (\Constants::IS_PHAR_APP) {
-            $hooksRegistry = File::safeRead(\Constants::RUNTIME_DIR . 'HooksRegistry.json');
-
-            $hooks = json_decode($hooksRegistry);
-            $hooks = $hooks->hooks;
-
-            foreach ($hooks as $hook) {
-                include $hook;
-            }
+            File::safeWrite($hooksFile, $hooksRegistry);
         }
     }
 

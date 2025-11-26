@@ -14,7 +14,6 @@ include  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'constants.php';
 
 include  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'constants_utils.php';
 
-include FRAMEWORK_PATH . 'Core' . DIRECTORY_SEPARATOR . 'Autoloader.php';
 include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'File.php';
 include FRAMEWORK_PATH . 'Utils' . DIRECTORY_SEPARATOR . 'Text.php';
 include FRAMEWORK_PATH . 'ElementTrait.php';
@@ -32,9 +31,19 @@ include FRAMEWORK_PATH . 'Modules' . DIRECTORY_SEPARATOR . 'ModuleInstaller.php'
 include FRAMEWORK_PATH . 'Plugins' . DIRECTORY_SEPARATOR . 'PluginInstaller.php';
 
 HooksRegistry::register();
+if(file_exists(\Constants::CUSTOM_HOOKS_ROOT) && is_dir(\Constants::CUSTOM_HOOKS_ROOT)) {
+    HooksRegistry::register(\Constants::CUSTOM_HOOKS_ROOT);
+}
+HooksRegistry::load();
+
 FrameworkRegistry::register();
+if (!\Constants::CONFIG_AUTOLOAD) {
+    include FRAMEWORK_PATH . 'Logger' . DIRECTORY_SEPARATOR . 'Logger.php';
+    include FRAMEWORK_PATH . 'Core' . DIRECTORY_SEPARATOR . 'Autoloader.php';
+    Autoloader::register();
+}
 
-Autoloader::register();
-
-ModuleInstaller::loadBootstraps();
+ModuleInstaller::findAllAndInitialize();
 PluginInstaller::loadBootstraps();
+
+HooksRegistry::load();

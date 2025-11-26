@@ -6,6 +6,7 @@ use Ephect\Framework\CLI\Console;
 use Ephect\Framework\ElementUtils;
 use Ephect\Framework\Modules\Composer\ComposerConfigReader;
 use Ephect\Framework\Registry\FrameworkRegistry;
+use Ephect\Framework\Registry\HooksRegistry;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 use ErrorException;
@@ -20,15 +21,20 @@ class ModuleInstaller
     {
     }
 
-    public static function loadBootstraps(): void
+    public static function findAllAndInitialize(): void
     {
         [$filename, $paths] = self::readModulePaths();
         foreach ($paths as $path) {
-            $bootstrapFile = $path . DIRECTORY_SEPARATOR . "bootstrap.php";
-
+            $moduleHooksDir = $path . DIRECTORY_SEPARATOR . HOOKS_DIR;
+            if(file_exists($moduleHooksDir) || is_dir($moduleHooksDir)) {
+                HooksRegistry::register($moduleHooksDir);
+            }
+    
+            $bootstrapFile = $path . DIRECTORY_SEPARATOR . "Bootstrap.php";
             if (!file_exists($bootstrapFile)) {
                 continue;
             }
+    
             [$namespace, $className] = ElementUtils::getClassDefinitionFromFile($bootstrapFile);
             $fqBootstrap = $namespace . '\\' . $className;
 
