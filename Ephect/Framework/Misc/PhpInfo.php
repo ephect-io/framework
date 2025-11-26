@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\Core;
+namespace Ephect\Framework\Misc;
 
 use Ephect\Framework\Registry\StateRegistry;
 use stdClass;

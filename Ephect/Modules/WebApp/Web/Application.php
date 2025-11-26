@@ -37,7 +37,6 @@ class Application extends AbstractApplication
 
         CacheRegistry::load();
         PluginRegistry::load();
-        HooksRegistry::register(\Constants::APP_ROOT);
         FrameworkRegistry::load();
         FrameworkRegistry::registerBuiltComponents();
         FrameworkRegistry::save();

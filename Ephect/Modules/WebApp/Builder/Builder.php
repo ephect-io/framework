@@ -7,13 +7,11 @@ use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
-use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 use Ephect\Modules\Routing\Services\RouterService;
 use Ephect\Modules\WebApp\Builder\Copiers\TemplatesCopyMaker;
 use Ephect\Modules\WebApp\Builder\Descriptors\ComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\ModuleListDescriptor;
 use Ephect\Modules\WebApp\Builder\Descriptors\PluginListDescriptor;
-use Ephect\Modules\WebApp\Builder\Descriptors\UniqueComponentListDescriptor;
 use Ephect\Modules\WebApp\Builder\Finders\PagesFinder;
 use Ephect\Modules\WebApp\Builder\Finders\RoutesFinder;
 use Ephect\Modules\WebApp\Builder\Registerer\PageRegisterer;
@@ -89,7 +87,7 @@ class Builder
 
             CodeRegistry::save();
             PluginRegistry::save();
-//             ComponentRegistry::save();
+            ComponentRegistry::save();
         }
     }
 
@@ -118,7 +116,7 @@ class Builder
             $fqRoute = ComponentRegistry::read($route);
             $comp = $this->list[$fqRoute];
 
-            //            $comp->copyComponents($this->list);
+            // $comp->copyComponents($this->list);
         }
 
         $this->routes = $routes;

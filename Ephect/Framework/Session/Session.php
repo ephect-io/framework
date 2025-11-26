@@ -16,6 +16,8 @@ final class Session
         if (session_id() !== null && isset($_SESSION[$key])) {
             return $_SESSION[$key];
         }
+
+        return null;
     }
 
     public function write(string $key, mixed $value): void

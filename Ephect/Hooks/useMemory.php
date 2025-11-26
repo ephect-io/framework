@@ -29,7 +29,7 @@ function useMemory(array|object|null $memory = null, string $get = ''): array
         $memory = MemoryRegistry::item('memory');
 
         if ($get !== '' && isset($memory[$get])) {
-            $value = (is_array($memory) ? $memory[$get] : $memory->$get) ;
+            $value = (is_array($memory) ? $memory[$get] : $memory?->$get) ;
             return [$value, $setMemory];
         }
     }
