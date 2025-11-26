@@ -3,10 +3,9 @@
 namespace QuickStart\Components\Home;
 
 use function Ephect\Hooks\useEffect;
-use function Ephect\Hooks\useState;
-
+use function Ephect\Hooks\useStore;
 use function QuickStart\Components\Home\Dummy;
-use function Ephect\Modules\Html\Forms\HtmlSaver;
+use function Ephect\Modules\Forms\Forms\HtmlSaver;
 
 function Com($props): string
 {
@@ -15,11 +14,9 @@ function Com($props): string
         $b = 'It is a';
         $c = 'functional component';
         $d = $props->from;
-        [$state, $setState] = useState();
+        [$state] = useStore();
 
-        $m = $state->m->n;
-
-        $setState(['p' => ['n' => 'q']]);
+        $m = $state->m;
 
     });
 

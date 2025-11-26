@@ -2,14 +2,14 @@
 
 namespace QuickStart;
 
-use function Ephect\Modules\Routing\Components\Router;
-use function Ephect\Modules\Routing\Components\Route;
+use function Ephect\Modules\Routing\Forms\Router;
+use function Ephect\Modules\Routing\Forms\Route;
 
 function Switcher(): string
 {
     return (<<< HTML
     <Router>
-        <Route method="GET" rule='/' exact="true" redirect="Home" />
+        <Route method='GET' rule='/' exact='true' redirect='Home' />
     </Router>
     HTML);
 }

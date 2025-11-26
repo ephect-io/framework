@@ -2,14 +2,12 @@
 namespace QuickStart\Components\Callback;
 
 use function Ephect\Hooks\useEffect;
-
-use Ephect\Modules\Http\Forms\ResponseHeader;
+use function Ephect\Modules\Http\Forms\ResponseHeader;
 
 /**
  * @param $props
  * @return string
  */
-#[ResponseHeader(contentType: "application/json")]
 function Response($props): string
 {
     useEffect(function($props, /* array */ $response) {

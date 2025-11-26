@@ -6,7 +6,8 @@ use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Utils\File;
-use Ephect\Samples\Common;
+use Ephect\Framework\Modules\Utils;
+use Ephect\Modules\Samples\Commands\Common;
 
 class Lib extends AbstractCommandLib
 {
@@ -14,24 +15,14 @@ class Lib extends AbstractCommandLib
     {
         Console::writeLine(ConsoleColors::getColoredString("Publishing Skeleton files...", ConsoleColors::BLUE));
 
-        $sample = Common::getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'QuickStart';
+        $utils = new Utils(dirname(__DIR__));
+
+        $sample = $utils->getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'QuickStart';
 
         File::safeMkDir(siteSrcPath());
         $destDir = realpath(siteSrcPath());
 
-        if (!file_exists($sample) || !file_exists($destDir)) {
-            Console::writeLine("Stopping! Sample dir %s or destination dir %s does not exist.", $sample, $destDir);
-            return;
-        }
-
-        $tree = File::walkTreeFiltered($sample);
-
-        Console::writeLine(ConsoleColors::getColoredString("Source directory: $sample", ConsoleColors::GREEN));
-        Console::writeLine(ConsoleColors::getColoredString("Destination directory: $destDir", ConsoleColors::GREEN));
-        foreach ($tree as $filePath) {
-            Console::writeLine("Copying file: %s", $filePath);
-            File::safeWrite($destDir . $filePath, '');
-            copy($sample . $filePath, $destDir . $filePath);
-        }
+        $common = new Common();
+        $common->publishFiles($sample, $destDir);
     }
 }

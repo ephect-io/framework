@@ -2,12 +2,14 @@
 
 namespace QuickStart\Pages;
 
-use Com as QuickStartCom;
-use function Ephect\Hooks\useState;
+use function QuickStart\Components\Additionals\Mother;
+use function QuickStart\Components\Home\Com as QuickStartCom;
+
+use function Ephect\Hooks\useStore;
 
 function Home(): string
 {
-    useState(['m' => ['n' => 'with a']]);
+    useStore(['m' => 'with a']);
 
     return (<<< HTML
     <Mother>

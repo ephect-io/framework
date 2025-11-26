@@ -9,16 +9,13 @@ use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Tree\Tree;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\ApplicationIgniter;
-use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
-use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Components\ComponentFactory;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Components\FileComponentInterface;
 use Ephect\Modules\Forms\Events\ComponentFinishedEvent;
-use Ephect\Modules\Forms\Events\PageFinishedEvent;
 use Ephect\Modules\Forms\Registry\CacheRegistry;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -257,21 +254,24 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         array|object|null $functionArgs = null
     ): array {
         [$fqFunctionName, $cacheFilename, $isCached] = ComponentFinder::find($functionName, $motherUID);
-        if (!$isCached) {
-            ComponentRegistry::load();
 
-            $fqName = ComponentRegistry::read($functionName);
-            $component = ComponentFactory::create($fqName, $motherUID);
-            $component->parse();
+        if ($isCached) {
+            return [$fqFunctionName, $cacheFilename];
+        }
 
-            $motherUID = $component->getMotherUID();
-            $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
+        ComponentRegistry::load();
 
-            if ($motherUID !== $component->getUID()) {
-                $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
-                $dispatcher = new EventDispatcher();
-                $dispatcher->dispatch($finishedEvent);
-            }
+        $fqName = ComponentRegistry::read($functionName);
+        $component = ComponentFactory::create($fqName, $motherUID);
+        $component->parse();
+
+        $motherUID = $component->getMotherUID();
+        $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
+
+        if ($motherUID !== $component->getUID()) {
+            $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
+            $dispatcher = new EventDispatcher();
+            $dispatcher->dispatch($finishedEvent);
         }
 
         return [$fqFunctionName, $cacheFilename];
