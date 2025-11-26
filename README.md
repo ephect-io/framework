@@ -158,6 +158,8 @@ And here is a component inheriting from Mother component:
 
 namespace QuickStart;
 
+use QuickStart\Components\Mother;
+
 function Home()
 {
     return (<<< HTML
@@ -212,13 +214,14 @@ It will render:
 
 **Ephect** introduces *hooks* to manage the data workflow. Additionally to well-known useEffect and useState hooks in the **ReactJS** realm, **Ephect** comes with 3 new basic hooks:
 
-- useProps: to ensure a property can be used,
+- useState: to store data in a file and get it back as is,
+- useStore: to store data in a file and get it back as object,
+- useMemory: to store data in a memory registry and get it back as is,
 - useQueryArgument: to filter the value passed as parameter to the query,
-- useSlot: to bind variables nested in slots to the parent component.
 
-## CLI tool *egg*
+## CLI tool *use*
 
-**Ephect** comes with a CLI tool called *egg*. The main feature of **egg** is to build the code of the whole application at once. This is done in one command: *php egg build*. The benefits of this approach are the errors management and the increase of velocity of the application.
+**Ephect** comes with a CLI tool called *use* which provide you with a bunch of practical `make` commands. You can see the full list of commands by typing `php use help`. The primary role of **use** is to build the code of the whole application at once. This is done in one command: `php use build`. The benefits of this approach are the errors management and the increase of velocity of the application.
 
 ### Error handling
 
@@ -256,7 +259,7 @@ where *myproject* is the name of your project.
 
 Move to *myproject* directory and type:
 
-    php egg make:quickstart
+    php use make:quickstart
 
 You will see a **app** directory in which you will find the standard structure of an Ephect application and a **public** directory in which is stored the index.php.
 
@@ -273,7 +276,7 @@ To run the application without setting up a web server, you need to serve the ap
 Open another terminal, move to your project directory and type:
 
 ```bash
-php egg serve
+php use serve
 ```
 
 Come back to the first terminal and type
