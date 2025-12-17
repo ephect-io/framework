@@ -14,5 +14,4 @@ final class ForParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

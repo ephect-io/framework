@@ -45,7 +45,6 @@ class AuthenticationService extends StaticElement
             $login = $row["userName"];
 
             $stmt = $connection->query("UPDATE crypto SET outdated=1 WHERE token =:token;", ['token' => $token]);
-
         }
 
         $token = Crypto::createToken('');
@@ -125,5 +124,4 @@ class AuthenticationService extends StaticElement
 
         return $result;
     }
-
 }

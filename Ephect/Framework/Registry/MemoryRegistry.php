@@ -68,5 +68,4 @@ class MemoryRegistry extends AbstractStateRegistry implements RegistryInterface
     {
         return static::getInstance()->__keys($item = null);
     }
-
 }

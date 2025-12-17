@@ -31,7 +31,6 @@ class Curl
             curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
         } else {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-
         }
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
@@ -52,7 +51,6 @@ class Curl
         }
 
         $code = (int)$info['http_code'];
-        curl_close($ch);
 
         return [$code, $header, $content];
     }

@@ -13,8 +13,8 @@ abstract class ManifestReader
      * @throws JsonException
      */
     protected function readManifest(
-        string                   $manifestDirectory,
-        ManifestReaderInputEnum  $inputOption = ManifestReaderInputEnum::IS_OBJECT,
+        string $manifestDirectory,
+        ManifestReaderInputEnum $inputOption = ManifestReaderInputEnum::IS_OBJECT,
         ManifestReaderOutputEnum $returnOption = ManifestReaderOutputEnum::AS_IS
     ): array|string|null {
         $asPhpArray = $inputOption == ManifestReaderInputEnum::IS_ARRAY;

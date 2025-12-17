@@ -70,5 +70,4 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
 
         return $this->entity;
     }
-
 }

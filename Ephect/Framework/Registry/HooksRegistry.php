@@ -34,7 +34,7 @@ class HooksRegistry
         foreach ($hooks as $hook) {
             include_once $hook;
         }
-    }   
+    }
 
     protected function __register(string $path): void
     {
@@ -58,12 +58,11 @@ class HooksRegistry
                     PHP_OS === 'WINNT' ? DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR  : DIRECTORY_SEPARATOR,
                     $path . $filename
                 );
-
             }
-            
-            if(file_exists($hooksFile) !== false) {
+
+            if (file_exists($hooksFile) !== false) {
                 $existingHooks = include $hooksFile;
-                if(is_array($existingHooks)) {
+                if (is_array($existingHooks)) {
                     $hooks = array_unique([...$existingHooks, ...$hooks]);
                 }
             }

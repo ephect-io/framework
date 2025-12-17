@@ -37,7 +37,7 @@ class Common
         $common = self::getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Common';
 
         Console::writeLine(ConsoleColors::getColoredString("Publishing Common files...", ConsoleColors::BLUE));
-        
+
         $this->publishConfigFiles($common);
         $this->publishAppFiles($common);
     }

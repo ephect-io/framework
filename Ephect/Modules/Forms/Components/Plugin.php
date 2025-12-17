@@ -18,5 +18,4 @@ class Plugin extends Component implements FileComponentInterface
         PluginRegistry::write($this->getFullyQualifiedFunction(), $this->getSourceFilename());
         ComponentRegistry::safeWrite($this->getFunction(), $this->getFullyQualifiedFunction());
     }
-
 }

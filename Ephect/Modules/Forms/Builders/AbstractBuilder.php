@@ -26,5 +26,4 @@ abstract class AbstractBuilder
 
         return new $class($struct);
     }
-
 }

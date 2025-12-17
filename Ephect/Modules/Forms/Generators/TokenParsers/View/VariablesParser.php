@@ -60,7 +60,5 @@ final class VariablesParser extends AbstractTokenParser
         }
 
         $this->funcVariables = $variables;
-
     }
-
 }

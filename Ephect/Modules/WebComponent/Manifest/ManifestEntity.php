@@ -40,5 +40,4 @@ class ManifestEntity implements ManifestEntityInterface
     {
         return $this->arguments;
     }
-
 }

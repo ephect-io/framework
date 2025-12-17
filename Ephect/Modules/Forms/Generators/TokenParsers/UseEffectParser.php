@@ -36,7 +36,6 @@ final class UseEffectParser extends AbstractTokenParser
         }
 
         $this->html = preg_replace($re, 'useEffect(function() use ($1' . $params . $uses . ') {$8}, $2);', $this->html, 1);
-
     }
 
     private function doDeclaration(null|string|array $parameter = null): void

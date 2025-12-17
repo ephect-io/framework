@@ -22,5 +22,4 @@ final class IfParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

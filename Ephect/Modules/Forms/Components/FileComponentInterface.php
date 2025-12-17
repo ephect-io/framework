@@ -31,5 +31,4 @@ interface FileComponentInterface extends ComponentInterface
         ?string $motherUID = null,
         ?ComponentInterface $component = null
     ): ?array;
-
 }

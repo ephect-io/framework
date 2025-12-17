@@ -8,7 +8,5 @@ final class FragmentsParser extends AbstractTokenParser
     {
         $this->html = str_replace('<>', '', $this->html);
         $this->html = str_replace('</>', '', $this->html);
-
     }
-
 }

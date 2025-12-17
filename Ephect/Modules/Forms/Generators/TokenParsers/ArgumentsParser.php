@@ -28,5 +28,4 @@ final class ArgumentsParser extends AbstractTokenParser
             }
         }
     }
-
 }

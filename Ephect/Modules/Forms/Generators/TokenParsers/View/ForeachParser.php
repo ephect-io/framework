@@ -14,5 +14,4 @@ final class ForeachParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

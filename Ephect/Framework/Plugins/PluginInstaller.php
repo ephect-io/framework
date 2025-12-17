@@ -16,7 +16,6 @@ class PluginInstaller
 {
     public function __construct(private string $workingDirectory)
     {
-
     }
 
     public static function loadBootstraps(): void

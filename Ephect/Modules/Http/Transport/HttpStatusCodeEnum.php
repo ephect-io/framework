@@ -13,5 +13,4 @@ enum HttpStatusCodeEnum: int
     case FORBIDDEN_ACCESS = 403;
     case METHOD_NOT_ALLOWED = 405;
     case SERVER_ERROR = 500;
-
 }

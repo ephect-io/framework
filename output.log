@@ -1,0 +1,1592 @@
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Commands/CommonLib.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 35 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...me/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Commands/MakeCommand/Lib.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 5 WARNINGS AFFECTING 5 LINES
+--------------------------------------------------------------------------------
+ 18 | WARNING | Line exceeds 120 characters; contains 128 characters
+ 19 | WARNING | Line exceeds 120 characters; contains 157 characters
+ 20 | WARNING | Line exceeds 120 characters; contains 128 characters
+ 28 | WARNING | Line exceeds 120 characters; contains 121 characters
+ 92 | WARNING | Line exceeds 120 characters; contains 128 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...e/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Commands/ModuleRemove/Lib.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AND 3 WARNINGS AFFECTING 5 LINES
+--------------------------------------------------------------------------------
+ 20 | WARNING | [ ] Line exceeds 120 characters; contains 137 characters
+ 25 | WARNING | [ ] Line exceeds 120 characters; contains 125 characters
+ 29 | WARNING | [ ] Line exceeds 120 characters; contains 126 characters
+ 47 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+ 49 | ERROR   | [x] The closing brace for the class must go on the next line
+    |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../dpjb/Sites/Ephect/SDK/php/framework/Ephect/Commands/ModuleRequire/Lib.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AND 5 WARNINGS AFFECTING 7 LINES
+--------------------------------------------------------------------------------
+ 17 | WARNING | [ ] Line exceeds 120 characters; contains 121 characters
+ 21 | WARNING | [ ] Line exceeds 120 characters; contains 122 characters
+ 33 | WARNING | [ ] Line exceeds 120 characters; contains 138 characters
+ 38 | WARNING | [ ] Line exceeds 120 characters; contains 125 characters
+ 42 | WARNING | [ ] Line exceeds 120 characters; contains 126 characters
+ 48 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+ 50 | ERROR   | [x] The closing brace for the class must go on the next line
+    |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Commands/Serve/Lib.php
+-----------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+-----------------------------------------------------------------------------
+ 14 | ERROR | Method name "Lib::Serve" is not in camel caps format
+-----------------------------------------------------------------------------
+
+
+FILE: ...pjb/Sites/Ephect/SDK/php/framework/Ephect/Commands/ShowBranchTree/Main.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 15 | WARNING | Line exceeds 120 characters; contains 127 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...ect/SDK/php/framework/Ephect/Framework/Aggregators/AggregatorInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 11 | ERROR | [x] The closing brace for the interface must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...e/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/CLI/Application.php
+--------------------------------------------------------------------------------
+FOUND 3 ERRORS AFFECTING 3 LINES
+--------------------------------------------------------------------------------
+  42 | ERROR | [x] Function closing brace must go on the next line following
+     |       |     the body; found 1 blank lines before brace
+  50 | ERROR | [x] Function closing brace must go on the next line following
+     |       |     the body; found 1 blank lines before brace
+ 100 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 3 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/CLI/Console.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AND 1 WARNING AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+  50 | WARNING | [ ] Line exceeds 120 characters; contains 131 characters
+ 132 | ERROR   | [x] The closing brace for the class must go on the next line
+     |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...Sites/Ephect/SDK/php/framework/Ephect/Framework/CLI/FileSystem/Watcher.php
+--------------------------------------------------------------------------------
+FOUND 5 ERRORS AFFECTING 5 LINES
+--------------------------------------------------------------------------------
+ 21 | ERROR | [x] Blank line found at start of control structure
+ 29 | ERROR | [x] Blank line found at end of control structure
+ 32 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+ 38 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+ 40 | ERROR | [ ] Method name "_listFiles" must not be prefixed with an
+    |       |     underscore to indicate visibility
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 4 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...Ephect/SDK/php/framework/Ephect/Framework/Commands/ApplicationCommands.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 16 | WARNING | Property name "$_commands" should not be prefixed with an
+    |         | underscore to indicate visibility
+--------------------------------------------------------------------------------
+
+
+FILE: .../php/framework/Ephect/Framework/Commands/Attributes/CommandDeclaration.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 14 | ERROR | [x] Expected 1 space between type hint and argument "$isPhar"; 3
+    |       |     found
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Commands/Builder.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+--------------------------------------------------------------------------------
+ 23 | WARNING | Line exceeds 120 characters; contains 162 characters
+ 27 | WARNING | Line exceeds 120 characters; contains 121 characters
+ 28 | WARNING | Line exceeds 120 characters; contains 126 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...Sites/Ephect/SDK/php/framework/Ephect/Framework/Commands/CommandRunner.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 12 | ERROR | [x] Expected 1 space between type hint and argument
+    |       |     "$_application"; 16 found
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Ephect/SDK/php/framework/Ephect/Framework/Configuration/ConfigElement.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 37 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...tes/Ephect/SDK/php/framework/Ephect/Framework/Core/AbstractApplication.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 182 | ERROR | [x] Blank line found at end of control structure
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...jb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Core/ConstantsMaker.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AND 44 WARNINGS AFFECTING 45 LINES
+--------------------------------------------------------------------------------
+   1 | WARNING | [ ] A file should declare new symbols (classes, functions,
+     |         |     constants, etc.) and cause no other side effects, or it
+     |         |     should execute logic with side effects, but should not do
+     |         |     both. The first symbol is defined on line 9 and the first
+     |         |     side effect is on line 275.
+  23 | WARNING | [ ] Line exceeds 120 characters; contains 150 characters
+  39 | WARNING | [ ] Line exceeds 120 characters; contains 139 characters
+  56 | WARNING | [ ] Line exceeds 120 characters; contains 152 characters
+  57 | WARNING | [ ] Line exceeds 120 characters; contains 128 characters
+  59 | WARNING | [ ] Line exceeds 120 characters; contains 155 characters
+  61 | WARNING | [ ] Line exceeds 120 characters; contains 164 characters
+  62 | WARNING | [ ] Line exceeds 120 characters; contains 157 characters
+  69 | WARNING | [ ] Line exceeds 120 characters; contains 144 characters
+  70 | WARNING | [ ] Line exceeds 120 characters; contains 140 characters
+  74 | WARNING | [ ] Line exceeds 120 characters; contains 201 characters
+  99 | WARNING | [ ] Line exceeds 120 characters; contains 129 characters
+ 101 | WARNING | [ ] Line exceeds 120 characters; contains 147 characters
+ 102 | WARNING | [ ] Line exceeds 120 characters; contains 307 characters
+ 103 | WARNING | [ ] Line exceeds 120 characters; contains 301 characters
+ 104 | WARNING | [ ] Line exceeds 120 characters; contains 143 characters
+ 118 | WARNING | [ ] Line exceeds 120 characters; contains 126 characters
+ 127 | WARNING | [ ] Line exceeds 120 characters; contains 164 characters
+ 128 | WARNING | [ ] Line exceeds 120 characters; contains 198 characters
+ 129 | WARNING | [ ] Line exceeds 120 characters; contains 129 characters
+ 151 | WARNING | [ ] Line exceeds 120 characters; contains 149 characters
+ 155 | WARNING | [ ] Line exceeds 120 characters; contains 123 characters
+ 157 | WARNING | [ ] Line exceeds 120 characters; contains 139 characters
+ 160 | WARNING | [ ] Line exceeds 120 characters; contains 239 characters
+ 161 | WARNING | [ ] Line exceeds 120 characters; contains 215 characters
+ 162 | WARNING | [ ] Line exceeds 120 characters; contains 244 characters
+ 163 | WARNING | [ ] Line exceeds 120 characters; contains 214 characters
+ 164 | WARNING | [ ] Line exceeds 120 characters; contains 202 characters
+ 165 | WARNING | [ ] Line exceeds 120 characters; contains 210 characters
+ 166 | WARNING | [ ] Line exceeds 120 characters; contains 222 characters
+ 167 | WARNING | [ ] Line exceeds 120 characters; contains 202 characters
+ 168 | WARNING | [ ] Line exceeds 120 characters; contains 219 characters
+ 171 | WARNING | [ ] Line exceeds 120 characters; contains 164 characters
+ 175 | WARNING | [ ] Line exceeds 120 characters; contains 129 characters
+ 176 | WARNING | [ ] Line exceeds 120 characters; contains 131 characters
+ 179 | WARNING | [ ] Line exceeds 120 characters; contains 133 characters
+ 180 | WARNING | [ ] Line exceeds 120 characters; contains 133 characters
+ 181 | WARNING | [ ] Line exceeds 120 characters; contains 133 characters
+ 182 | WARNING | [ ] Line exceeds 120 characters; contains 133 characters
+ 215 | WARNING | [ ] Line exceeds 120 characters; contains 122 characters
+ 219 | WARNING | [ ] Line exceeds 120 characters; contains 158 characters
+ 220 | WARNING | [ ] Line exceeds 120 characters; contains 152 characters
+ 221 | WARNING | [ ] Line exceeds 120 characters; contains 162 characters
+ 222 | WARNING | [ ] Line exceeds 120 characters; contains 152 characters
+ 275 | ERROR   | [ ] Closing brace must not be followed by any comment or
+     |         |     statement on the same line
+ 275 | ERROR   | [x] The closing brace for the class must go on the next line
+     |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/ElementInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 23 | ERROR | [x] The closing brace for the interface must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/ElementUtils.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 167 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...hect/SDK/php/framework/Ephect/Framework/Event/EventDispatcherInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...phect/SDK/php/framework/Ephect/Framework/Event/StoppableEventInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ome/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Logger/Logger.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 51 | WARNING | Line exceeds 120 characters; contains 137 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...ites/Ephect/SDK/php/framework/Ephect/Framework/Manifest/ManifestReader.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 16 | ERROR | [x] Expected 1 space between type hint and argument
+    |       |     "$manifestDirectory"; 19 found
+ 17 | ERROR | [x] Expected 1 space between type hint and argument
+    |       |     "$inputOption"; 2 found
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...hp/framework/Ephect/Framework/Middlewares/AttributeMiddlewareInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...K/php/framework/Ephect/Framework/Modules/Composer/ComposerConfigEntity.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 110 | ERROR | Method name "ComposerConfigEntity::bindStructure_" is not in
+     |       | camel caps format
+--------------------------------------------------------------------------------
+
+
+FILE: ...ites/Ephect/SDK/php/framework/Ephect/Framework/Modules/ModuleInstaller.php
+--------------------------------------------------------------------------------
+FOUND 6 ERRORS AFFECTING 6 LINES
+--------------------------------------------------------------------------------
+  29 | ERROR | [x] Expected 1 space after IF keyword; 0 found
+  32 | ERROR | [x] Whitespace found at end of line
+  37 | ERROR | [x] Whitespace found at end of line
+ 127 | ERROR | [x] Function closing brace must go on the next line following
+     |       |     the body; found 1 blank lines before brace
+ 218 | ERROR | [x] Function closing brace must go on the next line following
+     |       |     the body; found 1 blank lines before brace
+ 220 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 6 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...Ephect/SDK/php/framework/Ephect/Framework/Modules/ModuleManifestEntity.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 55 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Ephect/SDK/php/framework/Ephect/Framework/Modules/ModulesConfigEntity.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 64 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ites/Ephect/SDK/php/framework/Ephect/Framework/Plugins/PluginInstaller.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 20 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...s/Ephect/SDK/php/framework/Ephect/Framework/Registry/FrameworkRegistry.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+  91 | ERROR | [x] Blank line found at end of control structure
+ 173 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...Sites/Ephect/SDK/php/framework/Ephect/Framework/Registry/HooksRegistry.php
+--------------------------------------------------------------------------------
+FOUND 5 ERRORS AFFECTING 5 LINES
+--------------------------------------------------------------------------------
+ 37 | ERROR | [x] Whitespace found at end of line
+ 61 | ERROR | [x] Blank line found at end of control structure
+ 63 | ERROR | [x] Whitespace found at end of line
+ 64 | ERROR | [x] Expected 1 space after IF keyword; 0 found
+ 66 | ERROR | [x] Expected 1 space after IF keyword; 0 found
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 5 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ites/Ephect/SDK/php/framework/Ephect/Framework/Registry/MemoryRegistry.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 72 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...Ephect/SDK/php/framework/Ephect/Framework/Registry/StaticRegistryTrait.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 70 | ERROR | [x] The closing brace for the trait must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...php/framework/Ephect/Framework/Repositories/RepositoryFactoryInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ct/SDK/php/framework/Ephect/Framework/Services/ServiceFactoryInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...e/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Session/Session.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 38 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...jb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Structure/Structure.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+  82 | WARNING | Line exceeds 120 characters; contains 121 characters
+ 130 | WARNING | Line exceeds 120 characters; contains 125 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...ites/Ephect/SDK/php/framework/Ephect/Framework/Templates/TemplateMaker.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 45 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...pjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Tree/TreeInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 35 | ERROR | [x] The closing brace for the interface must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Utils/Text.php
+--------------------------------------------------------------------------------
+FOUND 3 ERRORS AFFECTING 3 LINES
+--------------------------------------------------------------------------------
+ 129 | ERROR | [x] Blank line found at end of control structure
+ 138 | ERROR | [x] Blank line found at end of control structure
+ 173 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 3 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Utils/Zip.php
+------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+------------------------------------------------------------------------------
+ 31 | ERROR | [x] Blank line found at start of control structure
+------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Framework/Web/Curl.php
+-----------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+-----------------------------------------------------------------------------
+ 34 | ERROR | [x] Blank line found at end of control structure
+-----------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+-----------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/Hooks/useProps.php
+-------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+-------------------------------------------------------------------------
+ 34 | ERROR | [x] Blank line found at start of control structure
+ 42 | ERROR | [x] Blank line found at start of control structure
+-------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+-------------------------------------------------------------------------
+
+
+FILE: ...hect/SDK/php/framework/Ephect/Modules/DataAccess/CRUD/CrudQueriesTrait.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AND 5 WARNINGS AFFECTING 6 LINES
+--------------------------------------------------------------------------------
+  9 | WARNING | [ ] Property name "$_select" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 10 | WARNING | [ ] Property name "$_insert" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 11 | WARNING | [ ] Property name "$_update" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 12 | WARNING | [ ] Property name "$_delete" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 13 | WARNING | [ ] Property name "$_parameters" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 84 | ERROR   | [x] The closing brace for the trait must go on the next line
+    |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...t/SDK/php/framework/Ephect/Modules/DataAccess/Client/PDO/PdoConnection.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AND 9 WARNINGS AFFECTING 10 LINES
+--------------------------------------------------------------------------------
+ 18 | ERROR   | [x] There must be a blank line following the last trait import
+    |         |     statement
+ 19 | WARNING | [ ] Property name "$_state" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 20 | WARNING | [ ] Property name "$_config" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 21 | WARNING | [ ] Property name "$_dsn" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 22 | WARNING | [ ] Property name "$_params" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 23 | WARNING | [ ] Property name "$_SchemaInfo" should not be prefixed with an
+    |         |     underscore to indicate visibility
+ 39 | WARNING | [ ] Line exceeds 120 characters; contains 142 characters
+ 41 | WARNING | [ ] Line exceeds 120 characters; contains 127 characters
+ 42 | WARNING | [ ] Line exceeds 120 characters; contains 146 characters
+ 82 | WARNING | [ ] Line exceeds 120 characters; contains 127 characters
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...t/SDK/php/framework/Ephect/Modules/DataAccess/Client/PDO/PdoDataAccess.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 20 | WARNING | Line exceeds 120 characters; contains 151 characters
+ 43 | WARNING | Line exceeds 120 characters; contains 134 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...DK/php/framework/Ephect/Modules/DataAccess/Client/PDO/PdoDataStatement.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 11 WARNINGS AFFECTING 11 LINES
+--------------------------------------------------------------------------------
+  16 | WARNING | Property name "$_values" should not be prefixed with an
+     |         | underscore to indicate visibility
+  17 | WARNING | Property name "$_fieldCount" should not be prefixed with an
+     |         | underscore to indicate visibility
+  18 | WARNING | Property name "$_rowCount" should not be prefixed with an
+     |         | underscore to indicate visibility
+  19 | WARNING | Property name "$_meta" should not be prefixed with an
+     |         | underscore to indicate visibility
+  20 | WARNING | Property name "$_colNames" should not be prefixed with an
+     |         | underscore to indicate visibility
+  21 | WARNING | Property name "$_schemaInfo" should not be prefixed with an
+     |         | underscore to indicate visibility
+  22 | WARNING | Property name "$_config" should not be prefixed with an
+     |         | underscore to indicate visibility
+  23 | WARNING | Property name "$_native_connection" should not be prefixed
+     |         | with an underscore to indicate visibility
+  24 | WARNING | Property name "$_driver" should not be prefixed with an
+     |         | underscore to indicate visibility
+  25 | WARNING | Property name "$_hasException" should not be prefixed with an
+     |         | underscore to indicate visibility
+ 104 | WARNING | Line exceeds 120 characters; contains 121 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...ork/Ephect/Modules/DataAccess/Client/PDO/SchemaInfo/PdoMysqlSchemaInfo.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 13 | ERROR | [x] Blank line found at start of control structure
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...rk/Ephect/Modules/DataAccess/Client/PDO/SchemaInfo/PdoSqliteSchemaInfo.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 45 | ERROR | [x] Blank line found at start of control structure
+ 47 | ERROR | [x] Blank line found at start of control structure
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...mework/Ephect/Modules/DataAccess/Configuration/ConnectionConfiguration.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | The first trait import statement must be declared on the first
+    |       | non-comment line after the class opening brace
+--------------------------------------------------------------------------------
+
+
+FILE: ...SDK/php/framework/Ephect/Modules/DoctrineBridge/Hooks/useEntityManager.php
+--------------------------------------------------------------------------------
+FOUND 4 ERRORS AFFECTING 4 LINES
+--------------------------------------------------------------------------------
+ 15 | ERROR | [x] Whitespace found at end of line
+ 24 | ERROR | [x] Whitespace found at end of line
+ 25 | ERROR | [x] Whitespace found at end of line
+ 26 | ERROR | [x] Whitespace found at end of line
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 4 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...DK/php/framework/Ephect/Modules/Forms/Application/ApplicationComponent.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+--------------------------------------------------------------------------------
+  81 | WARNING | Line exceeds 120 characters; contains 123 characters
+ 232 | WARNING | Line exceeds 120 characters; contains 130 characters
+ 361 | WARNING | Line exceeds 120 characters; contains 124 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...p/framework/Ephect/Modules/Forms/Application/ComponentDependencyFinder.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 12 | WARNING | Line exceeds 120 characters; contains 124 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...ct/SDK/php/framework/Ephect/Modules/Forms/Application/ComponentsCopier.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 12 | WARNING | Line exceeds 120 characters; contains 124 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...Ephect/SDK/php/framework/Ephect/Modules/Forms/Builders/AbstractBuilder.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 30 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ites/Ephect/SDK/php/framework/Ephect/Modules/Forms/Components/Children.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+  74 | ERROR | [x] Function closing brace must go on the next line following
+     |       |     the body; found 1 blank lines before brace
+ 118 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...SDK/php/framework/Ephect/Modules/Forms/Components/ComponentDeclaration.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 74 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ramework/Ephect/Modules/Forms/Components/ComponentDeclarationStructure.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 16 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...hect/SDK/php/framework/Ephect/Modules/Forms/Components/ComponentEntity.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 322 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...K/php/framework/Ephect/Modules/Forms/Components/FileComponentInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 35 | ERROR | [x] The closing brace for the interface must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Sites/Ephect/SDK/php/framework/Ephect/Modules/Forms/Components/Plugin.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 22 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...SDK/php/framework/Ephect/Modules/Forms/Events/ComponentAttributesEvent.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 92 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...t/SDK/php/framework/Ephect/Modules/Forms/Events/ComponentFinishedEvent.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 65 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ct/SDK/php/framework/Ephect/Modules/Forms/Generators/ComponentDocument.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 203 | ERROR | [x] Blank line found at end of control structure
+ 248 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Sites/Ephect/SDK/php/framework/Ephect/Modules/Forms/Generators/Parser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 79 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...framework/Ephect/Modules/Forms/Generators/TokenParsers/ArgumentsParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 32 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...hp/framework/Ephect/Modules/Forms/Generators/TokenParsers/ArraysParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AND 1 WARNING AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 31 | WARNING | [ ] Line exceeds 120 characters; contains 132 characters
+ 35 | ERROR   | [x] The closing brace for the class must go on the next line
+    |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ramework/Ephect/Modules/Forms/Generators/TokenParsers/ChildSlotsParser.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 42 | WARNING | Line exceeds 120 characters; contains 139 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...Ephect/Modules/Forms/Generators/TokenParsers/ChildrenDeclarationParser.php
+--------------------------------------------------------------------------------
+FOUND 3 ERRORS AND 1 WARNING AFFECTING 4 LINES
+--------------------------------------------------------------------------------
+ 14 | ERROR   | [x] Blank line found at start of control structure
+ 20 | WARNING | [ ] Line exceeds 120 characters; contains 124 characters
+ 23 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+ 25 | ERROR   | [x] The closing brace for the class must go on the next line
+    |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 3 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ork/Ephect/Modules/Forms/Generators/TokenParsers/EmptyComponentsParser.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 31 | ERROR | [x] Blank line found at end of control structure
+ 34 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...framework/Ephect/Modules/Forms/Generators/TokenParsers/FragmentsParser.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 12 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+ 14 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...p/framework/Ephect/Modules/Forms/Generators/TokenParsers/HeredocParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../php/framework/Ephect/Modules/Forms/Generators/TokenParsers/HtmlParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 17 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ork/Ephect/Modules/Forms/Generators/TokenParsers/ModuleComponentParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 22 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...amework/Ephect/Modules/Forms/Generators/TokenParsers/MotherSlotsParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AND 1 WARNING AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 80 | WARNING | [ ] Line exceeds 120 characters; contains 139 characters
+ 89 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...framework/Ephect/Modules/Forms/Generators/TokenParsers/NamespaceParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...work/Ephect/Modules/Forms/Generators/TokenParsers/OpenComponentsParser.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+--------------------------------------------------------------------------------
+ 118 | WARNING | Line exceeds 120 characters; contains 155 characters
+ 121 | WARNING | Line exceeds 120 characters; contains 135 characters
+ 142 | WARNING | Line exceeds 120 characters; contains 130 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...framework/Ephect/Modules/Forms/Generators/TokenParsers/UseEffectParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AND 2 WARNINGS AFFECTING 3 LINES
+--------------------------------------------------------------------------------
+ 23 | WARNING | [ ] Line exceeds 120 characters; contains 142 characters
+ 38 | WARNING | [ ] Line exceeds 120 characters; contains 123 characters
+ 40 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../framework/Ephect/Modules/Forms/Generators/TokenParsers/UsePropsParser.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 4 WARNINGS AFFECTING 4 LINES
+--------------------------------------------------------------------------------
+ 23 | WARNING | Line exceeds 120 characters; contains 132 characters
+ 24 | WARNING | Line exceeds 120 characters; contains 134 characters
+ 67 | WARNING | Line exceeds 120 characters; contains 149 characters
+ 69 | WARNING | Line exceeds 120 characters; contains 129 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...p/framework/Ephect/Modules/Forms/Generators/TokenParsers/UseSlotParser.php
+--------------------------------------------------------------------------------
+FOUND 3 ERRORS AND 1 WARNING AFFECTING 4 LINES
+--------------------------------------------------------------------------------
+ 27 | WARNING | [ ] Line exceeds 120 characters; contains 133 characters
+ 45 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+ 68 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+ 93 | ERROR   | [x] Function closing brace must go on the next line following
+    |         |     the body; found 1 blank lines before brace
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 3 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...mework/Ephect/Modules/Forms/Generators/TokenParsers/UseVariablesParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...mework/Ephect/Modules/Forms/Generators/TokenParsers/View/BreakerParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 22 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...p/framework/Ephect/Modules/Forms/Generators/TokenParsers/View/DoParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...mework/Ephect/Modules/Forms/Generators/TokenParsers/View/DoWhileParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...framework/Ephect/Modules/Forms/Generators/TokenParsers/View/EchoParser.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 39 | ERROR | [x] Blank line found at start of control structure
+ 54 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...amework/Ephect/Modules/Forms/Generators/TokenParsers/View/ElseIfParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...framework/Ephect/Modules/Forms/Generators/TokenParsers/View/ElseParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../framework/Ephect/Modules/Forms/Generators/TokenParsers/View/EndParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../framework/Ephect/Modules/Forms/Generators/TokenParsers/View/ForParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...mework/Ephect/Modules/Forms/Generators/TokenParsers/View/ForeachParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...p/framework/Ephect/Modules/Forms/Generators/TokenParsers/View/IfParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 26 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...work/Ephect/Modules/Forms/Generators/TokenParsers/View/OperationParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...amework/Ephect/Modules/Forms/Generators/TokenParsers/View/ValuesParser.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 30 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+ 32 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...work/Ephect/Modules/Forms/Generators/TokenParsers/View/VariablesParser.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 64 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+ 66 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ramework/Ephect/Modules/Forms/Generators/TokenParsers/View/WhileParser.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Ephect/SDK/php/framework/Ephect/Modules/Forms/Registry/PluginRegistry.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 28 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../php/framework/Ephect/Modules/Forms/Services/HtmlSaverServiceInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 15 | ERROR | [x] The closing brace for the interface must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ect/SDK/php/framework/Ephect/Modules/Http/Transport/HttpStatusCodeEnum.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 17 | ERROR | [x] The closing brace for the enum must go on the next line after
+    |       |     the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...jb/Sites/Ephect/SDK/php/framework/Ephect/Modules/JavaScripts/Bootstrap.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 12 | ERROR | [x] Expected 1 space after IF keyword; 0 found
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...s/Ephect/SDK/php/framework/Ephect/Modules/Routing/Builder/RouteBuilder.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 141 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...s/Ephect/SDK/php/framework/Ephect/Modules/Routing/Entities/RouteEntity.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 36 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+ 79 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...php/framework/Ephect/Modules/Routing/Middlewares/RouteParserMiddleware.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 32 | WARNING | Line exceeds 120 characters; contains 141 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...K/php/framework/Ephect/Modules/Routing/Services/RouterServiceInterface.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 16 | WARNING | Line exceeds 120 characters; contains 149 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...DK/php/framework/Ephect/Modules/Samples/Assets/Common/app/Assets/index.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 1 | ERROR | [x] Header blocks must be separated by a single blank line
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Sites/Ephect/SDK/php/framework/Ephect/Modules/Samples/Commands/Common.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 40 | ERROR | [x] Whitespace found at end of line
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ect/SDK/php/framework/Ephect/Modules/Samples/Commands/MakeSkeleton/Lib.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 27 | ERROR | [x] Whitespace found at end of line
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...b/Sites/Ephect/SDK/php/framework/Ephect/Modules/WebApp/Builder/Builder.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 69 | WARNING | Line exceeds 120 characters; contains 123 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...Ephect/Modules/WebApp/Builder/Copiers/Strategy/CopierStrategyInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...rk/Ephect/Modules/WebApp/Builder/Copiers/Strategy/CopyAsUniqueStrategy.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+ 44 | WARNING | Line exceeds 120 characters; contains 125 characters
+ 45 | WARNING | Line exceeds 120 characters; contains 123 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...php/framework/Ephect/Modules/WebApp/Builder/Copiers/TemplatesCopyMaker.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ct/Modules/WebApp/Builder/Descriptors/ComponentListDescriptorInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ramework/Ephect/Modules/WebApp/Builder/Descriptors/DescriptorInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 9 | ERROR | [x] The closing brace for the interface must go on the next line
+   |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...p/framework/Ephect/Modules/WebApp/Builder/Descriptors/ModuleDescriptor.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 50 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...rk/Ephect/Modules/WebApp/Builder/Descriptors/UniqueComponentDescriptor.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 169 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...ites/Ephect/SDK/php/framework/Ephect/Modules/WebApp/Commands/Build/Lib.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 23 | ERROR | [x] Function closing brace must go on the next line following the
+    |       |     body; found 1 blank lines before brace
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...tes/Ephect/SDK/php/framework/Ephect/Modules/WebApp/Commands/Build/Logo.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 32 WARNINGS AFFECTING 32 LINES
+--------------------------------------------------------------------------------
+  4 | WARNING | Line exceeds 120 characters; contains 176 characters
+  5 | WARNING | Line exceeds 120 characters; contains 262 characters
+  6 | WARNING | Line exceeds 120 characters; contains 378 characters
+  7 | WARNING | Line exceeds 120 characters; contains 468 characters
+  8 | WARNING | Line exceeds 120 characters; contains 588 characters
+  9 | WARNING | Line exceeds 120 characters; contains 681 characters
+ 10 | WARNING | Line exceeds 120 characters; contains 784 characters
+ 11 | WARNING | Line exceeds 120 characters; contains 862 characters
+ 12 | WARNING | Line exceeds 120 characters; contains 862 characters
+ 13 | WARNING | Line exceeds 120 characters; contains 901 characters
+ 14 | WARNING | Line exceeds 120 characters; contains 904 characters
+ 15 | WARNING | Line exceeds 120 characters; contains 904 characters
+ 16 | WARNING | Line exceeds 120 characters; contains 925 characters
+ 17 | WARNING | Line exceeds 120 characters; contains 924 characters
+ 18 | WARNING | Line exceeds 120 characters; contains 891 characters
+ 19 | WARNING | Line exceeds 120 characters; contains 860 characters
+ 20 | WARNING | Line exceeds 120 characters; contains 888 characters
+ 21 | WARNING | Line exceeds 120 characters; contains 851 characters
+ 22 | WARNING | Line exceeds 120 characters; contains 871 characters
+ 23 | WARNING | Line exceeds 120 characters; contains 896 characters
+ 24 | WARNING | Line exceeds 120 characters; contains 911 characters
+ 25 | WARNING | Line exceeds 120 characters; contains 879 characters
+ 26 | WARNING | Line exceeds 120 characters; contains 925 characters
+ 27 | WARNING | Line exceeds 120 characters; contains 922 characters
+ 28 | WARNING | Line exceeds 120 characters; contains 839 characters
+ 29 | WARNING | Line exceeds 120 characters; contains 780 characters
+ 30 | WARNING | Line exceeds 120 characters; contains 675 characters
+ 31 | WARNING | Line exceeds 120 characters; contains 585 characters
+ 32 | WARNING | Line exceeds 120 characters; contains 466 characters
+ 33 | WARNING | Line exceeds 120 characters; contains 377 characters
+ 34 | WARNING | Line exceeds 120 characters; contains 261 characters
+ 35 | WARNING | Line exceeds 120 characters; contains 176 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...s/Ephect/SDK/php/framework/Ephect/Modules/WebApp/Services/BuildService.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 18 | ERROR | [x] Expected 1 newline at end of file; 0 found
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...b/Sites/Ephect/SDK/php/framework/Ephect/Modules/WebApp/Web/Application.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 81 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Ephect/SDK/php/framework/Ephect/Modules/WebComponent/Builder/Compiler.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 26 | WARNING | Line exceeds 120 characters; contains 129 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...hp/framework/Ephect/Modules/WebComponent/Commands/MakeWebComponent/Lib.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AND 6 WARNINGS AFFECTING 8 LINES
+--------------------------------------------------------------------------------
+  17 | ERROR   | [x] Blank line found at start of control structure
+  19 | WARNING | [ ] Line exceeds 120 characters; contains 123 characters
+  20 | WARNING | [ ] Line exceeds 120 characters; contains 128 characters
+  21 | WARNING | [ ] Line exceeds 120 characters; contains 166 characters
+  35 | WARNING | [ ] Line exceeds 120 characters; contains 197 characters
+  59 | WARNING | [ ] Line exceeds 120 characters; contains 166 characters
+  91 | WARNING | [ ] Line exceeds 120 characters; contains 133 characters
+ 103 | ERROR   | [x] The closing brace for the class must go on the next line
+     |         |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../SDK/php/framework/Ephect/Modules/WebComponent/Manifest/ManifestEntity.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 44 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...framework/Ephect/Modules/WebComponent/Manifest/ManifestEntityInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 17 | ERROR | [x] The closing brace for the interface must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../Ephect/Modules/WebComponent/Middlewares/WebComponentBuilderMiddleware.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 15 | ERROR | [x] The closing brace for the class must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: ...k/Ephect/Modules/WebComponent/Middlewares/WebComponentParserMiddleware.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 13 | WARNING | Line exceeds 120 characters; contains 140 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...php/framework/Ephect/Modules/WebComponent/Services/WebComponentService.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 25 | WARNING | Line exceeds 120 characters; contains 124 characters
+--------------------------------------------------------------------------------
+
+
+FILE: ...work/Ephect/Modules/WebComponent/Services/WebComponentServiceInterface.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+--------------------------------------------------------------------------------
+ 19 | ERROR | [x] The closing brace for the interface must go on the next line
+    |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../SDK/php/framework/Ephect/Plugins/Authentication/AuthenticationService.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+  48 | ERROR | [x] Blank line found at end of control structure
+ 129 | ERROR | [x] The closing brace for the class must go on the next line
+     |       |     after the body
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: .../dpjb/Sites/Ephect/SDK/php/framework/Ephect/Plugins/Setup/SetupService.php
+--------------------------------------------------------------------------------
+FOUND 0 ERRORS AND 5 WARNINGS AFFECTING 5 LINES
+--------------------------------------------------------------------------------
+  14 | WARNING | Property name "$_rewriteBase" should not be prefixed with an
+     |         | underscore to indicate visibility
+ 159 | WARNING | Line exceeds 120 characters; contains 242 characters
+ 160 | WARNING | Line exceeds 120 characters; contains 213 characters
+ 166 | WARNING | Line exceeds 120 characters; contains 123 characters
+ 174 | WARNING | Line exceeds 120 characters; contains 123 characters
+--------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/bootstrap.php
+--------------------------------------------------------------------------------
+FOUND 1 ERROR AND 1 WARNING AFFECTING 2 LINES
+--------------------------------------------------------------------------------
+  1 | WARNING | [ ] A file should declare new symbols (classes, functions,
+    |         |     constants, etc.) and cause no other side effects, or it
+    |         |     should execute logic with side effects, but should not do
+    |         |     both. The first symbol is defined on line 10 and the first
+    |         |     side effect is on line 13.
+ 34 | ERROR   | [x] Expected 1 space after IF keyword; 0 found
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/constants.php
+--------------------------------------------------------------------------------
+FOUND 2 ERRORS AND 9 WARNINGS AFFECTING 11 LINES
+--------------------------------------------------------------------------------
+   1 | WARNING | [ ] A file should declare new symbols (classes, functions,
+     |         |     constants, etc.) and cause no other side effects, or it
+     |         |     should execute logic with side effects, but should not do
+     |         |     both. The first symbol is defined on line 5 and the first
+     |         |     side effect is on line 14.
+   3 | WARNING | [ ] Line exceeds 120 characters; contains 142 characters
+  46 | WARNING | [ ] Line exceeds 120 characters; contains 135 characters
+  74 | WARNING | [ ] Line exceeds 120 characters; contains 188 characters
+  75 | WARNING | [ ] Line exceeds 120 characters; contains 182 characters
+  83 | WARNING | [ ] Line exceeds 120 characters; contains 196 characters
+  84 | WARNING | [ ] Line exceeds 120 characters; contains 201 characters
+ 108 | WARNING | [ ] Line exceeds 120 characters; contains 187 characters
+ 110 | WARNING | [ ] Line exceeds 120 characters; contains 139 characters
+ 200 | ERROR   | [x] Whitespace found at end of line
+ 208 | ERROR   | [ ] Each class must be in a namespace of at least one level (a
+     |         |     top-level vendor name)
+--------------------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+--------------------------------------------------------------------------------
+
+
+FILE: /home/dpjb/Sites/Ephect/SDK/php/framework/Ephect/constants_utils.php
+--------------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+--------------------------------------------------------------------------
+ 27 | WARNING | Line exceeds 120 characters; contains 154 characters
+--------------------------------------------------------------------------
+

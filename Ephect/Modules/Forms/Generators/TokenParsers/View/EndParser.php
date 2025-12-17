@@ -14,5 +14,4 @@ final class EndParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

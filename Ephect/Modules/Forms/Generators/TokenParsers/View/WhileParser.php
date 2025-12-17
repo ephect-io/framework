@@ -14,5 +14,4 @@ final class WhileParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

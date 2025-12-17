@@ -88,5 +88,4 @@ class ComponentAttributesEvent extends Event
     {
         return AbstractComponentParser::doArgumentsToString($this->getPropsToArray()) ?? '';
     }
-
 }

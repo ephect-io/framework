@@ -32,7 +32,6 @@ function useProps(Closure $callback, ?object $props = null): void
     $newArgs = [];
 
     foreach ($params as $name => $param) {
-
         if ($name == 'props') {
             continue;
         }
@@ -40,7 +39,6 @@ function useProps(Closure $callback, ?object $props = null): void
         // $prop = $param->getName();
 
         if ($hasProps) {
-
             if (!isset($newProps->$prop)) {
                 // $newProps->$prop = $defaults[$prop];
                 $newArgs[] = $defaults[$prop];

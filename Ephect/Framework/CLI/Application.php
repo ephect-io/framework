@@ -38,7 +38,6 @@ class Application extends AbstractApplication
 
     public function init(): void
     {
-
     }
 
     protected function execute(): int
@@ -46,7 +45,6 @@ class Application extends AbstractApplication
         $commands = new ApplicationCommands($this);
         $runner = new CommandRunner($this, $commands);
         return $runner->run();
-
     }
 
     /**
@@ -96,5 +94,4 @@ class Application extends AbstractApplication
             return [];
         }
     }
-
 }

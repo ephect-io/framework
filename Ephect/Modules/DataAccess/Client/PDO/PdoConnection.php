@@ -16,6 +16,7 @@ use PDOStatement;
 class PdoConnection extends AbstractConfiguration implements SqlConnectionInterface
 {
     use CrudQueriesTrait;
+
     private PDO $_state;
     private PdoConfiguration $_config;
     private string $_dsn = '';

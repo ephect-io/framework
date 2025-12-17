@@ -19,6 +19,5 @@ class Lib extends AbstractCommandLib
         $builder = $service->build();
 
         $builder->buildAllRoutes();
-
     }
 }

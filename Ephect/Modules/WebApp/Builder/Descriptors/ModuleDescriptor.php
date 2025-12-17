@@ -46,6 +46,5 @@ class ModuleDescriptor implements DescriptorInterface
         $parser = ParserFactory::createParser($moduleEntrypoint, $relativeFile);
 
         return $parser->parse();
-
     }
 }

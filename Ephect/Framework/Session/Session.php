@@ -34,5 +34,4 @@ final class Session
         session_gc();
         session_abort();
     }
-
 }

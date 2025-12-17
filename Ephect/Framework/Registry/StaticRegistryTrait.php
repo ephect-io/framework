@@ -66,5 +66,4 @@ trait StaticRegistryTrait
     {
         return static::getInstance()->__getFlatFilename();
     }
-
 }

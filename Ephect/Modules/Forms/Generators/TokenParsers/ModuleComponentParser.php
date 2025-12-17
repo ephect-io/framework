@@ -18,5 +18,4 @@ final class ModuleComponentParser extends AbstractTokenParser
             $this->useVariables['slot'] = '$slot';
         }
     }
-
 }

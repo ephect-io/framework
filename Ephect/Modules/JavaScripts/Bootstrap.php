@@ -9,7 +9,7 @@ class Bootstrap implements ModuleBootstrapInterface
 {
     public function boot(): void
     {
-        if(!file_exists(\Constants::DOCUMENT_ROOT . 'ajil.js')) {
+        if (!file_exists(\Constants::DOCUMENT_ROOT . 'ajil.js')) {
             AjilBuilder::build();
         }
     }

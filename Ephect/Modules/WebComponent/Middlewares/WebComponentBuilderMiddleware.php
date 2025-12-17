@@ -11,5 +11,4 @@ class WebComponentBuilderMiddleware implements ApplicationStateMiddlewareInterfa
         // TODO: Implement ignite() method.
         // add web component JS module to the list of scripts to load.
     }
-
 }

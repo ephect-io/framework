@@ -14,5 +14,4 @@ final class HeredocParser extends AbstractTokenParser
 
         $this->html = preg_replace($re, $subst, $str);
     }
-
 }

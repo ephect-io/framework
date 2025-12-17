@@ -179,7 +179,6 @@ abstract class AbstractApplication extends Element
 
             $this->appName = StateRegistry::readItem('application', 'name');
             $this->appTitle = StateRegistry::readItem('application', 'title');
-
         } catch (Throwable $ex) {
             Console::error($ex);
         }

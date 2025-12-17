@@ -15,5 +15,4 @@ interface WebComponentServiceInterface
     public function readManifest(): ManifestEntity;
 
     public function storeHTML(string $html): void;
-
 }

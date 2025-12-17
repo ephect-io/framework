@@ -85,6 +85,5 @@ class MotherSlotsParser extends AbstractTokenParser
         }
 
         $this->result = $functionFilename;
-
     }
 }

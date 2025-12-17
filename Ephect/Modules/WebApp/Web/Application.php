@@ -76,6 +76,4 @@ class Application extends AbstractApplication
 
         return $constants;
     }
-
-
 }

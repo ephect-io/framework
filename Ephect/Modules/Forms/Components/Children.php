@@ -70,7 +70,6 @@ class Children extends Entity implements ChildrenInterface
         }
 
         return implode(" ", $args);
-
     }
 
     public function getAttribute(string $attribute): string|bool|null
@@ -114,5 +113,4 @@ class Children extends Entity implements ChildrenInterface
 
         return $this->parentProps;
     }
-
 }

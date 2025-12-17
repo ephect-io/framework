@@ -19,5 +19,4 @@ interface ElementInterface
     public function getBaseClass(): string;
 
     public function getNamespace(): string;
-
 }

@@ -12,14 +12,11 @@ final class ChildrenDeclarationParser extends AbstractTokenParser
         preg_match_all($re, $subject, $matches, PREG_SET_ORDER, 0);
 
         foreach ($matches as $match) {
-
             $functionDeclaration = $match[1];
             $componentName = $match[2];
             $variable = $match[7];
 
             $this->result = ['declaration' => $functionDeclaration, 'component' => $componentName, 'variable' => $variable];
         }
-
     }
-
 }

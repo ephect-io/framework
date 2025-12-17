@@ -11,5 +11,4 @@ interface HtmlSaverServiceInterface
     public function markAsPending(): void;
 
     public function storeHTML(string $html): void;
-
 }

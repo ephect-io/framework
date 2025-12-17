@@ -37,7 +37,6 @@ final class EchoParser extends AbstractTokenParser
             }
 
             if ($variable === 'children') {
-
                 $text = str_replace('{{ children }}', '<?php $children->render(); ?>', $text);
                 $text = str_replace('{ children }', '$children->getBuffer()', $text);
 
@@ -50,5 +49,4 @@ final class EchoParser extends AbstractTokenParser
 
         $this->result = $text;
     }
-
 }

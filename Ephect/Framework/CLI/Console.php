@@ -128,5 +128,4 @@ class Console extends Element
 
         return $message;
     }
-
 }

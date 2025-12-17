@@ -14,5 +14,4 @@ final class OperationParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }
