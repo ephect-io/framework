@@ -13,5 +13,4 @@ interface ManifestEntityInterface extends ElementInterface
     public function getEntrypoint(): string;
 
     public function getArguments(): array;
-
 }

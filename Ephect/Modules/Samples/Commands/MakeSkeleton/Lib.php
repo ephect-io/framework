@@ -24,6 +24,6 @@ class Lib extends AbstractCommandLib
         $destDir = realpath(siteSrcPath());
 
         $common = new Common();
-        $common->publishFiles($sample, $destDir);    
+        $common->publishFiles($sample, $destDir);
     }
 }

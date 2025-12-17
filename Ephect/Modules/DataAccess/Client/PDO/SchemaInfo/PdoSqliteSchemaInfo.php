@@ -43,9 +43,7 @@ class PdoSqliteSchemaInfo extends AbstractPdoSchemaInfo
         }
 
         if ($name == '' && !$this->isQueryATable()) {
-
             try {
-
                 $sql = $this->getQuery();
 
                 $this->result = $connection->query($sql);

@@ -41,7 +41,6 @@ final class UseSlotParser extends AbstractTokenParser
         }
 
         $this->html = preg_replace($re, 'useSlot(function() use ($1' . $params . $uses . ') {$8});', $this->html, 1);
-
     }
 
     private function doDeclaration(null|string|array $parameter = null): void
@@ -64,7 +63,6 @@ final class UseSlotParser extends AbstractTokenParser
         $useVars = explode(',', $match1);
         $declVars = array_filter($useVars, function ($item) {
             return $item !== '$props' && $item !== '$children' && trim($item) !== '';
-
         });
 
         $declVars = count($declVars) === 0 ?: array_map(function ($item) {
@@ -89,6 +87,5 @@ final class UseSlotParser extends AbstractTokenParser
             $this->text,
             "\n\t" . $decl2 . "\n" . $useEffect,
         ];
-
     }
 }

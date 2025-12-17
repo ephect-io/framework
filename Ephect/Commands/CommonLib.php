@@ -30,6 +30,4 @@ class CommonLib extends Element
         $tree = File::walkTreeFiltered($path);
         Console::writeLine($tree);
     }
-
-
 }

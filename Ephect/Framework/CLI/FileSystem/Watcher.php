@@ -19,22 +19,18 @@ class Watcher
             $files = $this->_listFiles($directory, $filter);
 
             foreach ($files as $filename) {
-
                 $mtime = filemtime($directory . $filename);
 
                 if (isset($mtimes[$filename]) && $mtimes[$filename] < $mtime) {
                     Console::writeLine('File "%s" was modified', $directory . $filename);
                 }
                 $mtimes[$filename] = $mtime;
-
             }
-
         }, 100);
 
         while (true) {
             usleep(1);
         }
-
     }
 
     private function _listFiles(string $directory, array $filter): array

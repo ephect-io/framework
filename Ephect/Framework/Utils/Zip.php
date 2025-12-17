@@ -29,7 +29,6 @@ class Zip
 
         // For every file in the zip-packet
         for ($i = 0; $i < $zip->numFiles; $i++) {
-
             $filename = $zip->statIndex($i)['name'];
             $pos_last_slash = strrpos($filename, "/");
             if ($pos_last_slash !== false) {

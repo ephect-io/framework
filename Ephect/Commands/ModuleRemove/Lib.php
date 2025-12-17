@@ -43,7 +43,5 @@ class Lib extends AbstractCommandLib
                 Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::BLUE, ConsoleColors::WHITE));
             }
         }
-
     }
-
 }

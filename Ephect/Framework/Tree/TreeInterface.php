@@ -30,6 +30,4 @@ interface TreeInterface extends IteratorAggregate
     public function forEachRecursive(callable $callback, TreeInterface $tree, Closure|null $breakOn = null): void;
 
     public function clear(): void;
-
-
 }

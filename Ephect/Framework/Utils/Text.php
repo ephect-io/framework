@@ -126,7 +126,6 @@ class Text
                         $isDirty = true;
                     }
                     $convert .= "\n";
-
                 }
 
                 if (!$isDirty) {
@@ -135,7 +134,6 @@ class Text
 
                 $isSpinning = $countSpinning > 10;
             }
-
         } catch (\Exception $exception) {
             throw new Exception("Something went wrong while converting array to string", 1, $exception);
         }
@@ -169,5 +167,4 @@ class Text
 
         return $code;
     }
-
 }

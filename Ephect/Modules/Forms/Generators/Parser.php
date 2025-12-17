@@ -75,5 +75,4 @@ class Parser implements ParserInterface
 
         return $result;
     }
-
 }

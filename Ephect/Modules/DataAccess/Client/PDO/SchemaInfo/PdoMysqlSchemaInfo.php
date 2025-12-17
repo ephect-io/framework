@@ -11,7 +11,6 @@ class PdoMysqlSchemaInfo extends AbstractPdoSchemaInfo
     {
         if ($this->result === null) {
             try {
-
                 $connection = new PdoConnection($this->config);
 
                 $this->result = $connection->query($this->query);

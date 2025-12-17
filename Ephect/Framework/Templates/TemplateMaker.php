@@ -41,5 +41,4 @@ class TemplateMaker
     {
         $this->template = $template;
     }
-
 }

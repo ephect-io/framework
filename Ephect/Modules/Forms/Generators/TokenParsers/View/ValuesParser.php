@@ -26,7 +26,5 @@ final class ValuesParser extends AbstractTokenParser
         }
 
         $this->result = $text;
-
     }
-
 }

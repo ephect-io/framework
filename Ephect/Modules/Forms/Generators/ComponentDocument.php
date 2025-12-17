@@ -200,7 +200,6 @@ class ComponentDocument
                     $length = $closer['endsAt'] - $childMatch->getStart() + 1;
 
                     $childReplaced = substr($childText, $start, $length);
-
                 } else {
                     $childReplacing = $childMatch->getText();
                 }
@@ -244,5 +243,4 @@ class ComponentDocument
     {
         return $this->text;
     }
-
 }

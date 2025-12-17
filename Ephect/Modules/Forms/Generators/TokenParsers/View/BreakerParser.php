@@ -18,5 +18,4 @@ final class BreakerParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

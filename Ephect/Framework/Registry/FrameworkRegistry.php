@@ -88,7 +88,6 @@ class FrameworkRegistry extends AbstractStaticRegistry
             self::registerModulesClasses();
 
             FrameworkRegistry::save(true);
-
         }
     }
 
@@ -169,5 +168,4 @@ class FrameworkRegistry extends AbstractStaticRegistry
     {
         self::registerCustomClasses(\Constants::BUILD_DIR);
     }
-
 }

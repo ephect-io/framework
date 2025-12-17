@@ -14,5 +14,4 @@ final class ElseIfParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

@@ -32,7 +32,6 @@ class RouteEntity extends Entity implements RouteInterface
         $this->error = (int)$struct->error;
         $this->exact = $struct->exact !== 'true' ?: true;
         $this->middlewares = $struct->middlewares;
-
     }
 
     public function getMethod(): string
@@ -74,6 +73,4 @@ class RouteEntity extends Entity implements RouteInterface
     {
         return $this->middlewares;
     }
-
-
 }

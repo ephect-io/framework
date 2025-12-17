@@ -26,15 +26,15 @@ class ModuleInstaller
         [$filename, $paths] = self::readModulePaths();
         foreach ($paths as $path) {
             $moduleHooksDir = $path . DIRECTORY_SEPARATOR . HOOKS_DIR;
-            if(file_exists($moduleHooksDir) || is_dir($moduleHooksDir)) {
+            if (file_exists($moduleHooksDir) || is_dir($moduleHooksDir)) {
                 HooksRegistry::register($moduleHooksDir);
             }
-    
+
             $bootstrapFile = $path . DIRECTORY_SEPARATOR . "Bootstrap.php";
             if (!file_exists($bootstrapFile)) {
                 continue;
             }
-    
+
             [$namespace, $className] = ElementUtils::getClassDefinitionFromFile($bootstrapFile);
             $fqBootstrap = $namespace . '\\' . $className;
 
@@ -123,7 +123,6 @@ class ModuleInstaller
         $moduleConfig->save();
 
         Console::writeLine("Module classes are now registered.");
-
     }
 
     public static function readModulePaths(): array
@@ -214,7 +213,5 @@ class ModuleInstaller
         $moduleConfig->save();
 
         Console::writeLine("Module classes are now unregistered.");
-
     }
-
 }

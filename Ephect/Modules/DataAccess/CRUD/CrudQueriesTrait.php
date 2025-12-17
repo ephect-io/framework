@@ -80,5 +80,4 @@ trait CrudQueriesTrait
     {
         return (object)['sql' => $this->_delete, 'params' => $this->_parameters];
     }
-
 }

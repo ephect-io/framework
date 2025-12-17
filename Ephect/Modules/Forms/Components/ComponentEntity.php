@@ -318,5 +318,4 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
     {
         return $this->attributes;
     }
-
 }

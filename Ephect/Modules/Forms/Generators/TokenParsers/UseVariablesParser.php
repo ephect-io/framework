@@ -14,5 +14,4 @@ final class UseVariablesParser extends AbstractTokenParser
         $this->html = str_replace('(<<< HTML', 'function () ' . $use . '{?>', $this->html);
         $this->html = str_replace('HTML);', "<?php\n\t};", $this->html);
     }
-
 }

@@ -31,5 +31,4 @@ final class ArraysParser extends AbstractTokenParser
             $this->html = str_replace('{{ ...' . $variable . ' }}', '<?php echo print_r($' . $variable . ', true) ?>', $this->html);
         }
     }
-
 }

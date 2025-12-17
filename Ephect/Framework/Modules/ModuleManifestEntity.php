@@ -51,5 +51,4 @@ class ModuleManifestEntity extends ManifestEntity implements ModuleManifestEntit
     {
         return $this->version;
     }
-
 }

@@ -162,6 +162,4 @@ final class ElementUtils
 
         return $classname;
     }
-
-
 }

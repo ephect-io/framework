@@ -197,7 +197,7 @@ define(
 define(
     'DONT_USE_CONFIG_AUTOLOAD',
     file_exists(DONT_USE_CONFIG_DIR . 'autoload')
-        ? (trim(file_get_contents(DONT_USE_CONFIG_DIR . 'autoload')) == 'true') 
+        ? (trim(file_get_contents(DONT_USE_CONFIG_DIR . 'autoload')) == 'true')
         : false
 );
 

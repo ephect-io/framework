@@ -28,8 +28,6 @@ class EmptyComponentsParser extends AbstractTokenParser
                 // Replace only the first occurrence of $tag
                 $this->html = preg_replace($re, $subst, $subject, 1);
             }
-
         }
-
     }
 }

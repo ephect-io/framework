@@ -12,7 +12,7 @@ function useEntityManager(ConnectionConfiguration $config, bool $isDevMode = fal
     $settings = $config->getStructure()->encode(asArray: true);
     $paths = [\Constants::APP_ROOT . 'Entity'];
     $proxyDir = \Constants::RUNTIME_DIR . 'doctrine_proxies';
-    
+
     // Create proxy directory if it doesn't exist
     if (!is_dir($proxyDir)) {
         mkdir($proxyDir, 0755, true);
@@ -21,8 +21,8 @@ function useEntityManager(ConnectionConfiguration $config, bool $isDevMode = fal
     $config = ORMSetup::createAttributeMetadataConfig($paths, $isDevMode);
     $config->setProxyDir($proxyDir);
     $config->setProxyNamespace('DoctrineProxies');
-    
-    $connection = DriverManager::getConnection($settings, $config); 
-    
+
+    $connection = DriverManager::getConnection($settings, $config);
+
     return new EntityManager($connection, $config);
 }

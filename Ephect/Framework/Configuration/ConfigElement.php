@@ -32,6 +32,4 @@ class ConfigElement extends Element
     {
         return $this->type;
     }
-
-
 }

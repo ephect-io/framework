@@ -165,5 +165,4 @@ class UniqueComponentDescriptor implements DescriptorInterface
             }
         }
     }
-
 }

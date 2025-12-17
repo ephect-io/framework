@@ -15,7 +15,6 @@ class Lib extends AbstractCommandLib
     public function createWebcomponentBase(): void
     {
         try {
-
             Console::writeLine(ConsoleColors::getColoredString("Creating a new webComponent.", ConsoleColors::LIGHT_BLUE));
             Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColors::BLUE));
             Console::writeLine(ConsoleColors::getColoredString("Leave the answer blank to pass to the next question or to abort the process.", ConsoleColors::BROWN));
@@ -98,6 +97,4 @@ class Lib extends AbstractCommandLib
 
         return [$tagName, $className, $hasBackendProps, $entrypoint, $arguments];
     }
-
-
 }

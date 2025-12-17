@@ -137,5 +137,4 @@ class RouteBuilder extends AbstractBuilder
 
         return new RouteEntity($struct);
     }
-
 }

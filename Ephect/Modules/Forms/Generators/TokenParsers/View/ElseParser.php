@@ -14,5 +14,4 @@ final class ElseParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

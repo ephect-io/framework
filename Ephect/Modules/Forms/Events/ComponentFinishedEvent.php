@@ -61,5 +61,4 @@ class ComponentFinishedEvent extends Event
     {
         return AbstractComponentParser::doArgumentsToString($this->getPropsToArray()) ?? '';
     }
-
 }

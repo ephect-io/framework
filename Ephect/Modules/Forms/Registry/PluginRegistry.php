@@ -23,6 +23,4 @@ class PluginRegistry extends AbstractStaticRegistry
 
         return self::$instance;
     }
-
-
 }

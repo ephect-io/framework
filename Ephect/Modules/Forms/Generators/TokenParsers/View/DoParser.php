@@ -14,5 +14,4 @@ final class DoParser extends AbstractTokenParser
 
         $this->result = $result;
     }
-
 }

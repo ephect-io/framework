@@ -60,5 +60,4 @@ class ModulesConfigEntity extends ManifestEntity
         $this->structure = new ModulesConfigStructure(["modules" => $this->modules]);
         parent::save($asPhpArray);
     }
-
 }
