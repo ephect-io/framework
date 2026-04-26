@@ -7,22 +7,26 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Ephect\Modules\DataAccess\Configuration\ConnectionConfiguration;
 
-function useEntityManager(ConnectionConfiguration $config, bool $isDevMode = false): EntityManager
+function useEntityManager(ConnectionConfiguration $connectionConfig, bool $isDevMode = false): EntityManager
 {
-    $settings = $config->getStructure()->encode(asArray: true);
+    $settings = $connectionConfig->getStructure()->encode(asArray: true);
     $paths = [\Constants::APP_ROOT . 'Entity'];
     $proxyDir = \Constants::RUNTIME_DIR . 'doctrine_proxies';
 
-    // Create proxy directory if it doesn't exist
     if (!is_dir($proxyDir)) {
         mkdir($proxyDir, 0755, true);
     }
 
-    $config = ORMSetup::createAttributeMetadataConfig($paths, $isDevMode);
-    $config->setProxyDir($proxyDir);
-    $config->setProxyNamespace('DoctrineProxies');
+    $ormConfig = ORMSetup::createAttributeMetadataConfig($paths, $isDevMode);
 
-    $connection = DriverManager::getConnection($settings, $config);
+    if (PHP_VERSION_ID >= 80400) {
+        $ormConfig->enableNativeLazyObjects(true);
+    } else {
+        $ormConfig->setProxyDir($proxyDir);
+        $ormConfig->setProxyNamespace('DoctrineProxies');
+    }
 
-    return new EntityManager($connection, $config);
+    $connection = DriverManager::getConnection($settings, $ormConfig);
+
+    return new EntityManager($connection, $ormConfig);
 }
