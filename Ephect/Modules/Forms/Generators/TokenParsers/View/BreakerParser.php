@@ -8,6 +8,10 @@ final class BreakerParser extends AbstractTokenParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
+        if(!str_starts_with(trim($parameter), '@break') && !str_starts_with(trim($parameter), '@continue')) {
+            $this->result = $parameter;
+            return;
+        }
         $re = '/@(break|continue)/m';
         $subst = '<% $1; %>';
         $result = preg_replace($re, $subst, $parameter);
