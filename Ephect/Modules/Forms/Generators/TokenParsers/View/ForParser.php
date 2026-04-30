@@ -13,7 +13,7 @@ final class ForParser extends AbstractTokenParser
             return;
         }
 
-        $re = '/@for +([\\w @%&!=\'"+\*\/;\<\-\>]+) +do/m';
+        $re = '/@for +(.+) +do/m';
         $subst = '<% for ($1) {%>';
         $result = preg_replace($re, $subst, $parameter);
 

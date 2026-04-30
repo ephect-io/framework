@@ -13,7 +13,7 @@ final class OperationParser extends AbstractTokenParser
             return;
         }
 
-        $re = '/@op +(.*)$/m';
+        $re = '/@op +(.+)$/m';
         $subst = "<% $1; %>";
         $result = preg_replace($re, $subst, $parameter);
 

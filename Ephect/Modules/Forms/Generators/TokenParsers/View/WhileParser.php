@@ -13,7 +13,7 @@ final class WhileParser extends AbstractTokenParser
             return;
         }
 
-        $re = '/@while ([\w @%&!=\'"+\*\/;\<\-\>\(\)\[\]]+) do/m';
+        $re = '/@while +(.+) +do/m';
         $subst = '<% while($1) { %>';
         $result = preg_replace($re, $subst, $parameter);
 
