@@ -245,7 +245,7 @@ REGEX;
         return substr($text, -2) === self::TERMINATOR . self::CLOSE_TAG;
     }
 
-    protected function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
+    protected function makeTag(array $tag, array $parentIds, int $depth, bool $hasCloser, bool $isCloser = false): array
     {
         $text = $tag['text'];
         $name = $tag['name'];
