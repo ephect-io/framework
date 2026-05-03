@@ -22,10 +22,10 @@ function WebComponent($children): string
             if (%tag != '') {
             { body }
             }
-            if(!%service->isPending()) {
+            if(!%service.isPending()) {
                 %html = { children };
-                %service->splitHTML(%html);
-                %service->markAsPending();
+                %service.splitHTML(%html);
+                %service.markAsPending();
             }
         %>
     HTML);

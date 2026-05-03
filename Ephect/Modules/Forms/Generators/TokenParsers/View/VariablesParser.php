@@ -8,7 +8,6 @@ final class VariablesParser extends AbstractTokenParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
-
         if (is_array($parameter)) {
             $this->useVariables = $parameter['useVariables'];
         }
@@ -35,11 +34,19 @@ final class VariablesParser extends AbstractTokenParser
 
         $functionCode = substr($html, $start, $end - $start);
 
-        $re = '/(\$\w+)([->]+\w+)?/m';
+        $re = '/(\$\w+)([\.\w+]*)?/m';
         preg_match_all($re, $functionCode, $matches, PREG_SET_ORDER, 0);
 
         $variables = [];
         foreach ($matches as $match) {
+            $match1 = $match[1];
+            $parts = explode('.', $match1);
+            if(count($parts) > 1) {
+                $variables[] = $parts[0];
+            } else {
+                $variables[] = $match1;
+            }
+
             $variables[] = $match[1];
         }
 

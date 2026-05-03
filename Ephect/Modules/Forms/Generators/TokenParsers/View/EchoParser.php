@@ -14,7 +14,7 @@ final class EchoParser extends AbstractTokenParser
             $this->useVariables = $parameter['useVariables'];
         }
 
-        $re = '/\{ ([\w_@$\-\>]*) \}/m';
+        $re = '/\{ ([\w_@$\.]*) \}/m';
 
         preg_match_all($re, $text, $matches, PREG_SET_ORDER, 0);
 
@@ -22,16 +22,18 @@ final class EchoParser extends AbstractTokenParser
             $variable = $match[1];
 
             $useVar = $variable;
-            $arrowPos = strpos($variable, '->');
-            if ($arrowPos > -1) {
-                $useVar = substr($useVar, 0, $arrowPos);
+            $translate = $variable;
+
+            $dotPos = strpos($variable, '.');
+            if ($dotPos > -1) {
+                $translate = str_replace('.', '->', $variable);
+                $useVar = substr($useVar, 0, $dotPos);
             }
 
             if ($useVar[0] !== '@') {
                 $this->useVariables[$useVar] = '$' . $useVar;
             }
 
-            $translate = $variable;
             if ($translate[0] === '@') {
                 $translate = substr($translate, 1);
             }

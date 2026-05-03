@@ -6,6 +6,6 @@ function Import($props): string
 {
 
     return (<<< HTML
-    import {{ props->export }} from {{ props->from }}
+    import {{ props.export }} from {{ props.from }}
     HTML);
 }

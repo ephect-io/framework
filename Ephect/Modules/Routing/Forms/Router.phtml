@@ -28,9 +28,9 @@ function Router($children): string
         %>
         {{ children }}
         <%            
-            %service->moveCache();
-            %service->purgeCopies();
-            %service->findRoute(%html);
+            %service.moveCache();
+            %service.purgeCopies();
+            %service.findRoute(%html);
             if(%html !== '') { 
                 { html }
             } 

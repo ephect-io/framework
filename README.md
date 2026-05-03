@@ -74,7 +74,7 @@ function AnotherComponent($props) {
 
     return (<<<HTML
     <h2 id="with">
-        {{ props->with }}
+        {{ props.with }}
     </h2>
     HTML);
 }

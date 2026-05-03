@@ -10,17 +10,17 @@ function HtmlSaver($children): string
     $service = new HtmlSaverService($children);
 
     return (<<< HTML
-        @if %service->canRender() do
+        @if %service.canRender() do
         {{ children }}
         @done
         <% 
-            if(!%service->isPending()) {
+            if(!%service.isPending()) {
                 %html = { children };
-                %service->storeHTML(%html);
-                %service->markAsPending();
-            } elseif (%service->canRefresh()) {
+                %service.storeHTML(%html);
+                %service.markAsPending();
+            } elseif (%service.canRefresh()) {
                 %html = { children };
-                %service->storeHTML(%html);
+                %service.storeHTML(%html);
             }
         %>
     HTML);
