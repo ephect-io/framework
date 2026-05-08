@@ -24,6 +24,7 @@ use Ephect\Modules\Forms\Generators\TokenParsers\UsesAsParser;
 use Ephect\Modules\Forms\Generators\TokenParsers\UsesParser;
 use Ephect\Modules\Forms\Generators\TokenParsers\UseVariablesParser;
 use Ephect\Modules\Forms\Generators\TokenParsers\View\InlineCodeParser;
+use Ephect\Modules\Forms\Generators\TokenParsers\View\VariablesParser;
 
 class ParserService implements ParserServiceInterface
 {
@@ -168,8 +169,19 @@ class ParserService implements ParserServiceInterface
     {
         $p = new UseVariablesParser($component);
         $p->do($this->useVariables);
+
         $this->useVariables = $p->getUseVariables();
         $this->html = $p->getHtml();
+    }
+
+    public function doVariables(FileComponentInterface $component): void
+    {
+        $p = new VariablesParser($component);
+        $p->do([
+            "useVariables" => $this->useVariables,
+        ]);
+        $this->funcVariables = $p->getFuncVariables();
+        $this->useVariables = $p->getUseVariables();
     }
 
     public function doModuleComponent(FileComponentInterface $component): void
