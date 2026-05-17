@@ -35,7 +35,8 @@ final class VariablesParser extends AbstractTokenParser
 
         $functionCode = substr($html, $start, $end - $start);
 
-        $re = '/(\$\w+)([->]+\w+)?/m';
+        $re = '/([\$%]\w+)([->]\w+)?/m';
+
         preg_match_all($re, $functionCode, $matches, PREG_SET_ORDER, 0);
 
         $variables = [];

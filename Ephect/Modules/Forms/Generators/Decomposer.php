@@ -4,7 +4,6 @@
 
 namespace Ephect\Modules\Forms\Generators;
 
-use Ephect\Framework\CLI\Console;
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
@@ -15,6 +14,7 @@ class Decomposer extends Parser implements ParserInterface
     private const string TERMINATOR = '/';
     private const string OPEN_TAG = '&lt;';
     private const string CLOSE_TAG = '&gt;';
+    private const string ARROW_TAG = '&at;';
     protected array $depths = [];
     protected array $idListByDepth = [];
     protected array $list = [];
@@ -39,6 +39,7 @@ class Decomposer extends Parser implements ParserInterface
         $text = str_replace('[', '<T>', $text);
         $text = str_replace(']', '</T>', $text);
         $text = preg_replace('/<([\/\w])/m', self::OPEN_TAG . '$1', $text);
+        $text = preg_replace('/(\w+)(\->)(\w+)/', '$1' . self::ARROW_TAG . '$3', $text);
         $text = str_replace('>', self::CLOSE_TAG, $text);
 
         $this->html = $text;
@@ -48,11 +49,9 @@ class Decomposer extends Parser implements ParserInterface
     {
 
         $html = $this->html;
-        $re = '/(["\'`])((\s|((\\\)*)\\\.|.)*?)\1/m';
+        $re = '/(\\?["\'`])((\s|((\\\)*)\\\.|.)*?)\1/m';
 
         preg_match_all($re, $html, $attributes, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
-
-        Console::log($attributes);
 
         $l = count($attributes);
         for ($i = $l - 1; $i > -1; $i--) {
@@ -65,16 +64,16 @@ class Decomposer extends Parser implements ParserInterface
 
             $letter = '';
             if ($quote === '"') {
-                $letter = 'R';
+                $letter = 'd';
             } elseif ($quote === '\'') {
-                $letter = 'Q';
+                $letter = 's';
             } elseif ($quote === '`') {
-                $letter = 'G';
+                $letter = 'g';
             }
 
             $unQuoted = str_replace('&lt;', '&pp;', $unQuoted);
             $unQuoted = str_replace('&gt;', '&pg;', $unQuoted);
-            $newValue = '&oq;' . $letter . '&cq;' . $unQuoted . '&oq;/' . $letter . '&cq;';
+            $newValue = '&o' . $letter . 'q;' . $unQuoted . '&c' . $letter . 'q;';
 
             $beginBlock = substr($html, 0, $start - 1);
             $endBlock = substr($html, $end);
@@ -91,16 +90,16 @@ class Decomposer extends Parser implements ParserInterface
         $func = $this->doFunctionDeclaration();
         $decl = [
             'uid' => $uid,
-            'type' => $func[0],
-            'name' => $func[1],
-            'arguments' => $func[2],
+            'type' => $func[0] ?? '',
+            'name' => $func[1] ?? '',
+            'arguments' => $func[2] ?? [],
             'composition' => $this->list
         ];
 
         return new ComponentDeclarationStructure($decl);
     }
 
-    public function doComponents(string $rule = "\w+"): void
+    public function doComponents(string $rule = "[A-Z]\w+"): void
     {
 
         $list = [];
@@ -395,7 +394,7 @@ class Decomposer extends Parser implements ParserInterface
             $item['class'] = ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
             $item['component'] = $fqName;
-            $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
+            $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doAttributes($text);
             $item['depth'] = $depth;
             $item['hasCloser'] = $hasCloser;
             $item['node'] = false;
@@ -408,6 +407,33 @@ class Decomposer extends Parser implements ParserInterface
 
         return $item;
     }
+
+    protected function doAttributes(string $attributesText): array {
+        $result = [];
+        $regex = <<< REGEX
+        /([\w]*)(\[\])?=("([\S ][^"]*)"|'([\S]*)'|\{\{ ([\w]*) \}\}|\{([\S ]*)\})/
+        REGEX;
+
+        preg_match_all($regex, $attributesText, $attributes, PREG_SET_ORDER, 0);
+
+        foreach ($attributes as $attr) {
+            $key = $attr[1];
+            $brackets = $attr[2];
+            $quote = substr($attr[3], 0, 1);
+            $value = $attr[4];
+
+            if ($brackets === "[]") {
+                if (!isset($result[$key])) {
+                    $result[$key] = [];
+                }
+                $result[$key][] = $quote . $value;
+            } else {
+                $result[$key] = "{$quote}{$value}";
+            }
+        }
+
+        return $result;
+    }   
 
     /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
     public function doFunctionDeclaration(): ?array
