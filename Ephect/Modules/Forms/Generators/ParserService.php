@@ -179,9 +179,17 @@ class ParserService implements ParserServiceInterface
         $this->useVariables = $p->getUseVariables();
     }
 
+
     public function doNamespace(FileComponentInterface $component): void
     {
         $p = new NamespaceParser($component);
+        $p->do($component->getMotherUID());
+        $this->html = $p->getHtml();
+    }
+    
+    public function doFunction(FileComponentInterface $component): void
+    {
+        $p = new FunctionParser($component);
         $p->do($component->getMotherUID());
         $this->html = $p->getHtml();
     }
