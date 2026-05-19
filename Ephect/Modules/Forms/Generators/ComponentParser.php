@@ -104,7 +104,7 @@ class ComponentParser extends Parser implements ParserInterface
         $allTags = [];
 
         $re = <<< REGEX
-/<\/?({$rule})((\s|.*?)*)\/?>|<\/?>/
+/<\/?({$rule})(?:\s+[\w-]+(?:\[\])?(?:\s*=\s*(?:"[^"]+"|\'[^\']+\'|\{[^}]+\}))?)*\s*\/?>|<\/?>/
 REGEX;
 
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
