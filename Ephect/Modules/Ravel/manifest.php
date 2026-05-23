@@ -1,8 +1,8 @@
 <?php
 
 return [
-    "tag" => "DoctrineBridge",
-    "name" => "ephect-io/doctrine-bridge",
+    "tag" => "Ravel",
+    "name" => "ephect-io/ravel",
     "entrypoint" => \Ephect\Modules\Forms\Components\Plugin::class,
     "templates" => "!",
     "description" => "Razor Alike Very Elegant Language.",
