@@ -13,7 +13,7 @@ final class ElseIfParser extends AbstractTokenParser
             return;
         }
 
-        $re = '/@else *if +(.+) +do/m';
+        $re = '/@else *if +(.+) +do$/m';
         $subst = '<% } elseif ($1) { %>';
         $result = preg_replace($re, $subst, $parameter);
 

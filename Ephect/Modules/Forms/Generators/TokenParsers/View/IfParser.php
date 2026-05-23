@@ -13,7 +13,7 @@ final class IfParser extends AbstractTokenParser
             return;
         }
 
-        $re = '/@if +(.+) +do/';
+        $re = '/@if +(.+) +do *$/m';
         $subst = "<% if ($1) {%>";
         $result = preg_replace($re, $subst, $parameter);
 
