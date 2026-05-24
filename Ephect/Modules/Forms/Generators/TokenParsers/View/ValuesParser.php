@@ -20,6 +20,7 @@ final class ValuesParser extends AbstractTokenParser
 
         foreach ($matches as $match) {
             $useVar = $match[1];
+
             $this->useVariables[$useVar] = '$' . $useVar;
 
             $text = str_replace($match[0], '$' . $useVar, $text);

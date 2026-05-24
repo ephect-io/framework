@@ -8,7 +8,12 @@ final class DoWhileParser extends AbstractTokenParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
-        $re = '/@while ([\w @%&!=\'"+\*\/;\<\-\>\(\)\[\]]+)/m';
+        if(!str_starts_with(trim($parameter), '@while')) {
+            $this->result = $parameter;
+            return;
+        }
+
+        $re = '/@while +(.+)/m';
         $subst = '<%} while($1); %>';
         $result = preg_replace($re, $subst, $parameter);
 

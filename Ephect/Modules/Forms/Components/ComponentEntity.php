@@ -260,6 +260,13 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
             if (count($this->properties) === 0) {
                 return null;
             }
+
+            foreach ($this->properties as $k => $v) {
+                if (str_starts_with($v, '$')) {
+                    $this->properties[$k] = str_replace('.', '->', $v);
+                }
+            }
+
             return $this->properties;
         }
         if (isset($this->properties[$key])) {

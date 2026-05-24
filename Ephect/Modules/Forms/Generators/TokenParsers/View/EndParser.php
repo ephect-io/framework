@@ -8,6 +8,11 @@ final class EndParser extends AbstractTokenParser
 {
     public function do(null|string|array|object $parameter = null): void
     {
+        if(!str_starts_with(trim($parameter), '@done')) {
+            $this->result = $parameter;
+            return;
+        }
+        
         $re = '/@done/m';
         $subst = '<% } %>';
         $result = preg_replace($re, $subst, $parameter, 1);

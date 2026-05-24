@@ -104,7 +104,7 @@ class ComponentParser extends Parser implements ParserInterface
         $allTags = [];
 
         $re = <<< REGEX
-/<\/?({$rule})((\s|.*?)*)\/?>|<\/?>/
+/<\/?({$rule})(?:\s+[\w-]+(?:\[\])?(?:\s*=\s*(?:"[^"]+"|\'[^\']+\'|\{[^}]+\}))?)*\s*\/?>|<\/?>/
 REGEX;
 
         preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, 0);
@@ -245,7 +245,7 @@ REGEX;
         return substr($text, -2) === self::TERMINATOR . self::CLOSE_TAG;
     }
 
-    protected function makeTag($tag, $parentIds, $depth, $hasCloser, $isCloser = false): array
+    protected function makeTag(array $tag, array $parentIds, int $depth, bool $hasCloser, bool $isCloser = false): array
     {
         $text = $tag['text'];
         $name = $tag['name'];

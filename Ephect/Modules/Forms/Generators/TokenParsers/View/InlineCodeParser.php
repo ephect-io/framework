@@ -30,6 +30,7 @@ final class InlineCodeParser extends AbstractTokenParser
             $line = $this->doBreaker($line);
             $line = $this->doEnd($line);
             $line = $this->doOperation($line);
+            $line = $this->doEcho($line);
 
             $phtml[] = $line;
         }
@@ -38,7 +39,7 @@ final class InlineCodeParser extends AbstractTokenParser
 
         $text = $this->doPhpTags($text);
 
-        $text = $this->doEchoes($text);
+        $text = $this->doLiquids($text);
         $text = $this->doValues($text);
         $this->doVariables();
 
@@ -131,9 +132,16 @@ final class InlineCodeParser extends AbstractTokenParser
         return $parser->getResult();
     }
 
-    public function doEchoes(string $html): string
+    public function doEcho(string $html): string
     {
         $parser = new EchoParser($this->component);
+        $parser->do($html);
+        return $parser->getResult();
+    }
+
+    public function doLiquids(string $html): string
+    {
+        $parser = new LiquidsParser($this->component);
         $parser->do([
             "html" => $html,
             "useVariables" => $this->useVariables,
