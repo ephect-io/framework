@@ -261,11 +261,16 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
                 return null;
             }
 
-            foreach ($this->properties as $k => $v) {
-                if (str_starts_with($v, '$')) {
-                    $this->properties[$k] = str_replace('.', '->', $v);
-                }
-            }
+            /**
+             * FEATURE: maybe in the future, we can support dot notation in props, 
+             * like $user.name, and we can convert it to $user->name for the user. 
+             * For now, we will just return the props as they are.
+             */
+            // foreach ($this->properties as $k => $v) {
+            //     if (str_starts_with($v, '$')) {
+            //         $this->properties[$k] = str_replace('.', '->', $v);
+            //     }
+            // }
 
             return $this->properties;
         }
