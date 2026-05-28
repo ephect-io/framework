@@ -1,0 +1,32 @@
+<?php
+
+namespace Ephect\Modules\Notifier\Forms;
+
+use Ephect\Modules\Notifier\Base\Notification;
+
+function Notification(): string
+{
+
+    $notification = new Notification();
+
+    return (<<<HTML
+    @if %notification->hasSuccess() do
+        <div class="alert alert-success" role="alert">
+            <ul style="list-style: none">
+                @for %notification->getSuccess() as %message do
+                    <li>{{ message }}</li>
+                @done
+            </ul>
+        </div>
+    @done
+    @if %notification->hasError() do
+        <div class="alert alert-warning" role="alert">
+            <ul style="list-style: none">
+                @for %notification->getError() as %message do
+                    <li>{{ message }}</li>
+                @done
+            </ul>
+        </div>
+    @done
+    HTML);
+}

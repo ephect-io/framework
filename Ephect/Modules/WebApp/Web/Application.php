@@ -18,7 +18,7 @@ class Application extends AbstractApplication
 {
     private string $html = '';
 
-    public static function create(...$params): self
+    public static function create(mixed ...$params): self
     {
         self::$instance = new Application();
         self::$instance->run(...$params);
@@ -26,7 +26,7 @@ class Application extends AbstractApplication
         return self::$instance;
     }
 
-    public function run(...$params): int
+    public function run(mixed ...$params): int
     {
         $this->loadInFile();
         StateRegistry::load();
