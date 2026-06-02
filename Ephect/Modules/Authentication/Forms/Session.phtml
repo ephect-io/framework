@@ -1,0 +1,10 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Views;
+
+function Session($props): string
+{
+    return (<<< HTML
+    <input type="hidden" name="SESSION-ID" value="{{ props->sessionId }}" >
+    HTML);
+}

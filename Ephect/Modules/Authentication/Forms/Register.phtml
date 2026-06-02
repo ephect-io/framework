@@ -1,0 +1,60 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Views;
+
+use Ephect\Modules\Authentication\Views\Csrf;
+use Ephect\Plugins\Authentication\Validators\RegistrationValidator;
+
+function Register($props): string
+{
+    $userMapper = $props->userMapper;
+    $notification = $props->notification;
+    $authenticator = $props->authenticator;
+
+    $isRegistered = false;
+
+    $form = new RegistrationValidator($userMapper);
+    $form->setFields(
+        $props->email,
+        $props->password,
+    );
+
+    if ($form->hasValidationErrors()) {
+        foreach ($form->getValidationErrors() as $error) {
+            $notification->setError($error);
+        }
+
+        // Display the actual form
+    }
+
+    $user = $form->save();
+
+    $notification->setSuccess(
+        'User %s created', $user->getEmail()
+    );
+
+    $authenticator->login($user);
+
+    $isRegistered = true;
+
+    return (<<< HTML
+    
+    @if %isRegistered do
+    <ResponseHeader directive[]="location: /dashbopard" />
+    @done
+
+    <h1>Register</h1>
+    <form method="post" action="/register">
+        <Csrf />
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input name="email" type="text" class="form-control" id="email">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input name="password" type="password" class="form-control" id="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    HTML);
+}

@@ -10,7 +10,10 @@ class CommandDeclaration
     public function __construct(
         public string $verb = '',
         public string $subject = '',
+        public array $longArgs = [],
+        public array $shortArgs = [],
         public string $desc = '',
+
         public bool $isPhar = false
     ) {
     }

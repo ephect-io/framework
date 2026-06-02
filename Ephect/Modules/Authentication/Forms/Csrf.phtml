@@ -1,0 +1,13 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Views;
+
+function Csrf($props): string
+{
+    $csrfFieldName = $props->csrfFieldName;
+    $csrfToken = $props->csrfToken;
+
+    return (<<< HTML
+    <input type="hidden" name="{{ csrfFieldName }}" value="{{ csrfToken }}">
+    HTML);
+}

@@ -1,0 +1,47 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Views;
+
+use Ephect\Modules\Authentication\Views\Csrf;
+use Ephect\Modules\Http\Forms\ResponseHeader;
+
+function Login($props): string
+{
+    $authenticator = $props->authenticator;
+    $email = $props->email ?? '';
+    $password = $props->password ?? '';
+    $notification = $props->notification ?? null;
+
+    $isAuthenticated = $authenticator->authenticate(
+        $email,
+        $password,
+    );
+
+    if (!$isAuthenticated) {
+        $notification->setError('Bad credentials.');
+    }
+
+    $notification->setSuccess('You are now logged in.');
+
+    return (<<< HTML
+
+    @if %isAuthenticated do
+        <ResponseHeader directives[]="location: /dashboard" />
+    @done
+
+    <h1>Login</h1>
+
+    <form action="/login" method="post">
+        <Csrf />
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input name="email" type="text" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input name="password" type="password" class="form-control" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    HTML);
+}

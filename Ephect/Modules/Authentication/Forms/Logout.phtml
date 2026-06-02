@@ -1,0 +1,19 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Views;
+
+use Ephect\Modules\Authentication\Views\Csrf;
+use Ephect\Modules\Http\Forms\ResponseHeader;
+
+function Logout($props): string
+{
+    $authenticator = $props->authenticator;
+    $notification = $props->notification ?? null;
+ 
+    $authenticator->logout();
+    $notification->setSuccess('See you soon!');
+
+    return (<<< HTML
+    <ResponseHeader directives[]="location: /" />
+    HTML);
+}

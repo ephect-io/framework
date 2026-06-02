@@ -5,7 +5,7 @@ use function Ephect\Hooks\useEffect;
 
 function ResponseHeader($props): string
 {
-    useEffect(function () use ($props, /* bool */ &$hasDirectives, /* string */ &$directives) {
+    useEffect(function ($props, /* bool */ &$hasDirectives, /* string[] */ &$directives) {
         $directives = $props->directive;
         $hasDirectives = count($directives) > 0;
     });
