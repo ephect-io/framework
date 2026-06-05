@@ -40,7 +40,7 @@ class Element extends StaticElement implements ElementInterface
         }
 
         foreach ($temp as $key => $value) {
-            $result[] = ["name" => $key, "args" => $value];
+            $result[] = ["name" => $key, "attrs" => $value];
         }
 
         return $result;

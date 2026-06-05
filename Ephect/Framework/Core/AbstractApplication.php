@@ -42,7 +42,7 @@ abstract class AbstractApplication extends Element
         return self::$executionMode;
     }
 
-    public static function setExecutionMode($myExecutionMode): void
+    public static function setExecutionMode(string $myExecutionMode): void
     {
         if (!$myExecutionMode) {
             $myExecutionMode = (\Constants::IS_WEB_APP) ? 'debug' : 'prod';
@@ -98,7 +98,7 @@ abstract class AbstractApplication extends Element
         return self::$executionMode == self::DEBUG_MODE;
     }
 
-    public static function authenticateByToken($token): string
+    public static function authenticateByToken(string $token): string
     {
 
         // On prend le token en cours
@@ -110,7 +110,7 @@ abstract class AbstractApplication extends Element
         return $token;
     }
 
-    abstract public function run(...$params): int;
+    abstract public function run(mixed ...$params): int;
 
     abstract public function displayConstants(): array;
 

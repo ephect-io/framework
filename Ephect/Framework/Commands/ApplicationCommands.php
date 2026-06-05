@@ -79,13 +79,13 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 include $root_dir . $filename;
                 $object = new $fqClass($this->_application);
 
-                $attr = Element::getClassAttributesData($object);
-                $commandArgs = $attr[0]['args'];
+                $attrsData = Element::getClassAttributesData($object);
+                $commandAttrs = $attrsData[0]['attrs'];
 
-                $verb = $commandArgs['verb'];
-                $subject = $commandArgs['subject'] ?? '';
-                $desc = $commandArgs['desc'];
-                $isPhar = $commandArgs['isPhar'] ?? '';
+                $verb = $commandAttrs['verb'];
+                $subject = $commandAttrs['subject'] ?? '';
+                $desc = $commandAttrs['desc'];
+                $isPhar = $commandAttrs['isPhar'] ?? '';
 
                 if ($isPhar) {
                     continue;
@@ -96,9 +96,9 @@ class ApplicationCommands extends Element implements CommandCollectionInterface
                 } else {
                     $usage[$verb] = "\t$verb => $desc" . PHP_EOL;
                 }
-                $commandArgs['callback'] = $object;
+                $commandAttrs['callback'] = $object;
 
-                $this->_commands[] = $commandArgs;
+                $this->_commands[] = $commandAttrs;
             }
         }
 

@@ -11,6 +11,7 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 use Ephect\Framework\CLI\Application;
+use Ephect\Framework\CLI\Console;
 use Ephect\Modules\DoctrineBridge\DBAL\Connection;
 use Ephect\Modules\DoctrineBridge\ORM\MetadataConfig;
 use InvalidArgumentException;
@@ -37,11 +38,13 @@ class Lib extends AbstractCommandLib
         {
             $params = $this->application->getArgv();
 
-            $doUp = array_key_exists('u', $params) || array_key_exists('up', $params);
-            $doDown = array_key_exists('d', $params) || array_key_exists('down', $params);
-            $doError = array_key_exists('u', $params) && array_key_exists('up', $params);
-            $doError = $doError || (array_key_exists('d', $params) && array_key_exists('down', $params));
-            $doError = $doError || ($doUp && $doDown);
+            //TODO: Refactor this to be more elegant using a proper command line options parser
+
+            $doUp = $this->application->hasCommandLineShortOption('u') || $this->application->hasCommandLineLongOption('up');
+            $doDown = $this->application->hasCommandLineShortOption('d') || $this->application->hasCommandLineLongOption('down');
+            $doError = $this->application->hasCommandLineShortOption('u') && $this->application->hasCommandLineShortOption('d') ||
+                $this->application->hasCommandLineLongOption('up') && $this->application->hasCommandLineLongOption('down');
+
             $doNothing = !$doUp && !$doDown;
 
             if ($doNothing) {
@@ -55,9 +58,9 @@ class Lib extends AbstractCommandLib
             $this->connection->beginTransaction();
 
             if ($doUp) {
-                $version = !isset($params['u']) ? ($params['up'] ?? null) : $params['u'];
+                $version = $this->application->getCommandLineShortOptions('u') ?? $this->application->getCommandLineLongOptions('up'); 
             } else if ($doDown) {
-                $version = !isset($params['d']) ? ($params['down'] ?? null) : $params['d'];
+                $version = $this->application->getCommandLineShortOptions('d') ?? $this->application->getCommandLineLongOptions('down');
             }
 
             $schemaMan = $this->connection->createSchemaManager();
@@ -97,6 +100,8 @@ class Lib extends AbstractCommandLib
 
         $table = new Table('users');
         $table->addColumn('id', Types::INTEGER, ['unsigned' => true, 'autoincrement' => true]);
+        $table->addColumn('first_name', Types::STRING, ['length' => 255]);
+        $table->addColumn('last_name', Types::STRING, ['length' => 255]);
         $table->addColumn('email', Types::STRING, ['length' => 255]);
         $table->addColumn('password', Types::STRING, ['length' => 60]);
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE, ['default' => 'CURRENT_TIMESTAMP']);
@@ -109,7 +114,7 @@ class Lib extends AbstractCommandLib
 
         $schema->createTable($table);
 
-        echo 'Users table has been created.' . PHP_EOL;
+        Console::writeLine('Users table has been created.');
     }
 
     /**
@@ -118,12 +123,12 @@ class Lib extends AbstractCommandLib
     private function doDown(AbstractSchemaManager $schema): void
     {
         if (!$schema->tableExists('users')) {
-            echo 'Nothing to drop.' . PHP_EOL;
+            Console::writeLine('Nothing to drop.');
             return;
         }
         $schema->dropTable('users');
 
-        echo 'Users table has been dropped.' . PHP_EOL;
+        Console::writeLine('Users table has been dropped.');
     }
 
 }
