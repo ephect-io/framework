@@ -4,7 +4,6 @@ namespace Ephect\Modules\Authentication\Commands\UserMigration;
 
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Doctrine\DBAL\Connection as DBALConnection;
-use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
 use Doctrine\DBAL\Schema\Schema;
@@ -12,8 +11,10 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 use Ephect\Framework\CLI\Application;
 use Ephect\Framework\CLI\Console;
+use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Modules\DoctrineBridge\DBAL\Connection;
 use Ephect\Modules\DoctrineBridge\ORM\MetadataConfig;
+use Exception;
 use InvalidArgumentException;
 use Throwable;
 
@@ -40,10 +41,9 @@ class Lib extends AbstractCommandLib
 
             //TODO: Refactor this to be more elegant using a proper command line options parser
 
-            $doUp = $this->application->hasCommandLineShortOption('u') || $this->application->hasCommandLineLongOption('up');
-            $doDown = $this->application->hasCommandLineShortOption('d') || $this->application->hasCommandLineLongOption('down');
-            $doError = $this->application->hasCommandLineShortOption('u') && $this->application->hasCommandLineShortOption('d') ||
-                $this->application->hasCommandLineLongOption('up') && $this->application->hasCommandLineLongOption('down');
+            $doUp = $this->application->hasCommandLineOption('u', 'up');
+            $doDown = $this->application->hasCommandLineOption('d', 'down');
+            $doError = $this->application->hasCommandLineOption('u', 'up') && $this->application->hasCommandLineOption('d', 'down');
 
             $doNothing = !$doUp && !$doDown;
 
@@ -57,11 +57,16 @@ class Lib extends AbstractCommandLib
 
             $this->connection->beginTransaction();
 
+            $version = null;
             if ($doUp) {
-                $version = $this->application->getCommandLineShortOptions('u') ?? $this->application->getCommandLineLongOptions('up'); 
+                $version = $this->application->getCommandLineOption('u', 'up');
             } else if ($doDown) {
-                $version = $this->application->getCommandLineShortOptions('d') ?? $this->application->getCommandLineLongOptions('down');
+                $version = $this->application->getCommandLineOption('d', 'down');
+            }   else {
+                throw new InvalidArgumentException('Invalid arguments.');
             }
+
+            Console::writeLine("Running migration for version: $version");
 
             $schemaMan = $this->connection->createSchemaManager();
             $schema = new Schema();
@@ -74,18 +79,22 @@ class Lib extends AbstractCommandLib
             // Execute the SQL query
             $sqlArray = $schema->toSql($this->connection->getDatabasePlatform());
 
-            foreach ($sqlArray as $sql) {
-                $this->connection->executeQuery($sql);
-            }
+            try {
+                foreach ($sqlArray as $sql) {
+                    $this->connection->executeQuery($sql);
+                }
+                $this->connection->commit();
 
-            $this->connection->commit();
+            } catch (Exception $exception) {    
+                $this->connection->rollBack();
+                throw new Exception("Error executing SQL: " . $exception->getMessage(), previous: $exception);
+            } catch (Throwable $throwable) {
+                $this->connection->rollBack();
+                throw $throwable;
+            }   
 
-        } catch (Exception $exception) {
-            $this->connection->rollBack();
-            throw $exception;
-        } catch (Throwable $throwable) {
-            $this->connection->rollBack();
-            throw $throwable;
+        } catch (Exception|Throwable $exception) {
+            Console::error($exception, ConsoleOptionsEnum::ErrorMessageOnly);
         }
     }
 

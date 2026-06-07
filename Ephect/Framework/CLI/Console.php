@@ -111,7 +111,7 @@ class Console extends Element
         }
 
         $message = $options === ConsoleOptionsEnum::ErrorMessageOnly ? $ex->getMessage() : self::formatException($ex);
-        print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
+        print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m" . PHP_EOL;
     }
 
     public static function formatException(Throwable $ex): string

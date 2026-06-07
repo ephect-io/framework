@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\CLI;
 
-use Ephect\Commands\Constants\Lib;
+use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Commands\ApplicationCommands;
 use Ephect\Framework\Commands\CommandOptionsStructure;
 use Ephect\Framework\Commands\CommandRunner;
@@ -48,7 +48,14 @@ class Application extends AbstractApplication
     {
         $commands = new ApplicationCommands($this);
         $runner = new CommandRunner($this, $commands);
-        return $runner->run();
+
+        try {
+            return $runner->run();
+        } catch (Throwable $throwable) {
+            Console::error($throwable);
+            return 1;
+        }
+        
     }
 
     /**
@@ -93,30 +100,21 @@ class Application extends AbstractApplication
         $this->shortArgs = $options->shortArgs;
     }
 
-    public function getCommandLineLongOptions(string|null $key = null): array|string|null
+    public function getCommandLineOption(string $short, ?string $long = null): string|null
     {
-        if ($key !== null) {
-            return $this->longArgs[$key] ?? null;
+        if(!$this->hasCommandLineOption($short, $long)) return null;
+        
+        return $this->longArgs[$long] ?? $this->shortArgs[$short];
+    }
+
+    public function hasCommandLineOption(string $short, ?string $long = null): bool
+    {
+        if (array_key_exists($short, $this->shortArgs) && array_key_exists($long, $this->longArgs)) {
+            throw new \InvalidArgumentException("Both short and long options provided. Please provide only one of them.");
         }
-        return $this->longArgs;
-    }
 
-    public function hasCommandLineLongOption(string $key): bool
-    {
-        return array_key_exists($key, $this->longArgs);
-    }
-
-    public function getCommandLineShortOptions(string|null $key = null): array|string|null
-    {
-        if ($key !== null) {
-            return $this->shortArgs[$key] ?? null;
-        }
-        return $this->shortArgs;
-    }
-
-    public function hasCommandLineShortOption(string $key): bool
-    {
-        return array_key_exists($key, $this->shortArgs);
+        return array_key_exists($short, $this->shortArgs) 
+        || ($long !== null && array_key_exists($long, $this->longArgs));
     }
 
     public function displayConstants(): array
