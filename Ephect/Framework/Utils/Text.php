@@ -36,7 +36,7 @@ class Text
         return $text;
     }
 
-    public static function format(string|array|object $string, ...$params): string
+    public static function format(string|array|object $string, mixed ...$params): string
     {
         $result = $string;
 

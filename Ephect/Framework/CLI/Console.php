@@ -14,7 +14,7 @@ class Console extends Element
 {
     use ElementTrait;
 
-    public static function write(string|array|object|null $string, ...$params): void
+    public static function write(string|array|object|null $string, mixed ...$params): void
     {
         if (Constants::IS_WEB_APP) {
             return;
@@ -25,7 +25,7 @@ class Console extends Element
         echo $value;
     }
 
-    public static function writeLine(string|array|object|null $string, ...$params): void
+    public static function writeLine(string|array|object|null $string, mixed ...$params): void
     {
         if (Constants::IS_WEB_APP) {
             return;
@@ -77,7 +77,7 @@ class Console extends Element
     }
 
 
-    public static function info(string|array|object|null $string, ...$params): void
+    public static function info(string|array|object|null $string, mixed ...$params): void
     {
         $string = $string ?: '';
 
@@ -90,7 +90,7 @@ class Console extends Element
         echo $value . PHP_EOL;
     }
 
-    public static function log(string|array|object|null $string, ...$params): void
+    public static function log(string|array|object|null $string, mixed ...$params): void
     {
         $string = $string ?: '';
 

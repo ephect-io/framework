@@ -7,7 +7,7 @@ use Exception;
 
 class Command
 {
-    public function execute(string $cmd, ...$args): int
+    public function execute(string $cmd, mixed ...$args): int
     {
         $fqcmd = $cmd . ' ' . implode(' ', $args);
         $return = system($fqcmd, $returnCode);
@@ -19,7 +19,7 @@ class Command
         return $returnCode;
     }
 
-    public function which($bin): ?string
+    public function which(string $bin): ?string
     {
         $result = null;
 

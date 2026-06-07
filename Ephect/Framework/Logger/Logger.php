@@ -53,7 +53,7 @@ class Logger
         fclose($handle);
     }
 
-    public function info(string $string, ...$params): void
+    public function info(string $string, mixed ...$params): void
     {
         $message = Text::format($string, $params);
         $this->__log(\Constants::INFO_LOG, $message);

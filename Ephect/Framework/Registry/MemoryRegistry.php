@@ -49,7 +49,7 @@ class MemoryRegistry extends AbstractStateRegistry implements RegistryInterface
         return static::getInstance()->__readItem($item, $key, $defaultValue);
     }
 
-    public static function writeItem(string|int $item, ...$params): void
+    public static function writeItem(string|int $item, mixed ...$params): void
     {
         static::getInstance()->__writeItem($item, ...$params);
     }

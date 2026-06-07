@@ -28,7 +28,7 @@ abstract class AbstractStateRegistry extends AbstractRegistry implements Registr
         $this->__load($asArray);
     }
 
-    protected function __writeItem(string|int $item, ...$params): void
+    protected function __writeItem(string|int $item, mixed ...$params): void
     {
         $concat = function (string|int $key, mixed $value) use ($item): mixed {
             $result = $value;
