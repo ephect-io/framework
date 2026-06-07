@@ -39,8 +39,6 @@ class Lib extends AbstractCommandLib
         {
             $params = $this->application->getArgv();
 
-            //TODO: Refactor this to be more elegant using a proper command line options parser
-
             $doUp = $this->application->hasCommandLineOption('u', 'up');
             $doDown = $this->application->hasCommandLineOption('d', 'down');
             $doError = $this->application->hasCommandLineOption('u', 'up') && $this->application->hasCommandLineOption('d', 'down');
@@ -55,8 +53,6 @@ class Lib extends AbstractCommandLib
                 throw new InvalidArgumentException('Invalid arguments.');
             }
 
-            $this->connection->beginTransaction();
-
             $version = null;
             if ($doUp) {
                 $version = $this->application->getCommandLineOption('u', 'up');
@@ -68,24 +64,27 @@ class Lib extends AbstractCommandLib
 
             Console::writeLine("Running migration for version: $version");
 
-            $schemaMan = $this->connection->createSchemaManager();
-            $schema = new Schema();
-
-            if ($doUp) {
-                $this->doUp($schemaMan);
-            } else if ($doDown) {
-                $this->doDown($schemaMan);
-            }
-            // Execute the SQL query
-            $sqlArray = $schema->toSql($this->connection->getDatabasePlatform());
-
             try {
+
+                $this->connection->beginTransaction();
+
+                $schemaMan = $this->connection->createSchemaManager();
+                $schema = new Schema();
+
+                if ($doUp) {
+                    $this->doUp($schemaMan);
+                } else if ($doDown) {
+                    $this->doDown($schemaMan);
+                }
+                // Execute the SQL query
+                $sqlArray = $schema->toSql($this->connection->getDatabasePlatform());
+
                 foreach ($sqlArray as $sql) {
                     $this->connection->executeQuery($sql);
                 }
                 $this->connection->commit();
 
-            } catch (Exception $exception) {    
+            } catch (Exception $exception) {
                 $this->connection->rollBack();
                 throw new Exception("Error executing SQL: " . $exception->getMessage(), previous: $exception);
             } catch (Throwable $throwable) {
