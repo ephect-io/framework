@@ -2,7 +2,7 @@
 
 namespace Ephect\Modules\DoctrineBridge\DBAL;
 
-use Doctrine\DBAL\Configuration;
+use Doctrine\ORM\Configuration;
 use Doctrine\DBAL\Connection as DBALConnection;
 use Doctrine\DBAL\DriverManager;
 use Ephect\Modules\DataAccess\Configuration\ConnectionConfiguration;

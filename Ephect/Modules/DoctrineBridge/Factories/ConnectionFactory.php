@@ -2,7 +2,7 @@
 
 namespace Bolero\Framework\Dbal;
 
-use Doctrine\DBAL\Configuration;
+use Doctrine\ORM\Configuration;
 use Doctrine\DBAL\Connection as DBALConnection;
 use Ephect\Modules\DoctrineBridge\DBAL\Connection;
 use Ephect\Modules\DoctrineBridge\ORM\MetadataConfig;
