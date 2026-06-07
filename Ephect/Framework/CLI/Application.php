@@ -119,7 +119,8 @@ class Application extends AbstractApplication
 
     public function displayConstants(): array
     {
-        return [
-        ];
+        $lib = new \Ephect\Commands\ShowConstants\Lib($this);
+        $lib->displayConstants();
+        return [];
     }
 }

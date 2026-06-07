@@ -3,6 +3,7 @@
 namespace Ephect\Framework\Core;
 
 use Ephect\Framework\CLI\Console;
+use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 
@@ -237,7 +238,7 @@ class ConstantsMaker
         $this->constants['TXT_EXTENSION'] = '.txt';
     }
 
-    public function list(): array
+    public function getList(): array
     {
         return $this->constants;
     }
@@ -245,7 +246,11 @@ class ConstantsMaker
     public function log(): void
     {
         foreach ($this->constants as $key => $value) {
-            Console::Log($key . ' => ' . $value);
+            Console::writeLine(
+                ConsoleColors::getColoredString($key, ConsoleColors::CYAN)
+                . ' => '
+                . ConsoleColors::getColoredString($value, ConsoleColors::BLUE)
+            );
         }
     }
 
