@@ -135,7 +135,7 @@ class Text
                 $isSpinning = $countSpinning > 10;
             }
         } catch (\Exception $exception) {
-            throw new Exception("Something went wrong while converting array to string", 1, $exception);
+            throw new \Exception("Something went wrong while converting array to string", 1, $exception);
         }
 
         if (!$prettify) {

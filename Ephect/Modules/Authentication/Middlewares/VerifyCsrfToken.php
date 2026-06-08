@@ -2,12 +2,13 @@
 
 namespace Ephect\Plugins\Authentication\Middlewares;
 
-use Ephect\Framework\Http\Request;
-use Ephect\Framework\Http\Response;
-use Ephect\Framework\Middleware\MiddlewareInterface;
-use Ephect\Framework\Middleware\RequestHandlerInterface;
+use Ephect\Modules\Http\Transport\Request;
+use Ephect\Modules\Http\Transport\Response;
+use Ephect\Modules\Http\Middleware\MiddlewareInterface;
+use Ephect\Modules\Http\Middleware\RequestHandlerInterface;
 use Ephect\Framework\Session\Session;
-use Ephect\Plugins\Authentication\Exceptions\CsrfTokenMismatchException;
+use Ephect\Modules\Authentication\Exceptions\CsrfTokenMismatchException;
+use \Throwable;
 
 class VerifyCsrfToken implements MiddlewareInterface
 {
@@ -24,7 +25,7 @@ class VerifyCsrfToken implements MiddlewareInterface
         $session = $request->getSession();
 
         $sessionToken = $session->read(Session::CSRF_TOKEN) ?? '';
-        $formToken = $request->searchFromBody(Session::CSRF_TOKEN);
+        $formToken = $request->getPostParams(Session::CSRF_TOKEN);
 
         if (!hash_equals($sessionToken, $formToken)) {
             throw new CsrfTokenMismatchException();
