@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Exceptions;
+namespace Ephect\Modules\Authentication\Exceptions;
 
 use Ephect\Framework\Http\Exceptions\HttpException;
 use Ephect\Framework\Http\HttpStatusCodeEnum;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bolero\Framework\Dbal;
+namespace Ephect\Framework\Dbal;
 
 use Doctrine\ORM\Configuration;
 use Doctrine\DBAL\Connection as DBALConnection;
