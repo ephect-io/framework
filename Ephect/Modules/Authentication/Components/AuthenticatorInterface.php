@@ -2,7 +2,7 @@
 
 namespace Ephect\Plugins\Authentication\Components;
 
-use Ephect\Framework\Session\SessionInterface;
+use Ephect\Modules\HttpStorage\Session\SessionInterface;
 
 interface AuthenticatorInterface
 {

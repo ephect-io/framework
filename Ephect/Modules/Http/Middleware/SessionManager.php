@@ -4,7 +4,7 @@ namespace Ephect\Modules\Http\Middleware;
 
 use Ephect\Modules\Http\Transport\Request;
 use Ephect\Modules\Http\Transport\Response;
-use Ephect\Framework\Session\SessionInterface;
+use Ephect\Modules\HttpStorage\Session\SessionInterface;
 use Exception;
 
 readonly class SessionManager implements MiddlewareInterface

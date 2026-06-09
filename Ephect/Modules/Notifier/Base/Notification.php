@@ -2,7 +2,7 @@
 
 namespace Ephect\Modules\Notifier\Base;
 
-use Ephect\Framework\Session\Session;
+use Ephect\Modules\HttpStorage\Session\Session;
 use Ephect\Modules\Notifier\Enums\NotificationType;
 use Exception;
 

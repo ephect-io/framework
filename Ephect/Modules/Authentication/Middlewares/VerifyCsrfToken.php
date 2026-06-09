@@ -6,7 +6,7 @@ use Ephect\Modules\Http\Transport\Request;
 use Ephect\Modules\Http\Transport\Response;
 use Ephect\Modules\Http\Middleware\MiddlewareInterface;
 use Ephect\Modules\Http\Middleware\RequestHandlerInterface;
-use Ephect\Framework\Session\Session;
+use Ephect\Modules\HttpStorage\Session\Session;
 use Ephect\Modules\Authentication\Exceptions\CsrfTokenMismatchException;
 use \Throwable;
 

@@ -3,7 +3,7 @@
 namespace Ephect\Modules\Http\Exceptions;
 
 use Ephect\Framework\Exceptions\BaseException;
-use Ephect\Modules\Http\HttpStatusCodeEnum;
+use Ephect\Modules\Http\Transport\HttpStatusCodeEnum;
 use Throwable;
 
 class HttpException extends BaseException
