@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\Session;
+namespace Ephect\Modules\HttpStorage\Session;
 
 interface SessionInterface
 {
