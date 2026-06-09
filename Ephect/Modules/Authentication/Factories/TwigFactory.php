@@ -2,7 +2,7 @@
 
 namespace Ephect\Plugins\Authentication\Factories;
 
-use Ephect\Framework\Session\Session;
+use Ephect\Modules\HttpStorage\Session\Session;
 use Ephect\Framework\Template\TwigFactoryInterface;
 use Ephect\Plugins\Authentication\Components\Authenticator;
 use Twig\Environment;

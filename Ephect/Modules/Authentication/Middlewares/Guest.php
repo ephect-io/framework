@@ -2,14 +2,14 @@
 
 namespace Ephect\Plugins\Authentication\Middlewares;
 
-use Ephect\Framework\Http\HistoryInterface;
-use Ephect\Framework\Http\RedirectResponse;
-use Ephect\Framework\Http\Request;
-use Ephect\Framework\Http\Response;
-use Ephect\Framework\Middleware\MiddlewareInterface;
-use Ephect\Framework\Middleware\RequestHandlerInterface;
-use Ephect\Framework\Session\SessionInterface;
-use Ephect\Plugins\Authentication\Configuration;
+use Ephect\Modules\Http\Transport\HistoryInterface;
+use Ephect\Modules\Http\Transport\RedirectResponse;
+use Ephect\Modules\Http\Transport\Request;
+use Ephect\Modules\Http\Transport\Response;
+use Ephect\Modules\Http\Middleware\MiddlewareInterface;
+use Ephect\Modules\Http\Middleware\RequestHandlerInterface;
+use Ephect\Modules\HttpStorage\Session\SessionInterface;
+use Ephect\Modules\Authentication\Common\Configuration;
 
 class Guest implements MiddlewareInterface
 {

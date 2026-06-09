@@ -2,7 +2,7 @@
 
 namespace Ephect\Modules\Http\Transport;
 
-use Ephect\Framework\Session\Session;
+use Ephect\Modules\HttpStorage\Session\Session;
 
 class Request implements RequestInfoInterface
 {
@@ -17,6 +17,11 @@ class Request implements RequestInfoInterface
 
         $this->headers = new RequestHeaders();
         $this->session = new Session();
+    }
+
+    public function getInfo(): RequestInfo
+    {
+        return $this->info;
     }
 
     public function getGetParams(string $param = ''): array|string

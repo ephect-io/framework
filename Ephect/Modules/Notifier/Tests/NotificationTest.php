@@ -2,7 +2,7 @@
 
 namespace Ephect\Modules\Notifier\Tests;
 
-use Ephect\Framework\Session\Session;
+use Ephect\Modules\HttpStorage\Session\Session;
 use Ephect\Modules\Notifier\Enums\NotificationType;
 use Ephect\Modules\Notifier\Base\Notification;
 use PHPUnit\Framework\Attributes\Test;
