@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Modules\Authentication\Views;
+namespace Ephect\Modules\Authentication\Forms\Components;
 
-function Session($props): string
+function Session(object $props): string
 {
     return (<<< HTML
     <input type="hidden" name="SESSION-ID" value="{{ props->sessionId }}" >

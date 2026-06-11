@@ -1,9 +1,9 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Repositories;
+namespace Ephect\Modules\Authentication\Repositories;
 
-use Ephect\Plugins\Authentication\Components\AuthenticationInterface;
-use Ephect\Plugins\Authentication\Entities\User;
+use Ephect\Modules\Authentication\Components\AuthenticationInterface;
+use Ephect\Modules\Authentication\Entities\User;
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;

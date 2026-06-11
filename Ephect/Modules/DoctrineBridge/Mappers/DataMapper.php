@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\DoctrineBridge\Mappers;
+namespace Ephect\Modules\DoctrineBridge\Mappers;
 
 use Ephect\Framework\Event\EventDispatcher;
 use Doctrine\DBAL\Connection;

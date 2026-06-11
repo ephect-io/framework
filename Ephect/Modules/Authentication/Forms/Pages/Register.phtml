@@ -1,11 +1,11 @@
 <?php
 
-namespace Ephect\Modules\Authentication\Views;
+namespace Ephect\Modules\Authentication\Forms\Pages;
 
-use Ephect\Modules\Authentication\Views\Csrf;
-use Ephect\Plugins\Authentication\Validators\RegistrationValidator;
+use Ephect\Modules\Authentication\Forms\Components\Csrf;
+use Ephect\Modules\Authentication\Validators\RegistrationValidator;
 
-function Register($props): string
+function Register(object $props): string
 {
     $userMapper = $props->userMapper;
     $notification = $props->notification;

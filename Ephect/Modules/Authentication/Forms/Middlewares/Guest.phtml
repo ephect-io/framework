@@ -1,0 +1,15 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Forms\Middlewares;
+
+use Ephect\Modules\Routing\Attributes\RouteMiddleware;
+use function Ephect\Modules\Http\Forms\ResponseHeader;
+
+#[RouteMiddleware]
+function Guest(): string
+{
+    return (<<< HTML
+    <ResponseHeader directive[]="location: /" />
+    @op exit
+    HTML);
+}

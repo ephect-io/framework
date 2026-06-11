@@ -68,7 +68,7 @@ class Application extends AbstractApplication
     public function displayConstants(): array
     {
         $maker = new ConstantsMaker();
-        $constants = $maker->list();
+        $constants = $maker->getList();
         StateRegistry::writeItem('console', ['buffer' => $constants]);
 
         Console::Log('Application constants are :');

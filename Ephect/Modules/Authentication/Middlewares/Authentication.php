@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Middlewares;
+namespace Ephect\Modules\Authentication\Middlewares;
 
 use Ephect\Modules\Http\Transport\RedirectResponse;
 use Ephect\Modules\Http\Transport\Request;
@@ -17,7 +17,7 @@ class Authentication implements MiddlewareInterface
 
     public function __construct(
         private readonly SessionInterface $session,
-        private readonly NotificationInterface $flashMessage,
+        private readonly NotificationInterface $notification,
     ) {
     }
 
@@ -25,7 +25,7 @@ class Authentication implements MiddlewareInterface
     {
         $this->session->start();
         if (!$this->session->has(Configuration::AUTH_KEY)) {
-            $this->flashMessage->setError('Please sign in.');
+            $this->notification->setError('Please sign in.');
             return new RedirectResponse("/login");
         }
 

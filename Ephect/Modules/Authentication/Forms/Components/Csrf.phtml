@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Modules\Authentication\Views;
+namespace Ephect\Modules\Authentication\Forms\Components;
 
-function Csrf($props): string
+function Csrf(object $props): string
 {
     $csrfFieldName = $props->csrfFieldName;
     $csrfToken = $props->csrfToken;
