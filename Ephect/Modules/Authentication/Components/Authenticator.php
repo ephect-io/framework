@@ -1,10 +1,10 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Components;
+namespace Ephect\Modules\Authentication\Components;
 
 use Ephect\Modules\HttpStorage\Session\SessionInterface;
 use Ephect\Modules\Authentication\Common\Configuration;
-use Ephect\Plugins\Authentication\Repositories\AuthenticationRepositoryInterface;
+use Ephect\Modules\Authentication\Repositories\AuthenticationRepositoryInterface;
 
 class Authenticator implements AuthenticatorInterface
 {

@@ -1,0 +1,25 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Forms\Routing;
+
+use function Ephect\Modules\Routing\Forms\Router;
+use function Ephect\Modules\Routing\Forms\Route;
+use function Ephect\Modules\Authentication\Forms\Middlewares\Authentication;
+use function Ephect\Modules\Authentication\Forms\Middlewares\Guest;
+
+function AuthenticatorRouter(object $props): string
+{
+    $landing = $props->landing ?? '/';
+
+    return (<<< HTML
+    <Router>
+        <Route method='GET' rule='/register' exact='true' redirect='Register' >
+            <Authentication landing="%landing" />
+        </Route>
+        <Route method='GET' rule='/login' exact='true' redirect='Login' >
+            <Guest />
+        </Route>
+        <Route method='GET' rule='/logout' exact='true' redirect='Logout' />
+    </Router>
+    HTML);
+}

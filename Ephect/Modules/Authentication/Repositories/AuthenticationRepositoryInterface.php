@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Repositories;
+namespace Ephect\Modules\Authentication\Repositories;
 
-use Ephect\Plugins\Authentication\Components\AuthenticationInterface;
+use Ephect\Modules\Authentication\Components\AuthenticationInterface;
 
 interface AuthenticationRepositoryInterface
 {

@@ -1,0 +1,17 @@
+<?php
+
+namespace Ephect\Modules\Authentication\Forms\Middlewares;
+
+use Ephect\Modules\Routing\Attributes\RouteMiddleware;
+use function Ephect\Modules\Http\Forms\ResponseHeader;
+
+#[RouteMiddleware]
+function Authentication(object $props): string
+{
+    $landing = $props->landing ?? '/';
+    $location = "location: $landing";
+    return (<<< HTML
+    <ResponseHeader directive[]="%location" />
+    @op exit
+    HTML);
+}

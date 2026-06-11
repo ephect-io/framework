@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Validators;
+namespace Ephect\Modules\Authentication\Validators;
 
-use Ephect\Plugins\Authentication\Repositories\UserMapper;
+use Ephect\Modules\Authentication\Repositories\UserMapper;
 
 class LoginValidator
 {

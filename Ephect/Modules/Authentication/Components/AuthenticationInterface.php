@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Components;
+namespace Ephect\Modules\Authentication\Components;
 
 interface AuthenticationInterface
 {

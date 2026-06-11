@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Middlewares;
+namespace Ephect\Modules\Authentication\Middlewares;
 
 use Ephect\Modules\Http\Transport\Request;
 use Ephect\Modules\Http\Transport\Response;

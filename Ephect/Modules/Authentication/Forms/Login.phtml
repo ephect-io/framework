@@ -1,11 +1,12 @@
 <?php
 
-namespace Ephect\Modules\Authentication\Views;
+namespace Ephect\Modules\Authentication\Forms;
 
 use Ephect\Modules\Authentication\Views\Csrf;
 use Ephect\Modules\Http\Forms\ResponseHeader;
+use Ephect\Modules\Http\Transport\Request;
 
-function Login($props): string
+function Login(object $props): string
 {
     $authenticator = $props->authenticator;
     $email = $props->email ?? '';
