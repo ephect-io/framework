@@ -1,8 +1,8 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Repositories;
+namespace Ephect\Modules\Authentication\Repositories;
 
-use Ephect\Plugins\Authentication\Entities\User;
+use Ephect\Modules\Authentication\Entities\User;
 use Doctrine\DBAL\Exception;
 use Ephect\Framework\DoctrineBridge\Mappers\DataMapper;
 use Ephect\Modules\DataAccess\DBAL\Entity;

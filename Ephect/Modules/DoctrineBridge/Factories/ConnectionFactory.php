@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Framework\Dbal;
+namespace Ephect\Modules\DoctrineBridge\Factories;
 
 use Doctrine\ORM\Configuration;
 use Doctrine\DBAL\Connection as DBALConnection;

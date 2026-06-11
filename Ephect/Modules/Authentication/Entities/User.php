@@ -1,10 +1,10 @@
 <?php
 
-namespace Ephect\Plugins\Authentication\Entities;
+namespace Ephect\Modules\Authentication\Entities;
 
-use Ephect\Framework\Dbal\Entity;
-use Ephect\Plugins\Authentication\Components\AuthenticationInterface;
+use Ephect\Modules\Authentication\Components\AuthenticationInterface;
 use DateTimeImmutable;
+use Ephect\Modules\DataAccess\DBAL\Entity;
 
 class User extends Entity implements AuthenticationInterface
 {
@@ -12,7 +12,6 @@ class User extends Entity implements AuthenticationInterface
         private readonly string $email,
         private readonly string $password,
         private readonly DateTimeImmutable $createdAt,
-        private ?int $id = null,
     ) {
     }
 
@@ -34,11 +33,6 @@ class User extends Entity implements AuthenticationInterface
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function setId(?int $id): void
