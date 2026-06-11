@@ -7,19 +7,17 @@ use function Ephect\Modules\Routing\Forms\Route;
 use function Ephect\Modules\Authentication\Forms\Middlewares\Authentication;
 use function Ephect\Modules\Authentication\Forms\Middlewares\Guest;
 
-function AuthenticatorRouter(object $props): string
+function AuthenticatorRouter(): string
 {
-    $landing = $props->landing ?? '/';
+    $landing =  '/';
 
     return (<<< HTML
-    <Router>
         <Route method='GET' rule='/register' exact='true' redirect='Register' >
-            <Authentication landing="%landing" />
+            <Authentication />
         </Route>
         <Route method='GET' rule='/login' exact='true' redirect='Login' >
             <Guest />
         </Route>
         <Route method='GET' rule='/logout' exact='true' redirect='Logout' />
-    </Router>
     HTML);
 }
