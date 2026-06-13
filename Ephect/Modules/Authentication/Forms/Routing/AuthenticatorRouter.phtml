@@ -7,9 +7,9 @@ use function Ephect\Modules\Routing\Forms\Route;
 use function Ephect\Modules\Authentication\Forms\Middlewares\Authentication;
 use function Ephect\Modules\Authentication\Forms\Middlewares\Guest;
 
-function AuthenticatorRouter(): string
+function AuthenticatorRouter(object $props): string
 {
-    $landing =  '/';
+    $landing = $props->landing ?? '/';
 
     return (<<< HTML
         <Route method='GET' rule='/register' exact='true' redirect='Register' >
