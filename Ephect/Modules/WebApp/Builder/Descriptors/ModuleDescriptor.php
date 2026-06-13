@@ -25,7 +25,7 @@ class ModuleDescriptor implements DescriptorInterface
         $relativeFile =
             str_replace(\Constants::EPHECT_ROOT, '', $sourceDir) .
             str_replace(pathinfo($filename, PATHINFO_EXTENSION), 'php', $filename);
-        File::safeCopy($sourceDir . $filename, \Constants::COPY_DIR . $relativeFile);
+        File::safeCopy($sourceDir . $filename, \Constants::PROCESS_DIR . $relativeFile);
 
         $manifestDir = realpath($this->modulePath . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR);
         $manifestDir = is_dir($manifestDir) ? $manifestDir : $this->modulePath;

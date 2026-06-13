@@ -288,6 +288,8 @@ class Constants
     public const STATIC_DIR = self::CACHE_DIR . self::REL_STATIC_DIR;
     public const REL_STORE_DIR = 'store' . DIRECTORY_SEPARATOR;
     public const STORE_DIR = self::CACHE_DIR . self::REL_STORE_DIR;
+    public const REL_PROCESS_DIR = 'process' . DIRECTORY_SEPARATOR;
+    public const PROCESS_DIR = self::CACHE_DIR . self::REL_PROCESS_DIR;
     public const REL_COPY_DIR = 'copy' . DIRECTORY_SEPARATOR;
     public const COPY_DIR = self::CACHE_DIR . self::REL_COPY_DIR;
     public const REL_UNIQUE_DIR = 'unique' . DIRECTORY_SEPARATOR;

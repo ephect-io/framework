@@ -26,7 +26,7 @@ class Builder
 
     public static function purgeCopies(): void
     {
-        File::delTree(\Constants::COPY_DIR);
+        File::delTree(\Constants::PROCESS_DIR);
     }
 
     /**
@@ -38,12 +38,16 @@ class Builder
     {
         if (!ComponentRegistry::load()) {
             File::safeMkDir(\Constants::CACHE_DIR);
+            File::safeMkDir(\Constants::PROCESS_DIR);
             File::safeMkDir(\Constants::COPY_DIR);
             File::safeMkDir(\Constants::BUILD_DIR);
             File::safeMkDir(\Constants::STATIC_DIR);
 
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies
+
+            $copier = new TemplatesCopyMaker();
+            $copier->makeCopies(); // make copies as is
 
             //            UniqueCodeRegistry::load();
             //            $descriptor = new UniqueComponentListDescriptor();

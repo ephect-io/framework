@@ -402,6 +402,6 @@ class RouterService implements RouterServiceInterface
 
     public function purgeCopies(): void
     {
-        //        File::delTree(\Constants::COPY_DIR);
+        //        File::delTree(\Constants::PROCESS_DIR);
     }
 }

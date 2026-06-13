@@ -202,6 +202,8 @@ class ConstantsMaker
         $this->constants['STATIC_DIR'] = $this->constants['CACHE_DIR'] . $this->constants['REL_STATIC_DIR'];
         $this->constants['REL_STORE_DIR'] = 'store' . DIRECTORY_SEPARATOR;
         $this->constants['STORE_DIR'] = $this->constants['CACHE_DIR'] . $this->constants['REL_STORE_DIR'];
+        $this->constants['REL_PROCESS_DIR'] = 'process' . DIRECTORY_SEPARATOR;
+        $this->constants['PROCESS_DIR'] = $this->constants['CACHE_DIR'] . $this->constants['REL_PROCESS_DIR'];
         $this->constants['REL_COPY_DIR'] = 'copy' . DIRECTORY_SEPARATOR;
         $this->constants['COPY_DIR'] = $this->constants['CACHE_DIR'] . $this->constants['REL_COPY_DIR'];
         $this->constants['REL_UNIQUE_DIR'] = 'unique' . DIRECTORY_SEPARATOR;

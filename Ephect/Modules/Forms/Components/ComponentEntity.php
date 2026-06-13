@@ -310,7 +310,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         if ($compFile === null) {
             return $result;
         }
-        $text = $html ?: File::safeRead(\Constants::COPY_DIR . $compFile);
+        $text = $html ?: File::safeRead(\Constants::PROCESS_DIR . $compFile);
 
         if (($pos = strpos($text, $this->text) + strlen($this->text)) > $start) {
             $offset = $pos - $start;
