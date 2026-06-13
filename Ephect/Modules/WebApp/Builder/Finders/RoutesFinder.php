@@ -21,6 +21,8 @@ class RoutesFinder implements FinderInterface
         if ($root !== null) {
             $routes = $root->items();
             foreach ($routes as $route) {
+                if($route->getName() !== 'Route') continue;
+
                 $props = (object)$route->props();
                 $rb = new RouteBuilder($props);
                 $re = $rb->build();
