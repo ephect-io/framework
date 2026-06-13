@@ -4,7 +4,7 @@ namespace Ephect\Modules\WebApp\Builder\Copiers\Strategy;
 
 use Ephect\Framework\Utils\File;
 
-class CopyAsIsStrategy implements CopierStrategyInterface
+class CopyModulesPagesStrategy implements CopierStrategyInterface
 {
     public function __construct()
     {

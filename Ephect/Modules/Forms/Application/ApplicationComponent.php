@@ -80,7 +80,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         } else {
             $this->code = File::safeRead(\Constants::BUILD_DIR . $this->motherUID . DIRECTORY_SEPARATOR . $this->filename);
             if ($this->code === null) {
-                $this->code = File::safeRead(\Constants::COPY_DIR . $this->filename);
+                $this->code = File::safeRead(\Constants::PROCESS_DIR . $this->filename);
             }
         }
 

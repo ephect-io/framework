@@ -4,8 +4,8 @@ namespace Ephect\Modules\Authentication\Forms\Components;
 
 function Csrf(object $props): string
 {
-    $csrfFieldName = $props->csrfFieldName;
-    $csrfToken = $props->csrfToken;
+    $csrfFieldName = $props->name;
+    $csrfToken = $props->token;
 
     return (<<< HTML
     <input type="hidden" name="{{ csrfFieldName }}" value="{{ csrfToken }}">

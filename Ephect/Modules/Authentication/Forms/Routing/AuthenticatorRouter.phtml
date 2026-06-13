@@ -12,6 +12,7 @@ function AuthenticatorRouter(object $props): string
     $landing = $props->landing ?? '/';
 
     return (<<< HTML
+    <Router>
         <Route method='GET' rule='/register' exact='true' redirect='Register' >
             <Authentication />
         </Route>
@@ -19,5 +20,6 @@ function AuthenticatorRouter(object $props): string
             <Guest />
         </Route>
         <Route method='GET' rule='/logout' exact='true' redirect='Logout' />
+    </Router>
     HTML);
 }

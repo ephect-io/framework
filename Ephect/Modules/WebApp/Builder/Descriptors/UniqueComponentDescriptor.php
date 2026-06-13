@@ -67,14 +67,14 @@ class UniqueComponentDescriptor implements DescriptorInterface
         $comp = new Component();
         $comp->load($sourceDir . $filename);
 
-        $fullCopyFilename = str_replace(\Constants::UNIQUE_DIR, \Constants::COPY_DIR, $fullFilename);
+        $fullCopyFilename = str_replace(\Constants::UNIQUE_DIR, \Constants::PROCESS_DIR, $fullFilename);
 
         $parser = new ParserService();
         $parser->doEmptyComponents($comp);
         if ($parser->getResult() === true) {
             $html = $parser->getHtml();
-            File::safeWrite(\Constants::COPY_DIR . $filename, $html);
-            $comp->load(\Constants::COPY_DIR . $filename);
+            File::safeWrite(\Constants::PROCESS_DIR . $filename, $html);
+            $comp->load(\Constants::PROCESS_DIR . $filename);
         }
 
         $comp->analyse();

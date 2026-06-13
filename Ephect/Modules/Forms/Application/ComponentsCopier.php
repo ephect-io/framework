@@ -20,7 +20,7 @@ class ComponentsCopier
 
         if ($componentList === null) {
             if (!file_exists($cachedir . $copyFile)) {
-                copy(\Constants::COPY_DIR . $copyFile, $cachedir . $copyFile);
+                copy(\Constants::PROCESS_DIR . $copyFile, $cachedir . $copyFile);
             }
 
             return $copyFile;
@@ -55,7 +55,7 @@ class ComponentsCopier
         }
 
         if (!file_exists($cachedir . $copyFile)) {
-            copy(\Constants::COPY_DIR . $copyFile, $cachedir . $copyFile);
+            copy(\Constants::PROCESS_DIR . $copyFile, $cachedir . $copyFile);
         }
 
         return $copyFile;

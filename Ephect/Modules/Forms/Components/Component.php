@@ -27,7 +27,7 @@ class Component extends ApplicationComponent implements FileComponentInterface
         }
         COMPONENT;
 
-        File::safeWrite(\Constants::COPY_DIR . $filename, $html);
+        File::safeWrite(\Constants::PROCESS_DIR . $filename, $html);
     }
 
     public function parse(): void

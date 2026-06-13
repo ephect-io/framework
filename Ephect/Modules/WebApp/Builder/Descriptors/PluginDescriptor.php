@@ -13,7 +13,7 @@ class PluginDescriptor implements DescriptorInterface
         $relativeFile =
             str_replace(\Constants::EPHECT_ROOT, '', $sourceDir) .
             str_replace(pathinfo($filename, PATHINFO_EXTENSION), 'php', $filename);
-        File::safeCopy($sourceDir . $filename, \Constants::COPY_DIR . $relativeFile);
+        File::safeCopy($sourceDir . $filename, \Constants::PROCESS_DIR . $relativeFile);
 
         $plugin = new Plugin();
         $plugin->load($relativeFile);
