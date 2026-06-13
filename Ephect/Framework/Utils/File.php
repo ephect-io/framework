@@ -8,8 +8,12 @@ use RecursiveIteratorIterator;
 
 class File
 {
-    public static function walkTreeFiltered($path, $filter = [], $maxDepth1 = false): array
+    public static function walkTreeFiltered(string $path, array $filter = [], bool $maxDepth1 = false): array|bool
     {
+        if(!is_dir($path)) {
+            return false;
+        }
+        
         $result = [];
 
         $l = strlen($path);
