@@ -12,6 +12,7 @@ class User extends Entity implements AuthenticationInterface
         private readonly string $email,
         private readonly string $password,
         private readonly DateTimeImmutable $createdAt,
+        private int $id,
     ) {
     }
 
@@ -46,6 +47,7 @@ class User extends Entity implements AuthenticationInterface
             email: $email,
             password: password_hash($password, PASSWORD_DEFAULT),
             createdAt: new DateTimeImmutable(),
+            id: 0
         );
     }
 

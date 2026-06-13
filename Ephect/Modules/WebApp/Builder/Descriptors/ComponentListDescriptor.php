@@ -16,48 +16,48 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
 
         $descriptor = new ComponentDescriptor();
 
-        $bootstrapList = File::walkTreeFiltered(\Constants::SRC_ROOT, ['phtml'], true);
+        $bootstrapList = File::walkTreeFiltered(\Constants::COPY_DIR, ['phtml'], true);
         foreach ($bootstrapList as $key => $compFile) {
-            [$fqcn, $comp] = $descriptor->describe(\Constants::SRC_ROOT, $compFile);
+            [$fqcn, $comp] = $descriptor->describe(\Constants::COPY_DIR, $compFile);
             $result[$fqcn] = $comp;
         }
 
-        $pagesList = File::walkTreeFiltered(\Constants::CUSTOM_PAGES_ROOT, ['phtml']);
+        $pagesList = File::walkTreeFiltered(\Constants::COPY_PAGES_ROOT, ['phtml']);
         foreach ($pagesList as $key => $pageFile) {
-            [$fqcn, $comp] = $descriptor->describe(\Constants::CUSTOM_PAGES_ROOT, $pageFile);
+            [$fqcn, $comp] = $descriptor->describe(\Constants::COPY_PAGES_ROOT, $pageFile);
             $result[$fqcn] = $comp;
         }
 
-        $componentsList = File::walkTreeFiltered(\Constants::CUSTOM_COMPONENTS_ROOT, ['phtml']);
+        $componentsList = File::walkTreeFiltered(\Constants::COPY_COMPONENTS_ROOT, ['phtml']);
         foreach ($componentsList as $key => $compFile) {
-            [$fqcn, $comp] = $descriptor->describe(\Constants::CUSTOM_COMPONENTS_ROOT, $compFile);
+            [$fqcn, $comp] = $descriptor->describe(\Constants::COPY_COMPONENTS_ROOT, $compFile);
             $result[$fqcn] = $comp;
         }
 
-        [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
-        foreach ($modulePaths as $path) {
-            if (str_starts_with($path, 'vendor')) {
-                $path = realpath(siteRoot() . $path);
-            }
-            $moduleConfigDir = $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
-            $moduleConfigDir = is_dir($moduleConfigDir) ? $moduleConfigDir : $path;
+        // [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
+        // foreach ($modulePaths as $path) {
+        //     if (str_starts_with($path, 'vendor')) {
+        //         $path = realpath(siteRoot() . $path);
+        //     }
+        //     $moduleConfigDir = $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
+        //     $moduleConfigDir = is_dir($moduleConfigDir) ? $moduleConfigDir : $path;
 
-            $manifestReader = new ModuleManifestReader();
-            $manifest = $manifestReader->read($moduleConfigDir);
+        //     $manifestReader = new ModuleManifestReader();
+        //     $manifest = $manifestReader->read($moduleConfigDir);
 
-            $configTemplatesDir = $manifest->getTemplates();
-            $configTemplatesDir = $configTemplatesDir === null
-                ? $configTemplatesDir
-                : siteSrcPath() . $configTemplatesDir;
+        //     $configTemplatesDir = $manifest->getTemplates();
+        //     $configTemplatesDir = $configTemplatesDir === null
+        //         ? $configTemplatesDir
+        //         : siteSrcPath() . $configTemplatesDir;
 
-            if ($configTemplatesDir !== null && file_exists($configTemplatesDir)) {
-                $componentsList = File::walkTreeFiltered($configTemplatesDir, ['phtml']);
-                foreach ($componentsList as $key => $compFile) {
-                    [$fqcn, $comp] = $descriptor->describe($configTemplatesDir, $compFile);
-                    $result[$fqcn] = $comp;
-                }
-            }
-        }
+        //     if ($configTemplatesDir !== null && file_exists($configTemplatesDir)) {
+        //         $componentsList = File::walkTreeFiltered($configTemplatesDir, ['phtml']);
+        //         foreach ($componentsList as $key => $compFile) {
+        //             [$fqcn, $comp] = $descriptor->describe($configTemplatesDir, $compFile);
+        //             $result[$fqcn] = $comp;
+        //         }
+        //     }
+        // }
 
         return $result;
     }

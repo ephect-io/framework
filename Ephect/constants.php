@@ -288,6 +288,8 @@ class Constants
     public const STATIC_DIR = self::CACHE_DIR . self::REL_STATIC_DIR;
     public const REL_STORE_DIR = 'store' . DIRECTORY_SEPARATOR;
     public const STORE_DIR = self::CACHE_DIR . self::REL_STORE_DIR;
+    public const REL_PROCESS_DIR = 'process' . DIRECTORY_SEPARATOR;
+    public const PROCESS_DIR = self::CACHE_DIR . self::REL_PROCESS_DIR;
     public const REL_COPY_DIR = 'copy' . DIRECTORY_SEPARATOR;
     public const COPY_DIR = self::CACHE_DIR . self::REL_COPY_DIR;
     public const REL_UNIQUE_DIR = 'unique' . DIRECTORY_SEPARATOR;
@@ -307,6 +309,8 @@ class Constants
     public const CUSTOM_PAGES_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_PAGES . DIRECTORY_SEPARATOR;
     public const CUSTOM_COMPONENTS_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_COMPONENTS . DIRECTORY_SEPARATOR;
     public const CUSTOM_HOOKS_ROOT = DONT_USE_SRC_ROOT . DONT_USE_CONFIG_HOOKS . DIRECTORY_SEPARATOR;
+    public const COPY_PAGES_ROOT = self::COPY_DIR . DONT_USE_CONFIG_PAGES . DIRECTORY_SEPARATOR;
+    public const COPY_COMPONENTS_ROOT = self::COPY_DIR . DONT_USE_CONFIG_COMPONENTS . DIRECTORY_SEPARATOR;
 
     public const CLASS_EXTENSION = '.class.php';
     public const HTML_EXTENSION = '.html';

@@ -4,8 +4,8 @@ namespace Ephect\Modules\Authentication\Repositories;
 
 use Ephect\Modules\Authentication\Entities\User;
 use Doctrine\DBAL\Exception;
-use Ephect\Framework\DoctrineBridge\Mappers\DataMapper;
 use Ephect\Modules\DataAccess\DBAL\Entity;
+use Ephect\Modules\DoctrineBridge\Mappers\DataMapper;
 
 class UserMapper extends DataMapper
 {

@@ -2,38 +2,48 @@
 
 namespace Ephect\Modules\Authentication\Forms\Pages;
 
-use Ephect\Modules\Authentication\Forms\Components\Csrf;
-use Ephect\Modules\Http\Forms\ResponseHeader;
+use function Ephect\Modules\Authentication\Forms\Components\Csrf;
+use function Ephect\Modules\Http\Forms\ResponseHeader;
+
+use Ephect\Framework\Crypto\Crypto;
 use Ephect\Modules\Http\Transport\Request;
+use Ephect\Modules\Notifier\Base\Notification;
 
-function Login(object $props): string
+use function Ephect\Modules\Authentication\Hooks\useAuthenticator;
+
+function Login($props): string
 {
-    $authenticator = $props->authenticator;
-    $email = $props->email ?? '';
-    $password = $props->password ?? '';
-    $notification = $props->notification ?? null;
+    $isAuthenticated = false;
+    $csrfToken = Crypto::createToken();
+    if($props->submit ?? false) {
+        $authenticator = useAuthenticator();
+        $notification = new Notification();
 
-    $isAuthenticated = $authenticator->authenticate(
-        $email,
-        $password,
-    );
+        $email = $props->email ?? '';
+        $password = $props->password ?? '';
 
-    if (!$isAuthenticated) {
-        $notification->setError('Bad credentials.');
+        $isAuthenticated = $authenticator->authenticate(
+            $email,
+            $password,
+        );
+
+        if (!$isAuthenticated) {
+            $notification->setError('Bad credentials.');
+        }
+
+        $notification->setSuccess('You are now logged in.');
     }
-
-    $notification->setSuccess('You are now logged in.');
 
     return (<<< HTML
 
     @if %isAuthenticated do
-        <ResponseHeader directives[]="location: /dashboard" />
+        <-- ResponseHeader directives[]="location: /dashboard" / -->
     @done
 
     <h1>Login</h1>
 
     <form action="/login" method="post">
-        <Csrf />
+        <Csrf name="csrf_token" token="%csrfToken" />
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input name="email" type="text" class="form-control" id="email" required>
@@ -42,7 +52,7 @@ function Login(object $props): string
             <label for="password" class="form-label">Password</label>
             <input name="password" type="password" class="form-control" id="password" required>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
     </form>
     HTML);
 }

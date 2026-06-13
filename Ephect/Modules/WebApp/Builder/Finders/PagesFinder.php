@@ -10,10 +10,11 @@ class PagesFinder implements FinderInterface
     {
         $result = [];
 
-        $pagesList = File::walkTreeFiltered(\Constants::CUSTOM_PAGES_ROOT, ['phtml']);
+        $pagesList = File::walkTreeFiltered(\Constants::COPY_PAGES_ROOT, ['phtml']);
         foreach ($pagesList as $key => $pageFile) {
             $result[] = $pageFile;
         }
+
         return $result;
     }
 }

@@ -20,6 +20,7 @@ class RouterService implements RouterServiceInterface
     {
         RouteRegistry::load();
         HttpErrorRegistry::load();
+        PageRegistry::load();
     }
 
     public static function findRouteArguments(string $route): ?array
@@ -402,6 +403,6 @@ class RouterService implements RouterServiceInterface
 
     public function purgeCopies(): void
     {
-        //        File::delTree(\Constants::COPY_DIR);
+        //        File::delTree(\Constants::PROCESS_DIR);
     }
 }
