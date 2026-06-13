@@ -63,16 +63,7 @@ class Builder
         if (!PluginRegistry::load()) {
             [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
             foreach ($modulePaths as $path) {
-                if (str_starts_with($path, 'vendor')) {
-                    $path = realpath(siteRoot() . $path);
-                }
-                $moduleSrcPathFile = $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR . \Constants::REL_CONFIG_APP;
-                $moduleSrcPath = file_exists($moduleSrcPathFile)
-                    ? $path . DIRECTORY_SEPARATOR . file_get_contents($moduleSrcPathFile)
-                    : $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_APP;
-                $moduleSrcPath = is_dir($moduleSrcPath) ? $moduleSrcPath : $path . DIRECTORY_SEPARATOR;
-
-
+                $moduleSrcPath = ModuleInstaller::normalizeModuleSrcPath($path);
                 $descriptor = new ModuleListDescriptor($path);
                 $moduleComponents = $descriptor->describe($moduleSrcPath);
                 $this->list = [...$this->list, ...$moduleComponents];
