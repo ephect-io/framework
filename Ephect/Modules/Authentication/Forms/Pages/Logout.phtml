@@ -2,18 +2,23 @@
 
 namespace Ephect\Modules\Authentication\Forms\Pages;
 
-use Ephect\Modules\Authentication\Forms\Components\Csrf;
-use Ephect\Modules\Http\Forms\ResponseHeader;
+use Ephect\Modules\Notifier\Base\Notification;
 
-function Logout(object $props): string
+use function Ephect\Modules\Authentication\Hooks\useAuthenticator;
+use function Ephect\Modules\Http\Forms\ResponseHeader;
+
+function Logout($props): string
 {
-    $authenticator = $props->authenticator;
-    $notification = $props->notification ?? null;
+    $authenticator = useAuthenticator();
+    $notification = new Notification();
  
     $authenticator->logout();
     $notification->setSuccess('See you soon!');
 
+    header('Location: /');
+    exit;
     return (<<< HTML
-    <ResponseHeader directives[]="location: /" />
+    <--ResponseHeader directives[]="location: /" /-->
+    @op exit
     HTML);
 }

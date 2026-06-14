@@ -2,50 +2,64 @@
 
 namespace Ephect\Modules\Authentication\Forms\Pages;
 
-use Ephect\Modules\Authentication\Forms\Components\Csrf;
+use function Ephect\Modules\Authentication\Forms\Components\Csrf;
+use function Ephect\Modules\Authentication\Hooks\useAuthenticator;
+use function Ephect\Modules\DoctrineBridge\Hooks\useConnection;
+
+use Ephect\Framework\Crypto\Crypto;
+use Ephect\Framework\Event\EventDispatcher;
+use Ephect\Modules\Authentication\Repositories\UserMapper;
 use Ephect\Modules\Authentication\Validators\RegistrationValidator;
 
-function Register(object $props): string
+use Ephect\Modules\Notifier\Base\Notification;
+
+function Register($props): string
 {
-    $userMapper = $props->userMapper;
-    $notification = $props->notification;
-    $authenticator = $props->authenticator;
-
     $isRegistered = false;
+    $csrfToken = Crypto::createToken();
 
-    $form = new RegistrationValidator($userMapper);
-    $form->setFields(
-        $props->email,
-        $props->password,
-    );
+    if($props->submit ?? false) {
 
-    if ($form->hasValidationErrors()) {
-        foreach ($form->getValidationErrors() as $error) {
-            $notification->setError($error);
+        $authenticator = useAuthenticator();
+        $connection = useConnection();
+        $dispatcher = new EventDispatcher();
+        $userMapper = new UserMapper($connection, $dispatcher);
+        $notification = new Notification();
+
+        $form = new RegistrationValidator($userMapper);
+        $form->setFields(
+            $props->email,
+            $props->password,
+        );
+
+        if ($form->hasValidationErrors()) {
+            foreach ($form->getValidationErrors() as $error) {
+                $notification->setError($error);
+            }
+
+            // Display the actual form
         }
 
-        // Display the actual form
+        $user = $form->save();
+
+        $notification->setSuccess(
+            'User %s created', $user->getEmail()
+        );
+
+        $authenticator->login($user);
+
+        $isRegistered = true;
+
     }
-
-    $user = $form->save();
-
-    $notification->setSuccess(
-        'User %s created', $user->getEmail()
-    );
-
-    $authenticator->login($user);
-
-    $isRegistered = true;
-
     return (<<< HTML
     
     @if %isRegistered do
-    <ResponseHeader directive[]="location: /dashbopard" />
+    <-- ResponseHeader directives[]="location: /dashboard" / -->
     @done
 
     <h1>Register</h1>
     <form method="post" action="/register">
-        <Csrf />
+        <Csrf name="csrf_token" token="%csrfToken" />
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input name="email" type="text" class="form-control" id="email">

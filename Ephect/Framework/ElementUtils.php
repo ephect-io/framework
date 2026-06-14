@@ -8,14 +8,14 @@ use function strlen;
 
 final class ElementUtils
 {
-    public static function getNamespaceFromFQClassName($fqClassName): string
+    public static function getNamespaceFromFQClassName(string $fqClassName): string
     {
         $classParts = explode('\\', $fqClassName);
         array_pop($classParts);
         return implode('\\', $classParts);
     }
 
-    public static function getFunctionDefinitionFromFile($filepath): ?array
+    public static function getFunctionDefinitionFromFile(string $filepath): ?array
     {
         $contents = File::safeRead($filepath);
 
@@ -26,7 +26,7 @@ final class ElementUtils
         return self::getFunctionDefinition($contents);
     }
 
-    public static function getFunctionDefinition($contents): ?array
+    public static function getFunctionDefinition(string $contents): ?array
     {
 
         $re = '/namespace *?([\w\\\\]+);[\w\W\\\\]*function *?([$\w]+) *?\(([\w\W]*)\)\W*:? *?(\w+)?\W*(\{)/U';
@@ -45,7 +45,7 @@ final class ElementUtils
         return [$namespace, $functionName, $parameters, $returnedType, $pos];
     }
 
-    public static function getEnumDefinitionFromFile($filepath): ?array
+    public static function getEnumDefinitionFromFile(string $filepath): ?array
     {
         $contents = File::safeRead($filepath);
 
@@ -56,7 +56,7 @@ final class ElementUtils
         return self::getEnumDefinition($contents);
     }
 
-    public static function getEnumDefinition($contents): ?array
+    public static function getEnumDefinition(string $contents): ?array
     {
         [$namespace, $pos] = self::grabKeywordName('namespace', $contents, ';');
         [$enumName, $pos] = self::grabKeywordName('enum', $contents, ' ');
@@ -84,7 +84,7 @@ final class ElementUtils
         return [$result, $end];
     }
 
-    public static function getTraitDefinitionFromFile($filepath): ?array
+    public static function getTraitDefinitionFromFile(string $filepath): ?array
     {
         $contents = File::safeRead($filepath);
 
@@ -95,7 +95,7 @@ final class ElementUtils
         return self::getTraitDefinition($contents);
     }
 
-    public static function getTraitDefinition($contents): ?array
+    public static function getTraitDefinition(string $contents): ?array
     {
         [$namespace, $pos] = self::grabKeywordName('namespace', $contents, ';');
         [$traitName, $pos] = self::grabKeywordName('trait', $contents, ' ');
@@ -107,7 +107,7 @@ final class ElementUtils
         return [$namespace, $traitName, $pos];
     }
 
-    public static function getInterfaceDefinitionFromFile($filepath): ?array
+    public static function getInterfaceDefinitionFromFile(string $filepath): ?array
     {
         $contents = File::safeRead($filepath);
 
@@ -118,7 +118,7 @@ final class ElementUtils
         return self::getInterfaceDefinition($contents);
     }
 
-    public static function getInterfaceDefinition($contents): ?array
+    public static function getInterfaceDefinition(string $contents): ?array
     {
         [$namespace, $pos] = self::grabKeywordName('namespace', $contents, ';');
         [$interfaceName, $pos] = self::grabKeywordName('interface', $contents, ' ');
@@ -130,7 +130,7 @@ final class ElementUtils
         return [$namespace, $interfaceName, $pos];
     }
 
-    public static function getClassDefinitionFromFile($filepath): ?array
+    public static function getClassDefinitionFromFile(string $filepath): ?array
     {
         $contents = File::safeRead($filepath);
 
@@ -141,7 +141,7 @@ final class ElementUtils
         return self::getClassDefinition($contents);
     }
 
-    public static function getClassDefinition($contents): ?array
+    public static function getClassDefinition(string $contents): ?array
     {
         [$namespace, $pos] = self::grabKeywordName('namespace', $contents, ';');
         [$className, $pos] = self::grabKeywordName('class', $contents, ' ');

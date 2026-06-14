@@ -20,6 +20,7 @@ class RouterService implements RouterServiceInterface
     {
         RouteRegistry::load();
         HttpErrorRegistry::load();
+        PageRegistry::load();
     }
 
     public static function findRouteArguments(string $route): ?array

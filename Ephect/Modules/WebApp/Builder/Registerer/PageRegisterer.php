@@ -13,7 +13,7 @@ class PageRegisterer implements RegistererInterface
         PageRegistry::load();
         foreach ($values as $page) {
             $uid = Crypto::createOID();
-            $filename = \Constants::CUSTOM_PAGES_ROOT . $page;
+            $filename = \Constants::COPY_PAGES_ROOT . $page;
 
             [
                 $namespace,
@@ -30,6 +30,7 @@ class PageRegisterer implements RegistererInterface
             }
 
             $className = $namespace . '\\' . $functionName;
+            PageRegistry::write($functionName, $page);
             PageRegistry::write($uid, $className);
             PageRegistry::write($className, $page);
             PageRegistry::write($page, $uid);
