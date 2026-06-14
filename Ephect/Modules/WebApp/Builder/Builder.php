@@ -45,9 +45,8 @@ class Builder
 
             $copier = new TemplatesCopyMaker();
             $copier->makeCopies(true); // make unique copies
-
-            $copier = new TemplatesCopyMaker();
             $copier->makeCopies(); // make copies as is
+            $copier->makeModulesPageCopies(); // make modules page copies
 
             //            UniqueCodeRegistry::load();
             //            $descriptor = new UniqueComponentListDescriptor();

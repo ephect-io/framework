@@ -223,6 +223,8 @@ class ConstantsMaker
         $this->constants['CUSTOM_PAGES_ROOT'] = $this->constants['DONT_USE_SRC_ROOT'] . $this->constants['DONT_USE_CONFIG_PAGES'] . DIRECTORY_SEPARATOR;
         $this->constants['CUSTOM_COMPONENTS_ROOT'] = $this->constants['DONT_USE_SRC_ROOT'] . $this->constants['DONT_USE_CONFIG_COMPONENTS'] . DIRECTORY_SEPARATOR;
         $this->constants['CUSTOM_HOOKS_ROOT'] = $this->constants['DONT_USE_SRC_ROOT'] . $this->constants['DONT_USE_CONFIG_HOOKS'] . DIRECTORY_SEPARATOR;
+        $this->constants['COPY_PAGES_ROOT'] = $this->constants['COPY_DIR'] . $this->constants['DONT_USE_CONFIG_PAGES'] . DIRECTORY_SEPARATOR;
+        $this->constants['COPY_COMPONENTS_ROOT'] = $this->constants['COPY_DIR'] . $this->constants['DONT_USE_CONFIG_COMPONENTS'] . DIRECTORY_SEPARATOR;
         $this->constants['CONFIG_AUTOLOAD'] = $this->constants['DONT_USE_CONFIG_AUTOLOAD'];
 
 

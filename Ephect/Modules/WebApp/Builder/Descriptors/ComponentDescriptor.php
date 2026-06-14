@@ -16,7 +16,7 @@ class ComponentDescriptor implements DescriptorInterface
     public function describe(string $sourceDir, string $filename): array
     {
         $relativeFile =
-            str_replace(\Constants::APP_ROOT, '', $sourceDir) .
+            str_replace(\Constants::COPY_DIR, '', $sourceDir) .
             str_replace(pathinfo($filename, PATHINFO_EXTENSION), 'php', $filename);
         File::safeCopy($sourceDir . $filename, \Constants::PROCESS_DIR . $relativeFile);
 
