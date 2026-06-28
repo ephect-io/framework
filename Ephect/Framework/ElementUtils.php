@@ -38,7 +38,7 @@ final class ElementUtils
         }
         $namespace = $matches[1][0];
         $functionName = $matches[2][0];
-        $parameters = $matches[3][0];
+        $parameters = $matches[3][0] ? explode(',', $matches[3][0]) : [];
         $returnedType = $matches[4][0];
         $pos = $matches[5][1];
 

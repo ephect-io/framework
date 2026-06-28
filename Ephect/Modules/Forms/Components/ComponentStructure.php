@@ -22,6 +22,7 @@ class ComponentStructure extends Structure
     public bool $hasCloser = false;
     public ?array $closer = null;
     public array $props = [];
+    public array $args = [];
     public false|array $node = [];
     public bool $isSingle = false;
     public array $attributes = [];

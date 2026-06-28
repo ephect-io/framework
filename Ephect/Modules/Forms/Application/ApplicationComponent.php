@@ -87,8 +87,8 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         [
             $this->namespace,
             $this->function,
-            $parameters,
-            $returnedType,
+            $this->arguments,
+            $this->returnType,
             $this->bodyStartsAt
         ] = ElementUtils::getFunctionDefinition($this->code);
         if ($this->bodyStartsAt == -1 && !empty($this->code)) {
@@ -96,8 +96,8 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             [
                 $this->namespace,
                 $this->function,
-                $parameters,
-                $returnedType,
+                $this->arguments,
+                $this->returnType,
                 $this->bodyStartsAt
             ] = ElementUtils::getFunctionDefinition($this->code);
         }

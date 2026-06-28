@@ -55,7 +55,7 @@ class ComponentParser extends Parser implements ParserInterface
         $refReturnType = $ref->getReturnType();
 
         $arguments = array_map(function ($parameter) {
-            return $parameter->getName();
+            return ['name' => $parameter->getName(), 'type' => $parameter->getType()?->getName()];
         }, $refParameters);
 
         $attributes = array_map(function ($attribute) {

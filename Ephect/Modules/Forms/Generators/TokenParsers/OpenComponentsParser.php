@@ -73,6 +73,20 @@ final class OpenComponentsParser extends AbstractComponentParser
 
             $componentArgs = $this->useVariables;
             $componentArgs = $item->props() !== null ? array_merge($componentArgs, $item->props()) : $componentArgs;
+            $functionArgs = $item->args();
+
+            if($functionArgs !== null && count($functionArgs) > 0) {
+                $componentArgs = array_merge($componentArgs, $functionArgs);
+            }
+            // foreach ($functionArgs as $arg) {
+            //     $type = $arg['type'] ?? null;
+            //     $name = $arg['name'] ?? null;
+            //     if(str_ends_with($type, 'Props')) {
+            //         $componentArgs['type'] = $type;
+            //     } else {
+            //         $componentArgs['type'] = 'object';
+            //     }
+            // }
 
             if ($componentName == 'FakeFragment') {
                 return;
@@ -96,7 +110,7 @@ final class OpenComponentsParser extends AbstractComponentParser
 
             $className = $this->component->getFullyQualifiedFunction() ?: $componentName;
             $name = $this->component->getFunction() ?: $componentName;
-            $classArgs = '[]';
+            $classArgs = $this->component->getArguments() ?: '[]';
 
             $fqComponentName = ComponentRegistry::read($componentName);
 

@@ -75,6 +75,11 @@ final class ClosedComponentsParser extends AbstractComponentParser
                 $propsArgs = self::doArgumentsToString($componentArgs);
                 $props = "(object) " . $propsArgs ?? "[]";
             }
+            
+            $functionArgs = $child->args();
+            if($functionArgs !== null && count($functionArgs) > 0) {
+                $componentArgs = array_merge($componentArgs, $functionArgs);
+            }
 
             $fqFuncName = ComponentRegistry::read($componentName);
             $componentRender = "\t\t\t<?php \$fn = {$componentName}($props); \$fn(); ?>\n";

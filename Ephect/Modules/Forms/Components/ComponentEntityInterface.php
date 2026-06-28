@@ -18,6 +18,8 @@ interface ComponentEntityInterface extends TreeInterface, ElementInterface
     public function hasProps(): bool;
 
     public function props(?string $key = null): string|array|null;
+    
+    public function args(?string $key = null): string|array|null;
 
     public function getStart(): int;
 
