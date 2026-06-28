@@ -37,7 +37,8 @@ function Login($props): string
     return (<<< HTML
 
     @if %isAuthenticated do
-        <-- ResponseHeader directives[]="location: /dashboard" / -->
+        <ResponseHeader directives[]="location: /dashboard" />
+        @op exit
     @done
 
     <h1>Login</h1>

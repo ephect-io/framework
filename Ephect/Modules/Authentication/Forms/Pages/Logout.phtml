@@ -15,10 +15,8 @@ function Logout($props): string
     $authenticator->logout();
     $notification->setSuccess('See you soon!');
 
-    header('Location: /');
-    exit;
     return (<<< HTML
-    <--ResponseHeader directives[]="location: /" /-->
+    <ResponseHeader directives[]="location: /" />
     @op exit
     HTML);
 }

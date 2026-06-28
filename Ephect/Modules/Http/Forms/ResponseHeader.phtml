@@ -5,18 +5,16 @@ use function Ephect\Hooks\useEffect;
 
 function ResponseHeader($props): string
 {
-    useEffect(function ($props, /* bool */ $hasDirectives, /* string[] */ $directives) {
+    useEffect(function ($props, /* bool */ $hasDirectives, /* array */ $directives) {
         $directives = $props->directive;
         $hasDirectives = count($directives) > 0;
     });
 
     return (<<< HTML
-    <% 
-        if (%hasDirectives) {
-            foreach(%directives as %directive) {
-                header(%directive);
-            }
-        }
-    %>
+    @if %hasDirectives do        
+        @for %directives as %directive do
+            header(%directive);
+        @done
+    @done
     HTML);
 }

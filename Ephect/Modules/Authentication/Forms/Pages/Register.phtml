@@ -5,6 +5,7 @@ namespace Ephect\Modules\Authentication\Forms\Pages;
 use function Ephect\Modules\Authentication\Forms\Components\Csrf;
 use function Ephect\Modules\Authentication\Hooks\useAuthenticator;
 use function Ephect\Modules\DoctrineBridge\Hooks\useConnection;
+use function Ephect\Modules\Http\Forms\ResponseHeader;
 
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\Event\EventDispatcher;
@@ -54,7 +55,8 @@ function Register($props): string
     return (<<< HTML
     
     @if %isRegistered do
-    <-- ResponseHeader directives[]="location: /dashboard" / -->
+    <ResponseHeader directives[]="location: /dashboard" />
+    @op exit
     @done
 
     <h1>Register</h1>
