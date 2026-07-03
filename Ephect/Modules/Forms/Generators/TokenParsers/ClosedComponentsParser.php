@@ -2,10 +2,13 @@
 
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
+
+use function Ephect\Hooks\useMemory;
 
 final class ClosedComponentsParser extends AbstractComponentParser
 {
@@ -32,6 +35,14 @@ final class ClosedComponentsParser extends AbstractComponentParser
         if ($fle === null) {
             return;
         }
+
+        [$finishedComponents] = useMemory(get: 'finishedComponents');
+        $finishedComponents = $finishedComponents ?? [];
+        if(in_array($comp->getUID(), $finishedComponents)) {
+            Logger::create()->info("Component with UID {$comp->getUID()} has already been processed. Skipping.");
+            return;
+        }
+
         $props = $this->doArgumentsToString($decl->getArguments()) ?? '';
 
         if ($decl->hasAttributes()) {
@@ -69,6 +80,17 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $componentArgs = [];
             $componentArgs['uid'] = $uid;
 
+            $decl = ComponentDeclaration::byName($componentName);
+            if ($decl !== null) {
+                $declArgs = $decl->getArguments();
+                Logger::create()->info("Component {$componentName} has arguments: " . json_encode($declArgs));
+            }  
+            
+            if($child->args() !== null) {
+                $componentArgs = array_merge($componentArgs, $child->args());
+    
+            }
+            
             $props = '';
             if ($child->props() !== null) {
                 $componentArgs = array_merge($componentArgs, $child->props());
@@ -76,11 +98,6 @@ final class ClosedComponentsParser extends AbstractComponentParser
                 $props = "(object) " . $propsArgs ?? "[]";
             }
             
-            $functionArgs = $child->args();
-            if($functionArgs !== null && count($functionArgs) > 0) {
-                $componentArgs = array_merge($componentArgs, $functionArgs);
-            }
-
             $fqFuncName = ComponentRegistry::read($componentName);
             $componentRender = "\t\t\t<?php \$fn = {$componentName}($props); \$fn(); ?>\n";
 
