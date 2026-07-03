@@ -4,6 +4,7 @@ namespace Ephect\Modules\Forms\Listeners;
 
 use Ephect\Framework\Event\Event;
 use Ephect\Framework\Event\EventListenerInterface;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Modules\Forms\Events\PageFinishedEvent;
 
 class PageFinishedListener implements EventListenerInterface
@@ -15,5 +16,6 @@ class PageFinishedListener implements EventListenerInterface
      */
     public function __invoke(Event|PageFinishedEvent $event): void
     {
+        Logger::create()->info("Page finished event dispatched for %s", $event->getMotherUID());
     }
 }
