@@ -110,7 +110,7 @@ final class OpenComponentsParser extends AbstractComponentParser
 
             $className = $this->component->getFullyQualifiedFunction() ?: $componentName;
             $name = $this->component->getFunction() ?: $componentName;
-            $classArgs = $this->component->getArguments() ?: '[]';
+            $classArgs = self::doArgumentsToString($this->component->getArguments()) ?: '[]';
 
             $fqComponentName = ComponentRegistry::read($componentName);
 

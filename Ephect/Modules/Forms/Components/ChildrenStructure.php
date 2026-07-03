@@ -2,11 +2,8 @@
 
 namespace Ephect\Modules\Forms\Components;
 
-use Ephect\Framework\Structure\Structure;
-
-class ChildrenStructure extends Structure
+class ChildrenStructure extends ComponentProps
 {
-    public string $uid = '';
     public ?object $props = null;
     public string $class = '';
     public string $name = '';

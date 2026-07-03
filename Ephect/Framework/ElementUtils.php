@@ -39,6 +39,36 @@ final class ElementUtils
         $namespace = $matches[1][0];
         $functionName = $matches[2][0];
         $parameters = $matches[3][0] ? explode(',', $matches[3][0]) : [];
+        // $parameters = array_map(function ($param) {
+        //     $entry = explode(' ', trim($param));
+        //     $result = null;
+        //     if(count($entry) === 1) {
+        //         $result = [
+        //             'type' => 'object',
+        //             'name' => trim($entry[0]),
+        //         ];
+        //     }
+        //     if (count($entry) > 1) {
+        //         $result = [
+        //             'type' => '',
+        //             'name' => '',
+        //         ];
+        //         $result['type'] = trim($entry[0]);
+        //         $result['name'] = trim(end($entry));
+        //     }
+        //     return $result;
+        // }, $parameters);
+
+        $parameters = array_map(function ($param) {
+            $entry = explode(' ', trim($param));
+            $result = null;
+            if(count($entry) === 1) {
+                $result = trim($entry[0]) . " = '\\object'";
+            } elseif (count($entry) > 1) {
+                $result = trim($entry[1]) . " = '" . trim($entry[0]) . "'";
+            }
+            return $result;
+        }, $parameters);
         $returnedType = $matches[4][0];
         $pos = $matches[5][1];
 

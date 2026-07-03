@@ -5,6 +5,7 @@
 namespace Ephect\Modules\Forms\Generators;
 
 use Ephect\Framework\Crypto\Crypto;
+use Ephect\Framework\ElementUtils;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
@@ -87,12 +88,13 @@ class Decomposer extends Parser implements ParserInterface
     public function doDeclaration(string $uid): ComponentDeclarationStructure
     {
         $this->doComponents();
-        $func = $this->doFunctionDeclaration();
+        [$namespace, $functionName, $parameters, $returnedType] = ElementUtils::getFunctionDefinition($this->html);
+
         $decl = [
             'uid' => $uid,
-            'type' => $func[0] ?? '',
-            'name' => $func[1] ?? '',
-            'arguments' => $func[2] ?? [],
+            'type' => $returnedType ?? '',
+            'name' => $functionName ?? '',
+            'arguments' => $parameters ?? [],
             'composition' => $this->list
         ];
 
@@ -434,40 +436,6 @@ class Decomposer extends Parser implements ParserInterface
 
         return $result;
     }   
-
-    /** TO BE DONE on bas of regex101 https://regex101.com/r/QZejMW/2/ */
-    public function doFunctionDeclaration(): ?array
-    {
-        $result = [];
-        $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
-
-        $str = $this->html;
-
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-            $args = $this->doFunctionArguments($match[3]);
-            $result = [$match[1], $match[2], $args];
-        }
-
-        return $result;
-    }
-
-    private function doFunctionArguments(string $arguments): ?array
-    {
-        $result = [];
-        $re = '/([,]?[.]?\$[\w]+)/';
-
-        $str = $arguments;
-
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-        foreach ($matches as $match) {
-            $result[] = $match[1];
-        }
-
-        return $result;
-    }
 
     public function getList(): array
     {

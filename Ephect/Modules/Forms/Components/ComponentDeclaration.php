@@ -44,7 +44,7 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
 
     public function hasArguments(): bool
     {
-        return $this->attributes !== null && count($this->arguments) > 0;
+        return $this->arguments !== null && count($this->arguments) > 0;
     }
 
     public function getArguments(): ?array

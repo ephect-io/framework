@@ -88,7 +88,6 @@ final class ClosedComponentsParser extends AbstractComponentParser
             
             if($child->args() !== null) {
                 $componentArgs = array_merge($componentArgs, $child->args());
-    
             }
             
             $props = '';

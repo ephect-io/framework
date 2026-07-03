@@ -78,11 +78,11 @@ class ComponentParser extends Parser implements ParserInterface
         }
         [$args, $attrs, $return] = $this->doReflection();
         $this->doComponents();
-        $func = $this->doFunctionDeclaration();
+        [$namespace, $functionName, $parameters, $returnedType] = ElementUtils::getFunctionDefinition($this->html);
         $decl = [
             'uid' => $uid,
-            'type' => $func[0],
-            'name' => $func[1],
+            'type' => $returnedType,
+            'name' => $functionName,
             'arguments' => $args ?? [],
             'attributes' => $attrs ?? [],
             'composition' => $this->list
@@ -292,38 +292,39 @@ REGEX;
     }
 
     /** TO BE DONE on base of regex101 https://regex101.com/r/QZejMW/2/ */
-    public function doFunctionDeclaration(): ?array
-    {
-        $result = [];
-        $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
+    /** OBSOLETE ?!? */
+    // public function doFunctionDeclaration(): ?array
+    // {
+    //     $result = [];
+    //     $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
 
-        $str = $this->html;
+    //     $str = $this->html;
 
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+    //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
-        foreach ($matches as $match) {
-            $args = $this->doFunctionArguments($match[3]);
-            $result = [$match[1], $match[2], $args];
-        }
+    //     foreach ($matches as $match) {
+    //         $args = $this->doFunctionArguments($match[3]);
+    //         $result = [$match[1], $match[2], $args];
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
-    private function doFunctionArguments(string $arguments): ?array
-    {
-        $result = [];
-        $re = '/([,]?[.]?\$[\w]+)/';
+    // private function doFunctionArguments(string $arguments): ?array
+    // {
+    //     $result = [];
+    //     $re = '/([,]?[.]?\$[\w]+)/';
 
-        $str = $arguments;
+    //     $str = $arguments;
 
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+    //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
-        foreach ($matches as $match) {
-            $result[] = $match[1];
-        }
+    //     foreach ($matches as $match) {
+    //         $result[] = $match[1];
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
     public function doAttributes(): array
     {
