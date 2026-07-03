@@ -12,7 +12,7 @@ use Ephect\Framework\Utils\Text;
 use ErrorException;
 use JsonException;
 
-use function Ephect\Hooks\useState;
+use function Ephect\Hooks\useMemory;
 use function siteConfigPath;
 
 class ModuleInstaller
@@ -37,6 +37,8 @@ class ModuleInstaller
 
     public static function findAllAndInitialize(): void
     {
+        useMemory(['events' => []]);
+
         [$filename, $paths] = self::readModulePaths();
         foreach ($paths as $path) {
             $moduleHooksDir = $path . DIRECTORY_SEPARATOR . HOOKS_DIR;
@@ -56,7 +58,6 @@ class ModuleInstaller
             $bootstrap->boot();
         }
 
-        useState(['eventProvider' => []]);
     }
 
     public static function readModuleBootstrapPaths(): array

@@ -2,11 +2,12 @@
 
 namespace Ephect\Modules\Forms\Application;
 
-use Ephect\Framework\Event\EventDispatcher;
 use Ephect\Modules\Forms\Events\PageFinishedEvent;
 use Ephect\Modules\Http\Transport\Request;
 use ReflectionFunction;
 use stdClass;
+
+use function Ephect\Hooks\useEvents;
 
 class ComponentRenderer
 {
@@ -60,8 +61,8 @@ class ComponentRenderer
         }
 
         $finishedEvent = new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props);
-        $dispatcher = new EventDispatcher();
-        $dispatcher->dispatch($finishedEvent);
+        [$eventDispatcher] = useEvents(get: 'eventDispatcher');
+        $eventDispatcher->dispatch($finishedEvent);
 
         return $html;
     }
