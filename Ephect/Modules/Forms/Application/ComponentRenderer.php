@@ -60,9 +60,11 @@ class ComponentRenderer
             $html = ob_get_clean();
         }
 
-        $finishedEvent = new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props);
+        $finishedEvent = new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props, $html);
         [$eventDispatcher] = useEvents(get: 'eventDispatcher');
         $eventDispatcher->dispatch($finishedEvent);
+
+        // File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
 
         return $html;
     }

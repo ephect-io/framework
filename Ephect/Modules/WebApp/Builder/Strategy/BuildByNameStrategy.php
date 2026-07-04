@@ -60,6 +60,6 @@ class BuildByNameStrategy implements BuiderStrategyInterface
             );
         }
 
-        File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
+        // File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
     }
 }
