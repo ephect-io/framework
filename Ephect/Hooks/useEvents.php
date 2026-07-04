@@ -8,27 +8,27 @@ use Ephect\Framework\Event\EventDispatcher;
 use Ephect\Framework\Event\Service\EventServiceProvider;
 
 /**
- * @param Event|EventServiceProvider|null $events
+ * @param array|EventServiceProvider|null $events
  * @param string $get
  * @return array
  * @throws \InvalidArgumentException
  */
-function useEvents(Event|EventServiceProvider|null $events = null, string $get = ''): array
+function useEvents(array|EventServiceProvider|null $events = null, string $get = ''): array
 {
     if ($events !== null && $get !== '') {
         throw new \InvalidArgumentException(
-            "You can't assign an object in memory and get an indexed value at once. Pass one or zero argument."
+            "You can't store an event object in memory and get an indexed value at once."
         );
     }
 
-    $setEvents = function (Event|EventServiceProvider $events): void {
-        if (!($events instanceof Event) && !($events instanceof EventServiceProvider)) {
+    $setEvents = function (array|EventServiceProvider $events): void {
+        if (!is_array($events) && !($events instanceof EventServiceProvider)) {
             throw new \InvalidArgumentException(
-                "The events parameter must be an instance of Event or EventProvider."
+                "The events parameter must be an instance of EventServiceProvider or an array of events."
             );
         }
 
-        if ($events instanceof Event) {
+        if (is_array($events)) {
             MemoryRegistry::writeItem('events', ['events' => $events]);
         } elseif ($events instanceof EventServiceProvider) {
             MemoryRegistry::writeItem('events', ['eventProvider' => $events]);

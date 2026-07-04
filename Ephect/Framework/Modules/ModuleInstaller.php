@@ -12,7 +12,7 @@ use Ephect\Framework\Utils\Text;
 use ErrorException;
 use JsonException;
 
-use function Ephect\Hooks\useMemory;
+use function Ephect\Hooks\useEvents;
 use function siteConfigPath;
 
 class ModuleInstaller
@@ -37,7 +37,7 @@ class ModuleInstaller
 
     public static function findAllAndInitialize(): void
     {
-        useMemory(['events' => []]);
+        useEvents([]);
 
         [$filename, $paths] = self::readModulePaths();
         foreach ($paths as $path) {

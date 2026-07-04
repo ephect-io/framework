@@ -5,7 +5,7 @@ namespace Ephect\Framework\Event\Service;
 use Ephect\Framework\Event\EventDispatcher;
 use Ephect\Framework\Services\ServiceProviderInterface;
 
-use function Ephect\Hooks\useMemory;
+use function Ephect\Hooks\useEvents;
 
 class EventServiceProvider implements ServiceProviderInterface
 {
@@ -51,7 +51,7 @@ class EventServiceProvider implements ServiceProviderInterface
      */
     public function register(): void
     {
-        [$events, $setMemory] = useMemory(get: 'events');
+        [$events, $setMemory] = useEvents(get: 'events');
 
         foreach ($this->eventListeners as $eventClass => $listeners) {
             $events[$eventClass] = $listeners;
