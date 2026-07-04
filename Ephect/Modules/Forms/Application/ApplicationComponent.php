@@ -337,7 +337,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $this->cacheFile(\Constants::BUILD_DIR);
     }
 
-    private function cacheFile($cacheDir): ?string
+    private function cacheFile(string $cacheDir): ?string
     {
         $cache_file = $this->getSourceFilename();
         $result = File::safeWrite($cacheDir . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);
