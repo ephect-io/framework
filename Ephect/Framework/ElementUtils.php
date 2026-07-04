@@ -8,6 +8,12 @@ use function strlen;
 
 final class ElementUtils
 {
+    public static function getBasenameFromFQClassName(string $fqClassName): string
+    {
+        $classParts = explode('\\', $fqClassName);
+        return end($classParts);
+    }
+
     public static function getNamespaceFromFQClassName(string $fqClassName): string
     {
         $classParts = explode('\\', $fqClassName);
