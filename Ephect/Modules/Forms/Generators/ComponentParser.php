@@ -2,11 +2,15 @@
 
 namespace Ephect\Modules\Forms\Generators;
 
+use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\ElementUtils;
+use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
+use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 
 class ComponentParser extends Parser implements ParserInterface
 {
@@ -42,8 +46,10 @@ class ComponentParser extends Parser implements ParserInterface
         ] = ElementUtils::getFunctionDefinitionFromFile($sourceDir . $filename);
 
         if ($functionName == '') {
-            return  [null, null, null];
+            return  [null, null, null, null, null];
         }
+
+        $rootNamespace = explode('\\', $namespace)[0];
 
         include_once $sourceDir . $filename;
 
@@ -54,8 +60,8 @@ class ComponentParser extends Parser implements ParserInterface
         $refAttributes = $ref->getAttributes();
         $refReturnType = $ref->getReturnType();
 
-        $arguments = array_map(function ($parameter) {
-            return ['name' => $parameter->getName(), 'type' => $parameter->getType()?->getName()];
+        $arguments = array_map(function ($parameter) use ($rootNamespace) {
+            return ['name' => $parameter->getName(), 'type' => str_replace($rootNamespace, \Constants::CONFIG_NAMESPACE, $parameter->getType()?->getName() ?? '\object')];
         }, $refParameters);
 
         $attributes = array_map(function ($attribute) {
@@ -65,7 +71,7 @@ class ComponentParser extends Parser implements ParserInterface
             ];
         }, $refAttributes);
 
-        return [$arguments, $attributes, $refReturnType?->getName()];
+        return [$namespace, $functionName, $arguments, $attributes, $refReturnType?->getName()];
     }
 
     /**
@@ -76,13 +82,14 @@ class ComponentParser extends Parser implements ParserInterface
         if ($uid == '') {
             $uid = Crypto::createUID();
         }
-        [$args, $attrs, $return] = $this->doReflection();
         $this->doComponents();
-        [$namespace, $functionName, $parameters, $returnedType] = ElementUtils::getFunctionDefinition($this->html);
+        [$namespace, $functionName, $args, $attrs, $return] = $this->doReflection();
+        // [$namespace, $functionName, $parameters, $returnedType] = ElementUtils::getFunctionDefinition($this->html);
         $decl = [
             'uid' => $uid,
-            'type' => $returnedType,
             'name' => $functionName,
+            'className' => $this->component->getFullyQualifiedFunction(),
+            'returnType' => $return,
             'arguments' => $args ?? [],
             'attributes' => $attrs ?? [],
             'composition' => $this->list
@@ -263,11 +270,18 @@ REGEX;
         $item['text'] = $text;
         $item['startsAt'] = $tag['startsAt'];
         $item['endsAt'] = $tag['endsAt'];
+
+        $isFakeComponent = in_array($item['name'], ['Fragment', 'FakeFragment', 'Eof', 'Slot']);
+
         if (!$isCloser) {
+            $compClass = $isFakeComponent ? $item['name'] : ComponentRegistry::read($item['name']);
+            $compDecl = $isFakeComponent ? null : ComponentDeclaration::byName($compClass);
+
             $item['uid'] = Crypto::createOID();
             $item['class'] = ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
             $item['component'] = $fqName;
+            $item['args'] = $isFakeComponent ? [] : $compDecl->getArguments();
             $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
             $item['depth'] = $depth;
             $item['hasCloser'] = $hasCloser;

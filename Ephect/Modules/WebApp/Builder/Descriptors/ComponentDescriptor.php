@@ -3,6 +3,7 @@
 namespace Ephect\Modules\WebApp\Builder\Descriptors;
 
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Components\ComponentEntity;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
@@ -44,6 +45,7 @@ class ComponentDescriptor implements DescriptorInterface
         $struct = $parser->doDeclaration($uid);
         $decl = $struct->toArray();
 
+        UniqueCodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
         CodeRegistry::write($comp->getFullyQualifiedFunction(), $decl);
         ComponentRegistry::write($relativeFile, $uid);
         ComponentRegistry::write($comp->getUID(), $comp->getFullyQualifiedFunction());

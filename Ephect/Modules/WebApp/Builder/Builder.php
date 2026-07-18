@@ -94,27 +94,30 @@ class Builder
         $pagesRegisterer->register($pagesList);
     }
 
-    public function prepareRoutedComponents(): void
-    {
-        CodeRegistry::load();
-        ComponentRegistry::load();
+    /**
+     * This looks useless unril it's not
+     */
+    // public function prepareRoutedComponents(): void
+    // {
+    //     CodeRegistry::load();
+    //     ComponentRegistry::load();
 
-        $routes = (new RoutesFinder())->find();
-        // TODO: check if it works
-        //        $fqApp = ComponentRegistry::read('App');
-        $fqApp = 'App';
+    //     $routes = (new RoutesFinder())->find();
+    //     // TODO: check if it works
+    //     //        $fqApp = ComponentRegistry::read('App');
+    //     $fqApp = 'App';
 
-        array_unshift($routes, $fqApp);
+    //     array_unshift($routes, $fqApp);
 
-        foreach ($routes as $route) {
-            $fqRoute = ComponentRegistry::read($route);
-            $comp = $this->list[$fqRoute];
+    //     foreach ($routes as $route) {
+    //         $fqRoute = ComponentRegistry::read($route);
+    //         $comp = $this->list[$fqRoute];
 
-            // $comp->copyComponents($this->list);
-        }
+    //         // $comp->copyComponents($this->list);
+    //     }
 
-        $this->routes = $routes;
-    }
+    //     $this->routes = $routes;
+    // }
 
     /**
      * @throws Exception

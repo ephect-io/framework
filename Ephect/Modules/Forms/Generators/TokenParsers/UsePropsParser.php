@@ -6,9 +6,8 @@ use Ephect\Modules\Forms\Generators\TypesParserTrait;
 use JetBrains\PhpStorm\Deprecated;
 
 /**
- * Deprecated
+ * @deprecated it does not work, useEffect, 0.3
  */
-#[Deprecated("it does not work", "useEffect", "0.3")]
 final class UsePropsParser extends AbstractTokenParser
 {
     use TypesParserTrait;

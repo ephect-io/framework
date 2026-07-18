@@ -55,6 +55,10 @@ final class OpenComponentsParser extends AbstractComponentParser
         ) {
             $parent = $previous !== null && $previous->getDepth() < $item->getDepth() ? $previous : null;
 
+            if (in_array($item->getName(), ['FakeFragment', 'Fragment', 'Slot'])) {
+                return;
+            }
+
             if (!$item->hasCloser()) {
                 /**
                  * Mandatory for middleware parsing...
@@ -69,40 +73,36 @@ final class OpenComponentsParser extends AbstractComponentParser
             $theCloser = (object)$item->getCloser();
             $closer = $theCloser->text;
             $componentName = $item->getName();
+
             $componentBody = $item->getContents($subject);
 
             $componentArgs = $this->useVariables;
             $componentArgs = $item->props() !== null ? array_merge($componentArgs, $item->props()) : $componentArgs;
             $functionArgs = $item->args();
 
+            $propsType = '\object';
+            $propsTypeIsObject = true;
             if($functionArgs !== null && count($functionArgs) > 0) {
-                $componentArgs = array_merge($componentArgs, $functionArgs);
+                $args0 = $functionArgs[0];
+                if($args0['name'] === 'props') {
+                    $propsType = $args0['type'];
+                    $propsTypeIsObject = $propsType === '\object';
+                }
             }
-            // foreach ($functionArgs as $arg) {
-            //     $type = $arg['type'] ?? null;
-            //     $name = $arg['name'] ?? null;
-            //     if(str_ends_with($type, 'Props')) {
-            //         $componentArgs['type'] = $type;
-            //     } else {
-            //         $componentArgs['type'] = 'object';
-            //     }
-            // }
+            
+            $propsBuild = '';
 
-            if ($componentName == 'FakeFragment') {
-                return;
-            }
-
-            if ($componentName == 'Fragment') {
-                return;
-            }
-
-            if ($componentName == 'Slot') {
-                return;
+            $propsArgs = "[]";
+            $propsBuild = "(object) " . $propsArgs;
+            if ($item->props() !== null) {
+                $componentArgs = array_merge($componentArgs, $item->props());
+                $propsArgs = $this->doArgumentsToString($componentArgs) ?? $propsArgs;
+                $propsBuild = $propsTypeIsObject ?  "(object) " . $propsArgs : "new $propsType(" . $propsArgs . ")";
             }
 
             $motherUID = $this->component->getMotherUID();
             $decl = $this->component->getDeclaration();
-            $props = self::doArgumentsToString($componentArgs) ?? "[]";
+            $decl = ComponentDeclaration::byName($this->component->getFullyQualifiedFunction());
 
             $propsKeys = $this->argumentsKeys($this->useVariables);
 
@@ -129,7 +129,7 @@ PHP;
             }
 
             $componentRender = <<< PHP
-            <?php \$struct = new \\Ephect\\Modules\\Forms\\Components\\ChildrenStructure(['props' => (object) $props, 'buffer' => function()$useChildren{?>
+            <?php \$struct = new \\Ephect\\Modules\\Forms\\Components\\ChildrenStructure(['props' => $propsBuild, 'buffer' => function()$useChildren{?>
                     $preComponentBody$componentBody
             <?php
             }, 'motherUID' => '$motherUID', 'uid' => '$uid', 'class' => '$className', 'name' => '$name', 'parentProps' => $classArgs]);
@@ -158,7 +158,7 @@ PHP;
             $this->result[] = $componentName;
 
             $decl = ComponentDeclaration::byName($fqComponentName);
-            $this->declareMiddlewares($motherUID, $parent, $decl, $fqComponentName, $props);
+            $this->declareMiddlewares($motherUID, $parent, $decl, $fqComponentName, $propsArgs);
             /**
              * TODO Make a listener for this feature
              * $attributesEvent = new ComponentAttributesEvent($this->component, $item);
@@ -177,8 +177,6 @@ PHP;
 
         $this->html = $subject;
     }
-
-
 
     private function argumentsKeys(array $componentArgs): ?array
     {

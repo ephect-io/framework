@@ -4,14 +4,17 @@ namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Framework\Element;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 
 class ComponentDeclaration extends Element implements ComponentDeclarationInterface
 {
-    protected mixed $type = '';
+    
     protected string $name = '';
+    protected mixed $returnType = '';
     protected ?ComponentEntity $entity = null;
     protected mixed $arguments = [];
     protected mixed $attributes = [];
+    protected mixed $argumentsTypes = [];
     protected mixed $flatComposition = [];
 
     public function __construct(ComponentDeclarationStructure $struct)
@@ -19,9 +22,11 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
         parent::__construct($this);
 
         $this->uid = $struct->uid;
-        $this->type = $struct->type;
+        $this->class = $struct->className;
+        $this->returnType = $struct->returnType;
         $this->arguments = $struct->arguments;
         $this->attributes = $struct->attributes;
+        $this->argumentsTypes = $struct->argumentsTypes;
         $this->flatComposition = $struct->composition;
     }
 
@@ -32,9 +37,9 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
         return new static($struct);
     }
 
-    public function getType(): string
+    public function getReturnType(): string
     {
-        return $this->type;
+        return $this->returnType;
     }
 
     public function getName(): string
@@ -50,6 +55,11 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
     public function getArguments(): ?array
     {
         return $this->arguments;
+    }
+
+    public function getArgumentsTypes(): ?array
+    {
+        return $this->argumentsTypes;
     }
 
     public function hasAttributes(): bool

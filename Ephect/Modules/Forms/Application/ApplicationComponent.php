@@ -22,6 +22,7 @@ use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Http\Transport\Request;
 use Exception;
 use Ephect\Modules\Forms\Generators\ParserService;
+use Ephect\Modules\WebApp\Registry\PageRegistry;
 use ReflectionException;
 
 use function Ephect\Hooks\useEvents;
@@ -165,10 +166,13 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         if ($fqName === null) {
             $fqName = $this->getFullyQualifiedFunction();
             if ($fqName === null) {
-                throw new Exception('Please the component is defined in the registry before asking for its entity');
+                throw new Exception('Component not registered and fully qualified function name is null for UID: ' . $this->uid);
             }
         }
-        CodeRegistry::setCacheDirectory(\Constants::BUILD_DIR . $this->getMotherUID());
+
+        $muid = $this->getMotherUID();
+        $muid = PageRegistry::read($muid) ? $muid : '';
+        CodeRegistry::setCacheDirectory(\Constants::BUILD_DIR . $muid);
 
         $decl = ComponentDeclaration::byName($fqName);
 
@@ -177,7 +181,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     public function resetDeclaration(): void
     {
-        $this->declaration = null;
+        $this->declaration = ComponentDeclaration::byName($this->getFullyQualifiedFunction());
     }
 
     public function composedOfUnique(): ?array

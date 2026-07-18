@@ -44,6 +44,7 @@ final class ClosedComponentsParser extends AbstractComponentParser
         }
 
         $props = $this->doArgumentsToString($decl->getArguments()) ?? '';
+        Logger::create()->info("Component {$comp->getUID()} has arguments: " . $props);
 
         if ($decl->hasAttributes()) {
             $this->declareMiddlewares(
@@ -77,24 +78,25 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $uid = $child->getUID();
             $component = $child->getText();
             $componentName = $child->getName();
+            $componentClass = $child->getClass();
             $componentArgs = [];
             $componentArgs['uid'] = $uid;
 
-            $decl = ComponentDeclaration::byName($componentName);
-            if ($decl !== null) {
-                $declArgs = $decl->getArguments();
-                Logger::create()->info("Component {$componentName} has arguments: " . json_encode($declArgs));
-            }  
-            
-            if($child->args() !== null) {
-                $componentArgs = array_merge($componentArgs, $child->args());
+            $propsType = '\object';
+            $propsTypeIsObject = true;
+            if($child->args() !== null && count($child->args()) > 0) {
+                $args0 = $child->args()[0];
+                if($args0['name'] === 'props') {
+                    $propsType = $args0['type'];
+                    $propsTypeIsObject = $propsType === '\object';
+                }
             }
             
             $props = '';
             if ($child->props() !== null) {
                 $componentArgs = array_merge($componentArgs, $child->props());
-                $propsArgs = self::doArgumentsToString($componentArgs);
-                $props = "(object) " . $propsArgs ?? "[]";
+                $propsArgs = $this->doArgumentsToString($componentArgs) ?? "[]";
+                $props = $propsTypeIsObject ?  "(object) " . $propsArgs : "new $propsType(" . $propsArgs . ")";
             }
             
             $fqFuncName = ComponentRegistry::read($componentName);
