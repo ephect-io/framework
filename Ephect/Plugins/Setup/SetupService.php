@@ -2,8 +2,8 @@
 
 namespace Ephect\Plugins\Setup;
 
-use Ephect\Framework\Core\PhpInfo;
 use Ephect\Framework\Logger\Logger;
+use Ephect\Framework\Misc\PhpInfo;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Web\Curl;
 use Exception;
