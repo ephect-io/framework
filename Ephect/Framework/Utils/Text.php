@@ -74,7 +74,7 @@ class Text
 
         $convert = '';
 
-        $re = '/(.*)(\'(.*)\' =>)( +)?(\n)( +)/m';
+        $re = '/(.*)((\'\w+\'|\w+) =>)( +)?(\n)( +)/m';
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
@@ -100,10 +100,11 @@ class Text
                 } elseif (preg_match($entryRx, $buffer, $matches)) {
                     $indent = !isset($matches[1]) ? '' : $matches[1];
                     $convert .= $indent;
+                    $array = !isset($matches[2]) ? '' : $matches[2];
                     $key = !isset($matches[3]) ? '' : $matches[3];
 
                     if (isset($matches[6]) && $matches[6] == 'array') {
-                        $convert .= !empty($key) ? $key . ' => [' : '[';
+                        $convert .= !empty($key) && !is_numeric($key) ?  $key . ' => [' : '[';
 
                         $stringLen = strlen($matches[0]);
                         $buffer = substr($buffer, $stringLen);
