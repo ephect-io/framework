@@ -53,6 +53,19 @@ class Text
         return $result;
     }
 
+    public static function durationFromToString(float $timeStart): string
+    {
+        $timeEnd = microtime(true);
+
+        $duration = $timeEnd - $timeStart;
+
+        $utime = sprintf('%.3f', $duration);
+        $rawTime = \DateTime::createFromFormat('u.u', $utime);
+        $duration = substr($rawTime->format('u'), 0, 3);
+
+        return $duration;
+    }
+
     public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string
     {
         $array = [];
