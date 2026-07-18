@@ -3,6 +3,7 @@
 namespace Ephect\Modules\WebApp\Builder\Strategy;
 
 use DateTime;
+use Ephect\Framework\Utils\Text;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Utils\File;
@@ -35,13 +36,7 @@ class BuildByNameStrategy implements BuiderStrategyInterface
             $comp->render($functionArgs);
             $html = ob_get_clean();
 
-            $time_end = microtime(true);
-
-            $duration = $time_end - $time_start;
-
-            $utime = sprintf('%.3f', $duration);
-            $raw_time = DateTime::createFromFormat('u.u', $utime);
-            $duration = substr($raw_time->format('u'), 0, 3);
+            $duration = Text::durationFromToString($time_start);
 
             Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
         } catch (Throwable $ex) {
