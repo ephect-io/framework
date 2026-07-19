@@ -29,6 +29,11 @@ class Builder
         File::delTree(\Constants::PROCESS_DIR);
     }
 
+    public function getListOfComponents(): array
+    {
+        return $this->list;
+    }
+    
     /**
      * Register all components of the application
      *

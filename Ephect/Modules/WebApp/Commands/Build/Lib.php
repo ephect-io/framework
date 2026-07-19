@@ -13,6 +13,11 @@ class Lib extends AbstractCommandLib
 {
     private Builder $builder;
 
+    public function getBuilder(): Builder
+    {
+        return $this->builder;
+    }
+
     public function clear(): void
     {
         $application = $this->parent;
