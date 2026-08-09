@@ -2,11 +2,12 @@
 
 namespace Ephect\Modules\Forms\Application;
 
-use Ephect\Framework\Event\EventDispatcher;
 use Ephect\Modules\Forms\Events\PageFinishedEvent;
 use Ephect\Modules\Http\Transport\Request;
 use ReflectionFunction;
 use stdClass;
+
+use function Ephect\Hooks\useEvents;
 
 class ComponentRenderer
 {
@@ -59,9 +60,11 @@ class ComponentRenderer
             $html = ob_get_clean();
         }
 
-        $finishedEvent = new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props);
-        $dispatcher = new EventDispatcher();
-        $dispatcher->dispatch($finishedEvent);
+        $finishedEvent = new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props, $html);
+        [$eventDispatcher] = useEvents(get: 'eventDispatcher');
+        $eventDispatcher->dispatch($finishedEvent);
+
+        // File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
 
         return $html;
     }

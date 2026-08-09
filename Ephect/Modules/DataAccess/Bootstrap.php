@@ -8,21 +8,22 @@ use Ephect\Framework\Modules\ModuleBootstrapInterface;
 use Ephect\Modules\DataAccess\Events\ConnectionOpenerEvent;
 use Ephect\Modules\DataAccess\Listeners\ConnectionOpenerListener;
 
+use function Ephect\Hooks\useEvents;
+
 class Bootstrap implements ModuleBootstrapInterface
 {
     public function boot(): void
     {
-        $dispatcher = new EventDispatcher();
+        [$eventProvider] = useEvents(get: 'eventProvider');
 
-        $provider = new EventServiceProvider(
-            $dispatcher,
-            [
-                ConnectionOpenerEvent::class => [
-                    ConnectionOpenerListener::class,
-                ],
+        $eventProvider->addListeners([
+            ConnectionOpenerEvent::class => [
+                ConnectionOpenerListener::class,
             ],
-        );
+        ]);
 
-        $provider->register();
+        $eventProvider->register();
+
+        useEvents($eventProvider);
     }
 }

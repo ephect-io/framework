@@ -313,6 +313,7 @@ class Constants
     public const COPY_COMPONENTS_ROOT = self::COPY_DIR . DONT_USE_CONFIG_COMPONENTS . DIRECTORY_SEPARATOR;
 
     public const CLASS_EXTENSION = '.class.php';
+    public const PHP_EXTENSION = '.php';
     public const HTML_EXTENSION = '.html';
     public const PREHTML_EXTENSION = '.phtml';
     public const CSS_EXTENSION = '.css';

@@ -13,8 +13,6 @@ class Main extends AbstractCommand
 {
     public function run(): int
     {
-        $arg = $this->application->getArgi(2);
-        
         $use = new Lib($this->application);
         $use->execute();
 
