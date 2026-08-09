@@ -70,11 +70,17 @@ class Text
 
     public static function arrayToString(array $array, bool $prettify = false): string
     {
+        /**
+         * TODO: test whether it converts objects into arrays
+         */
+        // $arrayText = json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        // $array = json_decode($arrayText, true);
+
         $dump = var_export($array, true);
 
         $convert = '';
 
-        $re = '/(.*)(\'(.*)\' =>)( +)?(\n)( +)/m';
+        $re = '/(.*)((\'\S+\'|\S+) =>)( +)?(\n)( +)/m';
         $subst = "$1$2";
         $entries = preg_replace($re, $subst, $dump);
         $buffer = $entries;
@@ -103,7 +109,7 @@ class Text
                     $key = !isset($matches[3]) ? '' : $matches[3];
 
                     if (isset($matches[6]) && $matches[6] == 'array') {
-                        $convert .= !empty($key) ? $key . ' => [' : '[';
+                        $convert .= !empty($key) && !is_numeric($key) ?  $key . ' => [' : '[';
 
                         $stringLen = strlen($matches[0]);
                         $buffer = substr($buffer, $stringLen);
@@ -135,7 +141,7 @@ class Text
                 $isSpinning = $countSpinning > 10;
             }
         } catch (\Exception $exception) {
-            throw new Exception("Something went wrong while converting array to string", 1, $exception);
+            throw new \Exception("Something went wrong while converting array to string", 1, $exception);
         }
 
         if (!$prettify) {
