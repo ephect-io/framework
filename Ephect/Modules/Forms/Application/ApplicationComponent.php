@@ -4,7 +4,7 @@ namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\Event\EventDispatcher;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Tree\Tree;
 use Ephect\Framework\Utils\File;
@@ -23,6 +23,8 @@ use Ephect\Modules\Http\Transport\Request;
 use Exception;
 use Ephect\Modules\Forms\Generators\ParserService;
 use ReflectionException;
+
+use function Ephect\Hooks\useEvents;
 
 abstract class ApplicationComponent extends Tree implements FileComponentInterface
 {
@@ -269,9 +271,10 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
 
         if ($motherUID !== $component->getUID()) {
+            Logger::create()->info("Component %s is finished, dispatching event.", $component->getUID());
             $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
-            $dispatcher = new EventDispatcher();
-            $dispatcher->dispatch($finishedEvent);
+            [$eventDispatcher] = useEvents(get: 'eventDispatcher');
+            $eventDispatcher->dispatch($finishedEvent);
         }
 
         return [$fqFunctionName, $cacheFilename];
@@ -334,7 +337,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $this->cacheFile(\Constants::BUILD_DIR);
     }
 
-    private function cacheFile($cacheDir): ?string
+    private function cacheFile(string $cacheDir): ?string
     {
         $cache_file = $this->getSourceFilename();
         $result = File::safeWrite($cacheDir . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);

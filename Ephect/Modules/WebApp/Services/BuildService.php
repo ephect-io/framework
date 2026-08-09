@@ -11,7 +11,9 @@ class BuildService
         $builder = new Builder();
         $builder->describeComponents();
         $builder->preparePagesList();
-        $builder->prepareRoutedComponents();
+
+        /** This looks useless until it's not */
+        // $builder->prepareRoutedComponents();
 
         return $builder;
     }

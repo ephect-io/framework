@@ -15,6 +15,8 @@ class Main extends AbstractCommand
         echo $principal . PHP_EOL;
 
         $use = new Lib($this->application);
+        $use->clear();
+        $use->register();
         $use->build();
 
         return 0;

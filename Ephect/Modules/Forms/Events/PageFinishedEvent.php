@@ -11,6 +11,7 @@ class PageFinishedEvent extends Event
         private readonly string $cacheFilename,
         private readonly string $componentName,
         private readonly ?object $props,
+        private readonly string $html = ''
     ) {
     }
 
@@ -32,5 +33,10 @@ class PageFinishedEvent extends Event
     public function getProps(): ?object
     {
         return $this->props;
+    }
+
+    public function getHtml(): string
+    {
+        return $this->html;
     }
 }

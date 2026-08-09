@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\Event;
 
-use function Ephect\Hooks\useState;
+use function Ephect\Hooks\useEvents;
 
 class EventDispatcher implements EventDispatcherInterface
 {
@@ -36,7 +36,7 @@ class EventDispatcher implements EventDispatcherInterface
      */
     public function getListenersForEvent(StoppableEventInterface $event): iterable
     {
-        [$events] = useState(get: 'events');
+        [$events] = useEvents(get: 'events');
 
         if ($events === null) {
             return [];
