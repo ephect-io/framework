@@ -10,12 +10,12 @@ use Ephect\Framework\Web\Curl;
 use Ephect\Modules\Routing\Services\RouterService;
 use Exception;
 
-class BuildByRouteStrategy implements BuiderStrategyInterface
+class BuildByRouteStrategy implements BuilderStrategyInterface
 {
     /**
      * @throws Exception
      */
-    public function build($route = 'Default'): void
+    public function build(string $route): void
     {
         // TODO: check if it works
         //        $fqRouteParts = explode('\\', $route);

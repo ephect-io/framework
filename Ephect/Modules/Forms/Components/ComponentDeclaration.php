@@ -37,6 +37,13 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
         return new static($struct);
     }
 
+    public static function uniqueByName(string $componentName): ComponentDeclaration
+    {
+        $list = UniqueCodeRegistry::read($componentName);
+        $struct = new ComponentDeclarationStructure($list);
+        return new static($struct);
+    }
+
     public function getReturnType(): string
     {
         return $this->returnType;

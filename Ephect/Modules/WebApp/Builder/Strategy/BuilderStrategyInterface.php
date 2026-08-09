@@ -2,7 +2,7 @@
 
 namespace Ephect\Modules\WebApp\Builder\Strategy;
 
-interface BuiderStrategyInterface
+interface BuilderStrategyInterface
 {
     public function build(string $route): void;
 }

@@ -138,4 +138,25 @@ class Builder
             $buildByRoute->build($route);
         }
     }
+
+    public function buildAllPages(): void
+    {
+        (new BuildByNameStrategy())->build('App');
+        // TODO: check if it works
+        $this->routes = RouterService::findRouteNames();
+
+        $buildByRoute = new BuildByNameStrategy();
+        foreach ($this->routes as $route) {
+            $buildByRoute->build($route);
+        }
+    }
+
+    public function buildAnyByName(array $pageNames): void
+    {
+        $buildByName = new BuildByNameStrategy();
+        foreach ($pageNames as $page) {
+            $buildByName->build($page);
+        }
+    }  
+
 }
