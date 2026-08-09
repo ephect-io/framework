@@ -2,6 +2,8 @@
 
 namespace Ephect\Framework\CLI;
 
+use Ephect\Framework\Utils\Text;
+
 class ConsoleColors
 {
     // Set up shell colors
@@ -32,8 +34,14 @@ class ConsoleColors
     public const BACKGROUND_LIGHT_GRAY = '47';
 
     // Returns coloRED string
-    public static function getColoredString($string, $foreground_color = null, $background_color = null): string
+    public static function getColoredString(array|string|null $string, $foreground_color = null, $background_color = null): string
     {
+        $string = $string ?? "";
+        
+        if(is_array($string)) {
+            $string = Text::arrayToString($string);
+        }
+
         $colored_string = "";
         $suffix = "\033[0m";
 
