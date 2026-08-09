@@ -6,11 +6,14 @@ use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\ElementUtils;
 use Ephect\Modules\WebApp\Registry\PageRegistry;
 
+use function Ephect\Hooks\useMemory;
+
 class PageRegisterer implements RegistererInterface
 {
     public function register(array $values): void
     {
         PageRegistry::load();
+        $pages = [];
         foreach ($values as $page) {
             $uid = Crypto::createOID();
             $filename = \Constants::COPY_PAGES_ROOT . $page;
@@ -34,7 +37,19 @@ class PageRegisterer implements RegistererInterface
             PageRegistry::write($uid, $className);
             PageRegistry::write($className, $page);
             PageRegistry::write($page, $uid);
+            $pages[] = [
+                $functionName => [
+                    'uid' => $uid,
+                    'className' => $className,
+                    'filename' => $page,
+                    'parameters' => $parameters,
+                    'returnedType' => $returnedType,
+                    'startsAt' => $startsAt
+                ]
+            ];
         }
+        useMemory(['pages'  => $pages]);
+
         PageRegistry::save();
     }
 }

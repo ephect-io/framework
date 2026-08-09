@@ -2,11 +2,15 @@
 
 namespace Ephect\Modules\Forms\Generators;
 
+use Ephect\Framework\Commands\Attributes\CommandDeclaration;
 use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\ElementUtils;
+use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
+use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 
 class ComponentParser extends Parser implements ParserInterface
 {
@@ -42,8 +46,10 @@ class ComponentParser extends Parser implements ParserInterface
         ] = ElementUtils::getFunctionDefinitionFromFile($sourceDir . $filename);
 
         if ($functionName == '') {
-            return  [null, null, null];
+            return  [null, null, null, null, null];
         }
+
+        $rootNamespace = explode('\\', $namespace)[0];
 
         include_once $sourceDir . $filename;
 
@@ -54,8 +60,8 @@ class ComponentParser extends Parser implements ParserInterface
         $refAttributes = $ref->getAttributes();
         $refReturnType = $ref->getReturnType();
 
-        $arguments = array_map(function ($parameter) {
-            return $parameter->getName();
+        $arguments = array_map(function ($parameter) use ($rootNamespace) {
+            return ['name' => $parameter->getName(), 'type' => str_replace($rootNamespace, \Constants::CONFIG_NAMESPACE, $parameter->getType()?->getName() ?? '\object')];
         }, $refParameters);
 
         $attributes = array_map(function ($attribute) {
@@ -65,7 +71,7 @@ class ComponentParser extends Parser implements ParserInterface
             ];
         }, $refAttributes);
 
-        return [$arguments, $attributes, $refReturnType?->getName()];
+        return [$namespace, $functionName, $arguments, $attributes, $refReturnType?->getName()];
     }
 
     /**
@@ -76,13 +82,14 @@ class ComponentParser extends Parser implements ParserInterface
         if ($uid == '') {
             $uid = Crypto::createUID();
         }
-        [$args, $attrs, $return] = $this->doReflection();
         $this->doComponents();
-        $func = $this->doFunctionDeclaration();
+        [$namespace, $functionName, $args, $attrs, $return] = $this->doReflection();
+        // [$namespace, $functionName, $parameters, $returnedType] = ElementUtils::getFunctionDefinition($this->html);
         $decl = [
             'uid' => $uid,
-            'type' => $func[0],
-            'name' => $func[1],
+            'name' => $functionName,
+            'className' => $this->component->getFullyQualifiedFunction(),
+            'returnType' => $return,
             'arguments' => $args ?? [],
             'attributes' => $attrs ?? [],
             'composition' => $this->list
@@ -263,11 +270,18 @@ REGEX;
         $item['text'] = $text;
         $item['startsAt'] = $tag['startsAt'];
         $item['endsAt'] = $tag['endsAt'];
+
+        $isFakeComponent = in_array($item['name'], ['Fragment', 'FakeFragment', 'Eof', 'Slot']);
+
         if (!$isCloser) {
+            $compClass = $isFakeComponent ? $item['name'] : ComponentRegistry::read($item['name']);
+            $compDecl = $isFakeComponent ? null : ComponentDeclaration::byName($compClass);
+
             $item['uid'] = Crypto::createOID();
             $item['class'] = ComponentRegistry::read($item['name']);
             $item['method'] = 'echo';
             $item['component'] = $fqName;
+            $item['args'] = $isFakeComponent ? [] : $compDecl->getArguments();
             $item['props'] = ($item['name'] === 'Fragment') ? [] : $this->doArguments($text);
             $item['depth'] = $depth;
             $item['hasCloser'] = $hasCloser;
@@ -292,38 +306,39 @@ REGEX;
     }
 
     /** TO BE DONE on base of regex101 https://regex101.com/r/QZejMW/2/ */
-    public function doFunctionDeclaration(): ?array
-    {
-        $result = [];
-        $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
+    /** OBSOLETE ?!? */
+    // public function doFunctionDeclaration(): ?array
+    // {
+    //     $result = [];
+    //     $re = '/(function)[ ]+([\w]+)[ ]*\(((\s|.*?)*)\)/m';
 
-        $str = $this->html;
+    //     $str = $this->html;
 
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+    //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
-        foreach ($matches as $match) {
-            $args = $this->doFunctionArguments($match[3]);
-            $result = [$match[1], $match[2], $args];
-        }
+    //     foreach ($matches as $match) {
+    //         $args = $this->doFunctionArguments($match[3]);
+    //         $result = [$match[1], $match[2], $args];
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
-    private function doFunctionArguments(string $arguments): ?array
-    {
-        $result = [];
-        $re = '/([,]?[.]?\$[\w]+)/';
+    // private function doFunctionArguments(string $arguments): ?array
+    // {
+    //     $result = [];
+    //     $re = '/([,]?[.]?\$[\w]+)/';
 
-        $str = $arguments;
+    //     $str = $arguments;
 
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+    //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
-        foreach ($matches as $match) {
-            $result[] = $match[1];
-        }
+    //     foreach ($matches as $match) {
+    //         $result[] = $match[1];
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
     public function doAttributes(): array
     {

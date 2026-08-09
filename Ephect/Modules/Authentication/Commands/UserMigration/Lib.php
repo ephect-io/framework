@@ -37,19 +37,14 @@ class Lib extends AbstractCommandLib
     {
         try
         {
-            $params = $this->application->getArgv();
-
             $doUp = $this->application->hasCommandLineOption('u', 'up');
             $doDown = $this->application->hasCommandLineOption('d', 'down');
-            $doError = $this->application->hasCommandLineOption('u', 'up') && $this->application->hasCommandLineOption('d', 'down');
 
-            $doNothing = !$doUp && !$doDown;
-
-            if ($doNothing) {
+            if (!$doUp && !$doDown) {
                 throw new InvalidArgumentException('Missing arguments.');
             }
 
-            if ($doError) {
+            if ($doUp && $doDown) {
                 throw new InvalidArgumentException('Invalid arguments.');
             }
 

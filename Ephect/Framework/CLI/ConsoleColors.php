@@ -39,7 +39,7 @@ class ConsoleColors
         $string = $string ?? "";
         
         if(is_array($string)) {
-            $string = Text::arrayToString($string);
+            $string = Text::arrayToString($string, true);
         }
 
         $colored_string = "";

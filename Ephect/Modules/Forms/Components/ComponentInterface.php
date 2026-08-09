@@ -24,6 +24,10 @@ interface ComponentInterface extends ElementInterface
 
     public function composedOf(): ?array;
 
+    public function getArguments(): ?array;
+
+    public function getReturnType(): ?string;
+
     public function renderComponent(
         string $motherUID,
         string $functionName,

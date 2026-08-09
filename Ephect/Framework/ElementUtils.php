@@ -8,6 +8,12 @@ use function strlen;
 
 final class ElementUtils
 {
+    public static function getBasenameFromFQClassName(string $fqClassName): string
+    {
+        $classParts = explode('\\', $fqClassName);
+        return end($classParts);
+    }
+
     public static function getNamespaceFromFQClassName(string $fqClassName): string
     {
         $classParts = explode('\\', $fqClassName);
@@ -38,7 +44,38 @@ final class ElementUtils
         }
         $namespace = $matches[1][0];
         $functionName = $matches[2][0];
-        $parameters = $matches[3][0];
+        $parameters = $matches[3][0] ? explode(',', $matches[3][0]) : [];
+        $parameters = array_map(function ($param) {
+            $entry = explode(' ', trim($param));
+            $result = [
+                'type' => null,
+                'name' => null,
+            ];
+            if(count($entry) === 1) {
+                $result = [
+                    'type' => '\object',
+                    'name' => trim($entry[0]),
+                ];
+            }
+            if (count($entry) > 1) {
+                $result = [
+                    'type' => trim($entry[0]),
+                    'name' => trim(end($entry)),
+                ];
+            }
+            return $result;
+        }, $parameters);
+
+        // $parameters = array_map(function ($param) {
+        //     $entry = explode(' ', trim($param));
+        //     $result = null;
+        //     if(count($entry) === 1) {
+        //         $result = trim($entry[0]) . " = '\\object'";
+        //     } elseif (count($entry) > 1) {
+        //         $result = trim($entry[1]) . " = '" . trim($entry[0]) . "'";
+        //     }
+        //     return $result;
+        // }, $parameters);
         $returnedType = $matches[4][0];
         $pos = $matches[5][1];
 

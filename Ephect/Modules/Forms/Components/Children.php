@@ -14,7 +14,7 @@ class Children extends Entity implements ChildrenInterface
     protected ?object $props = null;
     protected array|object|null $parentProps = null;
     protected array|object|null $allProps = null;
-    protected $buffer = null;
+    protected ?\Closure $buffer = null;
 
     protected ?string $name = null;
 

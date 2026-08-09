@@ -31,6 +31,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
     protected bool $hasCloser = false;
     protected bool $hasProperties = false;
     protected array $properties = [];
+    protected array $arguments = [];
     protected string $method = '';
     protected string $compName = '';
     protected ?string $className = '';
@@ -61,6 +62,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         $this->depth = $struct->depth;
         $this->hasProperties = count($struct->props) !== 0;
         $this->properties = $this->hasProperties ? $struct->props : [];
+        $this->arguments = $struct->args ?? [];
         $this->hasCloser = is_array($struct->closer);
         $this->closer = $this->hasCloser ? $struct->closer : null;
         $this->isSingle = $struct->isSingle;
@@ -171,6 +173,7 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
             "method" => "echo",
             "startsAt" => 0,
             "endsAt" => 0,
+            "args" => [],
             "props" => [],
             "node" => [],
             "hasCloser" => true,
@@ -276,6 +279,20 @@ class ComponentEntity extends Entity implements ComponentEntityInterface
         }
         if (isset($this->properties[$key])) {
             return $this->properties[$key];
+        }
+        return null;
+    }
+
+    public function args(?string $key = null): string|array|null
+    {
+        if ($key === null) {
+            if (count($this->arguments) === 0) {
+                return null;
+            }
+            return $this->arguments;
+        }
+        if (isset($this->arguments[$key])) {
+            return $this->arguments[$key];
         }
         return null;
     }

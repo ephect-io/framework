@@ -1,6 +1,6 @@
 <?php
 
-namespace Ephect\Modules\Forms;
+namespace Ephect\Modules\JavaScripts;
 
 use Ephect\Framework\Modules\ModuleBootstrapInterface;
 use Ephect\JavaScripts\Builder\AjilBuilder;

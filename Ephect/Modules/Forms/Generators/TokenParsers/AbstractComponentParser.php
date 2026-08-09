@@ -16,6 +16,14 @@ abstract class AbstractComponentParser extends AbstractTokenParser
         $result = '';
 
         foreach ($componentArgs as $key => $value) {
+            if(is_string($value) && !is_int($key)) {
+                $possibleEntry = explode('=', $value);
+                if (count($possibleEntry) === 2) {
+                    $key = trim($possibleEntry[0]);
+                    $value = trim($possibleEntry[1]);
+                }               
+            }               
+           
             if (is_array($value)) {
                 $arrayString = Text::arrayToString($value);
                 $pair = '"' . $key . '" => ' . $arrayString . ', ';
@@ -26,7 +34,7 @@ abstract class AbstractComponentParser extends AbstractTokenParser
                     : "'" . $value . "', "
                 );
             }
-            if ($value[0] === '$') {
+            if (isset($value[0]) && $value[0] === '$') {
                 $pair = '"' . $key . '" => ' . $value . ', ';
             }
             $result .= $pair;

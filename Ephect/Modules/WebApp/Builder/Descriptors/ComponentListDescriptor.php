@@ -5,6 +5,7 @@ namespace Ephect\Modules\WebApp\Builder\Descriptors;
 use Ephect\Framework\Modules\ModuleInstaller;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Utils\File;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 
 use function siteSrcPath;
 
@@ -16,11 +17,14 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
 
         $descriptor = new ComponentDescriptor();
 
-        $bootstrapList = File::walkTreeFiltered(\Constants::COPY_DIR, ['phtml'], true);
-        foreach ($bootstrapList as $key => $compFile) {
-            [$fqcn, $comp] = $descriptor->describe(\Constants::COPY_DIR, $compFile);
+        $componentsList = File::walkTreeFiltered(\Constants::COPY_COMPONENTS_ROOT, ['phtml']);
+        foreach ($componentsList as $key => $compFile) {
+            [$fqcn, $comp] = $descriptor->describe(\Constants::COPY_COMPONENTS_ROOT, $compFile);
             $result[$fqcn] = $comp;
         }
+
+        UniqueCodeRegistry::save();
+        UniqueCodeRegistry::load();
 
         $pagesList = File::walkTreeFiltered(\Constants::COPY_PAGES_ROOT, ['phtml']);
         foreach ($pagesList as $key => $pageFile) {
@@ -28,36 +32,16 @@ class ComponentListDescriptor implements ComponentListDescriptorInterface
             $result[$fqcn] = $comp;
         }
 
-        $componentsList = File::walkTreeFiltered(\Constants::COPY_COMPONENTS_ROOT, ['phtml']);
-        foreach ($componentsList as $key => $compFile) {
-            [$fqcn, $comp] = $descriptor->describe(\Constants::COPY_COMPONENTS_ROOT, $compFile);
+        UniqueCodeRegistry::save();
+        UniqueCodeRegistry::load();
+
+        $bootstrapList = File::walkTreeFiltered(\Constants::COPY_DIR, ['phtml'], true);
+        foreach ($bootstrapList as $key => $compFile) {
+            [$fqcn, $comp] = $descriptor->describe(\Constants::COPY_DIR, $compFile);
             $result[$fqcn] = $comp;
         }
 
-        // [$filename, $modulePaths] = ModuleInstaller::readModulePaths();
-        // foreach ($modulePaths as $path) {
-        //     if (str_starts_with($path, 'vendor')) {
-        //         $path = realpath(siteRoot() . $path);
-        //     }
-        //     $moduleConfigDir = $path . DIRECTORY_SEPARATOR . \Constants::REL_CONFIG_DIR;
-        //     $moduleConfigDir = is_dir($moduleConfigDir) ? $moduleConfigDir : $path;
-
-        //     $manifestReader = new ModuleManifestReader();
-        //     $manifest = $manifestReader->read($moduleConfigDir);
-
-        //     $configTemplatesDir = $manifest->getTemplates();
-        //     $configTemplatesDir = $configTemplatesDir === null
-        //         ? $configTemplatesDir
-        //         : siteSrcPath() . $configTemplatesDir;
-
-        //     if ($configTemplatesDir !== null && file_exists($configTemplatesDir)) {
-        //         $componentsList = File::walkTreeFiltered($configTemplatesDir, ['phtml']);
-        //         foreach ($componentsList as $key => $compFile) {
-        //             [$fqcn, $comp] = $descriptor->describe($configTemplatesDir, $compFile);
-        //             $result[$fqcn] = $comp;
-        //         }
-        //     }
-        // }
+        UniqueCodeRegistry::save();
 
         return $result;
     }

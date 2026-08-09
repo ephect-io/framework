@@ -24,11 +24,16 @@ class Structure implements StructureInterface
         }
     }
 
-    public static function create(...$params): static
+    public static function create(object|array|null ...$params): static
     {
         $struct = new static(...$params);
 
         return $struct;
+    }
+
+    public function __toString()
+    {
+        return print_r($this, true);
     }
 
     public function toArray(): array
@@ -109,17 +114,34 @@ class Structure implements StructureInterface
             $propType = $prop->getType();
 
             foreach ($attrs as $attr) {
-                if ($attr->getName() !== JsonProperty::class) {
-                    continue;
-                }
+                if ($attr->getName() == JsonProperty::class) {
+                    $argName = $attr->getArguments()['name'];
 
-                $args = $attr->getArguments();
-                $argName = $args['name'];
+                    if (isset($values[$argName])) {
+                        $values[$propName] = $values[$argName];
+                    }
+                } elseif ($attr->getName() == Inject::class) {
+                    $args = $attr->getArguments();
+                    $class = $args['class'] ?? '';
+                    $params = $args['params'] ?? [];
+                    $singleton = $args['singleton'] ?? false;
+                    $fromContainer = $args['fromContainer'] ?? false;
 
-                if (isset($values[$argName])) {
-                    $values[$propName] = $values[$argName];
-                }
-                break;
+                    if ($class) {
+                        if ($fromContainer) {
+                            // Assuming there's a container to resolve the class
+                            // $instance = Container::get($class, ...$params);
+                        } else {
+                            $instance = new $class(...$params); 
+                        }
+                    }
+                    if (!isset($values[$argName])) {
+                        $values[$propName] = $instance ?? null;
+                    }
+                } else {
+                    // TODO: initialize other attributes regarding their type if no value is provided in the $values array
+
+                } 
             }
 
             if (!property_exists($structure, $propName)) {

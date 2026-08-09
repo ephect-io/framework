@@ -4,7 +4,7 @@ namespace Ephect\Modules\Forms\Application;
 
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\ElementUtils;
-use Ephect\Framework\Event\EventDispatcher;
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Registry\StateRegistry;
 use Ephect\Framework\Tree\Tree;
 use Ephect\Framework\Utils\File;
@@ -22,7 +22,10 @@ use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Http\Transport\Request;
 use Exception;
 use Ephect\Modules\Forms\Generators\ParserService;
+use Ephect\Modules\WebApp\Registry\PageRegistry;
 use ReflectionException;
+
+use function Ephect\Hooks\useEvents;
 
 abstract class ApplicationComponent extends Tree implements FileComponentInterface
 {
@@ -87,8 +90,8 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         [
             $this->namespace,
             $this->function,
-            $parameters,
-            $returnedType,
+            $this->arguments,
+            $this->returnType,
             $this->bodyStartsAt
         ] = ElementUtils::getFunctionDefinition($this->code);
         if ($this->bodyStartsAt == -1 && !empty($this->code)) {
@@ -96,8 +99,8 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
             [
                 $this->namespace,
                 $this->function,
-                $parameters,
-                $returnedType,
+                $this->arguments,
+                $this->returnType,
                 $this->bodyStartsAt
             ] = ElementUtils::getFunctionDefinition($this->code);
         }
@@ -163,10 +166,13 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         if ($fqName === null) {
             $fqName = $this->getFullyQualifiedFunction();
             if ($fqName === null) {
-                throw new Exception('Please the component is defined in the registry before asking for its entity');
+                throw new Exception('Component not registered and fully qualified function name is null for UID: ' . $this->uid);
             }
         }
-        CodeRegistry::setCacheDirectory(\Constants::BUILD_DIR . $this->getMotherUID());
+
+        $muid = $this->getMotherUID();
+        $muid = PageRegistry::read($muid) ? $muid : '';
+        CodeRegistry::setCacheDirectory(\Constants::BUILD_DIR . $muid);
 
         $decl = ComponentDeclaration::byName($fqName);
 
@@ -175,7 +181,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
     public function resetDeclaration(): void
     {
-        $this->declaration = null;
+        $this->declaration = ComponentDeclaration::byName($this->getFullyQualifiedFunction());
     }
 
     public function composedOfUnique(): ?array
@@ -269,9 +275,10 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         $cacheFilename = $motherUID . DIRECTORY_SEPARATOR . $component->getSourceFilename();
 
         if ($motherUID !== $component->getUID()) {
+            Logger::create()->info("Component %s is finished, dispatching event.", $component->getUID());
             $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
-            $dispatcher = new EventDispatcher();
-            $dispatcher->dispatch($finishedEvent);
+            [$eventDispatcher] = useEvents(get: 'eventDispatcher');
+            $eventDispatcher->dispatch($finishedEvent);
         }
 
         return [$fqFunctionName, $cacheFilename];
@@ -334,7 +341,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         return $this->cacheFile(\Constants::BUILD_DIR);
     }
 
-    private function cacheFile($cacheDir): ?string
+    private function cacheFile(string $cacheDir): ?string
     {
         $cache_file = $this->getSourceFilename();
         $result = File::safeWrite($cacheDir . $this->motherUID . DIRECTORY_SEPARATOR . $cache_file, $this->code);

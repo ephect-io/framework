@@ -2,10 +2,13 @@
 
 namespace Ephect\Modules\Forms\Generators\TokenParsers;
 
+use Ephect\Framework\Logger\Logger;
 use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Components\ComponentDeclaration;
 use Ephect\Modules\Forms\Components\ComponentEntityInterface;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
+
+use function Ephect\Hooks\useMemory;
 
 final class ClosedComponentsParser extends AbstractComponentParser
 {
@@ -32,7 +35,16 @@ final class ClosedComponentsParser extends AbstractComponentParser
         if ($fle === null) {
             return;
         }
+
+        [$finishedComponents] = useMemory(get: 'finishedComponents');
+        $finishedComponents = $finishedComponents ?? [];
+        if(in_array($comp->getUID(), $finishedComponents)) {
+            Logger::create()->info("Component with UID {$comp->getUID()} has already been processed. Skipping.");
+            return;
+        }
+
         $props = $this->doArgumentsToString($decl->getArguments()) ?? '';
+        Logger::create()->info("Component {$comp->getUID()} has arguments: " . $props);
 
         if ($decl->hasAttributes()) {
             $this->declareMiddlewares(
@@ -66,16 +78,27 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $uid = $child->getUID();
             $component = $child->getText();
             $componentName = $child->getName();
+            $componentClass = $child->getClass();
             $componentArgs = [];
             $componentArgs['uid'] = $uid;
 
+            $propsType = '\object';
+            $propsTypeIsObject = true;
+            if($child->args() !== null && count($child->args()) > 0) {
+                $args0 = $child->args()[0];
+                if($args0['name'] === 'props') {
+                    $propsType = $args0['type'];
+                    $propsTypeIsObject = $propsType === '\object';
+                }
+            }
+            
             $props = '';
             if ($child->props() !== null) {
                 $componentArgs = array_merge($componentArgs, $child->props());
-                $propsArgs = self::doArgumentsToString($componentArgs);
-                $props = "(object) " . $propsArgs ?? "[]";
+                $propsArgs = $this->doArgumentsToString($componentArgs) ?? "[]";
+                $props = $propsTypeIsObject ?  "(object) " . $propsArgs : "new $propsType(" . $propsArgs . ")";
             }
-
+            
             $fqFuncName = ComponentRegistry::read($componentName);
             $componentRender = "\t\t\t<?php \$fn = {$componentName}($props); \$fn(); ?>\n";
 
