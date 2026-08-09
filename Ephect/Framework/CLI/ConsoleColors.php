@@ -34,9 +34,11 @@ class ConsoleColors
     public const BACKGROUND_LIGHT_GRAY = '47';
 
     // Returns coloRED string
-    public static function getColoredString(string|array $string, $foreground_color = null, $background_color = null): string
+    public static function getColoredString(array|string|null $string, $foreground_color = null, $background_color = null): string
     {
-        if (is_array($string)) {
+        $string = $string ?? "";
+        
+        if(is_array($string)) {
             $string = Text::arrayToString($string, true);
         }
 
