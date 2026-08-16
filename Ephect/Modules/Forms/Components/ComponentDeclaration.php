@@ -4,6 +4,7 @@ namespace Ephect\Modules\Forms\Components;
 
 use Ephect\Framework\Element;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
+use Ephect\Modules\Forms\Registry\UniqueCodeRegistry;
 
 class ComponentDeclaration extends Element implements ComponentDeclarationInterface
 {
@@ -28,6 +29,13 @@ class ComponentDeclaration extends Element implements ComponentDeclarationInterf
     public static function byName(string $componentName): ComponentDeclaration
     {
         $list = CodeRegistry::read($componentName);
+        $struct = new ComponentDeclarationStructure($list);
+        return new static($struct);
+    }
+
+    public static function uniqueByName(string $componentName): ComponentDeclaration
+    {
+        $list = UniqueCodeRegistry::read($componentName);
         $struct = new ComponentDeclarationStructure($list);
         return new static($struct);
     }
