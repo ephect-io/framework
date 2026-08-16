@@ -7,6 +7,7 @@ use Ephect\Framework\Utils\File;
 use Ephect\Modules\Forms\Registry\CodeRegistry;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
+use Ephect\Modules\Routing\Registry\RouteRegistry;
 use Ephect\Modules\Routing\Services\RouterService;
 use Ephect\Modules\WebApp\Builder\Copiers\TemplatesCopyMaker;
 use Ephect\Modules\WebApp\Builder\Descriptors\ComponentListDescriptor;
@@ -102,27 +103,27 @@ class Builder
     /**
      * This looks useless unril it's not
      */
-    // public function prepareRoutedComponents(): void
-    // {
-    //     CodeRegistry::load();
-    //     ComponentRegistry::load();
+    public function prepareRoutedComponents(): void
+    {
+        CodeRegistry::load();
+        ComponentRegistry::load();
 
-    //     $routes = (new RoutesFinder())->find();
-    //     // TODO: check if it works
-    //     //        $fqApp = ComponentRegistry::read('App');
-    //     $fqApp = 'App';
+        $routes = (new RoutesFinder())->find();
+        // TODO: check if it works
+        //        $fqApp = ComponentRegistry::read('App');
+        $fqApp = 'App';
 
-    //     array_unshift($routes, $fqApp);
+        array_unshift($routes, $fqApp);
 
-    //     foreach ($routes as $route) {
-    //         $fqRoute = ComponentRegistry::read($route);
-    //         $comp = $this->list[$fqRoute];
+        foreach ($routes as $route) {
+            $fqRoute = ComponentRegistry::read($route);
+            $comp = $this->list[$fqRoute];
 
-    //         // $comp->copyComponents($this->list);
-    //     }
+            // $comp->copyComponents($this->list);
+        }
 
-    //     $this->routes = $routes;
-    // }
+        $this->routes = $routes;
+    }
 
     /**
      * @throws Exception
@@ -153,6 +154,9 @@ class Builder
 
     public function buildAnyByName(array $pageNames): void
     {
+        $this->prepareRoutedComponents();
+        // $this->routes = RouterService::findRouteNames();
+
         $buildByName = new BuildByNameStrategy();
         foreach ($pageNames as $page) {
             $buildByName->build($page);
