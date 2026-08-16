@@ -140,6 +140,18 @@ class Builder
         }
     }
 
+    public function buildRouteByNames(array $routeNames): void
+    {
+        (new BuildByNameStrategy())->build('App');
+        // TODO: check if it works
+        $this->routes = $routeNames;
+
+        $buildByRoute = new BuildByRouteStrategy();
+        foreach ($this->routes as $route) {
+            $buildByRoute->build($route);
+        }
+    }
+
     public function buildAllPages(): void
     {
         (new BuildByNameStrategy())->build('App');
