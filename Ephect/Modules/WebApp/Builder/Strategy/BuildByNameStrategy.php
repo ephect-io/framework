@@ -12,7 +12,7 @@ use Ephect\Modules\Forms\Registry\PluginRegistry;
 use Ephect\Modules\Routing\Services\RouterService;
 use Throwable;
 
-class BuildByNameStrategy implements BuiderStrategyInterface
+class BuildByNameStrategy implements BuilderStrategyInterface
 {
     public function build(string $route): void
     {
