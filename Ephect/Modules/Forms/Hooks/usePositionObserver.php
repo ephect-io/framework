@@ -2,12 +2,14 @@
 
 namespace Ephect\Modules\Forms\Hooks;
 
-function usePositionObserver(array $data, string $observe, callable $callback): array
+function usePositionObserver(array $data, string $observe, callable $callback, array &$resources): void 
 {
     $resources = [];
     $oldObserve = '';
     $nextResource = null;
 
+    $c = count($data) - 1;
+    
     foreach($data as $i => $item) {
         $resource = $nextResource ?? $callback($item);
         $resource->first = false;
@@ -24,7 +26,7 @@ function usePositionObserver(array $data, string $observe, callable $callback): 
             $resource->first = false;
         }
 
-        if($i < count($data) - 1) {
+        if($i < $c) {
             $nextResource = $callback($data[$i + 1]);
             if($nextResource->$observe != $resource->$observe) {
                 $resource->last = true;
@@ -36,6 +38,4 @@ function usePositionObserver(array $data, string $observe, callable $callback): 
 
         $resources[] = $resource;
     }
-
-    return $resources;
 }
