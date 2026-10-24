@@ -9,8 +9,9 @@ function RoutesMenu(): string
     $routes = useRoutes();
     return (<<< HTML
         <ul>
-        @for %routes as %key => %value do
-            <li ><a href="{{ value }}">{{ key }}</a></li>
+        @for %routes as %route do
+            @op %props = (object)%route;
+            <li ><a href="{{ props->url }}">{{ props->caption }}</a></li>
         @done
         </ul>
     HTML);

@@ -14,6 +14,10 @@ interface RouteInterface extends ElementInterface
 
     public function getRedirect(): string;
 
+    public function getGroup(): string;
+    
+    public function getCaption(): string;
+
     public function getTranslation(): string;
 
     public function getError(): int;

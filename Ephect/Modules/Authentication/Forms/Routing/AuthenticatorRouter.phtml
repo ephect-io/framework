@@ -13,13 +13,13 @@ function AuthenticatorRouter(object $props): string
 
     return (<<< HTML
     <Router>
-        <Route method='GET' rule='/register' exact='true' redirect='Register' >
+        <Route method='GET' group='auth' caption="Sign Up" rule='/register' exact='true' redirect='Register' >
             <Authentication />
         </Route>
-        <Route method='GET' rule='/login' exact='true' redirect='Login' >
+        <Route method='GET' group='auth' caption="Sign In" rule='/login' exact='true' redirect='Login' >
             <Guest />
         </Route>
-        <Route method='GET' rule='/logout' exact='true' redirect='Logout' />
+        <Route method='GET' group='auth' caption="Logout" rule='/logout' exact='true' redirect='Logout' />
     </Router>
     HTML);
 }

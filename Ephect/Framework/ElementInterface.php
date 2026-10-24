@@ -4,7 +4,7 @@ namespace Ephect\Framework;
 
 interface ElementInterface
 {
-    public static function functionName($fullQualifiedName): string;
+    public static function functionName(string $fullQualifiedName): string;
 
     public function getUID(): string;
 

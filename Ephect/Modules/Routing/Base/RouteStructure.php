@@ -12,6 +12,8 @@ class RouteStructure extends Structure
     public string $normalized = '';
     public string $redirect = '';
     public string $translation = '';
+    public ?string $group = null;
+    public ?string $caption = null;
     public string $error = '';
     public string $exact = '';
     public array $middlewares = [];

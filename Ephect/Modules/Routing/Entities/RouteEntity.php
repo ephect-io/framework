@@ -16,6 +16,8 @@ class RouteEntity extends Entity implements RouteInterface
     private string $normalized = '';
     private string $redirect = '';
     private string $translation = '';
+    private ?string $group = null;
+    private ?string $caption = null;
     private int $error = 0;
     private bool $exact = false;
     private array $middlewares = [];
@@ -29,6 +31,8 @@ class RouteEntity extends Entity implements RouteInterface
         $this->normalized = $struct->normalized;
         $this->redirect = $struct->redirect;
         $this->translation = $struct->translation;
+        $this->group = $struct->group ?? 'User';
+        $this->caption = $struct->caption ?? $this->redirect;
         $this->error = (int)$struct->error;
         $this->exact = $struct->exact !== 'true' ?: true;
         $this->middlewares = $struct->middlewares;
@@ -58,6 +62,16 @@ class RouteEntity extends Entity implements RouteInterface
     {
         return $this->translation;
     }
+
+    public function getGroup(): string
+    {
+        return $this->group;
+    }
+
+    public function getCaption(): string
+    {
+        return $this->caption;
+    }   
 
     public function getError(): int
     {

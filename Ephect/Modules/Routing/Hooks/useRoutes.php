@@ -5,7 +5,7 @@ namespace Ephect\Modules\Routing\Hooks;
 use Ephect\Modules\Routing\Services\RouterService;
 use Ephect\Modules\Routing\Registry\RouteRegistry;
 
-function useRoutes(): array
+function useRoutes(string $group = 'User'): array
 {
     $result = [];
 
@@ -20,7 +20,13 @@ function useRoutes(): array
     foreach ($methodRoutes as $rule => $settings) {
         $stuff = (object)$settings;
 
-        $result[$stuff->redirect] = $settings->translation;    
+        if($stuff->group !== $group) {
+            continue;
+        }
+        $result[$stuff->redirect] = [
+            'url' => $stuff->translate,
+            'caption' => $stuff->caption,
+        ];
     }
      
     return $result;

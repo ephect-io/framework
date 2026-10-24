@@ -87,6 +87,8 @@ class RouteBuilder extends AbstractBuilder
             'rule' => $rule,
             'normalized' => $rule,
             'redirect' => $redirect,
+            'group' => $route->getGroup(),
+            'caption' => $route->getCaption(),
             'translation' => $translated,
             'error' => $route->getError(),
             'exact' => $route->isExact()
@@ -130,6 +132,8 @@ class RouteBuilder extends AbstractBuilder
             'rule' => $normalized,
             'normalized' => $rule,
             'redirect' => $redirect,
+            'group' => $route->getGroup(),
+            'caption' => $route->getCaption(),
             'translation' => $translated,
             'error' => $route->getError(),
             'exact' => $route->isExact()
