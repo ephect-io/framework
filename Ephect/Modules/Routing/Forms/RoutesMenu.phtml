@@ -1,0 +1,17 @@
+<?php
+
+namespace  Ephect\Modules\Routing\Forms;
+
+use function Ephect\Modules\Routing\Hooks\useRoutes;
+
+function RoutesMenu(): string
+{
+    $routes = useRoutes();
+    return (<<< HTML
+        <ul>
+        @for %routes as %key => %value do
+            <li ><a href="{{ value }}">{{ key }}</a></li>
+        @done
+        </ul>
+    HTML);
+}
