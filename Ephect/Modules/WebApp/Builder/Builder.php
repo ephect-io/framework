@@ -164,7 +164,19 @@ class Builder
         }
     }
 
-    public function buildAnyByName(array $pageNames): void
+    public function buildPageByNames(array $pageNames): void
+    {
+        (new BuildByNameStrategy())->build('App');
+        // TODO: check if it works
+        $this->routes = $pageNames;
+
+        $buildByRoute = new BuildByNameStrategy();
+        foreach ($this->routes as $route) {
+            $buildByRoute->build($route);
+        }
+    }
+
+    public function buildByAnyName(array $pageNames): void
     {
         $this->prepareRoutedComponents();
         // $this->routes = RouterService::findRouteNames();
