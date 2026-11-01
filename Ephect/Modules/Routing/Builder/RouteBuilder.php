@@ -65,7 +65,7 @@ class RouteBuilder extends AbstractBuilder
         }
 
         if ($translated === $rule && $translated !== '/') {
-            $re = '/(\W*)(\w+)(.*)/m';
+            $re = '/(\W*)([\W\w]+)(.*)/m';
             $subst = '/$2';
 
             $translated = preg_replace($re, $subst, $rule);
