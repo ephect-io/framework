@@ -4,5 +4,5 @@ namespace Ephect\Modules\WebApp\Builder\Strategy;
 
 interface BuiderStrategyInterface
 {
-    public function build(string $route): void;
+    public function build(array|string|null $routeItem): void;
 }

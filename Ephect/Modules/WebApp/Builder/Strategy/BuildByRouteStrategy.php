@@ -15,7 +15,7 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
     /**
      * @throws Exception
      */
-    public function build($route = 'Default'): void
+    public function build(array|string|null $routeItem = 'Default'): void
     {
         // TODO: check if it works
         //        $fqRouteParts = explode('\\', $route);
@@ -23,19 +23,23 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
 
         $port = trim(File::safeRead(\Constants::CONFIG_DIR . 'dev_port') ?? '80');
 
-        if ($route === 'App') {
+        if ($routeItem === 'App') {
             return;
         }
+        //TODO 
 
-        $queryString = $route === 'Default' ? '/' : RouterService::findRouteQueryString($route);
+        $queryString = $routeItem === 'Default' ? '/' : RouterService::findRouteQueryString($routeItem);
         if ($queryString === null) {
             return;
         }
 
-        $filename = "$route.html";
-        $outputFilename = "$route.out";
+        $routeEntry = (object)$routeItem;
+        $page = $routeEntry->redirect;
+      
+        $filename = "$page.html";
+        $outputFilename = "$page.out";
 
-        Console::write("Compiling %s, ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
+        Console::write("Compiling %s, ", ConsoleColors::getColoredString($page, ConsoleColors::LIGHT_CYAN));
         Console::write("requesting %s ... ", ConsoleColors::getColoredString(
             \Constants::CONFIG_HOSTNAME . ":$port" . $queryString,
             ConsoleColors::LIGHT_GREEN

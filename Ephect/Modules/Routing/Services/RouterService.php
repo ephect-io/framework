@@ -73,11 +73,17 @@ class RouterService implements RouterServiceInterface
 
         $allroutes = $routes['GET'];
 
+        /**
+         * TOFO: return the translated url also 
+         */
         $result = array_map(function ($item) {
-            return $item['redirect'];
+            return [
+                'redirect' => $item['redirect'],
+                'translate' => $item['translate'],
+            ];
         }, $allroutes);
 
-        return array_unique($result);
+        return $result;
     }
 
     public static function findRouteByQueryString(string $query): ?string
@@ -99,20 +105,22 @@ class RouterService implements RouterServiceInterface
 
         sort($allroutes);
 
-        $finalRoute = (object)$allroutes[0];
-
         $result = $finalRoute->redirect;
 
         return $result;
     }
 
-    public static function findRouteQueryString(string $route): ?string
+    public static function findRouteQueryString(array $routeItem): ?string
     {
         $routes = RouteRegistry::items();
         if (count($routes) === 0) {
             $routes = RouteRegistry::getCachedRoutes();
         }
 
+        $routeObject = (object)$routeItem;
+
+        $route = $routeObject->redirect;
+      
         $routeParts = explode('\\', $route);
         if (count($routeParts) > 0) {
             $route = array_pop($routeParts);

@@ -59,9 +59,9 @@ class Text
 
         $duration = $timeEnd - $timeStart;
 
-        $utime = sprintf('%.3f', $duration);
+        $utime = sprintf('%5.5f', $duration);
         $rawTime = \DateTime::createFromFormat('u.u', $utime);
-        $duration = substr($rawTime->format('u'), 0, 3);
+        $duration = substr($rawTime->format('u'), 0, 10);
 
         return $duration;
     }

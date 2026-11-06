@@ -159,8 +159,9 @@ class Builder
         $this->routes = RouterService::findRouteNames();
 
         $buildByRoute = new BuildByNameStrategy();
-        foreach ($this->routes as $route) {
-            $buildByRoute->build($route);
+        foreach ($this->routes as $item) {
+            $route = (object)$item;
+            $buildByRoute->build($route->redirect);
         }
     }
 

@@ -14,14 +14,19 @@ use Throwable;
 
 class BuildByNameStrategy implements BuiderStrategyInterface
 {
-    public function build(string $route): void
+    public function build(array|string|null $routeItem): void
     {
         PluginRegistry::load();
 
-        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($route, ConsoleColors::LIGHT_CYAN));
-        Console::getLogger()->info("Compiling %s ... ", $route);
+        $page = $routeItem;
+        if(is_array($routeItem)) {
+            $page = (object)$routeItem->redirect;
+        }
 
-        $comp = new Component($route);
+        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($page, ConsoleColors::LIGHT_CYAN));
+        Console::getLogger()->info("Compiling %s ... ", $page);
+
+        $comp = new Component($page);
         $filename = $comp->getFlattenSourceFilename();
 
         $html = '';
@@ -30,7 +35,7 @@ class BuildByNameStrategy implements BuiderStrategyInterface
         try {
             $time_start = microtime(true);
 
-            $functionArgs = $route === 'App' ? [] : RouterService::findRouteArguments($route);
+            $functionArgs = $page === 'App' ? [] : RouterService::findRouteArguments($page);
 
             ob_start();
             $comp->render($functionArgs);

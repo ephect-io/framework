@@ -9,7 +9,7 @@ interface RouterServiceInterface
 {
     public static function findRouteArguments(string $route): ?array;
 
-    public static function findRouteQueryString(string $route): ?string;
+    public static function findRouteQueryString(array $item): ?string;
 
     public function findRoute(string &$html): void;
 

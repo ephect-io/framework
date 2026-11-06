@@ -79,9 +79,9 @@ class RoutesFinder implements FinderInterface
             }
 
         }
-        RouteRegistry::write('routes', $getRoutes);
+        // RouteRegistry::write('routes', $getRoutes);
 
-        RouteRegistry::save();
+        // RouteRegistry::save();
 
         return $router;
     }

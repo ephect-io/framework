@@ -10,7 +10,7 @@ function RoutesMenu(): string
     return (<<< HTML
         <ul>
         @for %routes as %route do
-            @op %props = (object)%route;
+            @op %props = (object)%route
             <li ><a href="{{ props->url }}">{{ props->caption }}</a></li>
         @done
         </ul>
