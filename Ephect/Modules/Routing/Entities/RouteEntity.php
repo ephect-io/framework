@@ -19,7 +19,7 @@ class RouteEntity extends Entity implements RouteInterface
     private ?string $group = null;
     private ?string $caption = null;
     private int $error = 0;
-    private bool $exact = false;
+    private bool $exact = true;
     private array $middlewares = [];
 
     public function __construct(RouteStructure $struct)
@@ -34,7 +34,7 @@ class RouteEntity extends Entity implements RouteInterface
         $this->group = $struct->group ?? 'User';
         $this->caption = $struct->caption ?? $this->redirect;
         $this->error = (int)$struct->error;
-        $this->exact = $struct->exact !== 'true' ?: true;
+        $this->exact = $struct->exact == 'true';
         $this->middlewares = $struct->middlewares;
     }
 

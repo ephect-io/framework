@@ -15,6 +15,6 @@ class RouteStructure extends Structure
     public ?string $group = null;
     public ?string $caption = null;
     public string $error = '';
-    public string $exact = '';
+    public string $exact = 'true';
     public array $middlewares = [];
 }

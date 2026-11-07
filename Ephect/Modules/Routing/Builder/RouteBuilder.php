@@ -91,7 +91,7 @@ class RouteBuilder extends AbstractBuilder
             'caption' => $route->getCaption(),
             'translation' => $translated,
             'error' => $route->getError(),
-            'exact' => $route->isExact()
+            'exact' => $route->isExact() ? 'true' : 'false'
         ]);
 
         return new RouteEntity($struct);
@@ -136,7 +136,7 @@ class RouteBuilder extends AbstractBuilder
             'caption' => $route->getCaption(),
             'translation' => $translated,
             'error' => $route->getError(),
-            'exact' => $route->isExact()
+            'exact' => $route->isExact() ? 'true' : 'false'
         ]);
 
         return new RouteEntity($struct);
