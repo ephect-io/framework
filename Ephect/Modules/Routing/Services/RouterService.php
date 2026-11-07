@@ -23,18 +23,15 @@ class RouterService implements RouterServiceInterface
         PageRegistry::load();
     }
 
-    public static function findRouteArguments(string $route): ?array
+    public static function findRouteArguments(array $routeItem): ?array
     {
         $result = [];
+
+        $entry = (object)$routeItem;
 
         $routes = RouteRegistry::items();
         if (count($routes) === 0) {
             $routes = RouteRegistry::getCachedRoutes();
-        }
-
-        $routeParts = explode('\\', $route);
-        if (count($routeParts) > 0) {
-            $route = array_pop($routeParts);
         }
 
         $allroutes = [];
@@ -43,8 +40,14 @@ class RouterService implements RouterServiceInterface
             $allroutes = array_merge($allroutes, $rules);
         }
 
-        $allroutes = array_filter($allroutes, function ($item) use ($route) {
-            return $item['redirect'] == $route && $item['translate'] != '';
+        $dummy = '';
+        if($entry->redirect === 'Hello' ) {
+            $dummy = 'Hello';
+        }
+
+
+        $allroutes = array_filter($allroutes, function ($item) use ($entry) {
+            return $item['redirect'] == $entry->redirect && $item['translate'] == $entry->translate;
         });
 
         if (count($allroutes) === 0) {
@@ -86,30 +89,6 @@ class RouterService implements RouterServiceInterface
         return $result;
     }
 
-    public static function findRouteByQueryString(string $query): ?string
-    {
-        $routes = RouteRegistry::items();
-        if (count($routes) === 0) {
-            $routes = RouteRegistry::getCachedRoutes();
-        }
-
-        $allroutes = $routes['GET'];
-
-        $allroutes = array_filter($allroutes, function ($item) use ($query) {
-            return $item['translate'] == $query;
-        });
-
-        if (count($allroutes) === 0) {
-            return null;
-        }
-
-        sort($allroutes);
-
-        $result = $finalRoute->redirect;
-
-        return $result;
-    }
-
     public static function findRouteQueryString(array $routeItem): ?string
     {
         $routes = RouteRegistry::items();
@@ -117,19 +96,13 @@ class RouterService implements RouterServiceInterface
             $routes = RouteRegistry::getCachedRoutes();
         }
 
-        $routeObject = (object)$routeItem;
+        $entry = (object)$routeItem;
 
-        $route = $routeObject->redirect;
-      
-        $routeParts = explode('\\', $route);
-        if (count($routeParts) > 0) {
-            $route = array_pop($routeParts);
-        }
 
         $allroutes = $routes['GET'];
 
-        $allroutes = array_filter($allroutes, function ($item) use ($route) {
-            return $item['redirect'] == $route && $item['translate'] != '';
+        $allroutes = array_filter($allroutes, function ($item) use ($entry) {
+            return $item['redirect'] == $entry->redirect && $item['translate'] == $entry->translate;
         });
 
         if (count($allroutes) === 0) {

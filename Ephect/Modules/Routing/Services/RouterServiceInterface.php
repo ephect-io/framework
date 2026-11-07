@@ -7,7 +7,7 @@ use Ephect\Modules\Routing\Entities\RouteEntity;
 
 interface RouterServiceInterface
 {
-    public static function findRouteArguments(string $route): ?array;
+    public static function findRouteArguments(array $routeItem): ?array;
 
     public static function findRouteQueryString(array $item): ?string;
 

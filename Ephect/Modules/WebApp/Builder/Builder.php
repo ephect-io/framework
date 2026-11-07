@@ -160,8 +160,7 @@ class Builder
 
         $buildByRoute = new BuildByNameStrategy();
         foreach ($this->routes as $item) {
-            $route = (object)$item;
-            $buildByRoute->build($route->redirect);
+            $buildByRoute->build($item);
         }
     }
 

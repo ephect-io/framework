@@ -20,7 +20,7 @@ class BuildByNameStrategy implements BuiderStrategyInterface
 
         $page = $routeItem;
         if(is_array($routeItem)) {
-            $page = (object)$routeItem->redirect;
+            $page = ((object)$routeItem)->redirect;
         }
 
         Console::write("Compiling %s ... ", ConsoleColors::getColoredString($page, ConsoleColors::LIGHT_CYAN));
@@ -35,7 +35,7 @@ class BuildByNameStrategy implements BuiderStrategyInterface
         try {
             $time_start = microtime(true);
 
-            $functionArgs = $page === 'App' ? [] : RouterService::findRouteArguments($page);
+            $functionArgs = $page === 'App' ? [] : RouterService::findRouteArguments($routeItem);
 
             ob_start();
             $comp->render($functionArgs);
