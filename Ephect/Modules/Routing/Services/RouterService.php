@@ -40,23 +40,29 @@ class RouterService implements RouterServiceInterface
             $allroutes = array_merge($allroutes, $rules);
         }
 
-        $dummy = '';
-        if($entry->redirect === 'Hello' ) {
-            $dummy = 'Hello';
+        $sameRoutes = array_filter($allroutes, function ($item) use ($entry) {
+            return $item['redirect'] == $entry->redirect && $item['translate'] != '';
+        });
+
+        $complexRoutes = array_filter($sameRoutes, function ($item)  {
+            return $item['rule'] != $item['translate'];
+        });
+
+        $actualRoutes = $sameRoutes;
+        if(count($complexRoutes) > 0) {
+            $actualRoutes = $complexRoutes;
         }
 
-
-        $allroutes = array_filter($allroutes, function ($item) use ($entry) {
+        $finalRoutes = array_filter($actualRoutes, function ($item) use ($entry) {
             return $item['redirect'] == $entry->redirect && $item['translate'] == $entry->translate;
         });
 
-        if (count($allroutes) === 0) {
+        if (count($finalRoutes) === 0) {
             return null;
         }
 
-        sort($allroutes);
-
-        $query = parse_url('https://localhost' . $allroutes[0]['translate'], PHP_URL_QUERY);
+        $finalRoute = (object)array_shift($finalRoutes);
+        $query = parse_url('https://localhost' . $finalRoute->translate, PHP_URL_QUERY);
 
         if ($query === null || $query === false) {
             return null;
@@ -101,17 +107,28 @@ class RouterService implements RouterServiceInterface
 
         $allroutes = $routes['GET'];
 
-        $allroutes = array_filter($allroutes, function ($item) use ($entry) {
+        $sameRoutes = array_filter($allroutes, function ($item) use ($entry) {
+            return $item['redirect'] == $entry->redirect && $item['translate'] != '';
+        });
+
+        $complexRoutes = array_filter($sameRoutes, function ($item)  {
+            return $item['rule'] != $item['translate'];
+        });
+
+        $actualRoutes = $sameRoutes;
+        if(count($complexRoutes) > 0) {
+            $actualRoutes = $complexRoutes;
+        }
+
+        $finalRoutes = array_filter($actualRoutes, function ($item) use ($entry) {
             return $item['redirect'] == $entry->redirect && $item['translate'] == $entry->translate;
         });
 
-        if (count($allroutes) === 0) {
+        if (count($finalRoutes) === 0) {
             return null;
         }
 
-        sort($allroutes);
-
-        $finalRoute = (object)$allroutes[0];
+        $finalRoute = (object)array_shift($finalRoutes);
         if ($finalRoute->rule === $finalRoute->normal) {
             $queryString = str_replace("\\", "", $finalRoute->translate);
 
