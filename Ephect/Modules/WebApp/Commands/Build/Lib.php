@@ -41,7 +41,7 @@ class Lib extends AbstractCommandLib
 
         $duration = Text::durationFromToString($time_start);
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration . " s", ConsoleColors::RED));
     }
         
     public function build(): void
@@ -55,6 +55,6 @@ class Lib extends AbstractCommandLib
 
         Console::write("%s ... ", ConsoleColors::getColoredString("Built pages and components within", ConsoleColors::LIGHT_CYAN));
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration . " s", ConsoleColors::RED));
     }
 }

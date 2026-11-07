@@ -6,6 +6,7 @@ use DateTime;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Utils\File;
+use Ephect\Framework\Utils\Text;
 use Ephect\Framework\Web\Curl;
 use Ephect\Modules\Routing\Services\RouterService;
 use Exception;
@@ -65,14 +66,8 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $curl->request(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
         ob_get_clean();
 
-        $time_end = microtime(true);
+        $duration = Text::durationFromToString($time_start);
 
-        $duration = $time_end - $time_start;
-
-        $utime = sprintf('%.3f', $duration);
-        $raw_time = DateTime::createFromFormat('u.u', $utime);
-        $duration = substr($raw_time->format('u'), 0, 3);
-
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration . " s", ConsoleColors::RED));
     }
 }

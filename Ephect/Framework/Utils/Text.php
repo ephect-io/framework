@@ -55,15 +55,9 @@ class Text
 
     public static function durationFromToString(float $timeStart): string
     {
-        $timeEnd = microtime(true);
+        $duration = microtime(true) - $timeStart;
 
-        $duration = $timeEnd - $timeStart;
-
-        $utime = sprintf('%5.5f', $duration);
-        $rawTime = \DateTime::createFromFormat('u.u', $utime);
-        $duration = substr($rawTime->format('u'), 0, 10);
-
-        return $duration;
+        return sprintf('%.3f', $duration);
     }
 
     public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string
