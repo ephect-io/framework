@@ -39,9 +39,9 @@ class Lib extends AbstractCommandLib
         $service = new BuildService();
         $this->builder = $service->build();
 
-        $duration = Text::durationFromToString($time_start);
+        $duration = Text::durationFromToString($time_start, true);
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration . " s", ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
     }
         
     public function build(): void
@@ -51,10 +51,10 @@ class Lib extends AbstractCommandLib
 
         $this->builder->buildAllRoutes();
 
-        $duration = Text::durationFromToString($time_start);
+        $duration = Text::durationFromToString($time_start, true);
 
         Console::write("%s ... ", ConsoleColors::getColoredString("Built pages and components within", ConsoleColors::LIGHT_CYAN));
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration . " s", ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
     }
 }

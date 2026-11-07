@@ -66,8 +66,8 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $curl->request(\Constants::CONFIG_HOSTNAME . ":$port" . $queryString, $headers);
         ob_get_clean();
 
-        $duration = Text::durationFromToString($time_start);
+        $duration = Text::durationFromToString($time_start, true);
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration . " s", ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
     }
 }

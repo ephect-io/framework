@@ -53,11 +53,15 @@ class Text
         return $result;
     }
 
-    public static function durationFromToString(float $timeStart): string
+    public static function durationFromToString(float $timeStart, bool $addMeasure = false): string
     {
         $duration = microtime(true) - $timeStart;
 
-        return sprintf('%.3f', $duration);
+        $measure = $duration < 1 ? 'ms' : 's';
+        $format = $duration < 1 ? '%d %s' : '%.3f %s';
+        $duration = $duration < 1 ? $duration * 1000 : $duration;
+
+        return sprintf($format, $duration, $addMeasure ? $measure : '');
     }
 
     public static function jsonToPhpReturnedArray(string|array $json, bool $prettify = true): string

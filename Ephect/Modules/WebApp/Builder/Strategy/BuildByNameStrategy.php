@@ -41,9 +41,9 @@ class BuildByNameStrategy implements BuiderStrategyInterface
             $comp->render($functionArgs);
             $html = ob_get_clean();
 
-            $duration = Text::durationFromToString($time_start);
+            $duration = Text::durationFromToString($time_start, true);
 
-            Console::writeLine("%s", ConsoleColors::getColoredString($duration . "ms", ConsoleColors::RED));
+            Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
         } catch (Throwable $ex) {
             $error = Console::formatException($ex);
         }
