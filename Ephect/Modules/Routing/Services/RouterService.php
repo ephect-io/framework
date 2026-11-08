@@ -48,12 +48,7 @@ class RouterService implements RouterServiceInterface
             return $item['rule'] != $item['translate'];
         });
 
-        $actualRoutes = $sameRoutes;
-        if(count($complexRoutes) > 0) {
-            $actualRoutes = $complexRoutes;
-        }
-
-        $finalRoutes = array_filter($actualRoutes, function ($item) use ($entry) {
+        $finalRoutes = array_filter(count($complexRoutes) > 0 ? $complexRoutes : $sameRoutes, function ($item) use ($entry) {
             return $item['redirect'] == $entry->redirect && $item['translate'] == $entry->translate;
         });
 
@@ -80,17 +75,12 @@ class RouterService implements RouterServiceInterface
             $routes = RouteRegistry::getCachedRoutes();
         }
 
-        $allroutes = $routes['GET'];
-
-        /**
-         * TOFO: return the translated url also 
-         */
         $result = array_map(function ($item) {
             return [
                 'redirect' => $item['redirect'],
                 'translate' => $item['translate'],
             ];
-        }, $allroutes);
+        }, $routes['GET']);
 
         return $result;
     }
@@ -104,10 +94,7 @@ class RouterService implements RouterServiceInterface
 
         $entry = (object)$routeItem;
 
-
-        $allroutes = $routes['GET'];
-
-        $sameRoutes = array_filter($allroutes, function ($item) use ($entry) {
+        $sameRoutes = array_filter($routes['GET'], function ($item) use ($entry) {
             return $item['redirect'] == $entry->redirect && $item['translate'] != '';
         });
 
@@ -115,12 +102,7 @@ class RouterService implements RouterServiceInterface
             return $item['rule'] != $item['translate'];
         });
 
-        $actualRoutes = $sameRoutes;
-        if(count($complexRoutes) > 0) {
-            $actualRoutes = $complexRoutes;
-        }
-
-        $finalRoutes = array_filter($actualRoutes, function ($item) use ($entry) {
+        $finalRoutes = array_filter(count($complexRoutes) > 0 ? $complexRoutes : $sameRoutes, function ($item) use ($entry) {
             return $item['redirect'] == $entry->redirect && $item['translate'] == $entry->translate;
         });
 
