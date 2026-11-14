@@ -3,6 +3,7 @@
 namespace Ephect\Hooks;
 
 use Ephect\Framework\Event\Event;
+use Ephect\Framework\Registry\MemoryRegistry;
 
 function useEventDispatcher(Event $event): void
 {
