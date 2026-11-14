@@ -31,6 +31,9 @@ class Bootstrap implements ModuleBootstrapInterface
             ComponentAttributesEvent::class => [
                 ComponentAttributesListener::class,
             ],
+            ComponentReflectedEvent::class => [
+                Listeners\ComponentReflectedListener::class,
+            ],
         ]);
 
         $eventProvider->register();
