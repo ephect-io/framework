@@ -6,7 +6,10 @@ use Ephect\Framework\Crypto\Crypto;
 use Ephect\Framework\ElementUtils;
 use Ephect\Modules\Forms\Components\ComponentDeclarationStructure;
 use Ephect\Modules\Forms\Components\ComponentInterface;
+use Ephect\Modules\Forms\Events\ComponentReflectedEvent;
 use Ephect\Modules\Forms\Registry\ComponentRegistry;
+
+use function Ephect\Hooks\useEventDispatcher;
 
 class ComponentParser extends Parser implements ParserInterface
 {
@@ -31,7 +34,7 @@ class ComponentParser extends Parser implements ParserInterface
     {
         $fqFuncName = $this->component->getFullyQualifiedFunction();
         $filename = ComponentRegistry::read($fqFuncName);
-        $sourceDir = \Constants::UNIQUE_DIR;
+        $sourceDir = \Constants::COPY_DIR;
 
         [
             $namespace,
@@ -64,6 +67,10 @@ class ComponentParser extends Parser implements ParserInterface
                 'arguments' => $attribute->getArguments(),
             ];
         }, $refAttributes);
+
+        $event = new ComponentReflectedEvent($this->component, '', $fqFuncName, (object)$attributes, $refReturnType?->getName());
+
+        useEventDispatcher($event);
 
         return [$arguments, $attributes, $refReturnType?->getName()];
     }

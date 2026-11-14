@@ -7,7 +7,7 @@ use Ephect\Modules\Http\Transport\Request;
 use ReflectionFunction;
 use stdClass;
 
-use function Ephect\Hooks\useEvents;
+use function Ephect\Hooks\useEventDispatcher;
 
 class ComponentRenderer
 {
@@ -60,10 +60,8 @@ class ComponentRenderer
             $html = ob_get_clean();
         }
 
-        $finishedEvent = new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props, $html);
-        [$eventDispatcher] = useEvents(get: 'eventDispatcher');
-        $eventDispatcher->dispatch($finishedEvent);
-
+        useEventDispatcher(new PageFinishedEvent($motherUID, $cacheFilename, $fqFunctionName, $props, $html));
+        
         // File::safeWrite(\Constants::STATIC_DIR . $filename, $html);
 
         return $html;

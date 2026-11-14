@@ -2,11 +2,8 @@
 
 namespace Ephect\Modules\Forms\Events;
 
-use Ephect\Framework\ElementInterface;
 use Ephect\Framework\Event\Event;
-use Ephect\Modules\Forms\Components\ComponentDeclarationInterface;
 use Ephect\Modules\Forms\Components\ComponentInterface;
-use Ephect\Modules\Forms\Generators\TokenParsers\AbstractComponentParser;
 
 class ComponentReflectedEvent extends Event
 {
@@ -24,7 +21,7 @@ class ComponentReflectedEvent extends Event
         return $this->cacheFilename;
     }
 
-    public function getComponent(): string
+    public function getComponent(): ComponentInterface
     {
         return $this->component;
     }

@@ -24,7 +24,7 @@ use Exception;
 use Ephect\Modules\Forms\Generators\ParserService;
 use ReflectionException;
 
-use function Ephect\Hooks\useEvents;
+use function Ephect\Hooks\useEventDispatcher;
 
 abstract class ApplicationComponent extends Tree implements FileComponentInterface
 {
@@ -272,9 +272,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
 
         if ($motherUID !== $component->getUID()) {
             Logger::create()->info("Component %s is finished, dispatching event.", $component->getUID());
-            $finishedEvent = new ComponentFinishedEvent($component, $cacheFilename);
-            [$eventDispatcher] = useEvents(get: 'eventDispatcher');
-            $eventDispatcher->dispatch($finishedEvent);
+            useEventDispatcher(new ComponentFinishedEvent($component, $cacheFilename));
         }
 
         return [$fqFunctionName, $cacheFilename];
