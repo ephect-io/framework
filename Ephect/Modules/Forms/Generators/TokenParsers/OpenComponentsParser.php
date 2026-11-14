@@ -146,10 +146,11 @@ PHP;
             $decl = ComponentDeclaration::byName($fqComponentName);
             $this->declareMiddlewares($motherUID, $parent, $decl, $fqComponentName, $props);
             /**
-             * TODO Make a listener for this feature
-             * $attributesEvent = new ComponentAttributesEvent($this->component, $item);
-             * $dispatcher = new EventDispatcher();
-             * $dispatcher->dispatch($attributesEvent);
+             * TODO: make sure this feature works
+             * useEventDispatcher(new ComponentAttributesEvent($this->component, $item));
+             * 
+             * use ComponentReflectedEvent to get the component's body and props
+             * then dispatch the updated body in return.
              */
 
             $previous = $item;

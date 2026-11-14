@@ -93,10 +93,11 @@ final class ClosedComponentsParser extends AbstractComponentParser
             $this->result[] = $componentName;
 
             /**
-             * TODO Make a listener for this feature
-             * $attributesEvent = new ComponentAttributesEvent($this->component, $child);
-             * $dispatcher = new EventDispatcher();
-             * $dispatcher->dispatch($attributesEvent);
+             * TODO: make sure this feature works
+             * useEventDispatcher(new ComponentAttributesEvent($this->component, $child));
+             *
+             * use ComponentReflectedEvent to get the component's body and props
+             * then dispatch the updated body in return.
              */
         };
 
