@@ -9,16 +9,11 @@ class ComponentReflectedEvent extends Event
 {
     public function __construct(
         private readonly ComponentInterface $component,
-        private readonly string $cacheFilename,
         private readonly string $componentName,
-        private readonly ?object $props,
+        private readonly array $attributes,
+        private readonly array $parameters,
         private readonly string $html = ''
     ) {
-    }
-
-    public function getCacheFilename(): string
-    {
-        return $this->cacheFilename;
     }
 
     public function getComponent(): ComponentInterface
@@ -31,14 +26,19 @@ class ComponentReflectedEvent extends Event
         return $this->componentName;
     }
 
-    public function getProps(): ?object
+    public function getAttributes(): array
     {
-        return $this->props;
+        return $this->attributes;
+    }
+
+    public function getParameters(): array
+    {
+        return $this->parameters;
     }
 
     public function getHtml(): string
     {
-        return $this->html;
+        return $this->component->getCode();
     }
   
 }
