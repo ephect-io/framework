@@ -68,7 +68,7 @@ class ComponentParser extends Parser implements ParserInterface
             ];
         }, $refAttributes);
 
-        useEventDispatcher(new ComponentReflectedEvent($this->component, '', $attributes, (object)$refParameters, $refReturnType?->getName()));
+        useEventDispatcher(new ComponentReflectedEvent($this->component, '', $attributes, $refParameters, $refReturnType?->getName()));
 
         return [$arguments, $attributes, $refReturnType?->getName()];
     }
