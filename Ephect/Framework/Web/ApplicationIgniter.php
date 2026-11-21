@@ -1,4 +1,4 @@
-<?php
+file:///data/user/0/com.foxdebug.acode/files/public/Sites/Acode/framework/Ephect/Framework/Web/ApplicationIgniter.php<?php
 
 namespace Ephect\Framework\Web;
 
@@ -6,10 +6,12 @@ use Ephect\Framework\Middlewares\ApplicationStateMiddlewareInterface;
 
 use function Ephect\Hooks\useState;
 
-class ApplicationIgniter
+class ApplicationIgniter(private string $motherUID)
 {
     public function ignite(): void
     {
+        // TODO: collect the components of the current page by its $motherUID 
+        // and set them in events
         [$middlewares] = useState(get: 'middlewares');
 
         if ($middlewares === null) {

@@ -226,7 +226,7 @@ abstract class ApplicationComponent extends Tree implements FileComponentInterfa
         if ($this->motherUID == $this->uid && $this->id !== 'App') {
             StateRegistry::loadByMotherUid($this->motherUID, true);
             //            StateRegistry::load(true);
-            $stateIgniter = new ApplicationIgniter();
+            $stateIgniter = new ApplicationIgniter($this->motherUID);
             $stateIgniter->ignite();
         }
 
