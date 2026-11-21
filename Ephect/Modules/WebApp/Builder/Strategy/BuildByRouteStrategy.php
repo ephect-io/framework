@@ -29,6 +29,7 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         }
         //TODO 
 
+        Console::writeLine("RouteItem: %s", $routeItem);
         $queryString = $routeItem === 'Default' ? '/' : RouterService::findRouteQueryString($routeItem);
         if ($queryString === null) {
             return;

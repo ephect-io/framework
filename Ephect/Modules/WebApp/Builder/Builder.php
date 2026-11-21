@@ -1,5 +1,4 @@
 <?php
-
 namespace Ephect\Modules\WebApp\Builder;
 
 use Ephect\Framework\Modules\ModuleInstaller;
@@ -144,8 +143,12 @@ class Builder
     {
         (new BuildByNameStrategy())->build('App');
         // TODO: check if it works
-        $this->routes = $routeNames;
 
+        $routes = RouterService::findRouteNames();
+        $this->routes = array_filter($routes, function($route) use ($routeNames) {
+            return in_array($route['redirect'], $routeNames);
+        });        
+      
         $buildByRoute = new BuildByRouteStrategy();
         foreach ($this->routes as $route) {
             $buildByRoute->build($route);
