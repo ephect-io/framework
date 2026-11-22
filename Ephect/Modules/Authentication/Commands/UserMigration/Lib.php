@@ -11,7 +11,7 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 use Ephect\Framework\CLI\Application;
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleOptions;
 use Ephect\Modules\DoctrineBridge\DBAL\Connection;
 use Ephect\Modules\DoctrineBridge\ORM\MetadataConfig;
 use Exception;
@@ -88,7 +88,7 @@ class Lib extends AbstractCommandLib
             }   
 
         } catch (Exception|Throwable $exception) {
-            Console::error($exception, ConsoleOptionsEnum::ErrorMessageOnly);
+            Console::error($exception, ConsoleOptions::ErrorMessageOnly);
         }
     }
 

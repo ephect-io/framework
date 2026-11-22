@@ -3,8 +3,7 @@
 namespace Ephect\Framework\Core;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleColors;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 
@@ -252,9 +251,9 @@ class ConstantsMaker
     {
         foreach ($this->constants as $key => $value) {
             Console::writeLine(
-                ConsoleColors::getColoredString($key, ConsoleColorsEnum::CYAN)
+                Console::getColoredString($key, ConsoleColors::CYAN)
                 . ' => '
-                . ConsoleColors::getColoredString($value, ConsoleColorsEnum::BLUE)
+                . Console::getColoredString($value, ConsoleColors::BLUE)
             );
         }
     }

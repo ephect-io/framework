@@ -5,8 +5,7 @@ namespace Ephect\Modules\WebApp\Builder\Strategy;
 use DateTime;
 use Ephect\Framework\Utils\Text;
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleColors;
 use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
 use Ephect\Modules\Routing\Services\RouterService;
@@ -23,7 +22,7 @@ class BuildByNameStrategy implements BuilderStrategyInterface
             $page = ((object)$routeItem)->redirect;
         }
 
-        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($page, ConsoleColorsEnum::LIGHT_CYAN));
+        Console::write("Compiling %s ... ", $page, ConsoleColors::LIGHT_CYAN);
         Console::getLogger()->info("Compiling %s ... ", $page);
 
         $comp = new Component($page);
@@ -43,7 +42,7 @@ class BuildByNameStrategy implements BuilderStrategyInterface
 
             $duration = Text::durationFromToString($time_start, true);
 
-            Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColorsEnum::RED));
+            Console::writeLine("%s", $duration, ConsoleColors::RED);
         } catch (Throwable $ex) {
             $error = Console::formatException($ex);
         }
@@ -52,10 +51,10 @@ class BuildByNameStrategy implements BuilderStrategyInterface
             Console::writeLine(
                 "FATAL ERROR!%s %s",
                 PHP_EOL,
-                ConsoleColors::getColoredString(
+                Console::getColoredString(
                     $error,
-                    ConsoleColorsEnum::WHITE,
-                    ConsoleColorsEnum::BACKGROUND_RED
+                    ConsoleColors::WHITE,
+                    ConsoleColors::BACKGROUND_RED
                 )
             );
         }

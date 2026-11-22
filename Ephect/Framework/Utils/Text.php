@@ -2,6 +2,8 @@
 
 namespace Ephect\Framework\Utils;
 
+use Ephect\Framework\CLI\Console;
+use Ephect\Framework\CLI\Enums\ConsoleColors;
 use ReflectionException;
 use ReflectionFunction;
 use SplFileObject;
@@ -47,16 +49,29 @@ class Text
             $result = print_r($string, true);
         }
         if (count($params) > 0 && count($params[0]) > 0) {
-            $params0 = array_map(function ($param) {
+            $lastItem = end($params[0]);
+            $color = null;
+            $stringToColorize = null;
+            if ($lastItem instanceof ConsoleColors) {
+                $color = $lastItem;
+                array_pop($params[0]);
+                $stringToColorize = array_pop($params[0]);
+            }
+
+            $params[0] = array_map(function ($param) {
                 if (is_object($param)) {
                     return json_encode($param, JSON_PRETTY_PRINT);
                 }
-                if (is_array($param)) {
+                if (is_array($param) && count($param) > 1) {
                     return Text::arrayToString($param, true);
                 }
                 return $param;
             }, $params[0]);
-            $result = vsprintf($string, $params0);
+
+            if (isset($color)) {
+                $params[0][] = Console::getColoredString($stringToColorize, $color);
+            }
+            $result = vsprintf($string, $params[0]);
         }
 
         return $result;

@@ -3,8 +3,7 @@
 namespace Ephect\Modules\Samples\Commands\MakeSkeleton;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleColors;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Modules\Utils;
@@ -17,7 +16,7 @@ class Lib extends AbstractCommandLib
 
         $utils = new Utils(dirname(__DIR__));
 
-        Console::writeLine(ConsoleColors::getColoredString("Publishing QuickStart files...", ConsoleColorsEnum::BLUE));
+        Console::writeLine("Publishing QuickStart files...", ConsoleColors::BLUE);
 
         $sample = $utils->getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Skeleton';
 

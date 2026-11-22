@@ -3,7 +3,6 @@
 namespace Ephect\Commands\ModuleUpdate;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Modules\ModulesConfigReader;
 
@@ -17,27 +16,27 @@ class Lib extends AbstractCommandLib
 
         foreach ($modules as $package => $version) {
             exec("composer require {$package} {$version}", $output, $returnCode);
-            Console::writeLine(ConsoleColors::getColoredString(
+            Console::writeLine(Console::getColoredString(
                 "Installing $package $version",
-                ConsoleColorsEnum::BLUE,
-                ConsoleColorsEnum::WHITE
+                ConsoleColors::BLUE,
+                ConsoleColors::WHITE
             ));
 
             if ($returnCode !== 0) {
                 if ($returnCode !== 0) {
                     foreach ($output as $item) {
-                        Console::writeLine(ConsoleColors::getColoredString(
+                        Console::writeLine(Console::getColoredString(
                             $item,
-                            ConsoleColorsEnum::RED,
-                            ConsoleColorsEnum::WHITE
+                            ConsoleColors::RED,
+                            ConsoleColors::WHITE
                         ));
                     }
                 } else {
                     foreach ($output as $item) {
-                        Console::writeLine(ConsoleColors::getColoredString(
+                        Console::writeLine(Console::getColoredString(
                             $item,
-                            ConsoleColorsEnum::BLUE,
-                            ConsoleColorsEnum::WHITE
+                            ConsoleColors::BLUE,
+                            ConsoleColors::WHITE
                         ));
                     }
                 }
@@ -50,26 +49,26 @@ class Lib extends AbstractCommandLib
 
             $output = [];
             if (file_exists($binScript)) {
-                Console::writeLine(ConsoleColors::getColoredString(
+                Console::writeLine(Console::getColoredString(
                     "Running install script",
-                    ConsoleColorsEnum::BLUE,
-                    ConsoleColorsEnum::WHITE
+                    ConsoleColors::BLUE,
+                    ConsoleColors::WHITE
                 ));
                 exec("$binScript", $output, $returnCode);
                 if ($returnCode !== 0) {
                     foreach ($output as $item) {
-                        Console::writeLine(ConsoleColors::getColoredString(
+                        Console::writeLine(Console::getColoredString(
                             $item,
-                            ConsoleColorsEnum::RED,
-                            ConsoleColorsEnum::WHITE
+                            ConsoleColors::RED,
+                            ConsoleColors::WHITE
                         ));
                     }
                 } else {
                     foreach ($output as $item) {
-                        Console::writeLine(ConsoleColors::getColoredString(
+                        Console::writeLine(Console::getColoredString(
                             $item,
-                            ConsoleColorsEnum::BLUE,
-                            ConsoleColorsEnum::WHITE
+                            ConsoleColors::BLUE,
+                            ConsoleColors::WHITE
                         ));
                     }
                 }

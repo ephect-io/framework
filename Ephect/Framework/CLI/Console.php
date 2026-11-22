@@ -3,7 +3,8 @@
 namespace Ephect\Framework\CLI;
 
 use Constants;
-use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleOptions;
+use Ephect\Framework\CLI\Enums\ConsoleColors;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Utils\Text;
@@ -103,14 +104,14 @@ class Console extends Element
         echo $value . PHP_EOL;
     }
 
-    public static function error(Throwable $ex, ConsoleOptionsEnum $options = ConsoleOptionsEnum::None): void
+    public static function error(Throwable $ex, ConsoleOptions $options = ConsoleOptions::None): void
     {
         if (Constants::IS_WEB_APP) {
             self::getLogger()->error($ex);
             return;
         }
 
-        $message = $options === ConsoleOptionsEnum::ErrorMessageOnly ? $ex->getMessage() : self::formatException($ex);
+        $message = $options === ConsoleOptions::ErrorMessageOnly ? $ex->getMessage() : self::formatException($ex);
         print "\033[41m\033[1;37m" . $message . "\033[0m\033[0m" . PHP_EOL;
     }
 
@@ -127,5 +128,30 @@ class Console extends Element
         $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
 
         return $message;
+    }
+
+    public static function getColoredString(string|array $string, ConsoleColors|null $foreground_color = null, ConsoleColors|null $background_color = null): string
+    {
+        if (is_array($string)) {
+            $string = Text::arrayToString($string, true);
+        }
+
+        $colored_string = "";
+        $suffix = "\033[0m";
+
+        // Check if given foreground color found
+        if (isset($foreground_color)) {
+            $colored_string .= "\033[" . $foreground_color->value() . "m";
+        }
+        // Check if given background color found
+        if (isset($background_color)) {
+            $colored_string = "\033[" . $background_color->value() . "m" . $colored_string;
+            $suffix .= $suffix;
+        }
+
+        // Add string and end coloring
+        $colored_string .= $string . $suffix;
+
+        return $colored_string;
     }
 }

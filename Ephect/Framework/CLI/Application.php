@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\CLI;
 
-use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleOptions;
 use Ephect\Framework\Commands\ApplicationCommands;
 use Ephect\Framework\Commands\CommandOptionsStructure;
 use Ephect\Framework\Commands\CommandRunner;

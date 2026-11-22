@@ -2,7 +2,7 @@
 
 namespace Ephect\Framework\CLI\Enums;
 
-enum ConsoleColorsEnum
+enum ConsoleColors
 {
     case BLACK;
     case DARK_GRAY;
@@ -60,5 +60,6 @@ enum ConsoleColorsEnum
             self::BACKGROUND_LIGHT_GRAY => '47',
         };
     }
+
 
 }

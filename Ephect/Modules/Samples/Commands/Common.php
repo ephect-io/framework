@@ -4,8 +4,7 @@ namespace Ephect\Modules\Samples\Commands;
 
 use Constants;
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleColors;
 use Ephect\Framework\Modules\ModuleManifestEntity;
 use Ephect\Framework\Modules\ModuleManifestReader;
 use Ephect\Framework\Utils\File;
@@ -37,7 +36,7 @@ class Common
     {
         $common = self::getModuleSrcDir() . 'Assets' . DIRECTORY_SEPARATOR . 'Common';
 
-        Console::writeLine(ConsoleColors::getColoredString("Publishing Common files...", ConsoleColorsEnum::BLUE));
+        Console::writeLine("Publishing Common files...", ConsoleColors::BLUE);
 
         $this->publishConfigFiles($common);
         $this->publishAppFiles($common);
@@ -76,8 +75,8 @@ class Common
         }
 
         $tree = File::walkTreeFiltered($srcDir);
-        Console::writeLine(ConsoleColors::getColoredString("Source directory: $srcDir", ConsoleColorsEnum::GREEN));
-        Console::writeLine(ConsoleColors::getColoredString("Destination directory: $destDir", ConsoleColorsEnum::GREEN));
+        Console::writeLine("Source directory: $srcDir", ConsoleColors::GREEN);
+        Console::writeLine("Destination directory: $destDir", ConsoleColors::GREEN);
         foreach ($tree as $filePath) {
             Console::writeLine("Copying file: %s", $filePath);
             File::safeWrite($destDir . $filePath, '');
