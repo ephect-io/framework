@@ -5,6 +5,7 @@ namespace Ephect\Commands\Serve;
 use Ephect\Commands\CommonLib;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Framework\CLI\System\Command;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Utils\File;
@@ -21,8 +22,8 @@ class Lib extends AbstractCommandLib
         $cmd = new Command();
         $php = $cmd->which('php');
 
-        Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColors::RED));
-        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColors::RED));
+        Console::writeLine('PHP is %s', ConsoleColors::getColoredString($php, ConsoleColorsEnum::RED));
+        Console::writeLine('Port is %s', ConsoleColors::getColoredString($port, ConsoleColorsEnum::RED));
         $cmd->execute($php, '-S', "localhost:$port", '-t', \Constants::CONFIG_DOCROOT);
         Console::writeLine("Serving the application locally ...");
     }

@@ -4,6 +4,7 @@ namespace Ephect\Modules\WebApp\Commands\Build;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Framework\Utils\Text;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Modules\WebApp\Builder\Builder;
@@ -22,17 +23,17 @@ class Lib extends AbstractCommandLib
     {
         $application = $this->parent;
 
-        Console::write("%s ... ", ConsoleColors::getColoredString("Clearing runtime and logs", ConsoleColors::LIGHT_CYAN));
+        Console::write("%s ... ", ConsoleColors::getColoredString("Clearing runtime and logs", ConsoleColorsEnum::LIGHT_CYAN));
 
         $application->clearRuntime();
         $application->clearLogs();
 
-        Console::writeLine("%s", ConsoleColors::getColoredString("Done", ConsoleColors::GREEN));
+        Console::writeLine("%s", ConsoleColors::getColoredString("Done", ConsoleColorsEnum::GREEN));
     }
 
     public function register(): void
     {
-        Console::write("%s ... ", ConsoleColors::getColoredString("Registering pages and components", ConsoleColors::LIGHT_CYAN));
+        Console::write("%s ... ", ConsoleColors::getColoredString("Registering pages and components", ConsoleColorsEnum::LIGHT_CYAN));
 
         $time_start = microtime(true);
 
@@ -41,7 +42,7 @@ class Lib extends AbstractCommandLib
 
         $duration = Text::durationFromToString($time_start, true);
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColorsEnum::RED));
     }
         
     public function build(): void
@@ -53,8 +54,8 @@ class Lib extends AbstractCommandLib
 
         $duration = Text::durationFromToString($time_start, true);
 
-        Console::write("%s ... ", ConsoleColors::getColoredString("Built pages and components within", ConsoleColors::LIGHT_CYAN));
+        Console::write("%s ... ", ConsoleColors::getColoredString("Built pages and components within", ConsoleColorsEnum::LIGHT_CYAN));
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColorsEnum::RED));
     }
 }

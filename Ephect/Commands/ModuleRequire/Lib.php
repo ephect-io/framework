@@ -4,6 +4,7 @@ namespace Ephect\Commands\ModuleRequire;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 
 class Lib extends AbstractCommandLib
@@ -14,11 +15,11 @@ class Lib extends AbstractCommandLib
         if ($returnCode !== 0) {
             if ($returnCode !== 0) {
                 foreach ($output as $item) {
-                    Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::RED, ConsoleColors::WHITE));
+                    Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColorsEnum::RED, ConsoleColorsEnum::WHITE));
                 }
             } else {
                 foreach ($output as $item) {
-                    Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::BLUE, ConsoleColors::WHITE));
+                    Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColorsEnum::BLUE, ConsoleColorsEnum::WHITE));
                 }
             }
         }
@@ -30,16 +31,16 @@ class Lib extends AbstractCommandLib
 
         $output = [];
         if (file_exists($binScript)) {
-            Console::writeLine(ConsoleColors::getColoredString("An install script was found", ConsoleColors::BLUE, ConsoleColors::WHITE));
+            Console::writeLine(ConsoleColors::getColoredString("An install script was found", ConsoleColorsEnum::BLUE, ConsoleColorsEnum::WHITE));
             if (Console::readYesOrNo("Do you want to run the script?")) {
                 exec("$binScript", $output, $returnCode);
                 if ($returnCode !== 0) {
                     foreach ($output as $item) {
-                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::RED, ConsoleColors::WHITE));
+                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColorsEnum::RED, ConsoleColorsEnum::WHITE));
                     }
                 } else {
                     foreach ($output as $item) {
-                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColors::BLUE, ConsoleColors::WHITE));
+                        Console::writeLine(ConsoleColors::getColoredString($item, ConsoleColorsEnum::BLUE, ConsoleColorsEnum::WHITE));
                     }
                 }
             }

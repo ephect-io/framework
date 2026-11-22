@@ -4,6 +4,7 @@ namespace Ephect\Commands\MakeCommand;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Commands\Builder;
@@ -14,10 +15,10 @@ class Lib extends AbstractCommandLib
     public function createCommandBase(): void
     {
         try {
-            Console::writeLine(ConsoleColors::getColoredString("Creating a new command.", ConsoleColors::LIGHT_BLUE));
-            Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColors::BLUE));
-            Console::writeLine(ConsoleColors::getColoredString("Leaving the answer blank aborts the process on mandatory questions.", ConsoleColors::BROWN));
-            Console::writeLine(ConsoleColors::getColoredString("Mandatory questions are marked with *.", ConsoleColors::BROWN));
+            Console::writeLine(ConsoleColors::getColoredString("Creating a new command.", ConsoleColorsEnum::LIGHT_BLUE));
+            Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColorsEnum::BLUE));
+            Console::writeLine(ConsoleColors::getColoredString("Leaving the answer blank aborts the process on mandatory questions.", ConsoleColorsEnum::BROWN));
+            Console::writeLine(ConsoleColors::getColoredString("Mandatory questions are marked with *.", ConsoleColorsEnum::BROWN));
 
             $builder = new Builder();
             [$verb, $subject, $description, $methodName, $arguments] = $this->readLine();
@@ -30,9 +31,9 @@ class Lib extends AbstractCommandLib
             $builder->copyTemplates($verb, $subject, $description, $methodName, $arguments, $srcDir, $destDir);
 
             Console::writeLine(
-                ConsoleColors::getColoredString("Command ", ConsoleColors::BLUE)
+                ConsoleColors::getColoredString("Command ", ConsoleColorsEnum::BLUE)
                 . "%s"
-                . ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE),
+                . ConsoleColors::getColoredString(" is available in:", ConsoleColorsEnum::BLUE),
                 $commandName
             );
             Console::writeLine("%s", $destDir);
@@ -89,7 +90,7 @@ class Lib extends AbstractCommandLib
         while ($next) {
             $arg = Console::readLine("Argument $argIndex: ");
             if (trim($arg) == '') {
-                Console::writeLine(ConsoleColors::getColoredString("Ending command arguments list", ConsoleColors::LIGHT_BLUE));
+                Console::writeLine(ConsoleColors::getColoredString("Ending command arguments list", ConsoleColorsEnum::LIGHT_BLUE));
                 $next = false;
                 continue;
             }

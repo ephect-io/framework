@@ -4,6 +4,7 @@ namespace Ephect\Modules\Samples\Commands\MakeQuickStart;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Modules\Utils;
@@ -13,7 +14,7 @@ class Lib extends AbstractCommandLib
 {
     public function createQuickstart(): void
     {
-        Console::writeLine(ConsoleColors::getColoredString("Publishing Skeleton files...", ConsoleColors::BLUE));
+        Console::writeLine(ConsoleColors::getColoredString("Publishing Skeleton files...", ConsoleColorsEnum::BLUE));
 
         $utils = new Utils(dirname(__DIR__));
 

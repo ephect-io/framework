@@ -19,8 +19,8 @@ class Lib extends AbstractCommandLib
             exec("composer require {$package} {$version}", $output, $returnCode);
             Console::writeLine(ConsoleColors::getColoredString(
                 "Installing $package $version",
-                ConsoleColors::BLUE,
-                ConsoleColors::WHITE
+                ConsoleColorsEnum::BLUE,
+                ConsoleColorsEnum::WHITE
             ));
 
             if ($returnCode !== 0) {
@@ -28,16 +28,16 @@ class Lib extends AbstractCommandLib
                     foreach ($output as $item) {
                         Console::writeLine(ConsoleColors::getColoredString(
                             $item,
-                            ConsoleColors::RED,
-                            ConsoleColors::WHITE
+                            ConsoleColorsEnum::RED,
+                            ConsoleColorsEnum::WHITE
                         ));
                     }
                 } else {
                     foreach ($output as $item) {
                         Console::writeLine(ConsoleColors::getColoredString(
                             $item,
-                            ConsoleColors::BLUE,
-                            ConsoleColors::WHITE
+                            ConsoleColorsEnum::BLUE,
+                            ConsoleColorsEnum::WHITE
                         ));
                     }
                 }
@@ -52,24 +52,24 @@ class Lib extends AbstractCommandLib
             if (file_exists($binScript)) {
                 Console::writeLine(ConsoleColors::getColoredString(
                     "Running install script",
-                    ConsoleColors::BLUE,
-                    ConsoleColors::WHITE
+                    ConsoleColorsEnum::BLUE,
+                    ConsoleColorsEnum::WHITE
                 ));
                 exec("$binScript", $output, $returnCode);
                 if ($returnCode !== 0) {
                     foreach ($output as $item) {
                         Console::writeLine(ConsoleColors::getColoredString(
                             $item,
-                            ConsoleColors::RED,
-                            ConsoleColors::WHITE
+                            ConsoleColorsEnum::RED,
+                            ConsoleColorsEnum::WHITE
                         ));
                     }
                 } else {
                     foreach ($output as $item) {
                         Console::writeLine(ConsoleColors::getColoredString(
                             $item,
-                            ConsoleColors::BLUE,
-                            ConsoleColors::WHITE
+                            ConsoleColorsEnum::BLUE,
+                            ConsoleColorsEnum::WHITE
                         ));
                     }
                 }

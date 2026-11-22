@@ -5,6 +5,7 @@ namespace Ephect\Modules\WebComponent\Commands\MakeWebComponent;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
 use Ephect\Framework\CLI\Enums\ConsoleOptionsEnum;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Framework\Commands\AbstractCommandLib;
 use Ephect\Modules\WebComponent\Builder\Compiler;
 use Ephect\Modules\WebComponent\Common;
@@ -15,9 +16,9 @@ class Lib extends AbstractCommandLib
     public function createWebcomponentBase(): void
     {
         try {
-            Console::writeLine(ConsoleColors::getColoredString("Creating a new webComponent.", ConsoleColors::LIGHT_BLUE));
-            Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColors::BLUE));
-            Console::writeLine(ConsoleColors::getColoredString("Leave the answer blank to pass to the next question or to abort the process.", ConsoleColors::BROWN));
+            Console::writeLine(ConsoleColors::getColoredString("Creating a new webComponent.", ConsoleColorsEnum::LIGHT_BLUE));
+            Console::writeLine(ConsoleColors::getColoredString("Please, answer the following questions.", ConsoleColorsEnum::BLUE));
+            Console::writeLine(ConsoleColors::getColoredString("Leave the answer blank to pass to the next question or to abort the process.", ConsoleColorsEnum::BROWN));
 
             $builder = new Compiler();
             [$tagName, $className, $hasBackendProps, $entrypoint, $arguments] = $this->readLine();
@@ -31,7 +32,7 @@ class Lib extends AbstractCommandLib
 
             $builder->copyTemplates($tagName, $className, $hasBackendProps, $entrypoint, $arguments, $srcDir, $destDir);
 
-            Console::writeLine(ConsoleColors::getColoredString("WebComponent ", ConsoleColors::BLUE) . "%s" . ConsoleColors::getColoredString(" is available in:", ConsoleColors::BLUE), $className);
+            Console::writeLine(ConsoleColors::getColoredString("WebComponent ", ConsoleColorsEnum::BLUE) . "%s" . ConsoleColors::getColoredString(" is available in:", ConsoleColorsEnum::BLUE), $className);
             Console::writeLine("%s", $destDir);
         } catch (Exception $ex) {
             Console::error($ex, ConsoleOptionsEnum::ErrorMessageOnly);
@@ -55,7 +56,7 @@ class Lib extends AbstractCommandLib
             throw new Exception("WebComponent tag name must not be empty");
         }
 
-        Console::writeLine(ConsoleColors::getColoredString("The code of the webComponent will split into one JS module and one HTML template.", ConsoleColors::BLUE));
+        Console::writeLine(ConsoleColors::getColoredString("The code of the webComponent will split into one JS module and one HTML template.", ConsoleColorsEnum::BLUE));
 
         /**
          * Asking for the class name.
@@ -87,7 +88,7 @@ class Lib extends AbstractCommandLib
         while ($next) {
             $arg = Console::readLine("Argument $argIndex:");
             if (trim($arg) == '') {
-                Console::writeLine(ConsoleColors::getColoredString("Ending WebComponent arguments list", ConsoleColors::LIGHT_BLUE));
+                Console::writeLine(ConsoleColors::getColoredString("Ending WebComponent arguments list", ConsoleColorsEnum::LIGHT_BLUE));
                 $next = false;
                 continue;
             }
