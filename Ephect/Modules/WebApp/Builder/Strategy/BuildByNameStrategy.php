@@ -6,13 +6,13 @@ use DateTime;
 use Ephect\Framework\Utils\Text;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
-use Ephect\Framework\Utils\File;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Modules\Forms\Components\Component;
 use Ephect\Modules\Forms\Registry\PluginRegistry;
 use Ephect\Modules\Routing\Services\RouterService;
 use Throwable;
 
-class BuildByNameStrategy implements BuiderStrategyInterface
+class BuildByNameStrategy implements BuilderStrategyInterface
 {
     public function build(array|string|null $routeItem): void
     {
@@ -23,7 +23,7 @@ class BuildByNameStrategy implements BuiderStrategyInterface
             $page = ((object)$routeItem)->redirect;
         }
 
-        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($page, ConsoleColors::LIGHT_CYAN));
+        Console::write("Compiling %s ... ", ConsoleColors::getColoredString($page, ConsoleColorsEnum::LIGHT_CYAN));
         Console::getLogger()->info("Compiling %s ... ", $page);
 
         $comp = new Component($page);
@@ -43,7 +43,7 @@ class BuildByNameStrategy implements BuiderStrategyInterface
 
             $duration = Text::durationFromToString($time_start, true);
 
-            Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
+            Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColorsEnum::RED));
         } catch (Throwable $ex) {
             $error = Console::formatException($ex);
         }
@@ -54,8 +54,8 @@ class BuildByNameStrategy implements BuiderStrategyInterface
                 PHP_EOL,
                 ConsoleColors::getColoredString(
                     $error,
-                    ConsoleColors::WHITE,
-                    ConsoleColors::BACKGROUND_RED
+                    ConsoleColorsEnum::WHITE,
+                    ConsoleColorsEnum::BACKGROUND_RED
                 )
             );
         }

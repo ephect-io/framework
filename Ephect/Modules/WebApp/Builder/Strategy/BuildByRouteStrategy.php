@@ -5,13 +5,14 @@ namespace Ephect\Modules\WebApp\Builder\Strategy;
 use DateTime;
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleColorsEnum;
 use Ephect\Framework\Utils\File;
 use Ephect\Framework\Utils\Text;
 use Ephect\Framework\Web\Curl;
 use Ephect\Modules\Routing\Services\RouterService;
 use Exception;
 
-class BuildByRouteStrategy implements BuiderStrategyInterface
+class BuildByRouteStrategy implements BuilderStrategyInterface
 {
     /**
      * @throws Exception
@@ -29,7 +30,7 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         }
         //TODO 
 
-        Console::writeLine("RouteItem: %s", $routeItem);
+        // Console::writeLine("RouteItem: %s", ConsoleColors::getColoredString($routeItem, ConsoleColorsEnum::LIGHT_CYAN));
         $queryString = $routeItem === 'Default' ? '/' : RouterService::findRouteQueryString($routeItem);
         if ($queryString === null) {
             return;
@@ -41,10 +42,10 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
         $filename = "$page.html";
         $outputFilename = "$page.out";
 
-        Console::write("Compiling %s, ", ConsoleColors::getColoredString($page, ConsoleColors::LIGHT_CYAN));
+        Console::write("Compiling %s, ", ConsoleColors::getColoredString($page, ConsoleColorsEnum::LIGHT_CYAN));
         Console::write("requesting %s ... ", ConsoleColors::getColoredString(
             \Constants::CONFIG_HOSTNAME . ":$port" . $queryString,
-            ConsoleColors::LIGHT_GREEN
+            ConsoleColorsEnum::LIGHT_GREEN
         ));
 
         $curl = new Curl();
@@ -69,6 +70,6 @@ class BuildByRouteStrategy implements BuiderStrategyInterface
 
         $duration = Text::durationFromToString($time_start, true);
 
-        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColors::RED));
+        Console::writeLine("%s", ConsoleColors::getColoredString($duration, ConsoleColorsEnum::RED));
     }
 }
