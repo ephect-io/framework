@@ -4,6 +4,7 @@ namespace Ephect\Framework\Utils;
 
 use Ephect\Framework\CLI\Console;
 use Ephect\Framework\CLI\Enums\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleBackColors;
 use ReflectionException;
 use ReflectionFunction;
 use SplFileObject;
@@ -51,8 +52,15 @@ class Text
         if (count($params) > 0 && count($params[0]) > 0) {
             $lastItem = end($params[0]);
             $color = null;
+            $backgroundColor = null;
             $stringToColorize = null;
-            if ($lastItem instanceof ConsoleColors) {
+            if ($lastItem instanceof ConsoleBackColors) {
+                $backgroundColor = $lastItem;
+                array_pop($params[0]);
+                $color = array_pop($params[0]);
+                $stringToColorize = array_pop($params[0]);
+            }
+            elseif ($lastItem instanceof ConsoleColors) {
                 $color = $lastItem;
                 array_pop($params[0]);
                 $stringToColorize = array_pop($params[0]);
@@ -68,7 +76,10 @@ class Text
                 return $param;
             }, $params[0]);
 
-            if (isset($color)) {
+            if (isset($backgroundColor)) {
+                $params[0][] = Console::getColoredString($stringToColorize, $color, $backgroundColor);
+            }
+            elseif (isset($color)) {
                 $params[0][] = Console::getColoredString($stringToColorize, $color);
             }
             $result = vsprintf($string, $params[0]);

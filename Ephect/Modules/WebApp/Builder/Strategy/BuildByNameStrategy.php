@@ -51,11 +51,9 @@ class BuildByNameStrategy implements BuilderStrategyInterface
             Console::writeLine(
                 "FATAL ERROR!%s %s",
                 PHP_EOL,
-                Console::getColoredString(
-                    $error,
-                    ConsoleColors::WHITE,
-                    ConsoleColors::BACKGROUND_RED
-                )
+                $error,
+                ConsoleColors::WHITE,
+                ConsoleBackColors::BACKGROUND_RED
             );
         }
 

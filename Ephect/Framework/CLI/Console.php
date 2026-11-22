@@ -5,6 +5,7 @@ namespace Ephect\Framework\CLI;
 use Constants;
 use Ephect\Framework\CLI\Enums\ConsoleOptions;
 use Ephect\Framework\CLI\Enums\ConsoleColors;
+use Ephect\Framework\CLI\Enums\ConsoleBackColors;
 use Ephect\Framework\Element;
 use Ephect\Framework\ElementTrait;
 use Ephect\Framework\Utils\Text;
@@ -130,28 +131,26 @@ class Console extends Element
         return $message;
     }
 
-    public static function getColoredString(string|array $string, ConsoleColors|null $foreground_color = null, ConsoleColors|null $background_color = null): string
+    public static function getColoredString(string|array $string, ConsoleColors|null $foregroundColor = null, ConsoleBackColors|null $backgroundColor = null): string
     {
         if (is_array($string)) {
             $string = Text::arrayToString($string, true);
         }
 
-        $colored_string = "";
+        $coloredString = "";
         $suffix = "\033[0m";
 
-        // Check if given foreground color found
-        if (isset($foreground_color)) {
-            $colored_string .= "\033[" . $foreground_color->value() . "m";
+        if (isset($foregroundColor)) {
+            $coloredString .= "\033[" . $foregroundColor->value() . "m";
         }
-        // Check if given background color found
-        if (isset($background_color)) {
-            $colored_string = "\033[" . $background_color->value() . "m" . $colored_string;
+        if (isset($backgroundColor)) {
+            $coloredString = "\033[" . $backgroundColor->value() . "m" . $coloredString;
             $suffix .= $suffix;
         }
 
         // Add string and end coloring
-        $colored_string .= $string . $suffix;
+        $coloredString .= $string . $suffix;
 
-        return $colored_string;
+        return $coloredString;
     }
 }
