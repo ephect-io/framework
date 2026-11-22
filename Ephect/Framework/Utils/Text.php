@@ -47,7 +47,16 @@ class Text
             $result = print_r($string, true);
         }
         if (count($params) > 0 && count($params[0]) > 0) {
-            $result = vsprintf($string, $params[0]);
+            $params0 = array_map(function ($param) {
+                if (is_object($param)) {
+                    return json_encode($param, JSON_PRETTY_PRINT);
+                }
+                if (is_array($param)) {
+                    return Text::arrayToString($param, true);
+                }
+                return $param;
+            }, $params[0]);
+            $result = vsprintf($string, $params0);
         }
 
         return $result;
