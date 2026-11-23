@@ -10,8 +10,6 @@ class ApplicationIgniter(private string $motherUID)
 {
     public function ignite(): void
     {
-        // TODO: collect the components of the current page by its $motherUID 
-        // and set them in events
         [$middlewares] = useState(get: 'middlewares');
 
         if ($middlewares === null) {

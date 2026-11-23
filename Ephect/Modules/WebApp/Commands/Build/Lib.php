@@ -3,11 +3,12 @@
 namespace Ephect\Modules\WebApp\Commands\Build;
 
 use Ephect\Framework\CLI\Console;
-use Ephect\Framework\CLI\ConsoleColorRef;
 use Ephect\Framework\CLI\Enums\ConsoleColors;
 use Ephect\Framework\Utils\Text;
 use Ephect\Framework\Commands\AbstractCommandLib;
+use Ephect\Modules\Forms\Registry\CacheRegistry;
 use Ephect\Modules\WebApp\Builder\Builder;
+use Ephect\Modules\WebApp\Registry\PageRegistry;
 use Ephect\Modules\WebApp\Services\BuildService;
 
 class Lib extends AbstractCommandLib
@@ -57,5 +58,24 @@ class Lib extends AbstractCommandLib
         Console::write("%s ... ", "Built pages and components within", ConsoleColors::LIGHT_CYAN);
 
         Console::writeLine("%s", $duration, ConsoleColors::RED);
+    }
+
+    public function getPageComponents(string $motherUID): array
+    {
+
+        $catalogClass = PageRegistry::read($motherUID);
+        $catalogFile = PageRegistry::read($catalogClass);
+
+        CacheRegistry::load();
+
+        $pageComponents = CacheRegistry::items()[$motherUID] ?? [];
+        unset($pageComponents[$catalogClass]);
+
+        return [
+            'uid' => $motherUID,
+            'class' => $catalogClass,
+            'filename' => $catalogFile,
+            'components' => $pageComponents
+        ];
     }
 }
